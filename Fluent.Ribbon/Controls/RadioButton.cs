@@ -116,6 +116,24 @@ namespace Fluent
 
         #endregion
 
+        #region IsReadOnly
+
+        /// <summary>
+        /// Gets or sets IsReadOnly for the element.
+        /// </summary>
+        public bool IsReadOnly
+        {
+            get { return (bool)this.GetValue(IsReadOnlyProperty); }
+            set { this.SetValue(IsReadOnlyProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for IsReadOnly.  
+        /// </summary>
+        public static readonly DependencyProperty IsReadOnlyProperty = RibbonProperties.IsReadOnlyProperty.AddOwner(typeof(RadioButton));
+
+        #endregion
+
         #endregion
 
         #region Constructors
@@ -129,6 +147,7 @@ namespace Fluent
             DefaultStyleKeyProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(type));
             ContextMenuService.Attach(type);
             ToolTipService.Attach(type);
+            CommandProperty.OverrideMetadata(typeof(RadioButton), new FrameworkPropertyMetadata(RibbonProperties.OnCommandChanged));
         }
 
         /// <summary>
@@ -137,6 +156,18 @@ namespace Fluent
         public RadioButton()
         {
             ContextMenuService.Coerce(this);
+        }
+
+        #endregion
+
+        #region Overrides
+        
+        protected override bool IsEnabledCore => true;
+
+        protected override void OnClick()
+        {
+            if(!IsReadOnly)
+                base.OnClick();
         }
 
         #endregion

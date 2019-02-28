@@ -40,49 +40,14 @@
   <SolidColorBrush x:Key="BackstageToggleButtonCheckedBackgroundBrush" Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
   <SolidColorBrush x:Key="BackstageToggleButtonCheckedBorderBrush" Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
 
-  <SolidColorBrush x:Key="CheckBoxHoverBackgroundBrush" Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
-  <SolidColorBrush x:Key="CheckBoxHoverBorderBrush" Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
-  <SolidColorBrush x:Key="CheckBoxPressedBackgroundBrush" Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
-  <SolidColorBrush x:Key="CheckBoxPressedBorderBrush" Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
-
-  <Color x:Key="GrayHoverColor">#C5C5C5</Color>
-  <Color x:Key="GrayPressedColor">#AEAEAE</Color>
-
-  <SolidColorBrush x:Key="ButtonHoverOuterBackgroundBrush" Color="{DynamicResource GrayHoverColor}" />
-  <SolidColorBrush x:Key="ButtonHoverOuterBorderBrush" Color="{DynamicResource GrayHoverColor}" />
-  <SolidColorBrush x:Key="ButtonHoverInnerBackgroundBrush" Color="{DynamicResource GrayHoverColor}" />
-  <SolidColorBrush x:Key="ButtonHoverInnerBorderBrush" Color="{DynamicResource GrayHoverColor}" />
-
-  <SolidColorBrush x:Key="ButtonPressedOuterBackgroundBrush" Color="{DynamicResource GrayPressedColor}" />
-  <SolidColorBrush x:Key="ButtonPressedOuterBorderBrush" Color="{DynamicResource GrayPressedColor}" />
-  <SolidColorBrush x:Key="ButtonPressedInnerBackgroundBrush" Color="{DynamicResource GrayPressedColor}"/>
-  <SolidColorBrush x:Key="ButtonPressedInnerBorderBrush" Color="{DynamicResource GrayPressedColor}"/>
-
-  <SolidColorBrush x:Key="MenuItemHoverOuterBackgroundBrush" Color="{DynamicResource GrayHoverColor}" />
-  <SolidColorBrush x:Key="MenuItemHoverOuterBorderBrush" Color="{DynamicResource GrayHoverColor}" />
-
-
-  <SolidColorBrush x:Key="ButtonCheckedBrush" Color="#C5C5C5"/>
-
-
-  <SolidColorBrush x:Key="TransparentBrush"
-                     Color="#00000000" />
-
-
-  <SolidColorBrush x:Key="CheckBoxOutterBorderBrush"
-                     Color="#FF898B8C" />
-  <SolidColorBrush x:Key="CheckBoxOutterBackgroundBrush"
-                     Color="#FFF2F3F5" />
-  <SolidColorBrush x:Key="CheckBoxInnerBorderBrush"
-                     Color="#FFB6B8BA" />
-  <LinearGradientBrush x:Key="CheckBoxInnerBackgroundBrush"
-                         EndPoint="0.859,0.848"
-                         StartPoint="0.141,0.152">
-    <GradientStop Color="#FFE8E9EB"
-                      Offset="0" />
-    <GradientStop Color="#FFF0F1F2"
-                      Offset="1" />
-  </LinearGradientBrush>
+   <!-- Checkbox -->
+  <SolidColorBrush x:Key="CheckBoxHoverBackgroundBrush" Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}" />
+  <SolidColorBrush x:Key="CheckBoxHoverBorderBrush" Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}" />
+  <SolidColorBrush x:Key="CheckBoxPressedBackgroundBrush" Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}" />
+  <SolidColorBrush x:Key="CheckBoxPressedBorderBrush" Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}" />
+     
+  <SolidColorBrush x:Key="CheckBoxFontBrush" Color="Black" />
+  <SolidColorBrush x:Key="CheckBoxQuickAccessFontBrush" Color="White" />
 
   <SolidColorBrush x:Key="CheckBoxHoverOutterBorderBrush"
                      Color="#FFCF9037" />
@@ -125,6 +90,72 @@
     <GradientStop Color="#FFFCEDC9"
                       Offset="1" />
   </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="CheckBoxOutterBorderBrush"
+                     Color="#FF898B8C" />
+  <SolidColorBrush x:Key="CheckBoxOutterBackgroundBrush"
+                     Color="#FFF2F3F5" />
+  <SolidColorBrush x:Key="CheckBoxInnerBorderBrush"
+                     Color="#FFB6B8BA" />
+  <LinearGradientBrush x:Key="CheckBoxInnerBackgroundBrush"
+                         EndPoint="0.859,0.848"
+                         StartPoint="0.141,0.152">
+    <GradientStop Color="#FFE8E9EB"
+                      Offset="0" />
+    <GradientStop Color="#FFF0F1F2"
+                      Offset="1" />
+  </LinearGradientBrush>
+
+  <Color x:Key="GrayHoverColor">#C5C5C5</Color>
+  <Color x:Key="GrayPressedColor">#AEAEAE</Color>
+  <Color x:Key="LineBrushColor">#E1E1E1</Color>
+  <Color x:Key="ValidationRedFocusedColor">#FFD0284C</Color>
+  <Color x:Key="ValidationRedUnFocusedColor">#FFF55E7F</Color>
+
+  <!-- Radiobutton -->
+  <SolidColorBrush x:Key="RadioButtonOuterBackgroundBrush" Color="{DynamicResource WhiteColor}" />
+  <SolidColorBrush x:Key="RadioButtonOuterBorderBrush" Color="{DynamicResource LineBrushColor}" />
+  <SolidColorBrush x:Key="RadioButtonHoverOuterBackgroundBrush" Color="{DynamicResource WhiteColor}" />
+  <SolidColorBrush x:Key="RadioButtonHoverOuterBorderBrush" Color="{DynamicResource GrayHoverColor}" />
+  <SolidColorBrush x:Key="RadioButtonPressedOuterBackgroundBrush" Color="{DynamicResource WhiteColor}" />
+  <SolidColorBrush x:Key="RadioButtonPressedOuterBorderBrush" Color="{DynamicResource GrayPressedColor}" />
+  <SolidColorBrush x:Key="RadioButtonFocusedOuterBackgroundBrush" Color="{DynamicResource WhiteColor}" />
+  <SolidColorBrush x:Key="RadioButtonFocusedOuterBorderBrush" Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}" Opacity="0.3" />
+  <SolidColorBrush x:Key="RadioButtonValidationFocusedOuterBackgroundBrush" Color="{DynamicResource WhiteColor}" />
+  <SolidColorBrush x:Key="RadioButtonValidationFocusedOuterBorderBrush" Color="{DynamicResource ValidationRedFocusedColor}" />
+  <SolidColorBrush x:Key="RadioButtonValidationUnFocusedOuterBackgroundBrush" Color="{DynamicResource WhiteColor}" />
+  <SolidColorBrush x:Key="RadioButtonValidationUnFocusedOuterBorderBrush" Color="{DynamicResource ValidationRedUnFocusedColor}" />
+  <SolidColorBrush x:Key="RadioButtonInnerBackgroundBrush" Color="#C5C5C5" />
+  <SolidColorBrush x:Key="RadioButtonDisabledOuterBackgroundBrush" Color="{DynamicResource WhiteColor}" />
+  <SolidColorBrush x:Key="RadioButtonDisabledOuterBorderBrush" Color="#FFE4E7EB" />
+  <SolidColorBrush x:Key="RadioButtonHoverBackgroundBrush" Color="{DynamicResource GrayHoverColor}" />
+
+  <!-- Button -->
+  <SolidColorBrush x:Key="ButtonHoverOuterBackgroundBrush" Color="{DynamicResource GrayHoverColor}" />
+  <SolidColorBrush x:Key="ButtonHoverOuterBorderBrush" Color="{DynamicResource GrayHoverColor}" />
+  <SolidColorBrush x:Key="ButtonHoverInnerBackgroundBrush" Color="{DynamicResource GrayHoverColor}" />
+  <SolidColorBrush x:Key="ButtonHoverInnerBorderBrush" Color="{DynamicResource GrayHoverColor}" />
+
+  <SolidColorBrush x:Key="ButtonPressedOuterBackgroundBrush" Color="{DynamicResource GrayPressedColor}" />
+  <SolidColorBrush x:Key="ButtonPressedOuterBorderBrush" Color="{DynamicResource GrayPressedColor}" />
+  <SolidColorBrush x:Key="ButtonPressedInnerBackgroundBrush" Color="{DynamicResource GrayPressedColor}"/>
+  <SolidColorBrush x:Key="ButtonPressedInnerBorderBrush" Color="{DynamicResource GrayPressedColor}"/>
+
+  <!-- ComboBox -->
+  <SolidColorBrush x:Key="ComboBoxHoverInnerBorderBrush" Color="{DynamicResource GrayHoverColor}" />
+  <SolidColorBrush x:Key="ComboBoxHoverInnerBackgroundBrush" Color="{DynamicResource GrayHoverColor}" />
+  <SolidColorBrush x:Key="ComboBoxItemSelectedInnerBackgroundBrush" Color="{DynamicResource GrayPressedColor}" />
+
+  <!-- MenuItem -->
+  <SolidColorBrush x:Key="MenuItemHoverOuterBackgroundBrush" Color="{DynamicResource GrayHoverColor}" />
+  <SolidColorBrush x:Key="MenuItemHoverOuterBorderBrush" Color="{DynamicResource GrayHoverColor}" />
+
+
+  <SolidColorBrush x:Key="ButtonCheckedBrush" Color="#C5C5C5"/>
+
+
+  <SolidColorBrush x:Key="TransparentBrush"
+                     Color="#00000000" />
 
   <SolidColorBrush x:Key="GalleryBorderBrush"
                      Color="#FFE2E4E7" />

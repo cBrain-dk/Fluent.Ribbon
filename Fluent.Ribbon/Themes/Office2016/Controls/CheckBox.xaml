@@ -122,11 +122,12 @@
             </Grid>
             <ContentControl Grid.Column="1"
                             IsTabStop="False"
-                            Margin="2,0,0,0">
-                <ContentControl.Foreground>
+                            Margin="2,0,0,0"
+                            Foreground="{TemplateBinding Foreground}">
+                <!--<ContentControl.Foreground>
                     <SolidColorBrush x:Name="ContentPresenterWrapperColor"
                                      Color="Black" />
-                </ContentControl.Foreground>
+                </ContentControl.Foreground>-->
                 <ContentPresenter x:Name="contentPresenter"
                                   Margin="{TemplateBinding Padding}"
                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -137,8 +138,13 @@
             </ContentControl>
         </Grid>
         <ControlTemplate.Triggers>
-            <Trigger Property="IsMouseOver"
-                     Value="True">
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver"
+                     Value="True"/>
+                    <Condition Property="IsReadOnly"
+                     Value="False"/>
+                </MultiTrigger.Conditions>
                 <Setter TargetName="border"
                         Property="BorderBrush"
                         Value="{DynamicResource CheckBoxHoverBorderBrush}" />
@@ -151,9 +157,15 @@
                 <Setter TargetName="IndeterminateIcon"
                         Property="Fill"
                         Value="#FF333333" />
-            </Trigger>
-            <Trigger Property="IsPressed"
-                     Value="True">
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsReadOnly"
+                     Value="False"/>
+                    <Condition Property="IsPressed"
+                     Value="True"/>
+                </MultiTrigger.Conditions>
+
                 <Setter TargetName="border"
                         Property="BorderBrush"
                         Value="{DynamicResource CheckBoxPressedBorderBrush}" />
@@ -166,9 +178,18 @@
                 <Setter TargetName="IndeterminateIcon"
                         Property="Fill"
                         Value="#FF000000" />
-            </Trigger>
+            </MultiTrigger>
             <Trigger Property="IsEnabled"
                      Value="False">
+                <Setter TargetName="contentPresenter"
+                        Property="Opacity"
+                        Value=".55" />
+                <Setter TargetName="DisabledVisualElement"
+                        Property="Opacity"
+                        Value=".55" />
+            </Trigger>
+            <Trigger Property="IsReadOnly"
+                     Value="True">
                 <Setter TargetName="contentPresenter"
                         Property="Opacity"
                         Value=".55" />
@@ -237,14 +258,20 @@
         <Setter Property="Background"
                 Value="#FFFDFDFD" />
         <Setter Property="Foreground"
-                Value="Black" />
+                Value="{DynamicResource CheckBoxFontBrush}" />
         <Setter Property="BorderThickness"
                 Value="1" />
         <Setter Property="BorderBrush"
                 Value="#FFABABAB" />
         <Setter Property="Margin"
                 Value="6,2,4,2" />
-    </Style>
+    <Style.Triggers>
+      <Trigger Property="Fluent:RibbonControl.IsQuickAccessItem" Value="True">
+        <Setter Property="Foreground" Value="{DynamicResource CheckBoxQuickAccessFontBrush}" />
+        <Setter Property="Height" Value="18"/>
+      </Trigger>
+    </Style.Triggers>
+  </Style>
 
     <Style BasedOn="{StaticResource RibbonCheckBoxStyle}"
            TargetType="{x:Type Fluent:CheckBox}" />

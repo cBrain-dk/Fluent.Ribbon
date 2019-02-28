@@ -1894,16 +1894,26 @@ namespace Fluent
             {
                 Debug.WriteLine($"Adding \"{element}\" to QuickAccessToolBar.");
 
-                var control = QuickAccessItemsProvider.GetQuickAccessItem(element);
+        var control = QuickAccessItemsProvider.GetQuickAccessItem(element);
+        control.IsVisibleChanged += QuickAccessItem_IsVisibleChanged;
 
                 this.QuickAccessElements.Add(element, control);
                 this.QuickAccessToolBar.Items.Add(control);
             }
         }
 
-        private static IRibbonControl FindParentRibbonControl(DependencyObject element)
-        {
-            var parent = LogicalTreeHelper.GetParent(element);
+    private void QuickAccessItem_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+      if (IsLoaded && !(bool)e.OldValue && (bool)e.NewValue)
+      {
+        Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render,
+          new Action(() => { this.TitleBar.InvalidateMeasure(); }));
+      }
+    }
+
+    private static IRibbonControl FindParentRibbonControl(DependencyObject element)
+    {
+      var parent = LogicalTreeHelper.GetParent(element);
 
             while (parent != null)
             {
@@ -1926,13 +1936,16 @@ namespace Fluent
         {
             Debug.WriteLine("Removing \"{0}\" from QuickAccessToolBar.", element);
 
-            if (this.IsInQuickAccessToolBar(element))
-            {
-                var quickAccessItem = this.QuickAccessElements[element];
-                this.QuickAccessElements.Remove(element);
-                this.QuickAccessToolBar.Items.Remove(quickAccessItem);
-            }
-        }
+      if (this.IsInQuickAccessToolBar(element))
+      {
+        var quickAccessItem = this.QuickAccessElements[element];
+        quickAccessItem.IsVisibleChanged -= QuickAccessItem_IsVisibleChanged;
+
+        this.QuickAccessElements.Remove(element);
+        this.QuickAccessToolBar.Items.Remove(quickAccessItem);
+        this.RibbonStateStorage.Save();
+      }
+    }
 
         /// <summary>
         /// Clears quick access toolbar
@@ -1991,20 +2004,24 @@ namespace Fluent
             this.LoadInitialState();
         }
 
-        private void OnKeyDown(object sender, KeyEventArgs e)
+    private void OnKeyDown(object sender, KeyEventArgs e)
+    {
+      if (e.Handled)
+        return;
+
+      if (e.Key == Key.F1
+          && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+      {
+        if (this.TabControl.HasItems)
         {
-            if (e.Key == Key.F1
-                && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
-            {
-                if (this.TabControl.HasItems)
-                {
-                    if (this.CanMinimize)
-                    {
-                        this.IsMinimized = !this.IsMinimized;
-                    }
-                }
-            }
+          if (this.CanMinimize)
+          {
+            this.IsMinimized = !this.IsMinimized;
+            e.Handled = true;
+          }
         }
+      }
+    }
 
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {

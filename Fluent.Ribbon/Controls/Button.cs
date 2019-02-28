@@ -133,6 +133,43 @@ namespace Fluent
 
         #endregion
 
+        #region CornerRadius
+
+        /// <summary>
+        /// Gets or sets the CornerRadius for the element
+        /// </summary>
+        public CornerRadius CornerRadius
+        {
+            get { return (CornerRadius)this.GetValue(CornerRadiusProperty); }
+            set { this.SetValue(CornerRadiusProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for CornerRadius.  This enables animation, styling, binding, etc...
+        /// </summary>
+        public static readonly DependencyProperty CornerRadiusProperty =
+            DependencyProperty.Register(nameof(CornerRadius), typeof(CornerRadius), typeof(Button), new PropertyMetadata(default(CornerRadius)));
+
+        #endregion CornerRadius
+
+        #region IsReadOnly
+
+        /// <summary>
+        /// Gets or sets IsReadOnly for the element.
+        /// </summary>
+        public bool IsReadOnly
+        {
+            get { return (bool)this.GetValue(IsReadOnlyProperty); }
+            set { this.SetValue(IsReadOnlyProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for IsReadOnly.  
+        /// </summary>
+        public static readonly DependencyProperty IsReadOnlyProperty = RibbonProperties.IsReadOnlyProperty.AddOwner(typeof(Button));
+
+        #endregion
+
         #endregion
 
         #region Constructors
@@ -146,6 +183,7 @@ namespace Fluent
             DefaultStyleKeyProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(type));
             ContextMenuService.Attach(type);
             ToolTipService.Attach(type);
+            CommandProperty.OverrideMetadata(typeof(Button), new FrameworkPropertyMetadata(RibbonProperties.OnCommandChanged));
         }
 
         /// <summary>
@@ -154,13 +192,19 @@ namespace Fluent
         public Button()
         {
             ContextMenuService.Coerce(this);
+            
         }
 
         #endregion
 
         #region Overrides
 
-        /// <inheritdoc />
+
+        protected override bool IsEnabledCore => true;
+
+        /// <summary>
+        /// Called when a <see cref="T:System.Windows.Controls.Button"/> is clicked. 
+        /// </summary>
         protected override void OnClick()
         {
             // Close popup on click
@@ -168,8 +212,13 @@ namespace Fluent
             {
                 PopupService.RaiseDismissPopupEvent(this, DismissPopupMode.Always);
             }
+            if(!IsReadOnly)
+                base.OnClick();
+        }
 
-            base.OnClick();
+        protected override AutomationPeer OnCreateAutomationPeer()
+        {
+            return new Fluent.AutomationPeers.ButtonAutomationPeer(this);
         }
 
         #endregion

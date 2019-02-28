@@ -101,7 +101,27 @@ namespace Fluent
 
         #endregion
 
-        /// <inheritdoc />
+        #region IsReadOnly
+
+        /// <summary>
+        /// Gets or sets IsReadOnly for the element.
+        /// </summary>
+        public bool IsReadOnly
+        {
+            get { return (bool)this.GetValue(IsReadOnlyProperty); }
+            set { this.SetValue(IsReadOnlyProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for IsReadOnly.  
+        /// </summary>
+        public static readonly DependencyProperty IsReadOnlyProperty = RibbonProperties.IsReadOnlyProperty.AddOwner(typeof(DropDownButton));
+
+        #endregion
+
+        /// <summary>
+        /// Gets drop down popup
+        /// </summary>
         public Popup DropDownPopup { get; private set; }
 
         /// <inheritdoc />
@@ -195,7 +215,18 @@ namespace Fluent
         /// </summary>
         public static readonly DependencyProperty IsDropDownOpenProperty =
             DependencyProperty.Register(nameof(IsDropDownOpen), typeof(bool), typeof(DropDownButton),
-            new PropertyMetadata(BooleanBoxes.FalseBox, OnIsDropDownOpenChanged));
+            new PropertyMetadata(BooleanBoxes.FalseBox, OnIsDropDownOpenChanged, CoerceValueIsDropDownOpen));
+
+        private static object CoerceValueIsDropDownOpen(DependencyObject d, object baseValue)
+        {
+            if(baseValue is bool boolBaseValue)
+            {
+                DropDownButton dropDownButton = (DropDownButton)d;
+                return BooleanBoxes.Box(!dropDownButton.IsReadOnly && boolBaseValue);
+            }
+
+            return baseValue;
+        }
 
         #endregion
 
@@ -437,7 +468,12 @@ namespace Fluent
 
         #region Overrides
 
-        /// <inheritdoc />
+        protected override bool IsEnabledCore => true;
+
+        /// <summary>
+        /// Creates or identifies the element that is used to display the given item.
+        /// </summary>
+        /// <returns>The element that is used to display the given item.</returns>
         protected override DependencyObject GetContainerForItemOverride()
         {
             return new MenuItem();
@@ -591,6 +627,12 @@ namespace Fluent
             return !control.IsDropDownOpen;
         }
 
+        /// <summary>
+        /// Override automation peer for screen readers
+        /// </summary>
+        /// <returns></returns>
+        protected override AutomationPeer OnCreateAutomationPeer() =>  new DropDownButtonAutomationPeer(this);
+
         #endregion
 
         #region Methods
@@ -668,6 +710,12 @@ namespace Fluent
             this.SetValue(System.Windows.Controls.ToolTipService.IsEnabledProperty, !newValue);
 
             Debug.WriteLine($"{this.Header} IsDropDownOpen: {newValue}");
+
+            if(UIElementAutomationPeer.FromElement(control) is DropDownButtonAutomationPeer peer)
+            {
+                peer.ResetChildrenCache();
+                peer.RaiseExpandCollapseAutomationEvent((bool)e.OldValue, newValue);
+            }
 
             if (newValue)
             {

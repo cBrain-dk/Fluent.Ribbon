@@ -121,5 +121,10 @@ namespace Fluent
         }
 
         #endregion
+
+    protected override AutomationPeer OnCreateAutomationPeer()
+    {
+      return new FrameworkElementAutomationPeer(this);
     }
+  }
 }

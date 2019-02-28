@@ -73,35 +73,23 @@
                 <ControlTemplate TargetType="{x:Type ComboBoxItem}"
                                  x:Name="noneditComboboxItem">
                     <Grid Background="{DynamicResource TransparentBrush}">
-                        <Border x:Name="hoverBorder"
-                                BorderThickness="1"
-                                Visibility="Collapsed">
-                            <Border.Background>
-                                <SolidColorBrush Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}"
-                                                 Opacity="0.12" />
-                            </Border.Background>
-                            <Border Height="Auto"
-                                    BorderThickness="1">
-                                <Border.Background>
-                                    <SolidColorBrush Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}"
-                                                     Opacity="0.12" />
-                                </Border.Background>
-                            </Border>
+            <Border x:Name="hoverBorder"
+                    BorderThickness="1"
+                    Visibility="Collapsed"
+                    Background="{DynamicResource ComboBoxHoverInnerBackgroundBrush}">
+              <Border Height="Auto"
+                      BorderThickness="1"
+                      Background="{DynamicResource ComboBoxHoverInnerBackgroundBrush}">
+              </Border>
                         </Border>
-                        <Border x:Name="selectedBorder"
-                                BorderThickness="1"
-                                Visibility="Collapsed">
-                            <Border.Background>
-                                <SolidColorBrush Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}"
-                                                 Opacity="0.2" />
-                            </Border.Background>
-                            <Border Height="Auto"
-                                    BorderThickness="1">
-                                <Border.Background>
-                                    <SolidColorBrush Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}"
-                                                     Opacity="0.2" />
-                                </Border.Background>
-                            </Border>
+            <Border x:Name="selectedBorder"
+                    BorderThickness="1"
+                    Visibility="Collapsed"
+                    Background="{DynamicResource ComboBoxItemSelectedInnerBackgroundBrush}">
+              <Border Height="Auto"
+                      BorderThickness="1"
+                      Background="{DynamicResource ComboBoxItemSelectedInnerBackgroundBrush}">
+              </Border>
                         </Border>
                         <ContentPresenter x:Name="contentPresenter"
                                           Margin="3"

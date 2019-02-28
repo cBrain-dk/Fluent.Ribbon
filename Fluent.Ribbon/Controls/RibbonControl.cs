@@ -20,6 +20,24 @@ namespace Fluent
     /// </summary>
     public abstract class RibbonControl : Control, ICommandSource, IQuickAccessItemProvider, IRibbonControl
     {
+        #region IsReadOnly
+
+        /// <summary>
+        /// Gets or sets IsReadOnly for the element.
+        /// </summary>
+        public bool IsReadOnly
+        {
+            get { return (bool)this.GetValue(IsReadOnlyProperty); }
+            set { this.SetValue(IsReadOnlyProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for IsReadOnly.  
+        /// </summary>
+        public static readonly DependencyProperty IsReadOnlyProperty = RibbonProperties.IsReadOnlyProperty.AddOwner(typeof(RibbonControl));
+
+        #endregion
+
         #region WhiteIcon
 
         /// <summary>
@@ -371,7 +389,7 @@ namespace Fluent
             Bind(source, element, nameof(FontStyle), FontStyleProperty, BindingMode.OneWay);
             Bind(source, element, nameof(FontWeight), FontWeightProperty, BindingMode.OneWay);
 
-            Bind(source, element, nameof(Foreground), ForegroundProperty, BindingMode.OneWay);
+            //Bind(source, element, nameof(Foreground), ForegroundProperty, BindingMode.OneWay);
             Bind(source, element, nameof(IsEnabled), IsEnabledProperty, BindingMode.OneWay);
             Bind(source, element, nameof(Opacity), OpacityProperty, BindingMode.OneWay);
             Bind(source, element, nameof(SnapsToDevicePixels), SnapsToDevicePixelsProperty, BindingMode.OneWay);

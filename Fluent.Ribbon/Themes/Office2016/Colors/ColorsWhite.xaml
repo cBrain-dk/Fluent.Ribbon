@@ -175,6 +175,10 @@
                       Offset="1" />
     </LinearGradientBrush>
 
+    <SolidColorBrush x:Key="RibbonTabItemFontBrush" Color="#FFFFFFFF" />
+    <SolidColorBrush x:Key="RibbonTabItemSelectedFontBrush" Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}" />
+    <SolidColorBrush x:Key="RibbonTabItemMouseOverFontBrush" Color="#FFFFFFFF" />
+
     <SolidColorBrush x:Key="BackstagePanelBackgroundBrush"
                      Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
 
@@ -210,8 +214,13 @@
         <GradientStop Color="#FFE3E6E8"
                       Offset="1" />
     </LinearGradientBrush>
+
+    <Color x:Key="WindowCommandIconForegroundColor">#FF000000</Color>
+    <Color x:Key="BlueWindowCommandIconForegroundColor">#FFFFFFFF</Color>
     <SolidColorBrush x:Key="WindowContentBorderBrush"
                      Color="#FF878C92" />
+    <SolidColorBrush x:Key="WindowCommandIconForegroundBrush"
+                     Color="{DynamicResource WindowCommandIconForegroundColor}" />
 
     <SolidColorBrush x:Key="WindowInactiveOutterBackgroundBrush"
                      Color="#FFF8F7F7" />
@@ -270,18 +279,10 @@
                       Offset="0.529" />
     </LinearGradientBrush>
 
-    <SolidColorBrush x:Key="ScreenTipBorderBrush"
-                     Color="#FF767676" />
-    <LinearGradientBrush x:Key="ScreenTipBackgroundBrush"
-                         EndPoint="0.5,1"
-                         StartPoint="0.5,0">
-        <GradientStop Color="White"
-                      Offset="0" />
-        <GradientStop Color="#FFEAEAF4"
-                      Offset="1" />
-        <GradientStop Color="#FFF6F6FA"
-                      Offset="0.746" />
-    </LinearGradientBrush>
+    <SolidColorBrush x:Key="ScreenTipBorderBrush" Color="LightGray" />
+    <SolidColorBrush x:Key="ScreenTipBackgroundBrush" Color="White" />
+    <SolidColorBrush x:Key="ScreenTipSeparatorBackgroundBrush" Color="LightGray" />
+    <SolidColorBrush x:Key="ScreenTipFontBrush" Color="#FF414141" />
 
     <SolidColorBrush x:Key="QuickAccessToolbarPopupBackgrondBrush"
                      Color="#FFE9EDF1" />

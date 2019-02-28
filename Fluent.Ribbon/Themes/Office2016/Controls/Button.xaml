@@ -102,17 +102,35 @@
                         TargetName="controlLabel"
                         Value="Center" />
             </Trigger>
-            <Trigger Property="IsPressed"
-                     Value="True">
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsPressed" Value="True"/>
+                    <Condition Property="IsReadOnly" Value="False"/>
+                </MultiTrigger.Conditions>
                 <Setter Property="BorderBrush"
                         TargetName="border"
                         Value="{DynamicResource ButtonPressedOuterBorderBrush}" />
                 <Setter Property="Background"
                         TargetName="border"
                         Value="{DynamicResource ButtonPressedOuterBackgroundBrush}" />
-            </Trigger>
+            </MultiTrigger>
             <Trigger Property="IsEnabled"
                      Value="False">
+                <Setter Property="Opacity"
+                        TargetName="iconImage"
+                        Value="0.5" />
+                <Setter Property="Opacity"
+                        TargetName="controlLabel"
+                        Value="0.5" />
+                <Setter Property="Effect"
+                        TargetName="iconImage">
+                    <Setter.Value>
+                        <Fluent:GrayscaleEffect />
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="IsReadOnly"
+                     Value="True">
                 <Setter Property="Opacity"
                         TargetName="iconImage"
                         Value="0.5" />
@@ -134,6 +152,8 @@
                                Value="False" />
                     <Condition Property="IsEnabled"
                                Value="True" />
+                    <Condition Property="IsReadOnly"
+                               Value="False" />
                 </MultiTrigger.Conditions>
                 <Setter Property="Background"
                         TargetName="border"
@@ -165,9 +185,13 @@
                 Value="0" />
         <Setter Property="CornerRadius"
                 Value="0" />
-    <Setter Property="HorizontalContentAlignment" Value="Left"/>
-    <Setter Property="VerticalContentAlignment" Value="Center"/>
-    <Style.Triggers>
+        <Setter Property="Margin"
+                Value="2 0 2 0" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="Left" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Center" />
+        <Style.Triggers>
             <Trigger Property="Size"
                      Value="Large">
                 <Setter Property="Height"

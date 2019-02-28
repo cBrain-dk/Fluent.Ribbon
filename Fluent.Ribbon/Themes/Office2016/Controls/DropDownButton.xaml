@@ -17,6 +17,8 @@
                 Value="{DynamicResource DefaultFontBrush}" />
         <Setter Property="SnapsToDevicePixels"
                 Value="False" />
+        <Setter Property="Margin"
+                Value="2 0 2 0" />
         <Style.Triggers>
             <Trigger Property="Size"
                      Value="Large">
@@ -300,11 +302,28 @@
                     </Setter.Value>
                 </Setter>
             </Trigger>
+            <Trigger Property="IsReadOnly"
+                     Value="True">
+                <Setter Property="Opacity"
+                        TargetName="iconImage"
+                        Value="0.5" />
+                <Setter Property="Opacity"
+                        TargetName="controlLabel"
+                        Value="0.5" />
+                <Setter Property="Effect"
+                        TargetName="iconImage">
+                    <Setter.Value>
+                        <Fluent:GrayscaleEffect />
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="IsMouseOver"
                                Value="True" />
                     <Condition Property="IsDropDownOpen"
+                               Value="False" />
+                    <Condition Property="IsReadOnly"
                                Value="False" />
                 </MultiTrigger.Conditions>
                 <Setter Property="Background"

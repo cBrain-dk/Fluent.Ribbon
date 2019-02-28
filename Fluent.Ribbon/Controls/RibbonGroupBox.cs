@@ -1021,6 +1021,7 @@ namespace Fluent
 
             groupBox.DropDownOpened += this.OnQuickAccessOpened;
             groupBox.DropDownClosed += this.OnQuickAccessClosed;
+            groupBox.Unloaded += this.OnQuickAccessClosed;
 
             groupBox.State = RibbonGroupBoxState.QuickAccess;
 
@@ -1052,7 +1053,7 @@ namespace Fluent
                 }
                 else
                 {
-                    RibbonControl.Bind(this, groupBox, nameof(this.Icon), RibbonControl.IconProperty, BindingMode.OneWay);
+                    RibbonControl.Bind(this, groupBox, nameof(this.Icon), IconProperty, BindingMode.OneWay);
                 }
             }
 

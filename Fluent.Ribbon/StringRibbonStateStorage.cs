@@ -349,7 +349,7 @@
 
             if (splitted.Length != 2)
             {
-                return;
+              splitted = new string[] { "False,True", "" };
             }
 
             // Load Ribbon State

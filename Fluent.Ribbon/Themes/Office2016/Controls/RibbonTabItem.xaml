@@ -147,7 +147,8 @@
                        Margin="5,1,5,4"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
-                       Height="Auto" />
+                       Height="Auto"
+                       Foreground="{DynamicResource RibbonTabItemFontBrush}"/>
             </Border>
             <Grid x:Name="separatorGrid"
                   Margin="0"
@@ -238,7 +239,7 @@
                         Value="Visible" />
                 <Setter Property="Foreground"
                         TargetName="contentPresenter"
-                        Value="{Binding Group.Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
+                        Value="{DynamicResource RibbonTabItemSelectedFontBrush}" />
             </MultiTrigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
@@ -254,7 +255,7 @@
                         Value="Visible" />
                 <Setter Property="Foreground"
                         TargetName="contentPresenter"
-                        Value="{DynamicResource RibbonThemeColorBrush}" />
+                        Value="{DynamicResource RibbonTabItemSelectedFontBrush}" />
             </MultiTrigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
@@ -287,6 +288,9 @@
         <Setter Property="Visibility"
                         TargetName="mouseOverGrid"
                         Value="Visible" />
+        <Setter Property="Foreground"
+                TargetName="contentPresenter"
+                Value="{DynamicResource RibbonTabItemMouseOverFontBrush}" />
       </MultiTrigger>
       <MultiTrigger>
         <MultiTrigger.Conditions>
@@ -303,6 +307,9 @@
         <Setter Property="Visibility"
                         TargetName="mouseOverGrid"
                         Value="Visible" />
+        <Setter Property="Foreground"
+                TargetName="contentPresenter"
+                Value="{DynamicResource RibbonTabItemMouseOverFontBrush}" />
       </MultiTrigger>
       <MultiTrigger>
         <MultiTrigger.Conditions>
@@ -319,6 +326,9 @@
         <Setter Property="Visibility"
                         TargetName="mouseOverGrid"
                         Value="Visible" />
+        <Setter Property="Foreground"
+                TargetName="contentPresenter"
+                Value="{DynamicResource RibbonTabItemMouseOverFontBrush}" />
       </MultiTrigger>
       <MultiTrigger>
         <MultiTrigger.Conditions>
@@ -332,6 +342,9 @@
         <Setter Property="Visibility"
                         TargetName="mouseOverGrid"
                         Value="Visible" />
+        <Setter Property="Foreground"
+                TargetName="contentPresenter"
+                Value="{DynamicResource RibbonTabItemSelectedFontBrush}" />
       </MultiTrigger>
       <MultiTrigger>
                 <MultiTrigger.Conditions>
@@ -400,9 +413,5 @@
                 Value="0" />
         <Setter Property="BorderBrush"
                 Value="{DynamicResource RibbonTopBorderBrush}" />
-        <!--<Setter Property="FocusVisualStyle"
-                Value="{x:Null}" />-->
-    <Setter Property="AutomationProperties.Name"
-                Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:RibbonTabControl}}, Path=Header, Mode=OneWay}" />
-  </Style>
+    </Style>
 </ResourceDictionary>
