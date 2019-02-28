@@ -6,15 +6,16 @@ namespace Fluent
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
     using System.ComponentModel;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
+    using System.Runtime.InteropServices;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
     using System.Windows.Input;
     using System.Windows.Media;
-    using ControlzEx.Standard;
-    using Fluent.Internal;
     using Fluent.Internal.KnownBoxes;
+    using Fluent.Metro.Native;
 
     /// <summary>
     /// Represents ribbon tab control
@@ -23,19 +24,8 @@ namespace Fluent
     [TemplatePart(Name = "PART_Popup", Type = typeof(Popup))]
     [TemplatePart(Name = "PART_TabsContainer", Type = typeof(IScrollInfo))]
     [TemplatePart(Name = "PART_ToolbarPanel", Type = typeof(Panel))]
-    [TemplatePart(Name = "PART_SelectedContentPresenter", Type = typeof(ContentPresenter))]
     public class RibbonTabControl : Selector, IDropDownControl
     {
-        /// <summary>
-        /// Default value for <see cref="ContentGapHeight"/>.
-        /// </summary>
-        public const double DefaultContentGapHeight = 1;
-
-        /// <summary>
-        /// Default value for <see cref="ContentHeight"/>.
-        /// </summary>
-        public const double DefaultContentHeight = 94;
-
         #region Fields
 
         // Collection of toolbar items
@@ -68,7 +58,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Button.
+        /// Using a DependencyProperty as the backing store for Button. 
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty MenuProperty =
@@ -81,11 +71,6 @@ namespace Fluent
         /// Gets drop down popup
         /// </summary>
         public Popup DropDownPopup { get; private set; }
-
-        /// <summary>
-        /// Gets the <see cref="ContentPresenter"/> responsible for displaying the selected tabs content.
-        /// </summary>
-        public ContentPresenter SelectedContentPresenter { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether context menu is opened
@@ -102,7 +87,6 @@ namespace Fluent
             {
                 return this.GetValue(SelectedContentProperty);
             }
-
             internal set
             {
                 this.SetValue(SelectedContentPropertyKey, value);
@@ -144,6 +128,7 @@ namespace Fluent
         /// Using a DependencyProperty as the backing store for <see cref="CanMinimize"/>.  This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty CanMinimizeProperty = DependencyProperty.Register(nameof(CanMinimize), typeof(bool), typeof(RibbonTabControl), new PropertyMetadata(BooleanBoxes.TrueBox));
+
 
         /// <summary>
         /// Gets or sets whether ribbon popup is opened
@@ -224,7 +209,6 @@ namespace Fluent
         /// <summary>
         /// Gets collection of ribbon toolbar items
         /// </summary>
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public ObservableCollection<UIElement> ToolBarItems
         {
             get
@@ -256,7 +240,6 @@ namespace Fluent
                     {
                         this.ToolbarPanel.Children.Insert(e.NewStartingIndex + i, (UIElement)e.NewItems[i]);
                     }
-
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
@@ -264,7 +247,6 @@ namespace Fluent
                     {
                         this.ToolbarPanel.Children.Remove(obj3);
                     }
-
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
@@ -272,12 +254,10 @@ namespace Fluent
                     {
                         this.ToolbarPanel.Children.Remove(obj4);
                     }
-
                     foreach (var obj5 in e.NewItems.OfType<UIElement>())
                     {
                         this.ToolbarPanel.Children.Add(obj5);
                     }
-
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
@@ -286,25 +266,10 @@ namespace Fluent
                     {
                         this.ToolbarPanel.Children.Add(toolBarItem);
                     }
-
                     break;
             }
-        }
 
-        /// <summary>
-        /// Gets or sets the height of the content area.
-        /// </summary>
-        public double ContentHeight
-        {
-            get { return (double)this.GetValue(ContentHeightProperty); }
-            set { this.SetValue(ContentHeightProperty, value); }
         }
-
-        /// <summary>
-        /// <see cref="DependencyProperty"/> for <see cref="ContentHeight"/>.
-        /// </summary>
-        public static readonly DependencyProperty ContentHeightProperty =
-            DependencyProperty.Register(nameof(ContentHeight), typeof(double), typeof(RibbonTabControl), new FrameworkPropertyMetadata(DefaultContentHeight, FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         /// <summary>
         /// Gets or sets the height of the gap between the ribbon and the content
@@ -319,41 +284,26 @@ namespace Fluent
         /// DependencyProperty for <see cref="ContentGapHeight"/>
         /// </summary>
         public static readonly DependencyProperty ContentGapHeightProperty =
-            DependencyProperty.Register(nameof(ContentGapHeight), typeof(double), typeof(RibbonTabControl), new PropertyMetadata(DefaultContentGapHeight));
-
-        /// <summary>
-        /// DependencyProperty for <see cref="IsMouseWheelScrollingEnabled"/>
-        /// </summary>
-        public static readonly DependencyProperty IsMouseWheelScrollingEnabledProperty = DependencyProperty.Register(nameof(IsMouseWheelScrollingEnabled), typeof(bool), typeof(RibbonTabControl), new PropertyMetadata(BooleanBoxes.TrueBox));
-
-        /// <summary>
-        /// Defines wether scrolling by mouse wheel is enabled or not.
-        /// </summary>
-        public bool IsMouseWheelScrollingEnabled
-        {
-            get { return (bool)this.GetValue(IsMouseWheelScrollingEnabledProperty); }
-            set { this.SetValue(IsMouseWheelScrollingEnabledProperty, value); }
-        }
+            DependencyProperty.Register(nameof(ContentGapHeight), typeof(double), typeof(RibbonTabControl), new PropertyMetadata(5D));
 
         #endregion
 
         #region Initializion
 
         /// <summary>
-        /// Initializes static members of the <see cref="RibbonTabControl"/> class.
+        /// Static constructor
         /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1810")]
         static RibbonTabControl()
         {
             var type = typeof(RibbonTabControl);
             DefaultStyleKeyProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(typeof(RibbonTabControl)));
-            IsTabStopProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(BooleanBoxes.FalseBox));
-            KeyboardNavigation.DirectionalNavigationProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(KeyboardNavigationMode.Contained));
             ContextMenuService.Attach(type);
             PopupService.Attach(type);
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RibbonTabControl"/> class.
+        /// Default constructor
         /// </summary>
         public RibbonTabControl()
         {
@@ -368,7 +318,7 @@ namespace Fluent
         #region Overrides
 
         /// <summary>
-        /// Raises the System.Windows.FrameworkElement.Initialized event.
+        /// Raises the System.Windows.FrameworkElement.Initialized event. 
         /// This method is invoked whenever System.Windows.
         /// FrameworkElement.IsInitialized is set to true internally.
         /// </summary>
@@ -399,15 +349,12 @@ namespace Fluent
         }
 
         /// <summary>
-        /// When overridden in a derived class, is invoked whenever application code or
+        /// When overridden in a derived class, is invoked whenever application code or 
         /// internal processes call System.Windows.FrameworkElement.ApplyTemplate().
         /// </summary>
         public override void OnApplyTemplate()
         {
-            this.SelectedContentPresenter = this.Template.FindName("PART_SelectedContentPresenter", this) as ContentPresenter;
-
             this.DropDownPopup = this.Template.FindName("PART_Popup", this) as Popup;
-
             if (this.DropDownPopup != null)
             {
                 this.DropDownPopup.CustomPopupPlacementCallback = this.CustomPopupPlacementMethod;
@@ -477,20 +424,11 @@ namespace Fluent
         {
             this.UpdateSelectedContent();
 
-            if (this.IsKeyboardFocusWithin
-                && this.IsMinimized == false)
-            {
-                // If keyboard focus is within the control, make sure it is going to the correct place
-                var item = this.GetSelectedTabItem();
-                item?.SetFocus();
-            }
-
             if (e.AddedItems.Count > 0)
             {
                 if (this.IsMinimized)
                 {
-                    this.IsDropDownOpen = true;
-
+                    //this.IsDropDownOpen = true;
                     ((RibbonTabItem)e.AddedItems[0]).IsHitTestVisible = false;
                 }
             }
@@ -511,19 +449,15 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Invoked when an unhandled System.Windows.Input.Mouse.PreviewMouseWheel
-        /// attached event reaches an element in its route that is derived from this class.
+        /// Invoked when an unhandled System.Windows.Input.Mouse.PreviewMouseWheel 
+        /// attached event reaches an element in its route that is derived from this class. 
         /// Implement this method to add class handling for this event.
         /// </summary>
         /// <param name="e">The System.Windows.Input.MouseWheelEventArgs that contains the event data.</param>
         protected override void OnPreviewMouseWheel(MouseWheelEventArgs e)
         {
             //base.OnPreviewMouseWheel(e);
-
-            if (this.IsMouseWheelScrollingEnabled)
-            {
-                this.ProcessMouseWheel(e);
-            }
+            this.ProcessMouseWheel(e);
         }
 
         /// <summary>
@@ -539,12 +473,6 @@ namespace Fluent
                 return;
             }
 
-            // Handle [Ctrl][Shift]Tab, Home and End cases
-            // We have special handling here because if focus is inside the TabItem content we cannot
-            // cycle through TabItem because the content is not part of the TabItem visual tree
-            var direction = 0;
-            var startIndex = -1;
-
             switch (e.Key)
             {
                 case Key.Escape:
@@ -552,51 +480,53 @@ namespace Fluent
                     {
                         this.IsDropDownOpen = false;
                     }
-
                     break;
-
-                case Key.Tab:
-                    if ((e.KeyboardDevice.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+                case Key.Space:
+                    if (!this.IsDropDownOpen && this.IsMinimized)
                     {
-                        startIndex = this.ItemContainerGenerator.IndexFromContainer(this.ItemContainerGenerator.ContainerFromItem(this.SelectedItem));
-                        if ((e.KeyboardDevice.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift)
-                        {
-                            direction = -1;
-                        }
-                        else
-                        {
-                            direction = 1;
-                        }
+                      this.IsDropDownOpen = true;
+                      var fe = this.SelectedTabItem.FindFirstEnabledItem();
+                      if (fe != null)
+                      {
+                        Keyboard.Focus(fe);
+                        e.Handled = true;
+                      }
                     }
-
+                  break;
+                  case Key.Down:
+                    if (!this.IsMinimized)
+                    {
+                      var fe = this.SelectedTabItem.FindFirstEnabledItem();
+                      if (fe != null)
+                      {
+                        Keyboard.Focus(fe);
+                        e.Handled = true;
+                      }
+                    }
                     break;
-                case Key.Home:
-                    direction = 1;
-                    startIndex = -1;
-                    break;
-                case Key.End:
-                    direction = -1;
-                    startIndex = this.Items.Count;
-                    break;
-            }
-
-            var nextTabItem = this.FindNextTabItem(startIndex, direction);
-
-            if (nextTabItem != null
-                && ReferenceEquals(nextTabItem, this.SelectedItem) == false)
-            {
-                e.Handled = nextTabItem.SetFocus();
-            }
-
-            if (e.Handled == false)
-            {
-                base.OnKeyDown(e);
-            }
+      }
         }
 
         #endregion
 
         #region Private methods
+
+        private static bool IsRibbonAncestorOf(DependencyObject element)
+        {
+            while (element != null)
+            {
+                if (element is Ribbon)
+                {
+                    return true;
+                }
+
+                var parent = LogicalTreeHelper.GetParent(element) ?? VisualTreeHelper.GetParent(element);
+
+                element = parent;
+            }
+
+            return false;
+        }
 
         // Process mouse wheel event
         internal void ProcessMouseWheel(MouseWheelEventArgs e)
@@ -608,16 +538,9 @@ namespace Fluent
             }
 
             var focusedElement = Keyboard.FocusedElement as DependencyObject;
-            var originalSource = e.OriginalSource as DependencyObject;
 
-            // Prevent scrolling if
-            // - any control inside a RibbonGroupBox has focus
-            // - any control outside this RibbonTabControl caused the mouse wheel event
-            if ((focusedElement != null
-                && UIHelper.GetParent<RibbonGroupBox>(focusedElement) != null)
-                ||
-                (originalSource != null
-                && UIHelper.GetParent<RibbonTabControl>(originalSource) == null))
+            if (focusedElement != null
+                && IsRibbonAncestorOf(focusedElement))
             {
                 return;
             }
@@ -625,14 +548,14 @@ namespace Fluent
             var visualItems = new List<RibbonTabItem>();
             var selectedIndex = -1;
 
-#if NET45 || NET462
+#if NET45
             var tabs = this.ItemContainerGenerator.Items.OfType<RibbonTabItem>()
-                .Where(x => x.Visibility == Visibility.Visible && x.IsEnabled && (x.IsContextual == false || (x.IsContextual && x.Group.Visibility == Visibility.Visible)))
+                .Where(x => x.Visibility == Visibility.Visible && (x.IsContextual == false || (x.IsContextual && x.Group.Visibility == Visibility.Visible)))
                 .OrderBy(x => x.IsContextual)
                 .ToList();
 #else
             var tabs = this.Items.OfType<object>().Select(x => this.ItemContainerGenerator.ContainerFromItem(x)).OfType<RibbonTabItem>()
-                .Where(x => x.Visibility == Visibility.Visible && x.IsEnabled && (x.IsContextual == false || (x.IsContextual && x.Group.Visibility == Visibility.Visible)))
+                .Where(x => x.Visibility == Visibility.Visible && (x.IsContextual == false || (x.IsContextual && x.Group.Visibility == Visibility.Visible)))
                 .OrderBy(x => x.IsContextual)
                 .ToList();
 #endif
@@ -648,33 +571,22 @@ namespace Fluent
                 }
             }
 
-            // Try to ensure that we have a selection
-            if (selectedIndex < 0)
+            if (e.Delta > 0)
             {
-                if (visualItems.Count > 0)
+                if (selectedIndex > 0)
                 {
-                    visualItems[0].IsSelected = true;
+                    visualItems[selectedIndex].IsSelected = false;
+                    selectedIndex--;
+                    visualItems[selectedIndex].IsSelected = true;
                 }
             }
-            else
+            else if (e.Delta < 0)
             {
-                if (e.Delta > 0)
+                if (selectedIndex < visualItems.Count - 1)
                 {
-                    if (selectedIndex > 0)
-                    {
-                        visualItems[selectedIndex].IsSelected = false;
-                        selectedIndex--;
-                        visualItems[selectedIndex].IsSelected = true;
-                    }
-                }
-                else if (e.Delta < 0)
-                {
-                    if (selectedIndex < visualItems.Count - 1)
-                    {
-                        visualItems[selectedIndex].IsSelected = false;
-                        selectedIndex++;
-                        visualItems[selectedIndex].IsSelected = true;
-                    }
+                    visualItems[selectedIndex].IsSelected = false;
+                    selectedIndex++;
+                    visualItems[selectedIndex].IsSelected = true;
                 }
             }
 
@@ -820,6 +732,10 @@ namespace Fluent
         /// <summary>
         /// Implements custom placement for ribbon popup
         /// </summary>
+        /// <param name="popupsize"></param>
+        /// <param name="targetsize"></param>
+        /// <param name="offset"></param>
+        /// <returns></returns>
         private CustomPopupPlacement[] CustomPopupPlacementMethod(Size popupsize, Size targetsize, Point offset)
         {
             if (this.DropDownPopup == null
@@ -828,45 +744,43 @@ namespace Fluent
                 return null;
             }
 
-            // Get current workarea
+            // Get current workarea                
             var tabItemPos = this.SelectedTabItem.PointToScreen(new Point(0, 0));
-#pragma warning disable 618
             var tabItemRect = new RECT
             {
-                Left = (int)tabItemPos.X,
-                Top = (int)tabItemPos.Y,
-                Right = (int)tabItemPos.X + (int)this.SelectedTabItem.ActualWidth,
-                Bottom = (int)tabItemPos.Y + (int)this.SelectedTabItem.ActualHeight
+                left = (int)tabItemPos.X,
+                top = (int)tabItemPos.Y,
+                right = (int)tabItemPos.X + (int)this.SelectedTabItem.ActualWidth,
+                bottom = (int)tabItemPos.Y + (int)this.SelectedTabItem.ActualHeight
             };
-#pragma warning restore 618
 
-#pragma warning disable 618
-            var monitor = NativeMethods.MonitorFromRect(ref tabItemRect, MonitorOptions.MONITOR_DEFAULTTONEAREST);
+            var monitor = NativeMethods.MonitorFromRect(ref tabItemRect, MONITORINFO.MonitorOptions.MONITOR_DEFAULTTONEAREST);
             if (monitor == IntPtr.Zero)
             {
                 return null;
             }
 
-            var monitorInfo = NativeMethods.GetMonitorInfo(monitor);
-#pragma warning restore 618
+            var monitorInfo = new MONITORINFO();
+            monitorInfo.cbSize = Marshal.SizeOf(monitorInfo);
+            NativeMethods.GetMonitorInfo(monitor, monitorInfo);
+
             var startPoint = this.PointToScreen(new Point(0, 0));
             if (this.FlowDirection == FlowDirection.RightToLeft)
             {
                 startPoint.X -= this.ActualWidth;
             }
 
-            var inWindowRibbonWidth = monitorInfo.rcWork.Right - Math.Max(monitorInfo.rcWork.Left, startPoint.X);
+            var inWindowRibbonWidth = monitorInfo.rcWork.right - Math.Max(monitorInfo.rcWork.left, startPoint.X);
 
             var actualWidth = this.ActualWidth;
-            if (startPoint.X < monitorInfo.rcWork.Left)
+            if (startPoint.X < monitorInfo.rcWork.left)
             {
-                actualWidth -= monitorInfo.rcWork.Left - startPoint.X;
-                startPoint.X = monitorInfo.rcWork.Left;
+                actualWidth -= monitorInfo.rcWork.left - startPoint.X;
+                startPoint.X = monitorInfo.rcWork.left;
             }
 
             // Set width and prevent negative values
             this.DropDownPopup.Width = Math.Max(0, Math.Min(actualWidth, inWindowRibbonWidth));
-
             return new[]
             {
                 new CustomPopupPlacement(new Point(startPoint.X - tabItemPos.X + offset.X, targetsize.Height + offset.Y), PopupPrimaryAxis.Vertical),
@@ -904,15 +818,14 @@ namespace Fluent
         /// <summary>
         /// Gets the first visible item
         /// </summary>
-        public object GetFirstVisibleAndEnabledItem()
+        public object GetFirstVisibleItem()
         {
             foreach (var item in this.Items)
             {
                 var ribbonTab = this.ItemContainerGenerator.ContainerFromItem(item) as RibbonTabItem;
 
                 if (ribbonTab != null
-                    && ribbonTab.Visibility == Visibility.Visible
-                    && ribbonTab.IsEnabled)
+                    && ribbonTab.Visibility == Visibility.Visible)
                 {
                     return ribbonTab;
                 }

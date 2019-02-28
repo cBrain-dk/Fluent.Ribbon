@@ -3,9 +3,6 @@
     using System;
     using System.Windows.Threading;
 
-    /// <summary>
-    /// Class with extension methods for <see cref="Dispatcher"/> and <see cref="DispatcherObject"/>.
-    /// </summary>
     internal static class DispatcherExtensions
     {
         public static void RunInDispatcherAsync(this DispatcherObject dispatcher, Action action, DispatcherPriority priority = DispatcherPriority.Normal)
@@ -44,8 +41,7 @@
 
         public static void RunInDispatcher(this Dispatcher dispatcher, Action action, DispatcherPriority priority = DispatcherPriority.Normal)
         {
-            if (dispatcher == null
-                || dispatcher.CheckAccess())
+            if (dispatcher == null)
             {
                 action();
             }

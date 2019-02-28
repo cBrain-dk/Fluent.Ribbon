@@ -1,14 +1,15 @@
-﻿// ReSharper disable once CheckNamespace
+﻿using System;
+using System.Collections.Specialized;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
+using System.Windows.Threading;
+
+// ReSharper disable once CheckNamespace
 namespace Fluent
 {
-    using System;
-    using System.Collections.Specialized;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Controls.Primitives;
-    using System.Windows.Data;
-    using System.Windows.Threading;
-    using Fluent.Extensions;
+    using Fluent.Internal.KnownBoxes;
     using Fluent.Localization;
 
     /// <summary>
@@ -21,13 +22,30 @@ namespace Fluent
         // Context menu
         private readonly ContextMenu contextMenu = new ContextMenu();
 
+        private Window ownerWindow;
+
         private bool waitingForItemContainerGenerator;
 
         #endregion
 
         #region Properties
 
-#if NET45 || NET462
+        /// <summary>
+        /// Gets or sets whether window is maximized
+        /// </summary>
+        public bool IsWindowMaximized
+        {
+            get { return (bool)this.GetValue(IsWindowMaximizedProperty); }
+            set { this.SetValue(IsWindowMaximizedProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for IsWindowMaximized.  This enables animation, styling, binding, etc...
+        /// </summary>
+        public static readonly DependencyProperty IsWindowMaximizedProperty =
+            DependencyProperty.Register(nameof(IsWindowMaximized), typeof(bool), typeof(StatusBar), new PropertyMetadata(BooleanBoxes.FalseBox));
+
+#if NET45
         private object currentItem;
 #endif
 
@@ -59,10 +77,44 @@ namespace Fluent
 
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
+            if (this.ownerWindow != null)
+            {
+                this.ownerWindow.StateChanged -= this.OnWindowStateChanged;
+                this.ownerWindow = null;
+            }
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
+            if (this.ownerWindow == null)
+            {
+                this.ownerWindow = Window.GetWindow(this);
+            }
+
+            if (this.ownerWindow != null)
+            {
+                this.ownerWindow.StateChanged += this.OnWindowStateChanged;
+                if ((this.ownerWindow.ResizeMode == ResizeMode.CanResizeWithGrip) && (this.ownerWindow.WindowState == WindowState.Maximized))
+                {
+                    this.IsWindowMaximized = true;
+                }
+                else
+                {
+                    this.IsWindowMaximized = false;
+                }
+            }
+        }
+
+        private void OnWindowStateChanged(object sender, EventArgs e)
+        {
+            if ((this.ownerWindow.ResizeMode == ResizeMode.CanResizeWithGrip) && (this.ownerWindow.WindowState == WindowState.Maximized))
+            {
+                this.IsWindowMaximized = true;
+            }
+            else
+            {
+                this.IsWindowMaximized = false;
+            }
         }
 
         #endregion
@@ -75,7 +127,7 @@ namespace Fluent
         /// <returns>The element that is used to display the given item.</returns>
         protected override DependencyObject GetContainerForItemOverride()
         {
-#if NET45 || NET462
+#if NET45
             var item = this.currentItem;
             this.currentItem = null;
 
@@ -108,7 +160,7 @@ namespace Fluent
         {
             var isItemItsOwnContainerOverride = item is StatusBarItem || item is Separator;
 
-#if NET45 || NET462
+#if NET45
             if (isItemItsOwnContainerOverride == false)
             {
                 this.currentItem = item;
@@ -125,7 +177,7 @@ namespace Fluent
                 return;
             }
 
-            this.RunInDispatcherAsync(this.RecreateMenu, DispatcherPriority.Loaded);
+            this.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(this.RecreateMenu));
         }
 
         /// <summary>
@@ -164,7 +216,6 @@ namespace Fluent
                             this.contextMenu.Items.Insert(containerIndex, new Separator());
                         }
                     }
-
                     break;
                 }
 
@@ -176,10 +227,8 @@ namespace Fluent
                             this.contextMenu.Items.Remove(e.OldStartingIndex + 1);
                             this.contextMenu.Items.Insert(e.NewStartingIndex + i + 1, menuItem);
                         }
-
                         break;
                     }
-
                 case NotifyCollectionChangedAction.Remove:
                     {
                         for (var i = 0; i < e.OldItems.Count; i++)
@@ -190,13 +239,10 @@ namespace Fluent
                                 menuItem.StatusBarItem.Checked += this.OnItemChecked;
                                 menuItem.StatusBarItem.Unchecked += this.OnItemUnchecked;
                             }
-
                             this.contextMenu.Items.RemoveAt(e.OldStartingIndex + 1);
                         }
-
                         break;
                     }
-
                 case NotifyCollectionChangedAction.Replace:
                     {
                         for (var i = 0; i < e.OldItems.Count; i++)
@@ -225,10 +271,8 @@ namespace Fluent
                                 this.contextMenu.Items.Insert(e.NewStartingIndex + i + 1, new Separator());
                             }
                         }
-
                         break;
                     }
-
                 case NotifyCollectionChangedAction.Reset:
                     {
                         this.RecreateMenu();
@@ -305,9 +349,9 @@ namespace Fluent
                     isPrevSeparator = true;
                     isFirstVsible = false;
                 }
-                else
+                else if (containerFromItem is StatusBarItem)
                 {
-                    if ((containerFromItem as StatusBarItem)?.Visibility == Visibility.Visible)
+                    if ((containerFromItem as StatusBarItem).Visibility == Visibility.Visible)
                     {
                         isPrevSeparator = false;
                         isFirstVsible = false;

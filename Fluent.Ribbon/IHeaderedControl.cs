@@ -1,12 +1,12 @@
 ﻿namespace Fluent
 {
     /// <summary>
-    /// Represents a control that has a header.
+    /// Represents control that has a header
     /// </summary>
     public interface IHeaderedControl
     {
         /// <summary>
-        /// Gets or sets the header.
+        /// Gets or sets element Text
         /// </summary>
         object Header { get; set; }
     }

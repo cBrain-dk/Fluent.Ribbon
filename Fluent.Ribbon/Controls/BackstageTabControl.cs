@@ -4,6 +4,7 @@ namespace Fluent
     using System;
     using System.Collections.Specialized;
     using System.ComponentModel;
+    using System.Diagnostics.CodeAnalysis;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
@@ -51,7 +52,6 @@ namespace Fluent
             {
                 return this.GetValue(SelectedContentProperty);
             }
-
             internal set
             {
                 this.SetValue(SelectedContentPropertyKey, value);
@@ -103,7 +103,6 @@ namespace Fluent
             {
                 return (string)this.GetValue(ContentStringFormatProperty);
             }
-
             set
             {
                 this.SetValue(ContentStringFormatProperty, value);
@@ -119,7 +118,6 @@ namespace Fluent
             {
                 return (DataTemplate)this.GetValue(ContentTemplateProperty);
             }
-
             set
             {
                 this.SetValue(ContentTemplateProperty, value);
@@ -135,7 +133,6 @@ namespace Fluent
             {
                 return (DataTemplateSelector)this.GetValue(ContentTemplateSelectorProperty);
             }
-
             set
             {
                 this.SetValue(ContentTemplateSelectorProperty, value);
@@ -151,7 +148,6 @@ namespace Fluent
             {
                 return (string)this.GetValue(SelectedContentStringFormatProperty);
             }
-
             internal set
             {
                 this.SetValue(SelectedContentStringFormatPropertyKey, value);
@@ -168,7 +164,6 @@ namespace Fluent
             {
                 return (DataTemplate)this.GetValue(SelectedContentTemplateProperty);
             }
-
             internal set
             {
                 this.SetValue(SelectedContentTemplatePropertyKey, value);
@@ -185,30 +180,11 @@ namespace Fluent
             {
                 return (DataTemplateSelector)this.GetValue(SelectedContentTemplateSelectorProperty);
             }
-
             internal set
             {
                 this.SetValue(SelectedContentTemplateSelectorPropertyKey, value);
             }
         }
-
-        #region ItemsPanelMinWidth
-
-        /// <summary>
-        /// Dependency property for <see cref="ItemsPanelMinWidth"/>.
-        /// </summary>
-        public static readonly DependencyProperty ItemsPanelMinWidthProperty = DependencyProperty.Register(nameof(ItemsPanelMinWidth), typeof(double), typeof(BackstageTabControl), new PropertyMetadata(125d));
-
-        /// <summary>
-        /// Gets or sets the MinWidth for the ItemsPanel.
-        /// </summary>
-        public double ItemsPanelMinWidth
-        {
-            get { return (double)this.GetValue(ItemsPanelMinWidthProperty); }
-            set { this.SetValue(ItemsPanelMinWidthProperty, value); }
-        }
-
-        #endregion
 
         #region ItemsPanelBackground
 
@@ -224,7 +200,8 @@ namespace Fluent
         /// <summary>
         /// Dependency property for <see cref="ItemsPanelBackground"/>
         /// </summary>
-        public static readonly DependencyProperty ItemsPanelBackgroundProperty = DependencyProperty.Register(nameof(ItemsPanelBackground), typeof(Brush), typeof(BackstageTabControl));
+        public static DependencyProperty ItemsPanelBackgroundProperty =
+            DependencyProperty.Register(nameof(ItemsPanelBackground), typeof(Brush), typeof(BackstageTabControl));
 
         #endregion
 
@@ -260,20 +237,6 @@ namespace Fluent
         public static readonly DependencyProperty IsWindowSteeringHelperEnabledProperty =
             DependencyProperty.Register(nameof(IsWindowSteeringHelperEnabled), typeof(bool), typeof(BackstageTabControl), new PropertyMetadata(BooleanBoxes.TrueBox));
 
-        /// <summary>
-        /// Defines if the back button is visible or not.
-        /// </summary>
-        public bool IsBackButtonVisible
-        {
-            get { return (bool)this.GetValue(IsBackButtonVisibleProperty); }
-            set { this.SetValue(IsBackButtonVisibleProperty, value); }
-        }
-
-        /// <summary>
-        /// <see cref="DependencyProperty"/> for <see cref="IsBackButtonVisible"/>.
-        /// </summary>
-        public static readonly DependencyProperty IsBackButtonVisibleProperty = DependencyProperty.Register(nameof(IsBackButtonVisible), typeof(bool), typeof(BackstageTabControl), new PropertyMetadata(BooleanBoxes.TrueBox));
-
         #endregion
 
         #region Constructors
@@ -281,6 +244,7 @@ namespace Fluent
         /// <summary>
         /// Static constructor
         /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1810")]
         static BackstageTabControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(BackstageTabControl), new FrameworkPropertyMetadata(typeof(BackstageTabControl)));
@@ -298,8 +262,7 @@ namespace Fluent
                 Height = 0,
                 HasDropShadow = false
             };
-
-            this.ContextMenu.Opened += (sender, args) => this.ContextMenu.IsOpen = false;
+            this.ContextMenu.Opened += delegate { this.ContextMenu.IsOpen = false; };
 
             this.Loaded += this.HandleLoaded;
             this.Unloaded += this.HandleUnloaded;
@@ -320,7 +283,7 @@ namespace Fluent
         #region Overrides
 
         /// <summary>
-        /// Raises the System.Windows.FrameworkElement.Initialized event.
+        /// Raises the System.Windows.FrameworkElement.Initialized event. 
         /// This method is invoked whenever System.Windows.FrameworkElement.
         /// IsInitialized is set to true internally.
         /// </summary>

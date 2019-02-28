@@ -1,8 +1,10 @@
-﻿// ReSharper disable once CheckNamespace
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Windows;
+using System.Windows.Markup;
+
+// ReSharper disable once CheckNamespace
 namespace Fluent
 {
-    using System.Windows;
-    using System.Windows.Markup;
     using Fluent.Internal.KnownBoxes;
 
     /// <summary>
@@ -25,7 +27,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Size.
+        /// Using a DependencyProperty as the backing store for Size.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty SizeProperty = RibbonProperties.SizeProperty.AddOwner(typeof(Button));
@@ -44,7 +46,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for SizeDefinition.
+        /// Using a DependencyProperty as the backing store for SizeDefinition.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty SizeDefinitionProperty = RibbonProperties.SizeDefinitionProperty.AddOwner(typeof(Button));
@@ -53,7 +55,9 @@ namespace Fluent
 
         #region KeyTip
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets or sets KeyTip for element.
+        /// </summary>
         public string KeyTip
         {
             get { return (string)this.GetValue(KeyTipProperty); }
@@ -61,7 +65,8 @@ namespace Fluent
         }
 
         /// <summary>
-        /// <see cref="DependencyProperty"/> for <see cref="KeyTip"/>.
+        /// Using a DependencyProperty as the backing store for Keys.  
+        /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty KeyTipProperty = Fluent.KeyTip.KeysProperty.AddOwner(typeof(Button));
 
@@ -79,7 +84,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Header.
+        /// Using a DependencyProperty as the backing store for Header.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty HeaderProperty = DependencyProperty.Register(nameof(Header), typeof(object), typeof(Button), new PropertyMetadata());
@@ -133,7 +138,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for SmallIcon.
+        /// Using a DependencyProperty as the backing store for SmallIcon. 
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty LargeIconProperty = DependencyProperty.Register(nameof(LargeIcon), typeof(object), typeof(Button), new PropertyMetadata());
@@ -185,6 +190,7 @@ namespace Fluent
         /// <summary>
         /// Static constructor
         /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1810")]
         static Button()
         {
             var type = typeof(Button);
@@ -206,7 +212,7 @@ namespace Fluent
         #region Overrides
 
         /// <summary>
-        /// Called when a <see cref="T:System.Windows.Controls.Button"/> is clicked.
+        /// Called when a <see cref="T:System.Windows.Controls.Button"/> is clicked. 
         /// </summary>
         protected override void OnClick()
         {
@@ -225,7 +231,7 @@ namespace Fluent
 
         /// <summary>
         /// Gets control which represents shortcut item.
-        /// This item MUST be synchronized with the original
+        /// This item MUST be synchronized with the original 
         /// and send command to original one control.
         /// </summary>
         /// <returns>Control which represents shortcut item</returns>
@@ -255,15 +261,17 @@ namespace Fluent
 
         #region Implementation of IKeyTipedControl
 
-        /// <inheritdoc />
-        public KeyTipPressedResult OnKeyTipPressed()
+        /// <summary>
+        /// Handles key tip pressed
+        /// </summary>
+        public void OnKeyTipPressed()
         {
             this.OnClick();
-
-            return KeyTipPressedResult.Empty;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Handles back navigation with KeyTips
+        /// </summary>
         public void OnKeyTipBack()
         {
         }

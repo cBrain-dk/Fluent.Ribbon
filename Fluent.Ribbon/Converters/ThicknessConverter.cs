@@ -2,6 +2,7 @@
 {
     using System;
     using System.Globalization;
+    using System.Linq;
     using System.Windows;
     using System.Windows.Data;
 
@@ -10,6 +11,8 @@
     /// </summary>
     public class ThicknessConverter : IMultiValueConverter
     {
+        private static readonly System.Windows.ThicknessConverter systemThicknessConverter = new System.Windows.ThicknessConverter();
+
         #region Implementation of IMultiValueConverter
 
         /// <summary>
@@ -47,7 +50,7 @@
         {
             try
             {
-                return (value as IConvertible)?.ToDouble(null) ?? 0;
+                return System.Convert.ToDouble(value);
             }
             catch
             {

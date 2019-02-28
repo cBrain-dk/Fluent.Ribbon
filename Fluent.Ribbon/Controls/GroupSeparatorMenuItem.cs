@@ -1,8 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Windows;
+using System.Windows.Markup;
+
 // ReSharper disable once CheckNamespace
 namespace Fluent
 {
-    using System.Windows;
-    using System.Windows.Markup;
     using Fluent.Internal.KnownBoxes;
 
     /// <summary>
@@ -11,6 +13,7 @@ namespace Fluent
     [ContentProperty(nameof(Header))]
     public class GroupSeparatorMenuItem : MenuItem
     {
+        [SuppressMessage("Microsoft.Performance", "CA1810")]
         static GroupSeparatorMenuItem()
         {
             var type = typeof(GroupSeparatorMenuItem);

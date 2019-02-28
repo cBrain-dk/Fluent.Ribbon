@@ -1,8 +1,10 @@
-﻿// ReSharper disable once CheckNamespace
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Windows;
+
+// ReSharper disable once CheckNamespace
 namespace Fluent
 {
-    using System;
-    using System.Windows;
     using Fluent.Internal.KnownBoxes;
 
     /// <summary>
@@ -64,6 +66,7 @@ namespace Fluent
         /// <summary>
         /// Static constructor
         /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1810")]
         static ApplicationMenu()
         {
             var type = typeof(ApplicationMenu);
@@ -87,23 +90,32 @@ namespace Fluent
         public ApplicationMenu()
         {
             this.CoerceValue(KeyTipProperty);
+      this.Loaded += ApplicationMenu_Loaded;
         }
 
-        #endregion
+    private void ApplicationMenu_Loaded(object sender, RoutedEventArgs e)
+    {
+      this.ApplyTemplate();
+      this.UpdateLayout();
+    }
 
-        #region Quick Access Toolbar
+    #endregion
 
-        /// <summary>
-        /// Gets control which represents shortcut item.
-        /// This item MUST be syncronized with the original
-        /// and send command to original one control.
-        /// </summary>
-        /// <returns>Control which represents shortcut item</returns>
-        public override FrameworkElement CreateQuickAccessItem()
+    #region Quick Access Toolbar
+
+    /// <summary>
+    /// Gets control which represents shortcut item.
+    /// This item MUST be syncronized with the original 
+    /// and send command to original one control.
+    /// </summary>
+    /// <returns>Control which represents shortcut item</returns>
+    public override FrameworkElement CreateQuickAccessItem()
         {
             throw new NotImplementedException();
         }
 
         #endregion
+
+      
     }
 }

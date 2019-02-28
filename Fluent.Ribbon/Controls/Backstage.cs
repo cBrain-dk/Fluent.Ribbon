@@ -5,16 +5,16 @@ namespace Fluent
     using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Threading;
-    using System.Threading.Tasks;
+    using System.Diagnostics.CodeAnalysis;
     using System.Windows;
-    using System.Windows.Data;
     using System.Windows.Documents;
     using System.Windows.Input;
     using System.Windows.Interop;
     using System.Windows.Markup;
     using System.Windows.Media;
     using System.Windows.Threading;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Fluent.Extensions;
     using Fluent.Internal;
     using Fluent.Internal.KnownBoxes;
@@ -47,7 +47,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for IsOpen.
+        /// Using a DependencyProperty as the backing store for IsOpen.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty IsOpenProperty =
@@ -78,7 +78,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for HideAnimationDuration.
+        /// Using a DependencyProperty as the backing store for HideAnimationDuration.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty HideAnimationDurationProperty =
@@ -104,12 +104,12 @@ namespace Fluent
 
         /// <summary>
         /// Using a DependencyProperty as the backing store for IsOpenAnimationEnabled.  This enables animation, styling, binding, etc...
-        /// </summary>
+        /// </summary>        
         public static readonly DependencyProperty IsOpenAnimationEnabledProperty =
             DependencyProperty.Register(nameof(IsOpenAnimationEnabled), typeof(bool), typeof(Backstage), new PropertyMetadata(BooleanBoxes.TrueBox));
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for HideContextTabsOnOpen.
+        /// Using a DependencyProperty as the backing store for HideContextTabsOnOpen.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty HideContextTabsOnOpenProperty =
@@ -159,15 +159,9 @@ namespace Fluent
                     {
                         var timespan = backstage.HideAnimationDuration.TimeSpan;
 
-#if NET40
                         Task.Factory.StartNew(() =>
                         {
                             Thread.Sleep(timespan);
-#else
-                        Task.Factory.StartNew(async () =>
-                        {
-                            await Task.Delay(timespan);
-#endif
 
                             backstage.Dispatcher.RunInDispatcher(backstage.Hide);
                         });
@@ -195,7 +189,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Content.
+        /// Using a DependencyProperty as the backing store for Content.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty ContentProperty =
@@ -206,36 +200,22 @@ namespace Fluent
             var backstage = (Backstage)d;
             if (e.OldValue != null)
             {
-                var dependencyObject = e.NewValue as DependencyObject;
-
-                if (dependencyObject != null)
-                {
-                    BindingOperations.ClearBinding(dependencyObject, VisibilityProperty);
-                }
-
                 backstage.RemoveLogicalChild(e.OldValue);
             }
 
             if (e.NewValue != null)
             {
                 backstage.AddLogicalChild(e.NewValue);
-
-                var dependencyObject = e.NewValue as DependencyObject;
-
-                if (dependencyObject != null)
-                {
-                    BindingOperations.SetBinding(dependencyObject, VisibilityProperty, new Binding { Path = new PropertyPath(VisibilityProperty), Source = backstage });
-                }
             }
         }
 
         #endregion
 
-        #region LogicalChildren
+        #region LogicalChildren 
 
-        /// <summary>
-        /// Gets an enumerator for logical child elements of this element.
-        /// </summary>
+        /// <summary> 
+        /// Gets an enumerator for logical child elements of this element. 
+        /// </summary> 
         protected override IEnumerator LogicalChildren
         {
             get
@@ -256,6 +236,7 @@ namespace Fluent
         /// <summary>
         /// Static constructor
         /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1810")]
         static Backstage()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(Backstage), new FrameworkPropertyMetadata(typeof(Backstage)));
@@ -272,15 +253,6 @@ namespace Fluent
         {
             this.Loaded += this.OnBackstageLoaded;
             this.Unloaded += this.OnBackstageUnloaded;
-            this.DataContextChanged += this.Handle_DataContextChanged;
-        }
-
-        private void Handle_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (this.adorner != null)
-            {
-                this.adorner.DataContext = e.NewValue;
-            }
         }
 
         private void OnPopupDismiss(object sender, DismissPopupEventArgs e)
@@ -360,6 +332,7 @@ namespace Fluent
 
                 if (parentRibbon.TitleBar != null)
                 {
+                    parentRibbon.TitleBar.IsEnabled = false;
                     parentRibbon.TitleBar.HideContextTabs = this.HideContextTabsOnOpen;
                 }
             }
@@ -445,19 +418,13 @@ namespace Fluent
             }
             else
             {
-                elementToAdorn = UIHelper.GetParent<AdornerDecorator>(this)
-                    ?? UIHelper.GetParent<AdornerDecorator>(this.Parent);
+                elementToAdorn = UIHelper.GetParent<AdornerDecorator>(this) 
+                    ?? UIHelper.GetParent<AdornerDecorator>(LogicalTreeHelper.GetParent(this));
             }
 
             if (elementToAdorn == null)
             {
                 return;
-            }
-
-            AdornerDecorator currentAdornerDecorator;
-            while ((currentAdornerDecorator = UIHelper.GetParent<AdornerDecorator>(elementToAdorn)) != null)
-            {
-                elementToAdorn = currentAdornerDecorator;
             }
 
             var layer = UIHelper.GetAdornerLayer(elementToAdorn);
@@ -467,11 +434,7 @@ namespace Fluent
                 throw new Exception($"AdornerLayer could not be found for {this}.");
             }
 
-            this.adorner = new BackstageAdorner(elementToAdorn, this)
-                           {
-                               DataContext = this.DataContext
-                           };
-
+            this.adorner = new BackstageAdorner(elementToAdorn, this);
             layer.Add(this.adorner);
 
             layer.CommandBindings.Add(new CommandBinding(RibbonCommands.OpenBackstage, HandleOpenBackstageCommandExecuted, HandleOpenBackstageCommandCanExecute));
@@ -500,8 +463,6 @@ namespace Fluent
             layer?.CommandBindings.Clear();
             layer?.Remove(this.adorner);
 
-            this.adorner.DataContext = null;
-
             this.adorner.Clear();
             this.adorner = null;
         }
@@ -520,13 +481,6 @@ namespace Fluent
         /// </summary>
         protected virtual void Hide()
         {
-            // potentially fixes https://github.com/fluentribbon/Fluent.Ribbon/issues/489
-            if (this.Dispatcher.HasShutdownStarted
-                || this.Dispatcher.HasShutdownFinished)
-            {
-                return;
-            }
-
             this.Loaded -= this.OnDelayedShow;
 
             if (this.Content == null)
@@ -667,7 +621,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Invoked when an unhandled <see cref="E:System.Windows.Input.Keyboard.KeyDown"/> attached event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.
+        /// Invoked when an unhandled <see cref="E:System.Windows.Input.Keyboard.KeyDown"/> attached event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event. 
         /// </summary>
         /// <param name="e">The <see cref="T:System.Windows.Input.KeyEventArgs"/> that contains the event data.</param>
         protected override void OnKeyDown(KeyEventArgs e)
@@ -707,12 +661,12 @@ namespace Fluent
 
         private void OnBackstageLoaded(object sender, RoutedEventArgs e)
         {
-            this.AddHandler(PopupService.DismissPopupEvent, (EventHandler<DismissPopupEventArgs>)this.OnPopupDismiss);
+            this.AddHandler(PopupService.DismissPopupEvent, (DismissPopupEventHandler)this.OnPopupDismiss);
         }
 
         private void OnBackstageUnloaded(object sender, RoutedEventArgs e)
         {
-            this.RemoveHandler(PopupService.DismissPopupEvent, (EventHandler<DismissPopupEventArgs>)this.OnPopupDismiss);
+            this.RemoveHandler(PopupService.DismissPopupEvent, (DismissPopupEventHandler)this.OnPopupDismiss);
 
             this.DestroyAdorner();
         }
@@ -724,7 +678,7 @@ namespace Fluent
         #region Overrides
 
         /// <summary>
-        /// Invoked when an unhandled System.Windows.UIElement.PreviewMouseLeftButtonDown routed event reaches an element
+        /// Invoked when an unhandled System.Windows.UIElement.PreviewMouseLeftButtonDown routed event reaches an element 
         /// in its route that is derived from this class. Implement this method to add class handling for this event.
         /// </summary>
         /// <param name="e">The System.Windows.Input.MouseButtonEventArgs that contains the event data.
@@ -741,16 +695,18 @@ namespace Fluent
             this.Click();
         }
 
-        /// <inheritdoc />
-        public override KeyTipPressedResult OnKeyTipPressed()
+        /// <summary>
+        /// Handles key tip pressed
+        /// </summary>
+        public override void OnKeyTipPressed()
         {
             this.IsOpen = true;
             base.OnKeyTipPressed();
-
-            return KeyTipPressedResult.Empty;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Handles back navigation with KeyTips
+        /// </summary>
         public override void OnKeyTipBack()
         {
             this.IsOpen = false;
@@ -783,7 +739,7 @@ namespace Fluent
 
         /// <summary>
         /// Gets control which represents shortcut item.
-        /// This item MUST be syncronized with the original
+        /// This item MUST be syncronized with the original 
         /// and send command to original one control.
         /// </summary>
         /// <returns>Control which represents shortcut item</returns>

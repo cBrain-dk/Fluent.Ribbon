@@ -6,14 +6,14 @@
     public interface IKeyTipedControl
     {
         /// <summary>
-        /// Gets and sets KeyTip for element.
+        /// Get and sets KeyTip for element.
         /// </summary>
         string KeyTip { get; set; }
 
         /// <summary>
         /// Handles key tip pressed
         /// </summary>
-        KeyTipPressedResult OnKeyTipPressed();
+        void OnKeyTipPressed();
 
         /// <summary>
         /// Handles back navigation with KeyTips

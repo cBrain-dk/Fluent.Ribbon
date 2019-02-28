@@ -6,7 +6,7 @@
     /// Attribute class providing informations about a localization
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public sealed class RibbonLocalizationAttribute : Attribute
+    public class RibbonLocalizationAttribute : Attribute
     {
         /// <summary>
         /// Creates a new instance.

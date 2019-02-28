@@ -3,37 +3,65 @@
     <!--Button in Scroll Control Style-->
     <ControlTemplate x:Key="ScrollButtonControlTemplate"
                      TargetType="{x:Type RepeatButton}">
-        <Border Background="{DynamicResource Fluent.Ribbon.Brushes.ScrollViewer.Button.Background}">
+        <Border Background="{DynamicResource ScrollViewerButtonBackgroundBrush}">
             <Border x:Name="OuterBorder"
                     BorderThickness="1"
-                    BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.ScrollViewer.Button.BorderBrush}"
+                    CornerRadius="2"
+                    BorderBrush="{DynamicResource ScrollViewerButtonBorderBrush}"
                     Height="Auto"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
-                    Background="{DynamicResource Fluent.Ribbon.Brushes.ScrollViewer.Button.Background}">
-                <ContentPresenter HorizontalAlignment="Center"
-                                    VerticalAlignment="Center" />
+                    Background="{DynamicResource ScrollViewerButtonBackgroundBrush}">
+                <Border x:Name="InnerBorder"
+                        Height="Auto"
+                        BorderBrush="{DynamicResource TransparentBrush}"
+                        BorderThickness="1"
+                        CornerRadius="2"
+                        Background="{DynamicResource TransparentBrush}">
+                    <Grid Height="Auto">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                    </Grid>
+                </Border>
             </Border>
         </Border>
         <ControlTemplate.Triggers>
-            <Trigger Property="IsMouseOver"
-                     Value="True">
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver"
+                               Value="True" />
+                </MultiTrigger.Conditions>
+                <Setter Property="BorderBrush"
+                        TargetName="InnerBorder"
+                        Value="{DynamicResource ButtonHoverInnerBorderBrush}" />
+                <Setter Property="Background"
+                        TargetName="InnerBorder"
+                        Value="{DynamicResource ButtonHoverInnerBackgroundBrush}" />
                 <Setter Property="Background"
                         TargetName="OuterBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.Background}" />
+                        Value="{DynamicResource ButtonHoverOuterBackgroundBrush}" />
                 <Setter Property="BorderBrush"
                         TargetName="OuterBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
-            </Trigger>
-            <Trigger Property="IsKeyboardFocusWithin"
-                     Value="True">
+                        Value="{DynamicResource ButtonHoverOuterBorderBrush}" />
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsKeyboardFocusWithin"
+                               Value="True" />
+                </MultiTrigger.Conditions>
+                <Setter Property="BorderBrush"
+                        TargetName="InnerBorder"
+                        Value="{DynamicResource ButtonHoverInnerBorderBrush}" />
+                <Setter Property="Background"
+                        TargetName="InnerBorder"
+                        Value="{DynamicResource ButtonHoverInnerBackgroundBrush}" />
                 <Setter Property="Background"
                         TargetName="OuterBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.Background}" />
+                        Value="{DynamicResource ButtonHoverOuterBackgroundBrush}" />
                 <Setter Property="BorderBrush"
                         TargetName="OuterBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
-            </Trigger>
+                        Value="{DynamicResource ButtonHoverOuterBorderBrush}" />
+            </MultiTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
@@ -42,7 +70,7 @@
         <Setter Property="Template"
                 Value="{DynamicResource ScrollButtonControlTemplate}" />
         <Setter Property="Foreground"
-                Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
+                Value="{DynamicResource DefaultFontBrush}" />
         <Setter Property="FocusVisualStyle"
                 Value="{DynamicResource ControlStyleEmptyFocus}" />
     </Style>
@@ -85,7 +113,7 @@
                                              Path="ViewportWidth" />
                                 </MultiBinding>
                             </RepeatButton.Visibility>
-                            <Path Fill="{DynamicResource BlackBrush}"
+                            <Path Fill="Black"
                                   Stretch="Fill"
                                   Stroke="{x:Null}"
                                   StrokeThickness="0"
@@ -118,7 +146,7 @@
                                              Path="ViewportWidth" />
                                 </MultiBinding>
                             </RepeatButton.Visibility>
-                            <Path Fill="{DynamicResource BlackBrush}"
+                            <Path Fill="Black"
                                   Stretch="Fill"
                                   Stroke="{x:Null}"
                                   StrokeThickness="0"
@@ -167,7 +195,7 @@
                                       Height="Auto"
                                       VerticalAlignment="Stretch"
                                       Style="{DynamicResource ScrollButtonStyle}"
-                                      Margin="0">
+                                      Margin="0,7,0,1">
                             <RepeatButton.Visibility>
                                 <MultiBinding FallbackValue="Visibility.Collapsed"
                                               Converter="{StaticResource MenuScrollingVisibilityConverter}"
@@ -182,7 +210,7 @@
                                              Path="ViewportWidth" />
                                 </MultiBinding>
                             </RepeatButton.Visibility>
-                            <Path Fill="{DynamicResource BlackBrush}"
+                            <Path Fill="Black"
                                   Stretch="Fill"
                                   Stroke="{x:Null}"
                                   StrokeThickness="0"
@@ -201,7 +229,7 @@
                                       Height="Auto"
                                       VerticalAlignment="Stretch"
                                       Style="{DynamicResource ScrollButtonStyle}"
-                                      Margin="0">
+                                      Margin="0,7,0,1">
                             <RepeatButton.Visibility>
                                 <MultiBinding FallbackValue="Visibility.Collapsed"
                                               Converter="{StaticResource MenuScrollingVisibilityConverter}"
@@ -216,7 +244,7 @@
                                              Path="ViewportWidth" />
                                 </MultiBinding>
                             </RepeatButton.Visibility>
-                            <Path Fill="{DynamicResource BlackBrush}"
+                            <Path Fill="Black"
                                   Stretch="Fill"
                                   Stroke="{x:Null}"
                                   StrokeThickness="0"
@@ -300,9 +328,19 @@
                       VerticalAlignment="Center"
                       Width="5"
                       Height="3"
-                      Data="M0,0L1,-1 2,0z"
-                      Fill="{DynamicResource BlackBrush}" />
-
+                      Data="M0,0L1,-1 2,0z">
+                    <Path.Fill>
+                        <LinearGradientBrush  EndPoint="0.5,1"
+                                              StartPoint="0.5,0">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStop Color="#FF1A52AD"
+                                              Offset="0" />
+                                <GradientStop Color="#FF0F3168"
+                                              Offset="1" />
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
             </RepeatButton>
             <RepeatButton ClickMode="Hover"
                           Command="{x:Static ScrollBar.LineDownCommand}"
@@ -335,8 +373,19 @@
                       VerticalAlignment="Center"
                       Width="5"
                       Height="3"
-                      Data="M0,0L1,1 2,0z"
-                      Fill="{DynamicResource BlackBrush}" />
+                      Data="M0,0L1,1 2,0z">
+                    <Path.Fill>
+                        <LinearGradientBrush  EndPoint="0.5,1"
+                                              StartPoint="0.5,0">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStop Color="#FF1A52AD"
+                                              Offset="0" />
+                                <GradientStop Color="#FF0F3168"
+                                              Offset="1" />
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
             </RepeatButton>
         </Grid>
     </ControlTemplate>

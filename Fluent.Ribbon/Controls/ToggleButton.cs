@@ -1,9 +1,11 @@
-﻿// ReSharper disable once CheckNamespace
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Windows;
+using System.Windows.Data;
+using System.Windows.Markup;
+
+// ReSharper disable once CheckNamespace
 namespace Fluent
 {
-    using System.Windows;
-    using System.Windows.Data;
-    using System.Windows.Markup;
     using Fluent.Internal.KnownBoxes;
 
     /// <summary>
@@ -26,7 +28,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Size.
+        /// Using a DependencyProperty as the backing store for Size.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty SizeProperty = RibbonProperties.SizeProperty.AddOwner(typeof(ToggleButton));
@@ -45,7 +47,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for SizeDefinition.
+        /// Using a DependencyProperty as the backing store for SizeDefinition.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty SizeDefinitionProperty = RibbonProperties.SizeDefinitionProperty.AddOwner(typeof(ToggleButton));
@@ -64,7 +66,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Keys.
+        /// Using a DependencyProperty as the backing store for Keys.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty KeyTipProperty = Fluent.KeyTip.KeysProperty.AddOwner(typeof(ToggleButton));
@@ -74,10 +76,10 @@ namespace Fluent
         #region GroupName
 
         /// <summary>
-        /// Gets or sets the name of the group that the toggle button belongs to.
-        /// Use the GroupName property to specify a grouping of toggle buttons to
-        /// create a mutually exclusive set of controls. You can use the GroupName
-        /// property when only one selection is possible from a list of available
+        /// Gets or sets the name of the group that the toggle button belongs to. 
+        /// Use the GroupName property to specify a grouping of toggle buttons to 
+        /// create a mutually exclusive set of controls. You can use the GroupName 
+        /// property when only one selection is possible from a list of available 
         /// options. When this property is set, only one ToggleButton in the specified
         /// group can be selected at a time.
         /// </summary>
@@ -88,11 +90,12 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for GroupName.
+        /// Using a DependencyProperty as the backing store for GroupName.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty GroupNameProperty =
-            DependencyProperty.Register(nameof(GroupName), typeof(string), typeof(ToggleButton), new PropertyMetadata(ToggleButtonHelper.OnGroupNameChanged));
+            DependencyProperty.Register(nameof(GroupName), typeof(string), typeof(ToggleButton),
+            new PropertyMetadata(ToggleButtonHelper.OnGroupNameChanged));
 
         #endregion
 
@@ -108,7 +111,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Header.
+        /// Using a DependencyProperty as the backing store for Header.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty HeaderProperty = RibbonControl.HeaderProperty.AddOwner(typeof(ToggleButton));
@@ -163,7 +166,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for SmallIcon.
+        /// Using a DependencyProperty as the backing store for SmallIcon. 
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty LargeIconProperty =
@@ -196,18 +199,20 @@ namespace Fluent
         #region Constructors
 
         /// <summary>
-        /// Initializes static members of the <see cref="ToggleButton"/> class.
+        /// Static constructor
         /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1810")]
         static ToggleButton()
         {
             var type = typeof(ToggleButton);
             DefaultStyleKeyProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(type));
+            IsCheckedProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(ToggleButtonHelper.OnIsCheckedChanged, ToggleButtonHelper.CoerceIsChecked));
             ContextMenuService.Attach(type);
             ToolTipService.Attach(type);
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ToggleButton"/> class.
+        /// Default constructor
         /// </summary>
         public ToggleButton()
         {
@@ -218,36 +223,18 @@ namespace Fluent
 
         #region Overrides
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Called when a <see cref="T:System.Windows.Controls.Button"/> is clicked. 
+        /// </summary>
         protected override void OnClick()
         {
-            // Close popup on click
+            // Close popup on click            
             if (this.IsDefinitive)
             {
                 PopupService.RaiseDismissPopupEvent(this, DismissPopupMode.Always);
             }
 
-            // fix for #481
-            // We can't overwrite OnToggle because it's "internal protected"...
-            if (string.IsNullOrEmpty(this.GroupName) == false)
-            {
-                // Only forward click if button is not checked to prevent wrong bound values
-                if (this.IsChecked == false)
-                {
-                    base.OnClick();
-                }
-            }
-            else
-            {
-                base.OnClick();
-            }
-        }
-
-        /// <inheritdoc />
-        protected override void OnChecked(RoutedEventArgs e)
-        {
-            ToggleButtonHelper.UpdateButtonGroup(this);
-            base.OnChecked(e);
+            base.OnClick();
         }
 
         #endregion
@@ -264,7 +251,7 @@ namespace Fluent
 
         /// <summary>
         /// Gets control which represents shortcut item.
-        /// This item MUST be syncronized with the original
+        /// This item MUST be syncronized with the original 
         /// and send command to original one control.
         /// </summary>
         /// <returns>Control which represents shortcut item</returns>
@@ -297,15 +284,17 @@ namespace Fluent
 
         #region Implementation of IKeyTipedControl
 
-        /// <inheritdoc />
-        public KeyTipPressedResult OnKeyTipPressed()
+        /// <summary>
+        /// Handles key tip pressed
+        /// </summary>
+        public void OnKeyTipPressed()
         {
             this.OnClick();
-
-            return KeyTipPressedResult.Empty;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Handles back navigation with KeyTips
+        /// </summary>
         public void OnKeyTipBack()
         {
         }

@@ -1,4 +1,4 @@
-#pragma warning disable // Localization
+#pragma warning disable 1591
 
 namespace Fluent.Localization.Languages
 {

@@ -1,9 +1,11 @@
-﻿// ReSharper disable once CheckNamespace
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Markup;
+
+// ReSharper disable once CheckNamespace
 namespace Fluent
 {
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Markup;
     using Fluent.Internal.KnownBoxes;
 
     /// <summary>
@@ -24,7 +26,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for IsFirstInRow.
+        /// Using a DependencyProperty as the backing store for IsFirstInRow.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty IsFirstInRowProperty =
@@ -40,7 +42,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for IsFirstInRow.
+        /// Using a DependencyProperty as the backing store for IsFirstInRow.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty IsLastInRowProperty =
@@ -48,6 +50,7 @@ namespace Fluent
 
         #endregion
 
+        [SuppressMessage("Microsoft.Performance", "CA1810")]
         static RibbonToolBarControlGroup()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(RibbonToolBarControlGroup), new FrameworkPropertyMetadata(typeof(RibbonToolBarControlGroup)));

@@ -21,7 +21,6 @@
                 {
                     return;
                 }
-
                 this.text = value;
                 this.OnPropertyChanged(nameof(this.Text));
             }
@@ -37,7 +36,6 @@
                 {
                     return;
                 }
-
                 this.group = value;
                 this.OnPropertyChanged(nameof(this.Group));
             }

@@ -1,33 +1,29 @@
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
+
 // ReSharper disable once CheckNamespace
 namespace Fluent
 {
-    using System;
-    using System.Linq;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Controls.Primitives;
-    using System.Windows.Input;
-    using System.Windows.Media;
-    using Fluent.Internal;
+  using System.Windows.Automation.Peers;
+  using Fluent.Internal;
 
-    /// <summary>
-    /// Represent panel with ribbon tab items.
-    /// It is automatically adjusting size of tabs
-    /// </summary>
-    public class RibbonTabsContainer : Panel, IScrollInfo
+  /// <summary>
+  /// Represent panel with ribbon tab items.
+  /// It is automatically adjusting size of tabs
+  /// </summary>
+  public class RibbonTabsContainer : Panel, IScrollInfo
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="RibbonTabsContainer"/> class.
+        /// Default constructor
         /// </summary>
         public RibbonTabsContainer()
         {
             this.Focusable = false;
-        }
-
-        static RibbonTabsContainer()
-        {
-            KeyboardNavigation.TabNavigationProperty.OverrideMetadata(typeof(RibbonTabsContainer), new FrameworkPropertyMetadata(KeyboardNavigationMode.Once));
-            KeyboardNavigation.DirectionalNavigationProperty.OverrideMetadata(typeof(RibbonTabsContainer), new FrameworkPropertyMetadata(KeyboardNavigationMode.Cycle));
         }
 
         #region Layout Overridings
@@ -37,19 +33,17 @@ namespace Fluent
         /// to fit within the available room
         /// </summary>
         /// <param name="availableSize">The available size that this element can give to child elements.</param>
-        /// <returns>The size that the groups container determines it needs during
+        /// <returns>The size that the groups container determines it needs during 
         /// layout, based on its calculations of child element sizes.
         /// </returns>
+        [SuppressMessage("Microsoft.Maintainability", "CA1502")]
         protected override Size MeasureOverride(Size availableSize)
         {
-            if (this.InternalChildren.Count == 0)
-            {
-                return base.MeasureOverride(availableSize);
-            }
+            if (this.InternalChildren.Count == 0) return base.MeasureOverride(availableSize);
 
             var desiredSize = this.MeasureChildrenDesiredSize(availableSize);
 
-            // Performs steps as described in "2007 MICROSOFT® OFFICE FLUENT™
+            // Performs steps as described in "2007 MICROSOFT® OFFICE FLUENT™ 
             // USER INTERFACE DESIGN GUIDELINES"
 
             // Step 1. Gradually remove empty space to the right of the tabs
@@ -62,8 +56,8 @@ namespace Fluent
                 return desiredSize;
             }
 
-            // Step 2. Gradually and uniformly remove the padding from both sides
-            // of all the tabs until the minimum padding required for displaying
+            // Step 2. Gradually and uniformly remove the padding from both sides 
+            // of all the tabs until the minimum padding required for displaying 
             // the tab selection and hover states is reached (regular tabs)
             var overflowWidth = desiredSize.Width - availableSize.Width;
             var whitespace = ((RibbonTabItem)this.InternalChildren[0]).Indent;
@@ -74,32 +68,25 @@ namespace Fluent
             var regularTabs = this.InternalChildren.Cast<RibbonTabItem>().Where(x => !x.IsContextual && (x.Visibility != Visibility.Collapsed))
                 .ToList();
 
-            double regularTabsCount = regularTabs.Count; //InternalChildren.Count - contextualTabsCount;
+            double regularTabsCount = regularTabs.Count;//InternalChildren.Count - contextualTabsCount;
             var childrenCount = contextualTabsCount + regularTabsCount;
 
             if (overflowWidth < regularTabsCount * whitespace * 2)
             {
                 var decreaseValue = overflowWidth / regularTabsCount;
-                foreach (var tab in regularTabs)
-                {
-                    tab.Measure(new Size(Math.Max(0, tab.DesiredSize.Width - decreaseValue), tab.DesiredSize.Height)); // tab.Width = Math.Max(0, tab.ActualWidth - decreaseValue);
-                }
-
+                foreach (var tab in regularTabs) tab.Measure(new Size(Math.Max(0, tab.DesiredSize.Width - decreaseValue), tab.DesiredSize.Height));// tab.Width = Math.Max(0, tab.ActualWidth - decreaseValue);
                 desiredSize = this.GetChildrenDesiredSize();
-                if (desiredSize.Width > availableSize.Width)
-                {
-                    desiredSize.Width = availableSize.Width;
-                }
+                if (desiredSize.Width > availableSize.Width) desiredSize.Width = availableSize.Width;
 
-                // Add separator lines between
+                // Add separator lines between 
                 // tabs to assist readability
                 this.UpdateSeparators(false, false);
                 this.VerifyScrollData(availableSize.Width, desiredSize.Width);
                 return desiredSize;
             }
 
-            // Step 3. Gradually and uniformly remove the padding from both sides
-            // of all the tabs until the minimum padding required for displaying
+            // Step 3. Gradually and uniformly remove the padding from both sides 
+            // of all the tabs until the minimum padding required for displaying 
             // the tab selection and hover states is reached (contextual tabs)
             if (overflowWidth < childrenCount * whitespace * 2)
             {
@@ -111,7 +98,7 @@ namespace Fluent
                     //if (!tab.IsContextual)
                     {
                         var widthBeforeMeasure = tab.DesiredSize.Width;
-                        tab.Measure(new Size(Math.Max(0, tab.DesiredSize.Width - (whitespace * 2.0)), tab.DesiredSize.Height));
+                        tab.Measure(new Size(Math.Max(0, tab.DesiredSize.Width - whitespace * 2.0), tab.DesiredSize.Height));
                         overflowWidth -= widthBeforeMeasure - tab.DesiredSize.Width;
                     }
                 }
@@ -140,23 +127,23 @@ namespace Fluent
                     desiredSize.Width = availableSize.Width;
                 }
 
-                // Add separator lines between
+                // Add separator lines between 
                 // tabs to assist readability
                 this.UpdateSeparators(true, false);
                 this.VerifyScrollData(availableSize.Width, desiredSize.Width);
                 return desiredSize;
             }
 
-            // Step 4. Reduce the width of the tab with the longest name by
-            // truncating the text label. Continue reducing the width of the largest
-            // tab (or tabs in the case of ties) until all tabs are the same width.
+            // Step 4. Reduce the width of the tab with the longest name by 
+            // truncating the text label. Continue reducing the width of the largest 
+            // tab (or tabs in the case of ties) until all tabs are the same width. 
             // (Regular tabs)
             foreach (var tab in regularTabs)
             {
                 //if (!tab.IsContextual)
                 {
                     var widthBeforeMeasure = tab.DesiredSize.Width;
-                    tab.Measure(new Size(Math.Max(0, tab.DesiredSize.Width - (whitespace * 2.0)), tab.DesiredSize.Height));
+                    tab.Measure(new Size(Math.Max(0, tab.DesiredSize.Width - whitespace * 2.0), tab.DesiredSize.Height));
                     overflowWidth -= widthBeforeMeasure - tab.DesiredSize.Width;
                 }
             }
@@ -166,7 +153,7 @@ namespace Fluent
                 //if (tab.IsContextual)
                 {
                     var widthBeforeMeasure = tab.DesiredSize.Width;
-                    tab.Measure(new Size(Math.Max(0, tab.DesiredSize.Width - (whitespace * 2.0)), tab.DesiredSize.Height));
+                    tab.Measure(new Size(Math.Max(0, tab.DesiredSize.Width - whitespace * 2.0), tab.DesiredSize.Height));
 
                     // Contextual tabs may overreduce, so check that
                     overflowWidth -= widthBeforeMeasure - tab.DesiredSize.Width;
@@ -179,7 +166,7 @@ namespace Fluent
                             desiredSize.Width = availableSize.Width;
                         }
 
-                        // Add separator lines between
+                        // Add separator lines between 
                         // tabs to assist readability
                         this.UpdateSeparators(true, false);
                         this.VerifyScrollData(availableSize.Width, desiredSize.Width);
@@ -199,7 +186,7 @@ namespace Fluent
 
             for (var i = 0; i < sortedRegularTabItems.Count - 1; i++)
             {
-                var temp = sortedRegularTabItems[i].DesiredSize.Width - sortedRegularTabItems[i + 1].DesiredSize.Width;
+                var temp =sortedRegularTabItems[i].DesiredSize.Width - sortedRegularTabItems[i + 1].DesiredSize.Width;
                 reducedLength += temp * (i + 1);
                 reduceCount = i + 1;
 
@@ -213,10 +200,7 @@ namespace Fluent
             {
                 // Reduce regular tabs
                 var requiredWidth = sortedRegularTabItems[reduceCount].DesiredSize.Width;
-                if (reducedLength > overflowWidth)
-                {
-                    requiredWidth += (reducedLength - overflowWidth) / reduceCount;
-                }
+                if (reducedLength > overflowWidth) requiredWidth += (reducedLength - overflowWidth) / reduceCount;
 
                 for (var i = 0; i < reduceCount; i++)
                 {
@@ -230,14 +214,14 @@ namespace Fluent
                     desiredSize.Width = availableSize.Width;
                 }
 
-                // Add separator lines between
+                // Add separator lines between 
                 // tabs to assist readability
                 this.UpdateSeparators(true, true);
                 this.VerifyScrollData(availableSize.Width, desiredSize.Width);
                 return desiredSize;
             }
 
-            // Step 5. Reduce the width of all regular tabs equally
+            // Step 5. Reduce the width of all regular tabs equally 
             // down to a minimum of about three characters.
             var regularTabsWidth = sortedRegularTabItems.Sum(x => x.DesiredSize.Width);
             var minimumRegularTabsWidth = MinimumRegularTabWidth * sortedRegularTabItems.Count;
@@ -254,16 +238,16 @@ namespace Fluent
                 desiredSize = this.GetChildrenDesiredSize();
                 //if (desiredSize.Width > availableSize.Width) desiredSize.Width = availableSize.Width;
 
-                // Add separator lines between
+                // Add separator lines between 
                 // tabs to assist readability
                 this.UpdateSeparators(true, true);
                 this.VerifyScrollData(availableSize.Width, desiredSize.Width);
                 return desiredSize;
             }
 
-            // Step 6. Reduce the width of the tab with the longest name by
-            // truncating the text label. Continue reducing the width of the largest
-            // tab (or tabs in the case of ties) until all tabs are the same width.
+            // Step 6. Reduce the width of the tab with the longest name by 
+            // truncating the text label. Continue reducing the width of the largest 
+            // tab (or tabs in the case of ties) until all tabs are the same width. 
             // (Contextual tabs)
             for (var i = 0; i < regularTabsCount; i++)
             {
@@ -299,7 +283,7 @@ namespace Fluent
                 var requiredWidth = sortedContextualTabItems[reduceCount].DesiredSize.Width;
                 if (reducedLength > overflowWidth)
                 {
-                    requiredWidth += (reducedLength - overflowWidth) / reduceCount;
+                    requiredWidth += (reducedLength - overflowWidth)/reduceCount;
                 }
 
                 for (var i = 0; i < reduceCount; i++)
@@ -314,7 +298,7 @@ namespace Fluent
                     desiredSize.Width = availableSize.Width;
                 }
 
-                // Add separator lines between
+                // Add separator lines between 
                 // tabs to assist readability
                 this.UpdateSeparators(true, true);
                 this.VerifyScrollData(availableSize.Width, desiredSize.Width);
@@ -333,7 +317,7 @@ namespace Fluent
 
                 desiredSize = this.GetChildrenDesiredSize();
 
-                // Add separator lines between
+                // Add separator lines between 
                 // tabs to assist readability
                 this.UpdateSeparators(true, true);
                 this.VerifyScrollData(availableSize.Width, desiredSize.Width);
@@ -374,8 +358,8 @@ namespace Fluent
         /// Positions child elements and determines
         /// a size for the control
         /// </summary>
-        /// <param name="finalSize">The final area within the parent
-        /// that this element should use to arrange
+        /// <param name="finalSize">The final area within the parent 
+        /// that this element should use to arrange 
         /// itself and its children</param>
         /// <returns>The actual size used</returns>
         protected override Size ArrangeOverride(Size finalSize)
@@ -647,6 +631,7 @@ namespace Fluent
         /// <summary>
         /// Not implemented
         /// </summary>
+        /// <param name="offset"></param>
         public void SetVerticalOffset(double offset)
         {
         }
@@ -676,7 +661,7 @@ namespace Fluent
         {
             get { return 0.0; }
         }
-
+        
         /// <summary>
         /// Not implemented
         /// </summary>
@@ -787,8 +772,14 @@ namespace Fluent
             return offset;
         }
 
-        #endregion
+    #endregion
+
+    protected override AutomationPeer OnCreateAutomationPeer()
+    {
+      RibbonAutomationPeer peer = new RibbonAutomationPeer(this);
+      return peer;
     }
+  }
 
     #region ScrollData
 
@@ -802,22 +793,22 @@ namespace Fluent
         /// <summary>
         /// Scroll viewer
         /// </summary>
-        internal ScrollViewer ScrollOwner { get; set; }
+        internal ScrollViewer ScrollOwner;
 
         /// <summary>
         /// Scroll offset
         /// </summary>
-        internal double OffsetX { get; set; }
+        internal double OffsetX;
 
         /// <summary>
         /// ViewportSize is computed from our FinalSize, but may be in different units.
         /// </summary>
-        internal double ViewportWidth { get; set; }
+        internal double ViewportWidth;
 
         /// <summary>
         /// Extent is the total size of our content.
         /// </summary>
-        internal double ExtentWidth { get; set; }
+        internal double ExtentWidth;
     }
 
     #endregion ScrollData

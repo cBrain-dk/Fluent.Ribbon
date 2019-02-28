@@ -4,7 +4,7 @@
 
     <Style TargetType="{x:Type Fluent:WindowCommands}">
         <Setter Property="Foreground"
-                Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
+                Value="White" />
         <Setter Property="Focusable"
                 Value="False" />
         <Setter Property="Template">
@@ -14,7 +14,7 @@
                         <ResourceDictionary>
                             <Style TargetType="{x:Type Button}">
                                 <Setter Property="Background"
-                                        Value="{DynamicResource TransparentWhiteBrush}" />
+                                        Value="#02FFFFFF" />
                                 <Setter Property="HorizontalContentAlignment"
                                         Value="Center" />
                                 <Setter Property="VerticalContentAlignment"
@@ -27,14 +27,14 @@
                         </ResourceDictionary>
                     </ControlTemplate.Resources>
 
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Top">
                         <ItemsControl ItemsSource="{Binding Items, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}"
                                       ItemTemplate="{TemplateBinding ItemTemplate}"
                                       ItemTemplateSelector="{TemplateBinding ItemTemplateSelector}"
                                       ItemContainerStyle="{TemplateBinding ItemContainerStyle}"
                                       ItemContainerStyleSelector="{TemplateBinding ItemContainerStyleSelector}"
-                                      Focusable="False"
-                                      Margin="0 0 2 0">
+                                      Focusable="False">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <StackPanel Orientation="Horizontal" />
@@ -46,18 +46,12 @@
                                 Focusable="False"
                                 Style="{DynamicResource CaptionButtonStyle}"
                                 Padding="0"
+                                Foreground="{TemplateBinding Foreground}"
                                 ToolTip="{Binding Minimize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}"
                                 Uid="{Binding Minimize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}">
-                            <Line HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
+                            <Path Data="F1M0,6L0,9 9,9 9,6 0,6z"
                                   SnapsToDevicePixels="True"
-                                  UseLayoutRounding="True"
-                                  Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
-                                  StrokeThickness="1.5"
-                                  X1="0"
-                                  X2="10"
-                                  Y1="0"
-                                  Y2="0" />
+                                  Fill="{DynamicResource TabItemFontBrush}" />
                         </Button>
 
                         <Button x:Name="PART_Max"
@@ -65,18 +59,12 @@
                                 Style="{DynamicResource CaptionButtonStyle}"
                                 Padding="0"
                                 Visibility="{Binding WindowState, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Converter={x:Static Converters:StaticConverters.EqualsToVisibilityConverter}, ConverterParameter={x:Static WindowState.Normal}}"
+                                Foreground="{TemplateBinding Foreground}"
                                 ToolTip="{Binding Maximize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}"
                                 Uid="{Binding Maximize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}">
-                            <Canvas Width="12"
-                                    Height="12"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center">
-                                <Path Data="M2,2 2,10 10,10 10,2 2,2Z M1,11 1,1 11,1 11,11 1,11Z"
-                                      Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
-                                      RenderOptions.EdgeMode="Aliased"
-                                      SnapsToDevicePixels="True"
-                                      Stretch="Uniform" />
-                            </Canvas>
+                            <Path SnapsToDevicePixels="True"
+                                  Data="F1M0,0L0,9 9,9 9,0 0,0 0,3 8,3 8,8 1,8 1,3z"
+                                  Fill="{DynamicResource ButtonCommandFontBrush}" />
                         </Button>
 
                         <Button x:Name="PART_Restore"
@@ -84,44 +72,24 @@
                                 Style="{DynamicResource CaptionButtonStyle}"
                                 Padding="0"
                                 Visibility="{Binding WindowState, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Converter={x:Static Converters:StaticConverters.EqualsToVisibilityConverter}, ConverterParameter={x:Static WindowState.Maximized}}"
+                                Foreground="{TemplateBinding Foreground}"
                                 ToolTip="{Binding Restore, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}"
                                 Uid="{Binding Restore, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}">
-                            <Canvas Width="12"
-                                    Height="12"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center">
-                                <Path Data="M10,9 9,9 9,3 3,3 3,2 10,2 10,9Z M8,11 1,11 1,4 8,4 8,11Z M2,1 2,3 0,3 0,12 9,12 9,10 11,10 11,1 2,1Z"
-                                      Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
-                                      RenderOptions.EdgeMode="Aliased"
-                                      SnapsToDevicePixels="True"
-                                      Stretch="Uniform" />
-                            </Canvas>
+                            <Path SnapsToDevicePixels="True"
+                                  Data="F1M0,10L0,3 3,3 3,0 10,0 10,2 4,2 4,3 7,3 7,6 6,6 6,5 1,5 1,10z M1,10L7,10 7,7 10,7 10,2 9,2 9,6 6,6 6,9 1,9z"
+                                  Fill="{DynamicResource ButtonCommandFontBrush}" />
                         </Button>
 
                         <Button x:Name="PART_Close"
                                 Focusable="False"
-                                Style="{DynamicResource CaptionButtonStyle}"
+                                Style="{DynamicResource RedCaptionButtonStyle}"
                                 Padding="0"
+                                Foreground="{TemplateBinding Foreground}"
                                 ToolTip="{Binding Close, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}"
                                 Uid="{Binding Close, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}">
-                            <Grid>
-                                <Line HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      SnapsToDevicePixels="True"
-                                      Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
-                                      X1="0"
-                                      X2="10"
-                                      Y1="0"
-                                      Y2="10" />
-                                <Line HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      SnapsToDevicePixels="True"
-                                      Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
-                                      X1="0"
-                                      X2="10"
-                                      Y1="10"
-                                      Y2="0" />
-                            </Grid>
+                            <Path Data="F1M0,0L2,0 5,3 8,0 10,0 6,4 10,8 8,8 5,5 2,8 0,8 4,4 0,0z"
+                                  SnapsToDevicePixels="True"
+                                  Fill="{DynamicResource ButtonCommandFontBrush}" />
                         </Button>
                     </StackPanel>
                     <ControlTemplate.Triggers>
@@ -144,19 +112,7 @@
                                     Value="Collapsed" />
                             <Setter Property="Visibility"
                                     TargetName="PART_Restore"
-                                    Value="Collapsed" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding IsMouseOver, ElementName=PART_Close}"
-                                 Value="True">
-                            <Setter TargetName="PART_Close"
-                                    Property="Background"
-                                    Value="{DynamicResource Fluent.Ribbon.Brushes.WindowCommands.CloseButton.MouseOver.Background}" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding IsPressed, ElementName=PART_Close}"
-                                     Value="True">
-                            <Setter TargetName="PART_Close"
-                                    Property="Background"
-                                    Value="{DynamicResource Fluent.Ribbon.Brushes.WindowCommands.CloseButton.Pressed.Background}" />
+                                    Value="Collapsed" />                            
                         </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -200,13 +156,13 @@
                         Value=".5" />
             </Trigger>
             <Trigger Property="IsKeyboardFocused"
-                     Value="True" />
+                     Value="true" />
             <Trigger Property="ToggleButton.IsChecked"
-                     Value="True" />
+                     Value="true" />
             <Trigger Property="IsEnabled"
-                     Value="False">
+                     Value="false">
                 <Setter Property="Foreground"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.DarkIdealForegroundDisabledBrush}" />
+                        Value="#ADADAD" />
             </Trigger>
             <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}"
                          Value="{x:Null}">

@@ -23,11 +23,8 @@
         private RelayCommand exitCommand;
         private double zoom;
         private ICommand testCommand;
-
         private IList<string> manyItems;
-        private IList<string> stringItems;
-
-        private bool? isCheckedToggleButton3 = true;
+        private bool? isCheckedToggleButton3;
 
         private readonly Timer memoryTimer;
 
@@ -42,7 +39,6 @@
             this.ColorViewModel = new ColorViewModel();
             this.FontsViewModel = new FontsViewModel();
             this.GalleryViewModel = new GalleryViewModel();
-            this.IssueReprosViewModel = new IssueReprosViewModel();
 
             this.PreviewCommand = new RelayCommand<GalleryItem>(Preview);
             this.CancelPreviewCommand = new RelayCommand<GalleryItem>(CancelPreview);
@@ -65,14 +61,9 @@
         public double Zoom
         {
             get { return this.zoom; }
-
             set
             {
-                if (value.Equals(this.zoom))
-                {
-                    return;
-                }
-
+                if (value.Equals(this.zoom)) return;
                 this.zoom = value;
                 this.OnPropertyChanged(nameof(this.Zoom));
             }
@@ -81,14 +72,9 @@
         public ColorViewModel ColorViewModel
         {
             get { return this.colorViewModel; }
-
             private set
             {
-                if (Equals(value, this.colorViewModel))
-                {
-                    return;
-                }
-
+                if (Equals(value, this.colorViewModel)) return;
                 this.colorViewModel = value;
                 this.OnPropertyChanged(nameof(this.ColorViewModel));
             }
@@ -97,14 +83,9 @@
         public FontsViewModel FontsViewModel
         {
             get { return this.fontsViewModel; }
-
             private set
             {
-                if (Equals(value, this.fontsViewModel))
-                {
-                    return;
-                }
-
+                if (Equals(value, this.fontsViewModel)) return;
                 this.fontsViewModel = value;
                 this.OnPropertyChanged(nameof(this.FontsViewModel));
             }
@@ -113,20 +94,13 @@
         public GalleryViewModel GalleryViewModel
         {
             get { return this.galleryViewModel; }
-
             private set
             {
-                if (Equals(value, this.galleryViewModel))
-                {
-                    return;
-                }
-
+                if (Equals(value, this.galleryViewModel)) return;
                 this.galleryViewModel = value;
                 this.OnPropertyChanged(nameof(this.GalleryViewModel));
             }
         }
-
-        public IssueReprosViewModel IssueReprosViewModel { get; set; }
 
         /// <summary>
         /// Gets data items (uses as DataContext)
@@ -153,18 +127,12 @@
 
         public IList<string> ManyItems
         {
-            get { return this.manyItems ?? (this.manyItems = GenerateStrings(5000)); }
-        }
-
-        public IList<string> StringItems
-        {
-            get { return this.stringItems ?? (this.stringItems = GenerateStrings(25)); }
+            get { return this.manyItems ?? (this.manyItems = this.GenerateStrings(5000)); }
         }
 
         public bool? IsCheckedToggleButton3
         {
             get { return this.isCheckedToggleButton3; }
-
             set
             {
                 if (this.isCheckedToggleButton3 != value)
@@ -182,7 +150,6 @@
         public int BoundSpinnerValue
         {
             get { return this.boundSpinnerValue; }
-
             set
             {
                 this.boundSpinnerValue = value;
@@ -248,11 +215,9 @@
             Trace.WriteLine($"CancelPreview: {galleryItem}");
         }
 
-        private static IList<string> GenerateStrings(int count)
+        private IList<string> GenerateStrings(int count)
         {
-            return Enumerable.Range(0, count)
-                .Select(x => "Item " + (x + 1).ToString())
-                .ToList();
+            return Enumerable.Repeat("Test", count).ToList();
         }
 
         private void HandleMemoryTimer_Elapsed(object sender, ElapsedEventArgs e)

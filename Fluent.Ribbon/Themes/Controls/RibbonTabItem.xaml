@@ -7,16 +7,27 @@
     <ControlTemplate TargetType="{x:Type Fluent:RibbonTabItem}"
                      x:Key="RibbonTabItemControlTemplate">
         <Grid x:Name="grid"
-              Background="{TemplateBinding Background}"
-              Height="Auto">
+              Background="#00000000"
+              Height="Auto"
+              VerticalAlignment="Top"
+              Margin="0,7,0,0">
             <Border x:Name="border3"
                     Margin="0,0,0,1"
                     Grid.ColumnSpan="2">
                 <Border x:Name="border5"
                         Background="{Binding Group.Background, RelativeSource={RelativeSource TemplatedParent}, FallbackValue=Transparent}"
-                        BorderThickness="0"
-                        Margin="0"
-                        OpacityMask="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.Contextual.Background.OpacityMask}" />
+                        BorderThickness="0,0,0,0"
+                        Margin="0">
+                    <Border.OpacityMask>
+                        <LinearGradientBrush EndPoint="0.5,1"
+                                             StartPoint="0.5,0">
+                            <GradientStop Color="#16000000"
+                                          Offset="0" />
+                            <GradientStop Color="#16000000"
+                                          Offset="1" />
+                        </LinearGradientBrush>
+                    </Border.OpacityMask>
+                </Border>
             </Border>
             <Grid x:Name="selectedGrid"
                   Visibility="Collapsed"
@@ -78,16 +89,45 @@
                         BorderBrush="{TemplateBinding ActiveTabBackground}"
                         BorderThickness="0,1" />
             </Grid>
+            <Grid x:Name="focusedGrid"
+                  Margin="0"
+                  Visibility="Collapsed"
+                  Grid.ColumnSpan="1">
+                <Grid.OpacityMask>
+                    <LinearGradientBrush EndPoint="0.5,1"
+                                         StartPoint="0.5,0">
+                        <GradientStop Color="White"
+                                      Offset="0" />
+                        <GradientStop Offset="1"
+                                      Color="#19FFFFFF" />
+                    </LinearGradientBrush>
+                </Grid.OpacityMask>
+                <Border x:Name="border_Copy5"
+                        Margin="1,0,1,1"
+                        BorderThickness="1,1,1,0"
+                        VerticalAlignment="Stretch"
+                        CornerRadius="2,2,0,0"
+                        Background="{DynamicResource ButtonHoverOuterBackgroundBrush}"
+                        BorderBrush="{DynamicResource ButtonHoverOuterBorderBrush}">
+                    <Border x:Name="border_Copy6"
+                            Margin="0"
+                            BorderBrush="{DynamicResource ButtonHoverInnerBorderBrush}"
+                            BorderThickness="1,1,1,0"
+                            VerticalAlignment="Stretch"
+                            CornerRadius="2,2,0,0"
+                            Background="{DynamicResource ButtonHoverInnerBackgroundBrush}" />
+                </Border>
+            </Grid>
             <Border x:Name="PART_ContentContainer"
                     HorizontalAlignment="Stretch"
                     Margin="6,2,4,0"
                     VerticalAlignment="Stretch"
                     Padding="15,0,0,0"
                     Grid.ColumnSpan="1">
-                <ContentControl AutomationProperties.Name="{TemplateBinding Header}"
+                <ContentControl x:Name="contentPresenter"
+                                AutomationProperties.Name="{TemplateBinding Header}"
                                 AutomationProperties.AutomationId="{TemplateBinding Name}"
                                 Content="{TemplateBinding Header}"
-                                ContentTemplate="{TemplateBinding HeaderTemplate}"
                                 Margin="5,1,5,4"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
@@ -100,8 +140,8 @@
                   Width="1"
                   Grid.Column="1">
                 <Rectangle x:Name="separatorRectangle1"
-                           Fill="{TemplateBinding BorderBrush}"
-                           Stroke="{TemplateBinding BorderBrush}"
+                           Fill="{DynamicResource RibbonTopBorderBrush}"
+                           Stroke="{DynamicResource RibbonTopBorderBrush}"
                            Margin="0"
                            Width="1">
                 </Rectangle>
@@ -111,13 +151,8 @@
             <Trigger Property="IsEnabled"
                      Value="False">
                 <Setter Property="Opacity"
-                        TargetName="PART_ContentContainer"
+                        TargetName="contentPresenter"
                         Value="0.5" />
-            </Trigger>
-            <Trigger Property="Selector.IsSelected"
-                     Value="False">
-                <Setter Property="Foreground"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.Foreground}" />
             </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
@@ -186,7 +221,8 @@
                         TargetName="selectedGrid"
                         Value="Visible" />
                 <Setter Property="Foreground"
-                        Value="{Binding Group.Foreground, RelativeSource={RelativeSource Self}}" />
+                        TargetName="contentPresenter"
+                        Value="{Binding Group.Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
             </MultiTrigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
@@ -201,17 +237,17 @@
                         TargetName="selectedGrid"
                         Value="Visible" />
                 <Setter Property="Foreground"
-                        Value="{Binding Path=(Fluent:RibbonProperties.MouseOverForeground), RelativeSource={RelativeSource Self}}" />
+                        TargetName="contentPresenter"
+                        Value="{DynamicResource RibbonThemeColorBrush}" />
             </MultiTrigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="IsMouseOver"
                                Value="True" />
                 </MultiTrigger.Conditions>
-                <Setter Property="Background"
-                        Value="{Binding Path=(Fluent:RibbonProperties.MouseOverBackground), RelativeSource={RelativeSource Self}}" />
                 <Setter Property="Foreground"
-                        Value="{Binding Group.Foreground, RelativeSource={RelativeSource Self}}" />
+                        TargetName="contentPresenter"
+                        Value="{Binding Group.Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
             </MultiTrigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
@@ -220,10 +256,9 @@
                     <Condition Property="Group"
                                Value="{x:Null}" />
                 </MultiTrigger.Conditions>
-                <Setter Property="Background"
-                        Value="{Binding Path=(Fluent:RibbonProperties.MouseOverBackground), RelativeSource={RelativeSource Self}}" />
                 <Setter Property="Foreground"
-                        Value="{Binding Path=(Fluent:RibbonProperties.MouseOverForeground), RelativeSource={RelativeSource Self}}" />
+                        TargetName="contentPresenter"
+                        Value="{DynamicResource RibbonThemeColorBrush}" />
             </MultiTrigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
@@ -236,10 +271,9 @@
                     <Condition Property="Group"
                                Value="{x:Null}" />
                 </MultiTrigger.Conditions>
-                <Setter Property="Background"
-                        Value="{Binding Path=(Fluent:RibbonProperties.MouseOverBackground), RelativeSource={RelativeSource Self}}" />
                 <Setter Property="Foreground"
-                        Value="{Binding Path=(Fluent:RibbonProperties.MouseOverForeground), RelativeSource={RelativeSource Self}}" />
+                        TargetName="contentPresenter"
+                        Value="{DynamicResource RibbonThemeColorBrush}" />
             </MultiTrigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
@@ -255,29 +289,10 @@
                         Value="Visible" />
                 <Setter Property="Background"
                         TargetName="grid"
-                        Value="Transparent" />
+                        Value="#00000000" />
                 <Setter Property="Foreground"
-                        Value="{Binding Group.Foreground, RelativeSource={RelativeSource Self}}" />
-            </MultiTrigger>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="Selector.IsSelected"
-                               Value="True" />
-                    <Condition Property="IsMinimized"
-                               Value="True" />
-                    <Condition Property="IsOpen"
-                               Value="True" />
-                    <Condition Property="Group"
-                               Value="{x:Null}" />
-                </MultiTrigger.Conditions>
-                <Setter Property="Visibility"
-                        TargetName="selectedGrid"
-                        Value="Visible" />
-                <Setter Property="Background"
-                        TargetName="grid"
-                        Value="Transparent" />
-                <Setter Property="Foreground"
-                        Value="{Binding Path=(Fluent:RibbonProperties.MouseOverForeground), RelativeSource={RelativeSource Self}}" />
+                        TargetName="contentPresenter"
+                        Value="{Binding Group.Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
             </MultiTrigger>
             <Trigger Property="IsSeparatorVisible"
                      Value="True">
@@ -298,11 +313,13 @@
         <Setter Property="HorizontalAlignment"
                 Value="Left" />
         <Setter Property="VerticalAlignment"
-                Value="Stretch" />
+                Value="Top" />
         <Setter Property="Height"
                 Value="Auto" />
         <Setter Property="Margin"
                 Value="0" />
+        <Setter Property="IsTabStop"
+                Value="False" />
         <Setter Property="IsMinimized"
                 Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:RibbonTabControl}}, Path=IsMinimized, Mode=OneWay, FallbackValue=False}" />
         <Setter Property="IsOpen"
@@ -312,54 +329,24 @@
         <Setter Property="Indent"
                 Value="12" />
         <Setter Property="Foreground"
-                Value="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.Selected.Foreground}" />
+                Value="{DynamicResource TabItemSelectedFontBrush}" />
         <Setter Property="BorderBrush"
-                Value="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.BorderBrush}" />
+                Value="{DynamicResource RibbonTopBorderBrush}" />
         <Setter Property="ActiveTabBackground"
-                Value="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.Active.Background}" />
+                Value="{DynamicResource ActiveTabBackgroundBrush}" />
         <Setter Property="ActiveTabBorderBrush"
-                Value="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.BorderBrush}" />
-        <Setter Property="Fluent:RibbonProperties.MouseOverBackground"
-                Value="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.MouseOver.Background}" />
-        <Setter Property="HeaderTemplate">
-            <Setter.Value>
-                <DataTemplate>
-                    <TextBlock VerticalAlignment="Center"
-                               HorizontalAlignment="Left"
-                               Text="{Binding}"
-                               TextWrapping="NoWrap"
-                               TextTrimming="None" />
-                </DataTemplate>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="Fluent:RibbonProperties.AppTheme"
-                Value="{DynamicResource Fluent.Ribbon.AppTheme}" />
+                Value="{DynamicResource RibbonTopBorderBrush}" />
         <Style.Triggers>
             <Trigger Property="Group"
                      Value="{x:Null}">
                 <Setter Property="BorderBrush"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.BorderBrush}" />
+                        Value="{DynamicResource RibbonTopBorderBrush}" />
             </Trigger>
-            <Trigger Property="Fluent:RibbonProperties.AppTheme"
-                     Value="BaseLight">
-                <Setter Property="Fluent:RibbonProperties.MouseOverForeground"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.HighlightBrush}" />
+            <Trigger Property="Selector.IsSelected"
+                     Value="False">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource TabItemFontBrush}" />
             </Trigger>
-            <Trigger Property="Fluent:RibbonProperties.AppTheme"
-                     Value="BaseDark">
-                <Setter Property="Fluent:RibbonProperties.MouseOverForeground"
-                        Value="{DynamicResource BlackBrush}" />
-            </Trigger>
-            <MultiDataTrigger>
-                <MultiDataTrigger.Conditions>
-                    <Condition Binding="{Binding IsContextual, RelativeSource={RelativeSource Self}}"
-                               Value="True" />
-                    <Condition Binding="{Binding Group.Visibility, RelativeSource={RelativeSource Self}}"
-                               Value="Collapsed" />
-                </MultiDataTrigger.Conditions>
-                <Setter Property="Visibility"
-                            Value="Collapsed" />
-            </MultiDataTrigger>
         </Style.Triggers>
     </Style>
 </ResourceDictionary>

@@ -20,7 +20,7 @@ namespace Fluent
         /// When overridden in a derived class, positions child elements and determines a size for
         /// a System.Windows.FrameworkElement derived class.
         /// </summary>
-        /// <param name="finalSize">The final area within the parent that this element should
+        /// <param name="finalSize">The final area within the parent that this element should 
         /// use to arrange itself and its children.</param>
         /// <returns>The actual size used.</returns>
         protected override Size ArrangeOverride(Size finalSize)
@@ -30,43 +30,34 @@ namespace Fluent
 
             foreach (UIElement item in this.InternalChildren)
             {
-                finalRect.Width = this.sizes[index].Width; //item.DesiredSize.Width;
-                finalRect.Height = Math.Max(finalSize.Height, this.sizes[index].Height); //Math.Max(finalSize.Height, item.DesiredSize.Height);
+                finalRect.Width = this.sizes[index].Width;//item.DesiredSize.Width;
+                finalRect.Height = Math.Max(finalSize.Height, this.sizes[index].Height);//Math.Max(finalSize.Height, item.DesiredSize.Height);
                 item.Arrange(finalRect);
-                finalRect.X += this.sizes[index].Width; // item.DesiredSize.Width;
+                finalRect.X += this.sizes[index].Width;// item.DesiredSize.Width;
                 index++;
             }
-
             return finalSize;
         }
 
         /// <summary>
-        /// When overridden in a derived class, measures the size in layout required for
+        /// When overridden in a derived class, measures the size in layout required for 
         /// child elements and determines a size for the System.Windows.FrameworkElement-derived class.
         /// </summary>
-        /// <param name="availableSize">The available size that this element can give to child elements.
+        /// <param name="availableSize">The available size that this element can give to child elements. 
         /// Infinity can be specified as a value to indicate that the element will size to whatever content is available.</param>
         /// <returns>The size that this element determines it needs during layout, based on its calculations of child element sizes.</returns>
         protected override Size MeasureOverride(Size availableSize)
         {
-            var allGroupsWidth = 0D;
+            var x = 0D;
             this.sizes.Clear();
             var infinity = new Size(double.PositiveInfinity, double.PositiveInfinity);
-
-            var availableSizeHeight = availableSize.Height;
-
-            if (double.IsPositiveInfinity(availableSizeHeight))
-            {
-                availableSizeHeight = 0;
-            }
 
             foreach (RibbonContextualTabGroup contextualGroup in this.InternalChildren)
             {
                 // Calculate width of tab items of the group
                 var tabsWidth = 0D;
 
-                // We have to look at visible and items which already got measured only
-                var visibleItems = contextualGroup.Items.Where(item => item.Visibility == Visibility.Visible && DoubleUtil.AreClose(item.DesiredSize.Width, 0) == false).ToList();
+                var visibleItems = contextualGroup.Items.Where(group => group.Visibility == Visibility.Visible).ToList();
 
                 foreach (var item in visibleItems)
                 {
@@ -85,12 +76,9 @@ namespace Fluent
 
                     foreach (var item in visibleItems)
                     {
-                        var newDesiredWidth = item.DesiredSize.Width + delta;
-
-                        // Update cached DesiredWidth
-                        if (DoubleUtil.AreClose(newDesiredWidth, item.DesiredWidth) == false)
+                        if (DoubleUtil.AreClose(item.DesiredWidth, 0))
                         {
-                            item.DesiredWidth = newDesiredWidth;
+                            item.DesiredWidth = item.DesiredSize.Width + delta;
                             item.Measure(new Size(item.DesiredWidth, item.DesiredSize.Height));
                             tabWasChanged = true;
                         }
@@ -99,10 +87,9 @@ namespace Fluent
 
                 if (tabWasChanged)
                 {
-                    // If we have changed tabs layout we have
-                    // to invalidate down to RibbonTabsContainer
+                    // If we have changed tabs layout we have 
+                    // to invalidate down to RibbonTabsContainer 
                     var visual = visibleItems[0] as Visual;
-
                     while (visual != null)
                     {
                         var uiElement = visual as UIElement;
@@ -128,21 +115,27 @@ namespace Fluent
                     }
                 }
 
-                // Calc final width and measure the group using it
+                // Calc final width and measure the group using it 
                 var finalWidth = tabsWidth;
-                allGroupsWidth += finalWidth;
+                x += finalWidth;
 
-                if (allGroupsWidth > availableSize.Width)
+                if (x > availableSize.Width)
                 {
-                    finalWidth -= allGroupsWidth - availableSize.Width;
-                    allGroupsWidth = availableSize.Width;
+                    finalWidth -= x - availableSize.Width;
+                    x = availableSize.Width;
                 }
 
-                contextualGroup.Measure(new Size(Math.Max(0, finalWidth), availableSizeHeight));
-                this.sizes.Add(new Size(Math.Max(0, finalWidth), availableSizeHeight));
+                contextualGroup.Measure(new Size(Math.Max(0, finalWidth), availableSize.Height));
+                this.sizes.Add(new Size(Math.Max(0, finalWidth), availableSize.Height));
             }
 
-            return new Size(allGroupsWidth, availableSizeHeight);
+            var height = availableSize.Height;
+            if (double.IsPositiveInfinity(height))
+            {
+                height = 0;
+            }
+
+            return new Size(x, height);
         }
     }
 }

@@ -7,43 +7,43 @@
                     mc:Ignorable="d">
     <ControlTemplate x:Key="ResizeBothThumbControlTemplate"
                      TargetType="{x:Type Thumb}">
-        <Grid Background="Transparent">
-            <Rectangle Fill="{DynamicResource WhiteBrush}"
+        <Grid Background="#00000000">
+            <Rectangle Fill="White"
                        StrokeThickness="0"
                        Width="2"
                        Height="2"
                        VerticalAlignment="Bottom"
                        HorizontalAlignment="Right"
                        Margin="0,0,2,1" />
-            <Rectangle Fill="{DynamicResource WhiteBrush}"
+            <Rectangle Fill="White"
                        StrokeThickness="0"
                        HorizontalAlignment="Right"
                        Margin="0,0,2,5"
                        VerticalAlignment="Bottom"
                        Width="2"
                        Height="2" />
-            <Rectangle Fill="{DynamicResource WhiteBrush}"
+            <Rectangle Fill="White"
                        StrokeThickness="0"
                        HorizontalAlignment="Right"
                        Margin="0,0,6,1"
                        VerticalAlignment="Bottom"
                        Width="2"
                        Height="2" />
-            <Rectangle Fill="{DynamicResource BlackBrush}"
+            <Rectangle Fill="#FFB5BEC7"
                        StrokeThickness="0"
                        HorizontalAlignment="Right"
                        Margin="0,0,3,2"
                        VerticalAlignment="Bottom"
                        Width="2"
                        Height="2" />
-            <Rectangle Fill="{DynamicResource BlackBrush}"
+            <Rectangle Fill="#FFB5BEC7"
                        StrokeThickness="0"
                        HorizontalAlignment="Right"
                        Margin="0,0,3,6"
                        VerticalAlignment="Bottom"
                        Width="2"
                        Height="2" />
-            <Rectangle Fill="{DynamicResource BlackBrush}"
+            <Rectangle Fill="#FFB5BEC7"
                        StrokeThickness="0"
                        HorizontalAlignment="Right"
                        Margin="0,0,7,2"
@@ -52,10 +52,9 @@
                        Height="2" />
         </Grid>
     </ControlTemplate>
-    
     <ControlTemplate x:Key="ResizeVerticalThumbControlTemplate"
                      TargetType="{x:Type Thumb}">
-        <Grid Background="Transparent">
+        <Grid Background="#00000000">
             <StackPanel Margin="0,1,0,0"
                         Orientation="Horizontal"
                         d:LayoutOverrides="Height"
@@ -65,14 +64,14 @@
                       Margin="1,0,0,0"
                       Width="Auto"
                       Height="Auto">
-                    <Rectangle Fill="{DynamicResource WhiteBrush}"
+                    <Rectangle Fill="White"
                                StrokeThickness="0"
                                HorizontalAlignment="Center"
                                Margin="0"
                                VerticalAlignment="Center"
                                Width="2"
                                Height="2" />
-                    <Rectangle Fill="{DynamicResource BlackBrush}"
+                    <Rectangle Fill="#FFB5BEC7"
                                StrokeThickness="0"
                                HorizontalAlignment="Center"
                                Margin="0,0,1,1"
@@ -84,14 +83,14 @@
                       Margin="1,0,0,0"
                       Width="Auto"
                       Height="Auto">
-                    <Rectangle Fill="{DynamicResource WhiteBrush}"
+                    <Rectangle Fill="White"
                                StrokeThickness="0"
                                HorizontalAlignment="Center"
                                Margin="0"
                                VerticalAlignment="Center"
                                Width="2"
                                Height="2" />
-                    <Rectangle Fill="{DynamicResource BlackBrush}"
+                    <Rectangle Fill="#FFB5BEC7"
                                StrokeThickness="0"
                                HorizontalAlignment="Center"
                                Margin="0,0,1,1"
@@ -103,14 +102,14 @@
                       Margin="1,0,0,0"
                       Width="Auto"
                       Height="Auto">
-                    <Rectangle Fill="{DynamicResource WhiteBrush}"
+                    <Rectangle Fill="White"
                                StrokeThickness="0"
                                HorizontalAlignment="Center"
                                Margin="0"
                                VerticalAlignment="Center"
                                Width="2"
                                Height="2" />
-                    <Rectangle Fill="{DynamicResource BlackBrush}"
+                    <Rectangle Fill="#FFB5BEC7"
                                StrokeThickness="0"
                                HorizontalAlignment="Center"
                                Margin="0,0,1,1"
@@ -122,14 +121,14 @@
                       Margin="1,0,0,0"
                       Width="Auto"
                       Height="Auto">
-                    <Rectangle Fill="{DynamicResource WhiteBrush}"
+                    <Rectangle Fill="White"
                                StrokeThickness="0"
                                HorizontalAlignment="Center"
                                Margin="0"
                                VerticalAlignment="Center"
                                Width="2"
                                Height="2" />
-                    <Rectangle Fill="{DynamicResource BlackBrush}"
+                    <Rectangle Fill="#FFB5BEC7"
                                StrokeThickness="0"
                                HorizontalAlignment="Center"
                                Margin="0,0,1,1"
@@ -151,7 +150,9 @@
                        BasedOn="{StaticResource MenuScrollViewer}" />
             </ResourceDictionary>
         </ControlTemplate.Resources>
-        <Grid Background="{TemplateBinding Background}">
+        <Grid Width="Auto"
+              Height="Auto"
+              Background="{DynamicResource MenuItemBackground}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="25" />
                 <ColumnDefinition Width="*" />
@@ -162,12 +163,23 @@
                     Margin="0"
                     Width="Auto"
                     Visibility="Collapsed"
-                    Background="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.Background}"
-                    BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}"
+                    Background="{DynamicResource ButtonHoverOuterBackgroundBrush}"
+                    BorderBrush="{DynamicResource ButtonHoverOuterBorderBrush}"
                     BorderThickness="1"
                     Grid.Column="0"
                     Grid.ColumnSpan="3">
             </Border>
+            <TextBlock x:Name="textBlock_Copy"
+                       Text="{TemplateBinding Header}"
+                       Width="Auto"
+                       Height="Auto"
+                       Margin="9,3,13,3"
+                       VerticalAlignment="Center"
+                       Grid.Column="1"
+                       TextTrimming="None"
+                       d:LayoutOverrides="Width"
+                       Visibility="Hidden"
+                       HorizontalAlignment="Left" />
             <ContentPresenter x:Name="textBlock"
                               ContentSource="Header"
                               Width="Auto"
@@ -177,24 +189,21 @@
                               Grid.Column="1"
                               d:LayoutOverrides="Width"
                               RecognizesAccessKey="True" />
-            <Image x:Name="checkedImage"
+            <Image x:Name="image"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    Source="{DynamicResource MenuCheckedImage}"
                    Stretch="None"
                    Visibility="Collapsed"
                    SnapsToDevicePixels="True" />
-            <Border x:Name="iconImageBorder"
-                    BorderThickness="1">
-                <ContentPresenter x:Name="iconImage"
-                                  HorizontalAlignment="Center"
-                                  Height="16"
-                                  VerticalAlignment="Center"
-                                  Content="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}"
-                                  Width="16"
-                                  Margin="3,2,2,2"
-                                  SnapsToDevicePixels="True" />
-            </Border>
+            <ContentPresenter x:Name="iconImage"
+                              HorizontalAlignment="Center"
+                              Height="16"
+                              VerticalAlignment="Center"
+                              Content="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}"
+                              Width="16"
+                              Margin="3,2,2,2"
+                              SnapsToDevicePixels="True" />
             <TextBlock x:Name="gestureTextBlock"
                        Text="{TemplateBinding InputGestureText}"
                        Width="Auto"
@@ -216,15 +225,6 @@
                         TargetName="gestureTextBlock"
                         Value="Collapsed" />
             </Trigger>
-            <Trigger Property="IsChecked"
-                     Value="True">
-                <Setter Property="Background"
-                        TargetName="iconImageBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.ToggleButton.Checked.Background}" />
-                <Setter Property="BorderBrush"
-                        TargetName="iconImageBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.ToggleButton.Checked.BorderBrush}" />
-            </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="Icon"
@@ -233,7 +233,7 @@
                                Value="True" />
                 </MultiTrigger.Conditions>
                 <Setter Property="Visibility"
-                        TargetName="checkedImage"
+                        TargetName="image"
                         Value="Visible" />
             </MultiTrigger>
             <MultiTrigger>
@@ -253,7 +253,7 @@
                         TargetName="iconImage"
                         Value="0.5" />
                 <Setter Property="Opacity"
-                        TargetName="checkedImage"
+                        TargetName="image"
                         Value="0.5" />
                 <Setter Property="Opacity"
                         TargetName="textBlock"
@@ -268,7 +268,7 @@
                     </Setter.Value>
                 </Setter>
                 <Setter Property="Effect"
-                        TargetName="checkedImage">
+                        TargetName="image">
                     <Setter.Value>
                         <Fluent:GrayscaleEffect />
                     </Setter.Value>
@@ -276,7 +276,6 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-    
     <!--Header Menu Item Template-->
     <ControlTemplate x:Key="HeaderMenuItemTemplate"
                      TargetType="{x:Type MenuItem}">
@@ -287,7 +286,9 @@
                        BasedOn="{StaticResource MenuScrollViewer}" />
             </ResourceDictionary>
         </ControlTemplate.Resources>
-        <Grid Background="{TemplateBinding Background}">
+        <Grid Width="Auto"
+              Height="Auto"
+              Background="{DynamicResource MenuItemBackground}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="25" />
                 <ColumnDefinition Width="*" />
@@ -298,12 +299,23 @@
                     Margin="0"
                     Width="Auto"
                     Visibility="Collapsed"
-                    Background="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.Background}"
-                    BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}"
+                    Background="{DynamicResource ButtonHoverOuterBackgroundBrush}"
+                    BorderBrush="{DynamicResource ButtonHoverOuterBorderBrush}"
                     BorderThickness="1"
                     Grid.Column="0"
                     Grid.ColumnSpan="3">
             </Border>
+            <TextBlock x:Name="textBlock_Copy"
+                       Text="{TemplateBinding Header}"
+                       Width="Auto"
+                       Height="Auto"
+                       Margin="9,3,13,3"
+                       VerticalAlignment="Center"
+                       Grid.Column="1"
+                       TextTrimming="None"
+                       d:LayoutOverrides="Width"
+                       Visibility="Hidden"
+                       HorizontalAlignment="Left" />
             <ContentPresenter x:Name="textBlock"
                               ContentSource="Header"
                               Width="Auto"
@@ -313,24 +325,22 @@
                               Grid.Column="1"
                               d:LayoutOverrides="Width"
                               RecognizesAccessKey="True" />
-            <Image x:Name="checkedImage"
+            <Image x:Name="image"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    Source="{DynamicResource MenuCheckedImage}"
                    Stretch="None"
                    Visibility="Collapsed"
                    SnapsToDevicePixels="True" />
-            <Border x:Name="iconImageBorder"
-                    BorderThickness="1">
-                <ContentPresenter x:Name="iconImage"
-                                  HorizontalAlignment="Center"
-                                  Height="16"
-                                  VerticalAlignment="Center"
-                                  Content="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}"
-                                  Width="16"
-                                  Margin="3,2,2,2"
-                                  SnapsToDevicePixels="True" />
-            </Border>
+            <ContentPresenter x:Name="iconImage"
+                              HorizontalAlignment="Center"
+                              Height="16"
+                              VerticalAlignment="Center"
+                              Content="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}"
+                              Width="16"
+                              Margin="3,2,2,2"
+                              SnapsToDevicePixels="True"
+                              RecognizesAccessKey="True" />
             <Path x:Name="path"
                   Stretch="Fill"
                   Stroke="{x:Null}"
@@ -339,8 +349,16 @@
                   Width="4"
                   Data="M0,0L1,1 0,2z"
                   Height="7"
-                  Grid.Column="3"
-                  Fill="{DynamicResource Fluent.Ribbon.MenuItem.SubMenu.Arrow.Fill}" />
+                  Grid.Column="3">
+                <Path.Fill>
+                    <LinearGradientBrush EndPoint="0.945,0.872"
+                                         StartPoint="0.055,0.128">
+                        <GradientStop Color="#FF7C7C7C"
+                                      Offset="1" />
+                        <GradientStop Color="#FF9E9E9E" />
+                    </LinearGradientBrush>
+                </Path.Fill>
+            </Path>
             <Popup x:Name="PART_Popup"
                    Placement="Right"
                    IsOpen="{TemplateBinding IsSubmenuOpen}"
@@ -356,8 +374,8 @@
                       VerticalAlignment="Stretch">
                     <Border x:Name="DropDownBorder"
                             SnapsToDevicePixels="True"
-                            Background="{DynamicResource Fluent.Ribbon.Brushes.DropDown.BackgroundBrush}"
-                            BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.DropDown.BorderBrush}"
+                            Background="{DynamicResource ContextMenuBarBackgroundBrush}"
+                            BorderBrush="{DynamicResource ContextMenuBarBorderBrush}"
                             BorderThickness="1"
                             d:LayoutOverrides="Width, Height"
                             HorizontalAlignment="Stretch"
@@ -369,7 +387,7 @@
                             <Border VerticalAlignment="Stretch"
                                     Width="Auto"
                                     Height="Auto"
-                                    BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.DropDown.BackgroundBrush}"
+                                    BorderBrush="{DynamicResource ContextMenuBarBackgroundBrush}"
                                     BorderThickness="1" />
                             <Grid Margin="1"
                                   HorizontalAlignment="Stretch"
@@ -380,7 +398,7 @@
                                 </Grid.RowDefinitions>
                                 <Path Fill="{x:Null}"
                                       Stretch="Fill"
-                                      Stroke="{DynamicResource Fluent.Ribbon.Brushes.Separator.BorderBrush}"
+                                      Stroke="#FFE2E4E7"
                                       HorizontalAlignment="Left"
                                       Margin="24,0,0,0"
                                       Width="1"
@@ -401,10 +419,10 @@
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Top"
                                         Height="11"
-                                        BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.DropDown.Resize.BorderBrush}"
+                                        BorderBrush="{DynamicResource ContextMenuBarResizeBorderBrush}"
                                         BorderThickness="0,1,0,0"
                                         Grid.Row="1"
-                                        Background="{DynamicResource Fluent.Ribbon.Brushes.DropDown.Resize.BackgoundBrush}">
+                                        Background="{DynamicResource ContextMenuBarResizeBackgoundBrush}">
                                     <Grid>
                                         <Thumb x:Name="PART_ResizeVerticalThumb"
                                                HorizontalAlignment="Stretch"
@@ -461,15 +479,6 @@
                         TargetName="resizeBorder"
                         Value="Visible" />
             </Trigger>
-            <Trigger Property="IsChecked"
-                     Value="True">
-                <Setter Property="Background"
-                        TargetName="iconImageBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.ToggleButton.Checked.Background}" />
-                <Setter Property="BorderBrush"
-                        TargetName="iconImageBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.ToggleButton.Checked.BorderBrush}" />
-            </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="Icon"
@@ -478,7 +487,7 @@
                                Value="True" />
                 </MultiTrigger.Conditions>
                 <Setter Property="Visibility"
-                        TargetName="checkedImage"
+                        TargetName="image"
                         Value="Visible" />
             </MultiTrigger>
             <MultiTrigger>
@@ -498,7 +507,7 @@
                         TargetName="iconImage"
                         Value="0.5" />
                 <Setter Property="Opacity"
-                        TargetName="checkedImage"
+                        TargetName="image"
                         Value="0.5" />
                 <Setter Property="Opacity"
                         TargetName="textBlock"
@@ -510,7 +519,7 @@
                     </Setter.Value>
                 </Setter>
                 <Setter Property="Effect"
-                        TargetName="checkedImage">
+                        TargetName="image">
                     <Setter.Value>
                         <Fluent:GrayscaleEffect />
                     </Setter.Value>
@@ -518,7 +527,6 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-    
     <!--Splited Menu Item Template-->
     <ControlTemplate x:Key="SplitedMenuItemTemplate"
                      TargetType="{x:Type MenuItem}">
@@ -529,7 +537,9 @@
                        BasedOn="{StaticResource MenuScrollViewer}" />
             </ResourceDictionary>
         </ControlTemplate.Resources>
-        <Grid Background="{TemplateBinding Background}">
+        <Grid Width="Auto"
+              Height="Auto"
+              Background="{DynamicResource MenuItemBackground}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="25" />
                 <ColumnDefinition Width="*" />
@@ -539,9 +549,8 @@
             <Rectangle Grid.Column="2"
                        HorizontalAlignment="Right"
                        Margin="0,4,23,4"
-                       Stroke="{DynamicResource Fluent.Ribbon.Brushes.Separator.BorderBrush}"
+                       Stroke="{DynamicResource WindowContentBorderBrush}"
                        Width="1" />
-            
             <Grid  HorizontalAlignment="Stretch"
                    Margin="0"
                    Width="Auto"
@@ -554,22 +563,42 @@
                 </Grid.ColumnDefinitions>
                 <Border x:Name="PART_ButtonBorder"
                         Visibility="Collapsed"
-                        Background="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.Background}"
-                        BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}"
+                        Background="{DynamicResource ButtonHoverOuterBackgroundBrush}"
+                        BorderBrush="{DynamicResource ButtonHoverOuterBorderBrush}"
                         BorderThickness="1"
                         Margin="0,0,-1,0">
                 </Border>
-                <Border x:Name="Submenu_Border"
+                <Border x:Name="border_Copy"
                         HorizontalAlignment="Stretch"
                         Margin="0"
                         Width="Auto"
                         Visibility="Collapsed"
-                        Background="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.Background}"
-                        BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}"
+                        BorderBrush="{DynamicResource ButtonHoverOuterBorderBrush}"
                         BorderThickness="1"
                         CornerRadius="2"
-                        Grid.Column="1" />
+                        Grid.Column="1"
+                        Background="{DynamicResource TransparentBrush}">
+                    <Border x:Name="border1_Copy"
+                            Background="{DynamicResource ButtonHoverInnerBackgroundBrush}"
+                            BorderBrush="{DynamicResource ButtonHoverInnerBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="1"
+                            Grid.ColumnSpan="1"
+                            d:CopyToken="09a4b798-0b8a-441e-b6c8-d7787f8d7e43"
+                            Visibility="Collapsed" />
+                </Border>
             </Grid>
+            <TextBlock x:Name="textBlock_Copy"
+                       Text="{TemplateBinding Header}"
+                       Width="Auto"
+                       Height="Auto"
+                       Margin="9,3,13,3"
+                       VerticalAlignment="Center"
+                       Grid.Column="1"
+                       TextTrimming="None"
+                       d:LayoutOverrides="Width"
+                       Visibility="Hidden"
+                       HorizontalAlignment="Left" />
             <ContentPresenter x:Name="textBlock"
                               ContentSource="Header"
                               Width="Auto"
@@ -579,24 +608,22 @@
                               Grid.Column="1"
                               d:LayoutOverrides="Width"
                               RecognizesAccessKey="True" />
-            <Image x:Name="checkedImage"
+            <Image x:Name="image"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    Source="{DynamicResource MenuCheckedImage}"
                    Stretch="None"
                    Visibility="Collapsed"
                    SnapsToDevicePixels="True" />
-            <Border x:Name="iconImageBorder"
-                    BorderThickness="1">
-                <ContentPresenter x:Name="iconImage"
-                                  HorizontalAlignment="Center"
-                                  Height="16"
-                                  VerticalAlignment="Center"
-                                  Content="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}"
-                                  Width="16"
-                                  Margin="3,2,2,2"
-                                  SnapsToDevicePixels="True" />
-            </Border>
+            <ContentPresenter x:Name="iconImage"
+                              HorizontalAlignment="Center"
+                              Height="16"
+                              VerticalAlignment="Center"
+                              Content="{Binding Icon, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}, RelativeSource={RelativeSource TemplatedParent}}"
+                              Width="16"
+                              Margin="3,2,2,2"
+                              SnapsToDevicePixels="True"
+                              RecognizesAccessKey="True" />
             <Path x:Name="path"
                   Stretch="Fill"
                   Stroke="{x:Null}"
@@ -605,8 +632,16 @@
                   Width="4"
                   Data="M0,0L1,1 0,2z"
                   Height="7"
-                  Grid.Column="3"
-                  Fill="{DynamicResource Fluent.Ribbon.MenuItem.SubMenu.Arrow.Fill}" />
+                  Grid.Column="3">
+                <Path.Fill>
+                    <LinearGradientBrush EndPoint="0.945,0.872"
+                                         StartPoint="0.055,0.128">
+                        <GradientStop Color="#FF7C7C7C"
+                                      Offset="1" />
+                        <GradientStop Color="#FF9E9E9E" />
+                    </LinearGradientBrush>
+                </Path.Fill>
+            </Path>
             <Popup x:Name="PART_Popup"
                    Placement="Right"
                    IsOpen="{TemplateBinding IsSubmenuOpen}"
@@ -622,8 +657,8 @@
                       VerticalAlignment="Stretch">
                     <Border x:Name="DropDownBorder"
                             SnapsToDevicePixels="True"
-                            Background="{DynamicResource Fluent.Ribbon.Brushes.DropDown.BackgroundBrush}"
-                            BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.DropDown.BorderBrush}"
+                            Background="{DynamicResource ContextMenuBarBackgroundBrush}"
+                            BorderBrush="{DynamicResource ContextMenuBarBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="1"
                             d:LayoutOverrides="Width, Height"
@@ -636,7 +671,7 @@
                             <Border VerticalAlignment="Stretch"
                                     Width="Auto"
                                     Height="Auto"
-                                    BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.DropDown.BackgroundBrush}"
+                                    BorderBrush="{DynamicResource ContextMenuBarBackgroundBrush}"
                                     CornerRadius="1" />
                             <Grid Margin="1"
                                   HorizontalAlignment="Stretch"
@@ -647,7 +682,7 @@
                                 </Grid.RowDefinitions>
                                 <Path Fill="{x:Null}"
                                       Stretch="Fill"
-                                      Stroke="{DynamicResource Fluent.Ribbon.Brushes.Separator.BorderBrush}"
+                                      Stroke="#FFE2E4E7"
                                       HorizontalAlignment="Left"
                                       Margin="24,0,0,0"
                                       Width="1"
@@ -668,10 +703,10 @@
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Top"
                                         Height="11"
-                                        BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.DropDown.Resize.BorderBrush}"
+                                        BorderBrush="{DynamicResource ContextMenuBarResizeBorderBrush}"
                                         BorderThickness="0,1,0,0"
                                         Grid.Row="1"
-                                        Background="{DynamicResource Fluent.Ribbon.Brushes.DropDown.Resize.BackgoundBrush}">
+                                        Background="{DynamicResource ContextMenuBarResizeBackgoundBrush}">
                                     <Grid>
                                         <Thumb x:Name="PART_ResizeVerticalThumb"
                                                HorizontalAlignment="Stretch"
@@ -698,6 +733,13 @@
             </Popup>
         </Grid>
         <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True"
+                     SourceName="border_Copy">
+                <Setter Property="Visibility"
+                        TargetName="border1_Copy"
+                        Value="Visible" />
+            </Trigger>
             <Trigger Property="Fluent:MenuItem.ResizeMode"
                      Value="None">
                 <Setter Property="Visibility"
@@ -728,15 +770,6 @@
                         TargetName="resizeBorder"
                         Value="Visible" />
             </Trigger>
-            <Trigger Property="IsChecked"
-                     Value="True">
-                <Setter Property="Background"
-                        TargetName="iconImageBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.ToggleButton.Checked.Background}" />
-                <Setter Property="BorderBrush"
-                        TargetName="iconImageBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.ToggleButton.Checked.BorderBrush}" />
-            </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="Icon"
@@ -745,7 +778,7 @@
                                Value="True" />
                 </MultiTrigger.Conditions>
                 <Setter Property="Visibility"
-                        TargetName="checkedImage"
+                        TargetName="image"
                         Value="Visible" />
             </MultiTrigger>
             <MultiTrigger>
@@ -759,14 +792,14 @@
                         TargetName="PART_ButtonBorder"
                         Value="Visible" />
                 <Setter Property="Visibility"
-                        TargetName="Submenu_Border"
+                        TargetName="border_Copy"
                         Value="Visible" />
             </MultiTrigger>
             <Trigger Property="IsSubmenuOpen"
                      Value="True">
-                <Setter Property="Background"
-                        TargetName="Submenu_Border"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.Background}" />
+                <Setter Property="Visibility"
+                        TargetName="border1_Copy"
+                        Value="Visible" />
             </Trigger>
             <Trigger Property="IsEnabled"
                      Value="False">
@@ -774,7 +807,7 @@
                         TargetName="iconImage"
                         Value="0.5" />
                 <Setter Property="Opacity"
-                        TargetName="checkedImage"
+                        TargetName="image"
                         Value="0.5" />
                 <Setter Property="Opacity"
                         TargetName="textBlock"
@@ -786,7 +819,7 @@
                     </Setter.Value>
                 </Setter>
                 <Setter Property="Effect"
-                        TargetName="checkedImage">
+                        TargetName="image">
                     <Setter.Value>
                         <Fluent:GrayscaleEffect />
                     </Setter.Value>
@@ -795,174 +828,21 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <!--Menu Item with Description Template-->
-    <ControlTemplate x:Key="MenuItemWithDescriptionTemplate"
-                     TargetType="{x:Type Fluent:MenuItem}">
-        <ControlTemplate.Resources>
-            <ResourceDictionary>
-                <Style x:Key="{x:Type ScrollViewer}"
-                       TargetType="{x:Type ScrollViewer}"
-                       BasedOn="{StaticResource MenuScrollViewer}" />
-            </ResourceDictionary>
-        </ControlTemplate.Resources>
-        <Grid Background="{TemplateBinding Background}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="45" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Border x:Name="border"
-                    Grid.Column="0"
-                    Grid.RowSpan="2"
-                    Grid.ColumnSpan="3"
-                    HorizontalAlignment="Stretch"
-                    Margin="0"
-                    Width="Auto"
-                    Visibility="Collapsed"
-                    Background="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.Background}"
-                    BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}"
-                    BorderThickness="1">
-            </Border>
-            <ContentControl x:Name="textBlock"
-                            Content="{TemplateBinding Header}"
-                            ContentTemplate="{TemplateBinding HeaderTemplate}"
-                            Width="Auto"
-                            Height="Auto"
-                            Margin="0,3,3,3"
-                            VerticalAlignment="Center"
-                            Grid.Column="1"
-                            d:LayoutOverrides="Width" />
-            <ContentPresenter x:Name="descriptionPresenter"
-                              Grid.Row="1"
-                              ContentSource="Description"
-                              Width="Auto"
-                              Height="Auto"
-                              Margin="0,3,3,3"
-                              VerticalAlignment="Center"
-                              Grid.Column="1"
-                              d:LayoutOverrides="Width"
-                              RecognizesAccessKey="True" />
-            <Image x:Name="checkedImage"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   Source="{DynamicResource MenuCheckedImage}"
-                   Stretch="None"
-                   Visibility="Collapsed"
-                   SnapsToDevicePixels="True" />
-            <Border x:Name="iconImageBorder"
-                    BorderThickness="1">
-                <ContentPresenter x:Name="iconImage"
-                                  HorizontalAlignment="Center"
-                                  Height="16"
-                                  VerticalAlignment="Center"
-                                  Content="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}"
-                                  Width="16"
-                                  Margin="3,2,2,2"
-                                  SnapsToDevicePixels="True" />
-            </Border>
-            <TextBlock x:Name="gestureTextBlock"
-                       Text="{TemplateBinding InputGestureText}"
-                       Width="Auto"
-                       Height="Auto"
-                       Margin="3,3,15,3"
-                       VerticalAlignment="Center"
-                       Grid.Column="2" />
-        </Grid>
-        <ControlTemplate.Triggers>
-            <Trigger Property="InputGestureText"
-                     Value="{x:Null}">
-                <Setter Property="Visibility"
-                        TargetName="gestureTextBlock"
-                        Value="Collapsed" />
-            </Trigger>
-            <Trigger Property="InputGestureText"
-                     Value="">
-                <Setter Property="Visibility"
-                        TargetName="gestureTextBlock"
-                        Value="Collapsed" />
-            </Trigger>
-            <Trigger Property="IsChecked"
-                     Value="True">
-                <Setter Property="Background"
-                        TargetName="iconImageBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.ToggleButton.Checked.Background}" />
-                <Setter Property="BorderBrush"
-                        TargetName="iconImageBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.ToggleButton.Checked.BorderBrush}" />
-            </Trigger>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="Icon"
-                               Value="{x:Null}" />
-                    <Condition Property="IsChecked"
-                               Value="True" />
-                </MultiTrigger.Conditions>
-                <Setter Property="Visibility"
-                        TargetName="checkedImage"
-                        Value="Visible" />
-            </MultiTrigger>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsHighlighted"
-                               Value="True" />
-                    <Condition Property="IsEnabled"
-                               Value="True" />
-                </MultiTrigger.Conditions>
-                <Setter Property="Visibility"
-                        TargetName="border"
-                        Value="Visible" />
-            </MultiTrigger>
-            <Trigger Property="IsEnabled"
-                     Value="False">
-                <Setter Property="Opacity"
-                        TargetName="iconImage"
-                        Value="0.5" />
-                <Setter Property="Opacity"
-                        TargetName="checkedImage"
-                        Value="0.5" />
-                <Setter Property="Opacity"
-                        TargetName="textBlock"
-                        Value="0.5" />
-                <Setter Property="Effect"
-                        TargetName="iconImage">
-                    <Setter.Value>
-                        <Fluent:GrayscaleEffect />
-                    </Setter.Value>
-                </Setter>
-                <Setter Property="Effect"
-                        TargetName="checkedImage">
-                    <Setter.Value>
-                        <Fluent:GrayscaleEffect />
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
-    
     <!--Menu Item Style-->
-    <Style x:Key="FluentDefaultSystemMenuItemStyle"
+    <Style x:Key="MenuItemStyle"
            TargetType="{x:Type MenuItem}">
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility"
                 Value="Auto" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
                 Value="Hidden" />
-        <Setter Property="Background"
-                Value="{DynamicResource Fluent.Ribbon.Brushes.MenuItem.Background}" />
         <Setter Property="Foreground"
-                Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
+                Value="{DynamicResource DefaultFontBrush}" />
+        <Setter Property="SnapsToDevicePixels"
+                Value="True" />
+        <Setter Property="Fluent:FrameworkHelper.UseLayoutRounding"
+                Value="True" />
         <Setter Property="Template"
                 Value="{DynamicResource MenuItemTemplate}" />
-        <Setter Property="HeaderTemplate">
-            <Setter.Value>
-                <DataTemplate>
-                    <TextBlock Text="{Binding}" />
-                </DataTemplate>
-            </Setter.Value>
-        </Setter>
         <Style.Triggers>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
@@ -984,19 +864,10 @@
                 <Setter Property="Template"
                         Value="{DynamicResource HeaderMenuItemTemplate}" />
             </MultiTrigger>
-            <DataTrigger Binding="{Binding Description, RelativeSource={RelativeSource Self}, Converter={x:Static Converters:IsNullConverter.Instance}}"
-                         Value="False">
-                <Setter Property="Template"
-                        Value="{DynamicResource MenuItemWithDescriptionTemplate}" />
-                <Setter Property="HeaderTemplate">
-                    <Setter.Value>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding}"
-                                       FontWeight="Bold" />
-                        </DataTemplate>
-                    </Setter.Value>
-                </Setter>
-            </DataTrigger>
         </Style.Triggers>
     </Style>
+    <Style TargetType="{x:Type MenuItem}"
+           BasedOn="{StaticResource MenuItemStyle}" />
+    <Style TargetType="{x:Type Fluent:MenuItem}"
+           BasedOn="{StaticResource {x:Type MenuItem}}" />
 </ResourceDictionary>

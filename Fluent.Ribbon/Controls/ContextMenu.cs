@@ -1,10 +1,11 @@
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Windows;
+using System.Windows.Controls.Primitives;
+
 // ReSharper disable once CheckNamespace
 namespace Fluent
 {
-    using System;
-    using System.Windows;
-    using System.Windows.Controls.Primitives;
-
     /// <summary>
     /// Represents context menu resize mode
     /// </summary>
@@ -14,12 +15,10 @@ namespace Fluent
         /// Context menu can not be resized
         /// </summary>
         None = 0,
-
         /// <summary>
         /// Context menu can be only resized vertically
         /// </summary>
         Vertical,
-
         /// <summary>
         /// Context menu can be resized vertically and horizontally
         /// </summary>
@@ -27,7 +26,7 @@ namespace Fluent
     }
 
     /// <summary>
-    /// Represents a pop-up menu that enables a control
+    /// Represents a pop-up menu that enables a control 
     /// to expose functionality that is specific to the context of the control
     /// </summary>
     public class ContextMenu : System.Windows.Controls.ContextMenu
@@ -53,7 +52,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for ResizeMode.
+        /// Using a DependencyProperty as the backing store for ResizeMode. 
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty ResizeModeProperty =
@@ -67,6 +66,7 @@ namespace Fluent
         /// <summary>
         /// Static constructor
         /// </summary>]
+        [SuppressMessage("Microsoft.Performance", "CA1810")]
         static ContextMenu()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ContextMenu), new FrameworkPropertyMetadata(typeof(ContextMenu)));
@@ -86,7 +86,6 @@ namespace Fluent
             {
                 this.resizeVerticalThumb.DragDelta -= this.OnResizeVerticalDelta;
             }
-
             this.resizeVerticalThumb = this.GetTemplateChild("PART_ResizeVerticalThumb") as Thumb;
             if (this.resizeVerticalThumb != null)
             {
@@ -97,7 +96,6 @@ namespace Fluent
             {
                 this.resizeBothThumb.DragDelta -= this.OnResizeBothDelta;
             }
-
             this.resizeBothThumb = this.GetTemplateChild("PART_ResizeBothThumb") as Thumb;
             if (this.resizeBothThumb != null)
             {
@@ -132,15 +130,9 @@ namespace Fluent
         private void OnResizeBothDelta(object sender, DragDeltaEventArgs e)
         {
             if (double.IsNaN(this.Width))
-            {
                 this.Width = this.ActualWidth;
-            }
-
             if (double.IsNaN(this.Height))
-            {
                 this.Height = this.ActualHeight;
-            }
-
             this.Width = Math.Max(this.MinWidth, this.Width + e.HorizontalChange);
             this.Height = Math.Max(this.MinHeight, this.Height + e.VerticalChange);
         }
@@ -149,10 +141,7 @@ namespace Fluent
         private void OnResizeVerticalDelta(object sender, DragDeltaEventArgs e)
         {
             if (double.IsNaN(this.Height))
-            {
                 this.Height = this.ActualHeight;
-            }
-
             this.Height = Math.Max(this.MinHeight, this.Height + e.VerticalChange);
         }
 

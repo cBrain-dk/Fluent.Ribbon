@@ -1,17 +1,19 @@
-﻿// ReSharper disable once CheckNamespace
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Markup;
+using System.Windows.Media;
+
+// ReSharper disable once CheckNamespace
 namespace Fluent
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Collections.Specialized;
-    using System.ComponentModel;
-    using System.Linq;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Markup;
-    using System.Windows.Media;
     using Fluent.Extensibility;
     using Fluent.Internal.KnownBoxes;
 
@@ -47,7 +49,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for SeparatorStyle.
+        /// Using a DependencyProperty as the backing store for SeparatorStyle.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty SeparatorStyleProperty =
@@ -72,7 +74,6 @@ namespace Fluent
         /// <summary>
         /// Gets particular rules  for layout in this group box panel
         /// </summary>
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public ObservableCollection<RibbonToolBarLayoutDefinition> LayoutDefinitions { get; } = new ObservableCollection<RibbonToolBarLayoutDefinition>();
 
         #endregion
@@ -106,9 +107,9 @@ namespace Fluent
         /// Overrides System.Windows.Media.Visual.GetVisualChild(System.Int32),
         /// and returns a child at the specified index from a collection of child elements.
         /// </summary>
-        /// <param name="index">The zero-based index of the requested
+        /// <param name="index">The zero-based index of the requested 
         /// child element in the collection</param>
-        /// <returns>The requested child element. This should not return null;
+        /// <returns>The requested child element. This should not return null; 
         /// if the provided index is out of range, an exception is thrown</returns>
         protected override Visual GetVisualChild(int index)
         {
@@ -144,6 +145,7 @@ namespace Fluent
         /// <summary>
         /// Static constructor
         /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1810")]
         static RibbonToolBar()
         {
             // Override default style
@@ -234,9 +236,9 @@ namespace Fluent
         /// Measures all of the RibbonGroupBox, and resize them appropriately
         /// to fit within the available room
         /// </summary>
-        /// <param name="availableSize">The available size that
+        /// <param name="availableSize">The available size that 
         /// this element can give to child elements.</param>
-        /// <returns>The size that the panel determines it needs during
+        /// <returns>The size that the panel determines it needs during 
         /// layout, based on its calculations of child element sizes.
         /// </returns>
         protected override Size MeasureOverride(Size availableSize)
@@ -286,10 +288,10 @@ namespace Fluent
         }
 
         /// <summary>
-        /// When overridden in a derived class, positions child elements and determines
+        /// When overridden in a derived class, positions child elements and determines 
         /// a size for a System.Windows.FrameworkElement derived class.
         /// </summary>
-        /// <param name="finalSize">The final area within the parent that this
+        /// <param name="finalSize">The final area within the parent that this 
         /// element should use to arrange itself and its children.</param>
         /// <returns>The actual size used.</returns>
         protected override Size ArrangeOverride(Size finalSize)
@@ -315,8 +317,8 @@ namespace Fluent
         private Size WrapPanelLayuot(Size availableSize, bool measure)
         {
             var arrange = !measure;
-            var availableHeight = double.IsPositiveInfinity(availableSize.Height)
-                ? 0
+            var availableHeight = double.IsPositiveInfinity(availableSize.Height) 
+                ? 0 
                 : availableSize.Height;
 
             double currentheight = 0;
@@ -408,8 +410,8 @@ namespace Fluent
         private Size CustomLayout(RibbonToolBarLayoutDefinition layoutDefinition, Size availableSize, bool measure, bool addchildren)
         {
             var arrange = !measure;
-            var availableHeight = double.IsPositiveInfinity(availableSize.Height)
-                ? 0
+            var availableHeight = double.IsPositiveInfinity(availableSize.Height) 
+                ? 0 
                 : availableSize.Height;
 
             // Clear separator cahce
@@ -423,7 +425,7 @@ namespace Fluent
 
             // Calculate whitespace
             var rowCountInColumn = Math.Min(layoutDefinition.RowCount, layoutDefinition.Rows.Count);
-            var whitespace = (availableHeight - (rowCountInColumn * rowHeight)) / (rowCountInColumn + 1);
+            var whitespace = (availableHeight - rowCountInColumn * rowHeight) / (rowCountInColumn + 1);
 
             double y = 0;
             double currentRowBegin = 0;
@@ -455,18 +457,14 @@ namespace Fluent
                                         };
                             this.separatorCache.Add(rowIndex, separator);
                         }
-
                         if (measure)
                         {
                             separator.Height = availableHeight - separator.Margin.Bottom - separator.Margin.Top;
                             separator.Measure(availableSize);
                         }
-
-                        if (arrange)
-                        {
-                            separator.Arrange(new Rect(x, y, separator.DesiredSize.Width, separator.DesiredSize.Height));
-                        }
-
+                        if (arrange) separator.Arrange(new Rect(x, y,
+                                separator.DesiredSize.Width,
+                                separator.DesiredSize.Height));
                         x += separator.DesiredSize.Width;
 
                         if (addchildren)
@@ -614,7 +612,7 @@ namespace Fluent
 
         /// <summary>
         /// Gets control which represents shortcut item.
-        /// This item MUST be syncronized with the original
+        /// This item MUST be syncronized with the original 
         /// and send command to original one control.
         /// </summary>
         /// <returns>Control which represents shortcut item</returns>

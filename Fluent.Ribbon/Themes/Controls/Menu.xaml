@@ -8,7 +8,7 @@
         <Setter Property="Template"
                 Value="{DynamicResource FluentPopupMenuControlTemplate}" />
         <Setter Property="Foreground"
-                Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
+                Value="{DynamicResource DefaultFontBrush}" />
         <Setter Property="MinWidth"
                 Value="0" />
         <Setter Property="MinHeight"
@@ -18,25 +18,7 @@
         <Setter Property="VerticalAlignment"
                 Value="Top" />
     </Style>
-
-    <!-- Default menu style for wpf context menu-->
-
-    <Style x:Key="FluentRibbonDefaultContextMenuStyle"  
-           TargetType="{x:Type ContextMenu}">
-        <Setter Property="Template"
-                Value="{DynamicResource PopupMenuControlTemplate}" />
-        <Setter Property="Foreground"
-                Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
-        <Setter Property="MinWidth"
-                Value="0" />
-        <Setter Property="MinHeight"
-                Value="0" />
-        <Setter Property="HorizontalAlignment"
-                Value="Left" />
-        <Setter Property="VerticalAlignment"
-                Value="Top" />
-    </Style>
-
+    
     <ControlTemplate x:Key="FluentPopupMenuControlTemplate"
                      TargetType="{x:Type Fluent:ContextMenu}">
         <ControlTemplate.Resources>
@@ -49,8 +31,8 @@
               HorizontalAlignment="Left"
               VerticalAlignment="Top">
             <Border SnapsToDevicePixels="True"
-                    Background="{DynamicResource Fluent.Ribbon.Brushes.DropDown.BackgroundBrush}"
-                    BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.DropDown.BorderBrush}"
+                    Background="{DynamicResource ContextMenuBarBackgroundBrush}"
+                    BorderBrush="{DynamicResource ContextMenuBarBorderBrush}"
                     BorderThickness="1"
                     CornerRadius="1"
                     d:LayoutOverrides="Width, Height"
@@ -85,11 +67,11 @@
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Top"
                                 Height="11"
-                                BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.DropDown.Resize.BorderBrush}"
+                                BorderBrush="{DynamicResource ContextMenuBarResizeBorderBrush}"
                                 BorderThickness="0,1,0,0"
                                 Grid.Row="1"
                                 CornerRadius="0,0,1,1"
-                                Background="{DynamicResource Fluent.Ribbon.Brushes.DropDown.Resize.BackgoundBrush}">
+                                Background="{DynamicResource ContextMenuBarResizeBackgoundBrush}">
                             <Grid>
                                 <Thumb x:Name="PART_ResizeVerticalThumb"
                                        HorizontalAlignment="Stretch"
@@ -153,6 +135,22 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
+    <!-- Default menu style for wpf context menu-->
+
+    <Style TargetType="{x:Type ContextMenu}">
+        <Setter Property="Template"
+                Value="{DynamicResource PopupMenuControlTemplate}" />
+        <Setter Property="Foreground"
+                Value="{DynamicResource DefaultFontBrush}" />
+        <Setter Property="MinWidth"
+                Value="0" />
+        <Setter Property="MinHeight"
+                Value="0" />
+        <Setter Property="HorizontalAlignment"
+                Value="Left" />
+        <Setter Property="VerticalAlignment"
+                Value="Top" />
+    </Style>
     <ControlTemplate x:Key="PopupMenuControlTemplate"
                      TargetType="{x:Type ContextMenu}">
         <ControlTemplate.Resources>
@@ -165,8 +163,8 @@
               HorizontalAlignment="Left"
               VerticalAlignment="Top">
             <Border SnapsToDevicePixels="True"
-                    Background="{DynamicResource Fluent.Ribbon.Brushes.DropDown.BackgroundBrush}"
-                    BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.DropDown.BorderBrush}"
+                    Background="{DynamicResource ContextMenuBarBackgroundBrush}"
+                    BorderBrush="{DynamicResource ContextMenuBarBorderBrush}"
                     BorderThickness="1"
                     CornerRadius="1"
                     d:LayoutOverrides="Width, Height"
@@ -179,7 +177,7 @@
                     <Border VerticalAlignment="Stretch"
                             Width="Auto"
                             Height="Auto"
-                            BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.DropDown.BackgroundBrush}"
+                            BorderBrush="{DynamicResource ContextMenuBarBackgroundBrush}"
                             BorderThickness="1"
                             CornerRadius="1" />
                     <Grid HorizontalAlignment="Left"

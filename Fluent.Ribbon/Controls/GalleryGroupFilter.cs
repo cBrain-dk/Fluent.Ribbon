@@ -1,7 +1,8 @@
-﻿// ReSharper disable once CheckNamespace
+﻿using System.Windows;
+
+// ReSharper disable once CheckNamespace
 namespace Fluent
 {
-    using System.Windows;
     using Fluent.Internal.KnownBoxes;
 
     /// <summary>
@@ -19,13 +20,13 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Title.
+        /// Using a DependencyProperty as the backing store for Title.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty TitleProperty =
-            DependencyProperty.Register(nameof(Title), typeof(string),
+            DependencyProperty.Register(nameof(Title), typeof(string), 
             typeof(GalleryGroupFilter), new PropertyMetadata("GalleryGroupFilter"));
-
+               
         /// <summary>
         /// Gets or sets list pf groups splitted by comma
         /// </summary>
@@ -36,11 +37,11 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Groups.
+        /// Using a DependencyProperty as the backing store for Groups.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty GroupsProperty =
-            DependencyProperty.Register(nameof(Groups), typeof(string),
+            DependencyProperty.Register(nameof(Groups), typeof(string), 
             typeof(GalleryGroupFilter), new PropertyMetadata(StringBoxes.Empty));
     }
 }

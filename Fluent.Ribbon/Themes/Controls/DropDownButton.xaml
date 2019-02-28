@@ -14,13 +14,13 @@
         <Setter Property="Width"
                 Value="Auto" />
         <Setter Property="Background"
-                Value="Transparent" />
+                Value="{DynamicResource TransparentBrush}" />
         <Setter Property="BorderBrush"
-                Value="Transparent" />
+                Value="{DynamicResource TransparentBrush}" />
         <Setter Property="BorderThickness"
-                Value="1" />
+                Value="0" />
         <Setter Property="Foreground"
-                Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
+                Value="{DynamicResource DefaultFontBrush}" />
         <Setter Property="SnapsToDevicePixels"
                 Value="False" />
         <Style.Triggers>
@@ -33,8 +33,6 @@
                      Value="Middle">
                 <Setter Property="Height"
                         Value="22" />
-                <Setter Property="HorizontalAlignment"
-                        Value="Left" />
             </Trigger>
             <Trigger Property="Size"
                      Value="Small">
@@ -42,12 +40,9 @@
                         Value="22" />
                 <Setter Property="Width"
                         Value="32" />
-                <Setter Property="HorizontalAlignment"
-                        Value="Left" />
             </Trigger>
         </Style.Triggers>
     </Style>
-    
     <ControlTemplate x:Key="RibbonDropDownButtonControlTemplate"
                      TargetType="{x:Type Fluent:DropDownButton}">
         <ControlTemplate.Resources>
@@ -60,29 +55,31 @@
                     Background="{TemplateBinding Background}"
                     BorderBrush="{TemplateBinding BorderBrush}"
                     Height="Auto"
-                    HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                    HorizontalAlignment="Left"
                     VerticalAlignment="Stretch"
                     d:LayoutOverrides="Width, Height">
-                <StackPanel x:Name="stackPanel"
-                            Width="Auto"
-                            Orientation="Vertical"
-                            d:LayoutOverrides="Width, Height">
-                    <ContentPresenter x:Name="iconImage"
-                                        HorizontalAlignment="Center"
-                                        Height="32"
-                                        VerticalAlignment="Center"
-                                        Content="{Binding LargeIcon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}"
-                                        Width="32"
-                                        Margin="0 2 0 0"
-                                        SnapsToDevicePixels="True" />
-                    <Fluent:TwoLineLabel x:Name="controlLabel"
-                                            Text="{TemplateBinding Header}"
-                                            Style="{DynamicResource TwoLineLabelStyle}"
-                                            HorizontalAlignment="Stretch"
-                                            VerticalAlignment="Center"
-                                            Margin="2 0 2 2"
-                                            HasGlyph="{TemplateBinding HasTriangle}" />
-                </StackPanel>
+                <Grid Height="Auto">
+                    <StackPanel x:Name="stackPanel"
+                                Width="Auto"
+                                Orientation="Vertical"
+                                d:LayoutOverrides="Width, Height">
+                        <ContentPresenter x:Name="iconImage"
+                                          HorizontalAlignment="Center"
+                                          Height="32"
+                                          VerticalAlignment="Center"
+                                          Content="{Binding LargeIcon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}"
+                                          Width="32"
+                                          Margin="3,2,3,1"
+                                          SnapsToDevicePixels="True" />
+                        <Fluent:TwoLineLabel x:Name="controlLabel"
+                                             Text="{TemplateBinding Header}"
+                                             Style="{DynamicResource TwoLineLabelStyle}"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Margin="2,0,2,2"
+                                             HasGlyph="{TemplateBinding HasTriangle}" />
+                    </StackPanel>
+                </Grid>
             </Border>
             <Popup x:Name="PART_Popup"
                    Placement="Bottom"
@@ -99,8 +96,8 @@
                     <Border x:Name="PART_DropDownBorder"
                             MinWidth="{TemplateBinding ActualWidth}"
                             SnapsToDevicePixels="True"
-                            Background="{DynamicResource Fluent.Ribbon.Brushes.DropDown.BackgroundBrush}"
-                            BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.DropDown.BorderBrush}"
+                            Background="{DynamicResource ContextMenuBarBackgroundBrush}"
+                            BorderBrush="{DynamicResource ContextMenuBarBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="1"
                             d:LayoutOverrides="Width, Height"
@@ -113,7 +110,7 @@
                             <Border VerticalAlignment="Top"
                                     Width="Auto"
                                     Height="Auto"
-                                    BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.DropDown.BackgroundBrush}"
+                                    BorderBrush="{DynamicResource ContextMenuBarBackgroundBrush}"
                                     BorderThickness="1"
                                     CornerRadius="1" />
                             <Grid Margin="1"
@@ -129,8 +126,8 @@
                                               Margin="1"
                                               MaxHeight="{TemplateBinding MaxDropDownHeight}"
                                               SnapsToDevicePixels="True"
-                                              VerticalScrollBarVisibility="Auto"
-                                              HorizontalScrollBarVisibility="Hidden">
+                                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden">
                                     <StackPanel Orientation="Vertical"
                                                 IsItemsHost="True"
                                                 KeyboardNavigation.DirectionalNavigation="Local" />
@@ -139,11 +136,11 @@
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Top"
                                         Height="11"
-                                        BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.DropDown.Resize.BorderBrush}"
+                                        BorderBrush="{DynamicResource ContextMenuBarResizeBorderBrush}"
                                         BorderThickness="0,1,0,0"
                                         Grid.Row="1"
                                         CornerRadius="0,0,1,1"
-                                        Background="{DynamicResource Fluent.Ribbon.Brushes.DropDown.Resize.BackgoundBrush}">
+                                        Background="{DynamicResource ContextMenuBarResizeBackgoundBrush}">
                                     <Grid>
                                         <Thumb x:Name="PART_ResizeVerticalThumb"
                                                HorizontalAlignment="Stretch"
@@ -273,10 +270,10 @@
                      Value="True">
                 <Setter Property="BorderBrush"
                         TargetName="PART_ButtonBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.BorderBrush}" />
+                        Value="{DynamicResource ButtonPressedOuterBorderBrush}" />
                 <Setter Property="Background"
                         TargetName="PART_ButtonBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.Background}" />
+                        Value="{DynamicResource ButtonPressedOuterBackgroundBrush}" />
             </Trigger>
             <Trigger Property="IsEnabled"
                      Value="False">
@@ -302,10 +299,10 @@
                 </MultiTrigger.Conditions>
                 <Setter Property="Background"
                         TargetName="PART_ButtonBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.Background}" />
+                        Value="{DynamicResource ButtonHoverOuterBackgroundBrush}" />
                 <Setter Property="BorderBrush"
                         TargetName="PART_ButtonBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
+                        Value="{DynamicResource ButtonHoverOuterBorderBrush}" />
             </MultiTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>

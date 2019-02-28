@@ -7,8 +7,8 @@ namespace Fluent
     using System.Windows.Input;
     using System.Windows.Interop;
     using System.Windows.Threading;
-    using ControlzEx.Standard;
     using Fluent.Internal;
+    using Fluent.Metro.Native;
 
     /// <summary>
     /// Handles Alt, F10 and so on
@@ -65,16 +65,26 @@ namespace Fluent
         /// <param name="ribbon">Host element</param>
         public KeyTipService(Ribbon ribbon)
         {
-            if (ribbon == null)
-            {
-                throw new ArgumentNullException(nameof(ribbon));
-            }
-
             this.ribbon = ribbon;
+
+            if (this.ribbon.IsLoaded == false)
+            {
+                this.ribbon.Loaded += this.OnDelayedInitialization;
+            }
+            else
+            {
+                this.Attach();
+            }
 
             // Initialize timer
             this.timer = new DispatcherTimer(TimeSpan.FromSeconds(0.7), DispatcherPriority.SystemIdle, this.OnDelayedShow, Dispatcher.CurrentDispatcher);
             this.timer.Stop();
+        }
+
+        private void OnDelayedInitialization(object sender, EventArgs args)
+        {
+            this.ribbon.Loaded -= this.OnDelayedInitialization;
+            this.Attach();
         }
 
         #endregion
@@ -84,8 +94,7 @@ namespace Fluent
         /// </summary>
         public void Attach()
         {
-            if (this.attached
-                || this.ribbon.IsKeyTipHandlingEnabled == false)
+            if (this.attached)
             {
                 return;
             }
@@ -142,21 +151,20 @@ namespace Fluent
         // Window's messages hook up
         private IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
-#pragma warning disable 618
-            // We must terminate the keytip's adorner chain if:
-            if (msg == (int)WM.NCACTIVATE // mouse clicks in non client area
-                || (msg == (int)WM.ACTIVATE && wParam == IntPtr.Zero) // the window is deactivated
+            // We must terminate the keytip's adorner chain if:                        
+            if (msg == Constants.WM_NCACTIVATE // mouse clicks in non client area
+                || (msg == Constants.WM_ACTIVATE && wParam == IntPtr.Zero) // the window is deactivated
                                                                            // >= WM_NCLBUTTONDOWN <= WM_NCXBUTTONDBLCLK
                 || (msg >= 161 && msg <= 173) // mouse click (non client area)
-                || (msg >= 513 && msg <= 521)) // mouse click
+                || (msg >= 513 && msg <= 521) // mouse click
+                )
             {
                 if (this.activeAdornerChain != null
                     && this.activeAdornerChain.IsAdornerChainAlive)
                 {
-                    this.Terminate();
+                    this.activeAdornerChain.Terminate();
                 }
             }
-#pragma warning restore 618
 
             return IntPtr.Zero;
         }
@@ -182,7 +190,7 @@ namespace Fluent
                 && e.SystemKey >= Key.NumPad0
                 && e.SystemKey <= Key.NumPad9)
             {
-                this.Terminate();
+                this.activeAdornerChain?.Terminate();
                 return;
             }
 
@@ -196,7 +204,8 @@ namespace Fluent
                 }
                 else
                 {
-                    this.Terminate();
+                    this.activeAdornerChain?.Terminate();
+                    return;
                 }
             }
             else if (e.Key == Key.Escape
@@ -205,6 +214,7 @@ namespace Fluent
                 this.activeAdornerChain.ActiveKeyTipAdorner.Back();
                 this.ClearUserInput();
                 e.Handled = true;
+                return;
             }
             else
             {
@@ -218,8 +228,7 @@ namespace Fluent
                 var actualKey = e.Key == Key.System ? e.SystemKey : e.Key;
                 // we need to get the real string input for the key because of keys like ä,ö,ü #258
                 var key = KeyEventUtility.GetStringFromKey(actualKey);
-                var isKeyRealInput = string.IsNullOrEmpty(key) == false
-                    && key != "\t";
+                var isKeyRealInput = string.IsNullOrEmpty(key) == false;
 
                 // Don't do anything and let WPF handle the rest
                 if (isKeyRealInput == false)
@@ -230,9 +239,8 @@ namespace Fluent
                     // Implementing navigation the way office does would require complex focus/state tracking etc. so i decided to just terminate keytips and not restore focus.
                     {
                         this.backUpFocusedControl = null;
-                        this.Terminate();
+                        this.activeAdornerChain?.Terminate();
                     }
-
                     return;
                 }
 
@@ -260,7 +268,7 @@ namespace Fluent
                     // Handles access-keys #258
                     if (shownImmediately)
                     {
-                        this.Terminate();
+                        this.activeAdornerChain?.Terminate();
                         return;
                     }
 
@@ -270,16 +278,18 @@ namespace Fluent
                     e.Handled = true;
                     return;
                 }
-
-                if (this.activeAdornerChain.ActiveKeyTipAdorner.Forward(this.currentUserInput, true))
+                else if (this.activeAdornerChain.ActiveKeyTipAdorner.Forward(this.currentUserInput, true))
                 {
                     this.ClearUserInput();
                     e.Handled = true;
                     return;
                 }
-
-                this.activeAdornerChain.ActiveKeyTipAdorner.FilterKeyTips(this.currentUserInput);
-                e.Handled = true;
+                else
+                {
+                    this.activeAdornerChain.ActiveKeyTipAdorner.FilterKeyTips(this.currentUserInput);
+                    e.Handled = true;
+                    return;
+                }
             }
         }
 
@@ -289,7 +299,7 @@ namespace Fluent
                 || this.ribbon.IsEnabled == false
                 || this.window.IsActive == false)
             {
-                this.Terminate();
+                this.activeAdornerChain?.Terminate();
                 return;
             }
 
@@ -324,32 +334,18 @@ namespace Fluent
             this.currentUserInput = string.Empty;
         }
 
-        private void ClosePopups()
-        {
-            PopupService.RaiseDismissPopupEvent(Keyboard.FocusedElement, DismissPopupMode.Always);
-        }
-
         private void RestoreFocus()
         {
             this.backUpFocusedControl?.Focus();
             this.backUpFocusedControl = null;
         }
 
-        private void OnAdornerChainTerminated(object sender, KeyTipPressedResult e)
+        private void OnAdornerChainTerminated(object sender, EventArgs e)
         {
             this.activeAdornerChain.Terminated -= this.OnAdornerChainTerminated;
             this.activeAdornerChain = null;
             this.ClearUserInput();
-
-            if (e.PressedElementOpenedPopup == false)
-            {
-                this.ClosePopups();
-            }
-
-            if (e.PressedElementAquiredFocus == false)
-            {
-                this.RestoreFocus();
-            }
+            this.RestoreFocus();
         }
 
         private void OnDelayedShow(object sender, EventArgs e)
@@ -369,21 +365,16 @@ namespace Fluent
 
         private void ShowDelayed()
         {
-            this.Terminate();
+            this.activeAdornerChain?.Terminate();
 
             this.timer.Start();
-        }
-
-        private void Terminate()
-        {
-            this.activeAdornerChain?.Terminate(KeyTipPressedResult.Empty);
         }
 
         private void Show()
         {
             this.timer.Stop();
 
-            // Check whether the window is
+            // Check whether the window is 
             // - still present (prevents exceptions when window is closed by system commands)
             // - still active (prevents keytips showing during Alt-Tab'ing)
             if (this.window == null
@@ -393,16 +384,10 @@ namespace Fluent
                 return;
             }
 
-            this.ClosePopups();
-
-            // If focus is inside the Ribbon already we don't want to jump around after finishing with KeyTips
-            if (UIHelper.GetParent<Ribbon>(Keyboard.FocusedElement as DependencyObject) == null)
-            {
-                this.backUpFocusedControl = FocusWrapper.GetWrapperForCurrentFocus();
-            }
+            this.backUpFocusedControl = FocusWrapper.GetWrapperForCurrentFocus();
 
             // Focus ribbon
-            this.ribbon.SelectedTabItem?.Focus();
+            this.ribbon.Focus();
 
             this.ClearUserInput();
 

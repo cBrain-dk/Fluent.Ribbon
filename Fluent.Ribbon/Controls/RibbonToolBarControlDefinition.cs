@@ -1,8 +1,9 @@
-﻿// ReSharper disable once CheckNamespace
+﻿using System.ComponentModel;
+using System.Windows;
+
+// ReSharper disable once CheckNamespace
 namespace Fluent
 {
-    using System.ComponentModel;
-    using System.Windows;
     using Fluent.Extensibility;
     using Fluent.Internal.KnownBoxes;
 
@@ -31,7 +32,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Size.
+        /// Using a DependencyProperty as the backing store for Size.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty SizeProperty = RibbonProperties.SizeProperty.AddOwner(typeof(RibbonToolBarControlDefinition));
@@ -50,7 +51,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for SizeDefinition.
+        /// Using a DependencyProperty as the backing store for SizeDefinition.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty SizeDefinitionProperty = RibbonProperties.SizeDefinitionProperty.AddOwner(typeof(RibbonToolBarControlDefinition));
@@ -69,7 +70,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for ControlName.
+        /// Using a DependencyProperty as the backing store for ControlName.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty TargetProperty =
@@ -96,7 +97,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Width.
+        /// Using a DependencyProperty as the backing store for Width. 
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty WidthProperty =

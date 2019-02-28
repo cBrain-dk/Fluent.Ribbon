@@ -1,7 +1,8 @@
-﻿// ReSharper disable once CheckNamespace
+﻿using System.Windows;
+
+// ReSharper disable once CheckNamespace
 namespace Fluent
 {
-    using System.Windows;
     using Fluent.Internal.KnownBoxes;
 
     /// <summary>
@@ -42,7 +43,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Value.
+        /// Using a DependencyProperty as the backing store for Value.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty ValueProperty =
@@ -54,6 +55,7 @@ namespace Fluent
             var item = (StatusBarItem)d;
             item.CoerceValue(ContentProperty);
         }
+
 
         #endregion
 
@@ -100,7 +102,6 @@ namespace Fluent
         /// Occurs when status bar item checks
         /// </summary>
         public event RoutedEventHandler Checked;
-
         /// <summary>
         /// Occurs when status bar item unchecks
         /// </summary>

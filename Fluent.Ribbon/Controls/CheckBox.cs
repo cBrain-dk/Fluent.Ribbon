@@ -1,9 +1,11 @@
-﻿// ReSharper disable once CheckNamespace
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Windows;
+using System.Windows.Data;
+using System.Windows.Markup;
+
+// ReSharper disable once CheckNamespace
 namespace Fluent
 {
-    using System.Windows;
-    using System.Windows.Data;
-    using System.Windows.Markup;
     using Fluent.Internal.KnownBoxes;
 
     /// <summary>
@@ -26,7 +28,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Size.
+        /// Using a DependencyProperty as the backing store for Size.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty SizeProperty = RibbonProperties.SizeProperty.AddOwner(typeof(CheckBox));
@@ -45,7 +47,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for SizeDefinition.
+        /// Using a DependencyProperty as the backing store for SizeDefinition.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty SizeDefinitionProperty = RibbonProperties.SizeDefinitionProperty.AddOwner(typeof(CheckBox));
@@ -64,7 +66,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Keys.
+        /// Using a DependencyProperty as the backing store for Keys.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty KeyTipProperty = Fluent.KeyTip.KeysProperty.AddOwner(typeof(CheckBox));
@@ -83,7 +85,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Header.
+        /// Using a DependencyProperty as the backing store for Header.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty HeaderProperty = RibbonControl.HeaderProperty.AddOwner(typeof(CheckBox));
@@ -137,7 +139,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for SmallIcon.
+        /// Using a DependencyProperty as the backing store for SmallIcon. 
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty LargeIconProperty = DependencyProperty.Register(nameof(LargeIcon), typeof(object), typeof(CheckBox), new PropertyMetadata());
@@ -151,6 +153,7 @@ namespace Fluent
         /// <summary>
         /// Static constructor
         /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1810")]
         static CheckBox()
         {
             var type = typeof(CheckBox);
@@ -173,7 +176,7 @@ namespace Fluent
 
         /// <summary>
         /// Gets control which represents shortcut item.
-        /// This item MUST be syncronized with the original
+        /// This item MUST be syncronized with the original 
         /// and send command to original one control.
         /// </summary>
         /// <returns>Control which represents shortcut item</returns>
@@ -206,15 +209,17 @@ namespace Fluent
 
         #region Implementation of IKeyTipedControl
 
-        /// <inheritdoc />
-        public KeyTipPressedResult OnKeyTipPressed()
+        /// <summary>
+        /// Handles key tip pressed
+        /// </summary>
+        public void OnKeyTipPressed()
         {
             this.OnClick();
-
-            return KeyTipPressedResult.Empty;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Handles back navigation with KeyTips
+        /// </summary>
         public void OnKeyTipBack()
         {
         }

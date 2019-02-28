@@ -9,29 +9,31 @@
     <Style x:Key="CaptionButtonStyle"
            TargetType="{x:Type Button}">
         <Setter Property="Background"
-                Value="{DynamicResource Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.Background}" />
+                Value="{DynamicResource TransparentWhiteBrush}" />
         <Setter Property="Foreground"
-                Value="{DynamicResource Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.Foreground}" />
-        <Setter Property="VerticalAlignment"
-                Value="Stretch" />
+                Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
         <Setter Property="HorizontalContentAlignment"
                 Value="Center" />
         <Setter Property="VerticalContentAlignment"
-                Value="Stretch" />
+                Value="Center" />
         <Setter Property="Padding"
                 Value="1" />
         <Setter Property="Width"
-                Value="46" />
+                Value="{DynamicResource {x:Static SystemParameters.WindowCaptionButtonWidthKey}}" />
+        <Setter Property="Height"
+                Value="{DynamicResource {x:Static SystemParameters.WindowCaptionButtonHeightKey}}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Grid Background="{TemplateBinding Background}">
+                    <Grid x:Name="grid"
+                          Background="{TemplateBinding Background}">
                         <ContentPresenter x:Name="contentPresenter"
                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           Margin="{TemplateBinding Padding}"
                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                          RecognizesAccessKey="True" />
+                                          RecognizesAccessKey="True"
+                                          Opacity="0.75" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver"
@@ -39,34 +41,31 @@
                             <Setter TargetName="contentPresenter"
                                     Property="Opacity"
                                     Value="1" />
+                            <Setter TargetName="grid"
+                                    Property="Background"
+                                    Value="{DynamicResource ButtonHoverOuterBackgroundBrush}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver"
                                  Value="False">
                             <Setter TargetName="contentPresenter"
                                     Property="Opacity"
-                                    Value="0.5" />
+                                    Value=".5" />
+                        </Trigger>
+                        <Trigger Property="IsPressed"
+                                 Value="True">
+                            <Setter TargetName="grid"
+                                    Property="Background"
+                                    Value="{DynamicResource ButtonPressedOuterBackgroundBrush}" />
                         </Trigger>
                         <Trigger Property="IsEnabled"
-                                 Value="False">
+                                 Value="false">
                             <Setter Property="Foreground"
-                                    Value="{DynamicResource Fluent.Ribbon.Brushes.WhiteBrush}" />
+                                    Value="#ADADAD" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver"
-                     Value="True">
-                <Setter Property="Background"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.MouseOver.Background}" />
-            </Trigger>
-            <Trigger Property="IsPressed"
-                     Value="True">
-                <Setter Property="Background"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.Pressed.Background}" />
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
     <ControlTemplate x:Key="RibbonButtonControlTemplate"
@@ -89,14 +88,14 @@
                                   VerticalAlignment="Center"
                                   Content="{Binding LargeIcon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}"
                                   Width="32"
-                                  Margin="0 2 0 0"
+                                  Margin="3,2,3,1"
                                   SnapsToDevicePixels="True" />
                 <Fluent:TwoLineLabel x:Name="controlLabel"
                                      Text="{TemplateBinding Header}"
                                      Style="{DynamicResource TwoLineLabelStyle}"
                                      HorizontalAlignment="Stretch"
                                      VerticalAlignment="Center"
-                                     Margin="2 0 2 0" />
+                                     Margin="2,0,2,0" />
             </StackPanel>
         </Border>
         <ControlTemplate.Triggers>
@@ -167,10 +166,10 @@
                      Value="True">
                 <Setter Property="BorderBrush"
                         TargetName="border"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.BorderBrush}" />
+                        Value="{DynamicResource ButtonPressedOuterBorderBrush}" />
                 <Setter Property="Background"
                         TargetName="border"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.Background}" />
+                        Value="{DynamicResource ButtonPressedOuterBackgroundBrush}" />
             </Trigger>
             <Trigger Property="IsEnabled"
                      Value="False">
@@ -198,10 +197,10 @@
                 </MultiTrigger.Conditions>
                 <Setter Property="Background"
                         TargetName="border"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.Background}" />
+                        Value="{DynamicResource ButtonHoverOuterBackgroundBrush}" />
                 <Setter Property="BorderBrush"
                         TargetName="border"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
+                        Value="{DynamicResource ButtonHoverOuterBorderBrush}" />
             </MultiTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
@@ -215,15 +214,15 @@
         <Setter Property="Width"
                 Value="Auto" />
         <Setter Property="Foreground"
-                Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
+                Value="{DynamicResource DefaultFontBrush}" />
         <Setter Property="Background"
-                Value="Transparent" />
+                Value="{DynamicResource TransparentBrush}" />
         <Setter Property="BorderBrush"
-                Value="Transparent" />
+                Value="{DynamicResource TransparentBrush}" />
         <Setter Property="SnapsToDevicePixels"
                 Value="False" />
         <Setter Property="BorderThickness"
-                Value="1" />
+                Value="0" />
         <Setter Property="CornerRadius"
                 Value="0" />
         <Style.Triggers>

@@ -1,20 +1,22 @@
-﻿// ReSharper disable once CheckNamespace
+﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Markup;
+
+// ReSharper disable once CheckNamespace
 namespace Fluent
 {
     using System;
-    using System.Collections.ObjectModel;
-    using System.Collections.Specialized;
-    using System.Linq;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Input;
-    using System.Windows.Markup;
     using Fluent.Internal.KnownBoxes;
 
     // TODO: add TemplatePart's in Gallery (!)
 
     /// <summary>
-    /// Represents gallery control.
+    /// Represents gallery control. 
     /// Usually a gallery is hosted in context menu
     /// </summary>
     [ContentProperty(nameof(Items))]
@@ -33,7 +35,7 @@ namespace Fluent
         #region MinItemsInRow
 
         /// <summary>
-        /// Min width of the Gallery
+        /// Min width of the Gallery 
         /// </summary>
         public int MinItemsInRow
         {
@@ -42,7 +44,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for MinItemsInRow.
+        /// Using a DependencyProperty as the backing store for MinItemsInRow.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty MinItemsInRowProperty =
@@ -54,7 +56,7 @@ namespace Fluent
         #region MaxItemsInRow
 
         /// <summary>
-        /// Max width of the Gallery
+        /// Max width of the Gallery 
         /// </summary>
         public int MaxItemsInRow
         {
@@ -63,7 +65,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for MaxItemsInRow.
+        /// Using a DependencyProperty as the backing store for MaxItemsInRow.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty MaxItemsInRowProperty =
@@ -85,7 +87,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for GroupBy.
+        /// Using a DependencyProperty as the backing store for GroupBy.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty GroupByProperty = DependencyProperty.Register(nameof(GroupBy), typeof(string), typeof(Gallery), new PropertyMetadata());
@@ -105,7 +107,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for GroupBy.
+        /// Using a DependencyProperty as the backing store for GroupBy.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty GroupByAdvancedProperty = DependencyProperty.Register(nameof(GroupByAdvanced), typeof(Func<object, string>), typeof(Gallery), new PropertyMetadata());
@@ -124,7 +126,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Orientation.
+        /// Using a DependencyProperty as the backing store for Orientation.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty OrientationProperty =
@@ -181,7 +183,6 @@ namespace Fluent
                     this.filters = new ObservableCollection<GalleryGroupFilter>();
                     this.filters.CollectionChanged += this.OnFilterCollectionChanged;
                 }
-
                 return this.filters;
             }
         }
@@ -215,7 +216,6 @@ namespace Fluent
                             this.groupsMenuButton.Items.Insert(e.NewStartingIndex + i, menuItem);
                         }
                     }
-
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
@@ -225,7 +225,6 @@ namespace Fluent
                             this.groupsMenuButton.Items.Remove(this.GetFilterMenuItem(item as GalleryGroupFilter));
                         }
                     }
-
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
@@ -236,7 +235,6 @@ namespace Fluent
                             this.groupsMenuButton.Items.Remove(this.GetFilterMenuItem(item as GalleryGroupFilter));
                         }
                     }
-
                     foreach (var item in e.NewItems.OfType<GalleryGroupFilter>())
                     {
                         if (this.groupsMenuButton != null)
@@ -257,14 +255,13 @@ namespace Fluent
                             this.groupsMenuButton.Items.Add(menuItem);
                         }
                     }
-
                     break;
             }
         }
 
         /// <summary>
         /// Gets or sets selected filter
-        /// </summary>
+        /// </summary>               
         public GalleryGroupFilter SelectedFilter
         {
             get { return (GalleryGroupFilter)this.GetValue(SelectedFilterProperty); }
@@ -272,7 +269,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for SelectedFilter.
+        /// Using a DependencyProperty as the backing store for SelectedFilter. 
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty SelectedFilterProperty =
@@ -304,7 +301,7 @@ namespace Fluent
             }
             else
             {
-                gallery.SelectedFilterTitle = string.Empty;
+                gallery.SelectedFilterTitle = "";
                 gallery.SelectedFilterGroups = null;
             }
 
@@ -325,7 +322,7 @@ namespace Fluent
             typeof(Gallery), new PropertyMetadata());
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for SelectedFilterTitle.
+        /// Using a DependencyProperty as the backing store for SelectedFilterTitle. 
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty SelectedFilterTitleProperty = SelectedFilterTitlePropertyKey.DependencyProperty;
@@ -344,14 +341,14 @@ namespace Fluent
             typeof(Gallery), new PropertyMetadata());
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for SelectedFilterGroups.
+        /// Using a DependencyProperty as the backing store for SelectedFilterGroups. 
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty SelectedFilterGroupsProperty = SelectedFilterGroupsPropertyKey.DependencyProperty;
 
         /// <summary>
         /// Gets whether gallery has selected filter
-        /// </summary>
+        /// </summary>       
         public bool HasFilter
         {
             get { return (bool)this.GetValue(HasFilterProperty); }
@@ -361,7 +358,7 @@ namespace Fluent
         private static readonly DependencyPropertyKey HasFilterPropertyKey = DependencyProperty.RegisterReadOnly(nameof(HasFilter), typeof(bool), typeof(Gallery), new PropertyMetadata(BooleanBoxes.FalseBox));
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for HasFilter.
+        /// Using a DependencyProperty as the backing store for HasFilter.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty HasFilterProperty = HasFilterPropertyKey.DependencyProperty;
@@ -379,11 +376,7 @@ namespace Fluent
 
         private MenuItem GetFilterMenuItem(GalleryGroupFilter filter)
         {
-            if (filter == null)
-            {
-                return null;
-            }
-
+            if (filter == null) return null;
             return this.groupsMenuButton.Items.Cast<MenuItem>().FirstOrDefault(item => (item != null) && (item.Header.ToString() == filter.Title));
             /*foreach (MenuItem item in groupsMenuButton.Items)
             {
@@ -406,7 +399,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Selectable.
+        /// Using a DependencyProperty as the backing store for Selectable.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty SelectableProperty =
@@ -435,7 +428,6 @@ namespace Fluent
         ///  Using a DependencyProperty as the backing store for IsLastItem.  This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyPropertyKey IsLastItemPropertyKey = DependencyProperty.RegisterReadOnly(nameof(IsLastItem), typeof(bool), typeof(Gallery), new PropertyMetadata(BooleanBoxes.FalseBox));
-
         /// <summary>
         ///  Using a DependencyProperty as the backing store for IsLastItem.  This enables animation, styling, binding, etc...
         /// </summary>
@@ -450,6 +442,7 @@ namespace Fluent
         /// <summary>
         /// Static constructor
         /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1810")]
         static Gallery()
         {
             var type = typeof(Gallery);

@@ -1,12 +1,12 @@
-﻿// ReSharper disable once CheckNamespace
+﻿using System;
+using System.ComponentModel;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Effects;
+
+// ReSharper disable once CheckNamespace
 namespace Fluent
 {
-    using System;
-    using System.ComponentModel;
-    using System.Windows;
-    using System.Windows.Media;
-    using System.Windows.Media.Effects;
-
     /// <summary>
     /// An effect that turns the input into shades of a single color.
     /// </summary>
@@ -57,7 +57,6 @@ namespace Fluent
             {
                 return (Brush)this.GetValue(InputProperty);
             }
-
             set
             {
                 this.SetValue(InputProperty, value);
@@ -73,7 +72,6 @@ namespace Fluent
             {
                 return (Color)this.GetValue(FilterColorProperty);
             }
-
             set
             {
                 this.SetValue(FilterColorProperty, value);

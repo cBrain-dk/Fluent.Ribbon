@@ -21,7 +21,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// <see cref="DependencyProperty"/> for <see cref="Shown"/>.
+        /// <see cref="DependencyProperty"/> for <see cref="Shown"/>.  
         /// </summary>
         public static readonly DependencyProperty ShownProperty =
             DependencyProperty.Register(nameof(Shown), typeof(bool), typeof(StartScreen), new FrameworkPropertyMetadata(BooleanBoxes.FalseBox, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, null));
@@ -29,26 +29,6 @@ namespace Fluent
         static StartScreen()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(StartScreen), new FrameworkPropertyMetadata(typeof(StartScreen)));
-
-            VisibilityProperty.OverrideMetadata(typeof(StartScreen), new PropertyMetadata(OnVisibilityChanged));
-        }
-
-        private static void OnVisibilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((StartScreen)d).UpdateIsTitleBarCollapsed();
-        }
-
-        private void UpdateIsTitleBarCollapsed()
-        {
-            var parentRibbon = GetParentRibbon(this);
-
-            if (parentRibbon?.TitleBar != null)
-            {
-                if (this.IsOpen)
-                {
-                    parentRibbon.TitleBar.IsCollapsed = this.Visibility == Visibility.Visible;
-                }
-            }
         }
 
         /// <summary>
@@ -61,8 +41,7 @@ namespace Fluent
             if (parentRibbon?.TitleBar != null)
             {
                 this.previousTitleBarIsCollapsed = parentRibbon.TitleBar.IsCollapsed;
-
-                this.UpdateIsTitleBarCollapsed();
+                parentRibbon.TitleBar.IsCollapsed = true;
             }
 
             if (this.Shown)

@@ -5,15 +5,19 @@
     <ControlTemplate x:Key="GalleryGroupContainerTemplate"
                      TargetType="{x:Type Fluent:GalleryGroupContainer}">
         <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            
             <Grid Grid.Row="0"
                   Height="21"
                   x:Name="headerGrid"
-                  Background="{DynamicResource Fluent.Ribbon.Brushes.GalleryGroupContainer.Header.Background}"
+                  Background="#FFF0F2F5"
+                  Grid.ColumnSpan="2"
                   VerticalAlignment="Top">
                 <TextBlock Margin="7,0"
                            Text="{TemplateBinding Header}"
@@ -23,10 +27,39 @@
                            TextWrapping="NoWrap"
                            TextTrimming="CharacterEllipsis" />
             </Grid>
-
-            <ItemsPresenter Grid.Row="1" />
+            <Image Grid.Row="1"
+                   Grid.Column="0"
+                   Stretch="None"
+                   Margin="4,0,4,0"
+                   VerticalAlignment="Top"
+                   HorizontalAlignment="Center"
+                   x:Name="iconImage">
+            </Image>
+            <Rectangle  Grid.Row="1"
+                        Fill="{x:Null}"
+                        Stretch="Fill"
+                        Stroke="#FFE2E4E7"
+                        HorizontalAlignment="Right"
+                        Width="1"
+                        Height="Auto"
+                        Visibility="Visible"
+                        x:Name="menuLine"
+                        Margin="0,0,0,0" />
+            <ItemsPresenter Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="0,0,0,0" />
         </Grid>
         <ControlTemplate.Triggers>
+            <Trigger SourceName="iconImage"
+                     Property="Source"
+                     Value="{x:Null}">
+                <Setter TargetName="menuLine"
+                        Property="Visibility"
+                        Value="Collapsed" />
+                <Setter TargetName="iconImage"
+                        Property="Visibility"
+                        Value="Collapsed" />
+            </Trigger>
             <Trigger Property="IsHeadered"
                      Value="False">
                 <Setter TargetName="headerGrid"

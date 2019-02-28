@@ -15,19 +15,20 @@
                 <Style x:Key="{x:Type Fluent:ComboBox}"
                        TargetType="{x:Type Fluent:ComboBox}"
                        BasedOn="{StaticResource ComboBoxBackstageStyle}" />
+                <Style x:Key="{x:Type Fluent:Spinner}"
+                       TargetType="{x:Type Fluent:Spinner}"
+                       BasedOn="{StaticResource SpinnerBackstageStyle}" />
                 <Style TargetType="{x:Type Fluent:SeparatorTabItem}"
                        BasedOn="{StaticResource BackstageSeparatorTabItemStyle}" />
             </ResourceDictionary>
         </ControlTemplate.Resources>
         <Grid x:Name="grid">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition MinWidth="{TemplateBinding ItemsPanelMinWidth}"
+                <ColumnDefinition MinWidth="342"
                                   Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            
-            <Grid x:Name="PART_LeftContentGrid"
-                  VerticalAlignment="Stretch"                  
+            <Grid VerticalAlignment="Stretch"
                   Background="{TemplateBinding ItemsPanelBackground}"
                   Margin="{TemplateBinding LeftContentMargin}">
                 <Border Padding="15,25">
@@ -42,13 +43,12 @@
                                                     IsEnabled="{TemplateBinding IsWindowSteeringHelperEnabled}" />
             </Grid>
 
-            <Grid x:Name="PART_SelectedContentGrid"
-                  Height="Auto"
+            <Grid Height="Auto"
                   Grid.Column="1"
-                  Background="{DynamicResource WhiteBrush}"
+                  Background="{DynamicResource BackstageBackgroundBrush}"
                   Margin="{TemplateBinding SelectedContentMargin}">
                 <Border Padding="33,16"
-                        Background="{DynamicResource WhiteBrush}">
+                        Background="White">
                     <ContentPresenter x:Name="PART_SelectedContentHost"
                                       HorizontalAlignment="Stretch"
                                       VerticalAlignment="Stretch"

@@ -1,6 +1,4 @@
-﻿#pragma warning disable SA1402
-
-namespace FluentTest.Commanding
+﻿namespace FluentTest.Commanding
 {
     using System;
     using System.Diagnostics;
@@ -35,7 +33,6 @@ namespace FluentTest.Commanding
                 || this.canExecute();
         }
 
-        /// <inheritdoc />
         public event EventHandler CanExecuteChanged
         {
             add { CommandManager.RequerySuggested += value; }
@@ -48,12 +45,18 @@ namespace FluentTest.Commanding
 
         protected void OnExecuted()
         {
-            this.Executed?.Invoke(this, null);
+            if (this.Executed != null)
+            {
+                this.Executed(this, null);
+            }
         }
 
         protected void OnExecuting()
         {
-            this.Executing?.Invoke(this, null);
+            if (this.Executing != null)
+            {
+                this.Executing(this, null);
+            }
         }
 
         public void Execute(object parameter)
@@ -74,7 +77,7 @@ namespace FluentTest.Commanding
     }
 
     /// <summary>
-    /// A command whose sole purpose is to
+    /// A command whose sole purpose is to 
     /// relay its functionality to other
     /// objects by invoking delegates. The
     /// default return value for the CanExecute
@@ -90,7 +93,7 @@ namespace FluentTest.Commanding
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RelayCommand{T}"/> class.
+        /// Creates a new command that can always execute.
         /// </summary>
         /// <param name="action">The execution logic.</param>
         public RelayCommand(Action<T> action)
@@ -99,7 +102,7 @@ namespace FluentTest.Commanding
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RelayCommand{T}"/> class.
+        /// Creates a new command.
         /// </summary>
         /// <param name="action">The execution logic.</param>
         /// <param name="canExecute">The execution status logic.</param>

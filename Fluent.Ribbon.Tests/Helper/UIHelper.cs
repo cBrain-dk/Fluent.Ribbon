@@ -12,7 +12,7 @@
 
         public static void DoEvents(this Dispatcher dispatcher)
         {
-            dispatcher.Invoke(DispatcherPriority.Background, new Action(() => { }));
+            dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
         }
     }
 }

@@ -13,13 +13,11 @@ Fluent.Ribbon
 
 This project was previously hosted on [CodePlex](https://fluent.codeplex.com/).
 
-![Banner](./Images/banner.png)
-
 Fluent.Ribbon is a library that implements an Office-like user interface for the Windows Presentation Foundation (WPF). It provides controls such as RibbonTabControl, Backstage, Gallery, QuickAccessToolbar, ScreenTip and so on.
 
-![Showcase](./Images/Showcase.gif)
+![Fluent.png](https://raw.githubusercontent.com/fluentribbon/Fluent.Ribbon/master/Images/Fluent.png)
 
-*   [More Screenshots](../../wiki/Screenshots)
+*   [More Screenshots](https://github.com/fluentribbon/Fluent.Ribbon/wiki/Screenshots)
 
 # Contact
 If you wish to contact me (batzen) directly please use [twitter](https://twitter.com/batzendev) or [gitter](https://gitter.im/batzen).
@@ -31,14 +29,14 @@ You can access preview versions through the [AppVeyor nuget feed](https://ci.app
 # Contributing
 ## What you can do to help us
 *   We are accepting pull requests, so you are very welcome to create one
-*   [Fix some bugs](../../issues)
+*   [Fix some bugs](https://github.com/fluentribbon/Fluent.Ribbon/issues)
 *   Help us translating
 *   Help us updating the documentation and walkthrough
 
 ## Development requirements
-* Visual Studio 2015 or later
+* Visual Studio 2015
 * Optional (but recommended)
-  * Editorconfig extension for Visual Studio
+  * Editorconfig extension for Visual Studio 2015
 
 ## Settings that should be used
 *   Visual Studio settings which should be used
@@ -49,15 +47,14 @@ You can access preview versions through the [AppVeyor nuget feed](https://ci.app
       * Position first attribute on same line as start tag
 
 # Documentation
-Visit the [documentation](http://fluentribbon.github.io/documentation/).  
-Almost all features are shown in the showcase application.  
-The showcase application is included with every release, so you can just grab it from [releases](../../releases)  
-If you think there is something missing in the showcase application feel free to create an issue for that.
+Please, [download walkthrough](https://github.com/fluentribbon/Fluent.Ribbon/blob/master/Doc/Fluent%20Ribbon%20Control%20Suite%20Walkthrough.pdf?raw=true)
+This document covers the main features of this framework and highlights how to use it, but is pretty outdated right now.
+Almost all features are shown in the showcase application. If you think there is something missing in the showcase application feel free to create an issue for that.
 
 To be more familiar with the Ribbon concept see [msdn article](http://msdn.microsoft.com/en-us/library/cc872782.aspx).
 
 # History &amp; roadmap
-A history of changes is maintained in the [Changelog](Changelog.md).
+A history of changes is maintained in the [Changelog](Changelog.md) and the [ReleaseNotes](ReleaseNotes.md).
 The roadmap is done by [milestones](../../milestones).
 
 # Feature List
@@ -164,11 +161,3 @@ If you feel lack of some important features feel free to use [issues](https://gi
 *   Turkish
 *   Ukrainian
 *   Vietnamese
-
-## Awesome tools which Fluent.Ribbon can use
-
-[![Resharper](./Images/icon_ReSharper.png)](https://www.jetbrains.com/resharper/)
-
-## Licence
-
-[MIT License (MIT)](./License.txt)

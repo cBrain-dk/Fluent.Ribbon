@@ -2,6 +2,7 @@
 namespace Fluent
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Windows;
     using System.Windows.Data;
     using System.Windows.Input;
@@ -9,35 +10,49 @@ namespace Fluent
     using System.Windows.Media;
     using System.Windows.Threading;
     using ControlzEx.Behaviors;
+
     using Fluent.Extensions;
     using Fluent.Helpers;
     using Fluent.Internal.KnownBoxes;
 
-    using WindowChrome = ControlzEx.Windows.Shell.WindowChrome;
+    //using WindowChrome = System.Windows.Shell.WindowChrome;
+    using WindowChrome = ControlzEx.Microsoft.Windows.Shell.WindowChrome;
 
     /// <summary>
     /// Represents basic window for ribbon
     /// </summary>
+    [SuppressMessage("Microsoft.Design", "CA1049")]
     [TemplatePart(Name = PART_Icon, Type = typeof(UIElement))]
     [TemplatePart(Name = PART_ContentPresenter, Type = typeof(UIElement))]
-    [TemplatePart(Name = PART_RibbonTitleBar, Type = typeof(RibbonTitleBar))]
     [TemplatePart(Name = PART_WindowCommands, Type = typeof(WindowCommands))]
-    public class RibbonWindow : Window, IRibbonWindow
+    public class RibbonWindow : Window
     {
         // ReSharper disable InconsistentNaming
-#pragma warning disable SA1310 // Field names must not contain underscore
-        private const string PART_Icon = "PART_Icon";
+        private const string PART_Icon = "PART_Icon";        
         private const string PART_ContentPresenter = "PART_ContentPresenter";
-        private const string PART_RibbonTitleBar = "PART_RibbonTitleBar";
         private const string PART_WindowCommands = "PART_WindowCommands";
-#pragma warning restore SA1310 // Field names must not contain underscore
         // ReSharper restore InconsistentNaming
 
         private FrameworkElement iconImage;
 
-        #region Properties
+    #region Properties
 
-        #region TitelBar
+    #region TitelBar
+
+        /// <summary>
+        /// Gets or sets the height which is used to render the window title.
+        /// </summary>
+        public UIElement TitleBarHeader
+        {
+          get { return (UIElement)this.GetValue(TitleBarHeaderProperty); }
+          set { this.SetValue(TitleBarHeaderProperty, value); }
+        }
+
+        /// <summary>
+        /// <see cref="DependencyProperty"/> for <see cref="TitleBarHeader"/>.
+        /// </summary>
+        public static readonly DependencyProperty TitleBarHeaderProperty =
+            DependencyProperty.Register(nameof(TitleBarHeader), typeof(UIElement), typeof(RibbonWindow), new PropertyMetadata(null));
 
         /// <summary>
         /// Gets ribbon titlebar
@@ -69,7 +84,8 @@ namespace Fluent
         /// <summary>
         /// <see cref="DependencyProperty"/> for <see cref="TitleBarHeight"/>.
         /// </summary>
-        public static readonly DependencyProperty TitleBarHeightProperty = DependencyProperty.Register(nameof(TitleBarHeight), typeof(double), typeof(RibbonWindow), new PropertyMetadata(DoubleBoxes.Zero));
+        public static readonly DependencyProperty TitleBarHeightProperty =
+            DependencyProperty.Register(nameof(TitleBarHeight), typeof(double), typeof(RibbonWindow), new PropertyMetadata(DoubleBoxes.Zero));
 
         /// <summary>
         /// Gets or sets the <see cref="Brush"/> which is used to render the window title.
@@ -83,21 +99,8 @@ namespace Fluent
         /// <summary>
         /// <see cref="DependencyProperty"/> for <see cref="TitleForeground"/>.
         /// </summary>
-        public static readonly DependencyProperty TitleForegroundProperty = DependencyProperty.Register(nameof(TitleForeground), typeof(Brush), typeof(RibbonWindow), new PropertyMetadata());
-
-        /// <summary>
-        /// Gets or sets the <see cref="Brush"/> which is used to render the window title background.
-        /// </summary>
-        public Brush TitleBackground
-        {
-            get { return (Brush)this.GetValue(TitleBackgroundProperty); }
-            set { this.SetValue(TitleBackgroundProperty, value); }
-        }
-
-        /// <summary>
-        /// <see cref="DependencyProperty"/> for <see cref="TitleBackground"/>.
-        /// </summary>
-        public static readonly DependencyProperty TitleBackgroundProperty = DependencyProperty.Register(nameof(TitleBackground), typeof(Brush), typeof(RibbonWindow), new PropertyMetadata());
+        public static readonly DependencyProperty TitleForegroundProperty =
+            DependencyProperty.Register(nameof(TitleForeground), typeof(Brush), typeof(RibbonWindow), new PropertyMetadata());
 
         /// <summary>
         /// Using a DependencyProperty as the backing store for WindowCommands.  This enables animation, styling, binding, etc...
@@ -125,7 +128,8 @@ namespace Fluent
         /// <summary>
         /// Using a DependencyProperty as the backing store for ResizeBorderTickness.  This enables animation, styling, binding, etc...
         /// </summary>
-        public static readonly DependencyProperty ResizeBorderThicknessProperty = DependencyProperty.Register(nameof(ResizeBorderThickness), typeof(Thickness), typeof(RibbonWindow), new PropertyMetadata(new Thickness(8D))); //WindowChromeBehavior.GetDefaultResizeBorderThickness()));
+        public static readonly DependencyProperty ResizeBorderThicknessProperty =
+            DependencyProperty.Register(nameof(ResizeBorderThickness), typeof(Thickness), typeof(RibbonWindow), new PropertyMetadata(new Thickness(8D)));
 
         /// <summary>
         /// Gets or sets glass border thickness
@@ -137,11 +141,25 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for GlassFrameThickness.
-        /// GlassFrameThickness != 0 enables the default window drop shadow.
+        /// Using a DependencyProperty as the backing store for GlassFrameThickness.  This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty GlassFrameThicknessProperty =
-            DependencyProperty.Register(nameof(GlassFrameThickness), typeof(Thickness), typeof(RibbonWindow), new PropertyMetadata(new Thickness(1)));
+            DependencyProperty.Register(nameof(GlassFrameThickness), typeof(Thickness), typeof(RibbonWindow), new PropertyMetadata(new Thickness()));
+
+        /// <summary>
+        /// Gets or sets corner radius 
+        /// </summary>
+        public CornerRadius CornerRadius
+        {
+            get { return (CornerRadius)this.GetValue(CornerRadiusProperty); }
+            set { this.SetValue(CornerRadiusProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for CornerRadius.  This enables animation, styling, binding, etc...
+        /// </summary>
+        public static readonly DependencyProperty CornerRadiusProperty =
+            DependencyProperty.Register(nameof(CornerRadius), typeof(CornerRadius), typeof(RibbonWindow), new PropertyMetadata(new CornerRadius()));
 
         /// <summary>
         /// Gets or sets whether icon is visible
@@ -155,13 +173,12 @@ namespace Fluent
         /// <summary>
         /// Gets or sets whether icon is visible
         /// </summary>
-        public static readonly DependencyProperty IsIconVisibleProperty = DependencyProperty.Register(nameof(IsIconVisible), typeof(bool), typeof(RibbonWindow), new FrameworkPropertyMetadata(BooleanBoxes.TrueBox));
+        public static readonly DependencyProperty IsIconVisibleProperty = DependencyProperty.Register(nameof(IsIconVisible), typeof(bool), typeof(RibbonWindow), new PropertyMetadata(BooleanBoxes.TrueBox));
 
         // todo check if IsCollapsed and IsAutomaticCollapseEnabled should be reduced to one shared property for RibbonWindow and Ribbon
-
         /// <summary>
         /// Gets whether window is collapsed
-        /// </summary>
+        /// </summary>              
         public bool IsCollapsed
         {
             get { return (bool)this.GetValue(IsCollapsedProperty); }
@@ -169,10 +186,12 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for IsCollapsed.
+        /// Using a DependencyProperty as the backing store for IsCollapsed.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
-        public static readonly DependencyProperty IsCollapsedProperty = DependencyProperty.Register(nameof(IsCollapsed), typeof(bool), typeof(RibbonWindow), new PropertyMetadata(BooleanBoxes.FalseBox));
+        public static readonly DependencyProperty IsCollapsedProperty =
+            DependencyProperty.Register(nameof(IsCollapsed), typeof(bool),
+            typeof(RibbonWindow), new PropertyMetadata(BooleanBoxes.FalseBox));
 
         /// <summary>
         /// Defines if the Ribbon should automatically set <see cref="IsCollapsed"/> when the width or height of the owner window drop under <see cref="Ribbon.MinimalVisibleWidth"/> or <see cref="Ribbon.MinimalVisibleHeight"/>
@@ -184,24 +203,11 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for IsCollapsed.
+        /// Using a DependencyProperty as the backing store for IsCollapsed.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
-        public static readonly DependencyProperty IsAutomaticCollapseEnabledProperty = DependencyProperty.Register(nameof(IsAutomaticCollapseEnabled), typeof(bool), typeof(RibbonWindow), new PropertyMetadata(BooleanBoxes.TrueBox));
-
-        /// <summary>
-        /// Defines if the taskbar should be ignored and hidden while the window is maximized.
-        /// </summary>
-        public bool IgnoreTaskbarOnMaximize
-        {
-            get { return (bool)this.GetValue(IgnoreTaskbarOnMaximizeProperty); }
-            set { this.SetValue(IgnoreTaskbarOnMaximizeProperty, value); }
-        }
-
-        /// <summary>
-        /// <see cref="DependencyProperty"/> for <see cref="IgnoreTaskbarOnMaximize"/>.
-        /// </summary>
-        public static readonly DependencyProperty IgnoreTaskbarOnMaximizeProperty = DependencyProperty.Register(nameof(IgnoreTaskbarOnMaximize), typeof(bool), typeof(RibbonWindow), new PropertyMetadata(default(bool)));
+        public static readonly DependencyProperty IsAutomaticCollapseEnabledProperty =
+            DependencyProperty.Register(nameof(IsAutomaticCollapseEnabled), typeof(bool), typeof(RibbonWindow), new PropertyMetadata(BooleanBoxes.TrueBox));
 
         #endregion
 
@@ -213,9 +219,6 @@ namespace Fluent
         static RibbonWindow()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(RibbonWindow), new FrameworkPropertyMetadata(typeof(RibbonWindow)));
-
-            BorderThicknessProperty.OverrideMetadata(typeof(RibbonWindow), new FrameworkPropertyMetadata(new Thickness(1)));
-            WindowStyleProperty.OverrideMetadata(typeof(RibbonWindow), new FrameworkPropertyMetadata(WindowStyle.None));
         }
 
         /// <summary>
@@ -224,9 +227,8 @@ namespace Fluent
         public RibbonWindow()
         {
             this.SizeChanged += this.OnSizeChanged;
-            this.Loaded += this.OnLoaded;
 
-            // WindowChromeBehavior initialization has to occur in constructor. Otherwise the load event is fired early and performance of the window is degraded.
+            // WindowChrome initialization has to occur in constructor. Otherwise the load event is fired early.
             this.InitializeWindowChromeBehavior();
         }
 
@@ -235,15 +237,16 @@ namespace Fluent
         #region Overrides
 
         /// <summary>
-        /// Initializes the WindowChromeBehavior which is needed to render the custom WindowChrome.
+        /// Initializes the WindowChromeBehavior which is needed to render the custom WindowChrome
         /// </summary>
         private void InitializeWindowChromeBehavior()
         {
             var behavior = new WindowChromeBehavior();
+            BindingOperations.SetBinding(behavior, WindowChromeBehavior.CaptionHeightProperty, new Binding { Path = new PropertyPath(TitleBarHeightProperty), Source = this });
             BindingOperations.SetBinding(behavior, WindowChromeBehavior.ResizeBorderThicknessProperty, new Binding { Path = new PropertyPath(ResizeBorderThicknessProperty), Source = this });
+            BindingOperations.SetBinding(behavior, WindowChromeBehavior.CornerRadiusProperty, new Binding { Path = new PropertyPath(CornerRadiusProperty), Source = this });
             BindingOperations.SetBinding(behavior, WindowChromeBehavior.GlassFrameThicknessProperty, new Binding { Path = new PropertyPath(GlassFrameThicknessProperty), Source = this });
-            BindingOperations.SetBinding(behavior, WindowChromeBehavior.IgnoreTaskbarOnMaximizeProperty, new Binding { Path = new PropertyPath(IgnoreTaskbarOnMaximizeProperty), Source = this });
-
+            behavior.UseAeroCaptionButtons = false;
             Interaction.GetBehaviors(this).Add(behavior);
         }
 
@@ -253,22 +256,6 @@ namespace Fluent
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
             this.MaintainIsCollapsed();
-        }
-
-        private void OnLoaded(object sender, RoutedEventArgs e)
-        {
-            if (this.SizeToContent == SizeToContent.Manual)
-            {
-                return;
-            }
-
-            this.RunInDispatcherAsync(() =>
-                                      {
-                                          // Fix for #454 while also keeping #473
-                                          var availableSize = new Size(this.TitleBar.ActualWidth, this.TitleBar.ActualHeight);
-                                          this.TitleBar.Measure(availableSize);
-                                          this.TitleBar.ForceMeasureAndArrange();
-                                      }, DispatcherPriority.ApplicationIdle);
         }
 
         private void MaintainIsCollapsed()
@@ -294,7 +281,11 @@ namespace Fluent
         {
             base.OnApplyTemplate();
 
-            this.TitleBar = this.GetTemplateChild(PART_RibbonTitleBar) as RibbonTitleBar;
+            this.TitleBar = this.GetTemplateChild("PART_RibbonTitleBar") as RibbonTitleBar;
+            if(TitleBarHeader!=null)
+            {
+              TitleBar.Header = TitleBarHeader;
+            }
 
             if (this.iconImage != null)
             {
@@ -322,14 +313,12 @@ namespace Fluent
         {
             base.OnStateChanged(e);
 
-            // todo: remove fix if we update to ControlzEx 4.0
-            if (this.WindowState == WindowState.Maximized
-                && this.SizeToContent != SizeToContent.Manual)
-            {
-                this.SizeToContent = SizeToContent.Manual;
-            }
-
-            this.RunInDispatcherAsync(() => this.TitleBar?.ForceMeasureAndArrange(), DispatcherPriority.Background);
+            this.RunInDispatcherAsync(() =>
+                                      {
+                                          this.TitleBar?.InvalidateMeasure();
+                                          this.TitleBar?.InvalidateArrange();
+                                          this.TitleBar?.UpdateLayout();
+                                      }, DispatcherPriority.Background);
         }
 
         private void HandleIconMouseDown(object sender, MouseButtonEventArgs e)
@@ -341,23 +330,23 @@ namespace Fluent
                     {
                         e.Handled = true;
 
-                        WindowSteeringHelper.ShowSystemMenu(this, this.PointToScreen(new Point(0, this.TitleBarHeight)));
+                        WindowSteeringHelper.ShowSystemMenuPhysicalCoordinates(this, e, this.PointToScreen(new Point(0, this.TitleBarHeight)));
                     }
                     else if (e.ClickCount == 2)
                     {
                         e.Handled = true;
 
-#pragma warning disable 618
-                        ControlzEx.Windows.Shell.SystemCommands.CloseWindow(this);
-#pragma warning restore 618
+                        this.Close();
                     }
-
                     break;
 
                 case MouseButton.Right:
                     e.Handled = true;
 
-                    WindowSteeringHelper.ShowSystemMenu(this, e);
+                    this.RunInDispatcherAsync(() =>
+                                              {
+                                                  WindowSteeringHelper.ShowSystemMenuPhysicalCoordinates(this, e);
+                                              });
                     break;
             }
         }

@@ -6,6 +6,60 @@
     <ControlTemplate x:Key="CheckBoxControlTemplate"
                      TargetType="{x:Type Fluent:CheckBox}">
         <Grid>
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal" />
+                    <VisualState x:Name="MouseOver" />
+                    <VisualState x:Name="Pressed" />
+                    <VisualState x:Name="Disabled" />
+                </VisualStateGroup>
+                <VisualStateGroup x:Name="CheckStates">
+                    <VisualState x:Name="Checked" />
+                    <VisualState x:Name="Unchecked" />
+                    <VisualState x:Name="Indeterminate" />
+                </VisualStateGroup>
+                <VisualStateGroup x:Name="FocusStates">
+                    <VisualState x:Name="Focused">
+                        <Storyboard />
+                    </VisualState>
+                    <VisualState x:Name="Unfocused" />
+                </VisualStateGroup>
+                <VisualStateGroup x:Name="ValidationStates">
+                    <VisualState x:Name="Valid" />
+                    <VisualState x:Name="InvalidUnfocused">
+                        <Storyboard>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ValidationErrorElement"
+                                                           Storyboard.TargetProperty="Visibility">
+                                <DiscreteObjectKeyFrame KeyTime="0">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Visible</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                            </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </VisualState>
+                    <VisualState x:Name="InvalidFocused">
+                        <Storyboard>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ValidationErrorElement"
+                                                           Storyboard.TargetProperty="Visibility">
+                                <DiscreteObjectKeyFrame KeyTime="0">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Visible</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="validationTooltip"
+                                                           Storyboard.TargetProperty="IsOpen">
+                                <DiscreteObjectKeyFrame KeyTime="0">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <System:Boolean>True</System:Boolean>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                            </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="16" />
                 <ColumnDefinition Width="*" />
@@ -28,7 +82,7 @@
                               Fluent:FrameworkHelper.UseLayoutRounding="False"
                               Opacity="0"
                               Stretch="Fill"
-                              Stroke="{DynamicResource Fluent.Ribbon.Brushes.HighlightBrush}"
+                              Stroke="#FF666666"
                               StrokeEndLineCap="Triangle"
                               StrokeStartLineCap="Triangle"
                               StrokeThickness="1.5" />
@@ -36,19 +90,42 @@
                                    Width="7"
                                    Height="7"
                                    Opacity="0"
-                                   Fill="{DynamicResource GrayBrush2}" />
+                                   Fill="#FF666666" />
                         <Rectangle x:Name="DisabledVisualElement"
-                                   Fill="{DynamicResource WhiteBrush}"
+                                   Fill="White"
                                    Opacity="0"
                                    RadiusX="1"
                                    RadiusY="1" />
                     </Grid>
                 </Border>
+                <Border x:Name="ValidationErrorElement"
+                        Margin="1"
+                        BorderBrush="#FFDB000C"
+                        BorderThickness="1"
+                        CornerRadius="1"
+                        Visibility="Collapsed">
+                    <Grid Width="10"
+                          Height="10"
+                          Margin="0,-4,-4,0"
+                          HorizontalAlignment="Right"
+                          VerticalAlignment="Top"
+                          Background="Transparent">
+                        <Path Margin="0,3,0,0"
+                              Data="M 1,0 L5,0 A 2,2 90 0 1 7,2 L7,6 z"
+                              Fill="#DDD43940" />
+                        <Path Margin="0,3,0,0"
+                              Data="M 0,0 L2,0 L 7,5 L7,7"
+                              Fill="White" />
+                    </Grid>
+                </Border>
             </Grid>
             <ContentControl Grid.Column="1"
                             IsTabStop="False"
-                            Margin="2,0,0,0"
-                            Foreground="{TemplateBinding Foreground}">
+                            Margin="2,0,0,0">
+                <ContentControl.Foreground>
+                    <SolidColorBrush x:Name="ContentPresenterWrapperColor"
+                                     Color="Black" />
+                </ContentControl.Foreground>
                 <ContentPresenter x:Name="contentPresenter"
                                   Margin="{TemplateBinding Padding}"
                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -63,31 +140,31 @@
                      Value="True">
                 <Setter TargetName="border"
                         Property="BorderBrush"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
+                        Value="{DynamicResource CheckBoxHoverBorderBrush}" />
                 <Setter TargetName="border"
                         Property="Background"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.Background}" />
+                        Value="{DynamicResource CheckBoxHoverBackgroundBrush}" />
                 <Setter TargetName="CheckIcon"
                         Property="Stroke"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.MouseOver.Stroke}" />
+                        Value="#FF333333" />
                 <Setter TargetName="IndeterminateIcon"
                         Property="Fill"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.MouseOver.Stroke}" />
+                        Value="#FF333333" />
             </Trigger>
             <Trigger Property="IsPressed"
                      Value="True">
                 <Setter TargetName="border"
                         Property="BorderBrush"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.BorderBrush}" />
+                        Value="{DynamicResource CheckBoxPressedBorderBrush}" />
                 <Setter TargetName="border"
                         Property="Background"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.Background}" />
+                        Value="{DynamicResource CheckBoxPressedBackgroundBrush}" />
                 <Setter TargetName="CheckIcon"
                         Property="Stroke"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.Pressed.Stroke}" />
+                        Value="#FF000000" />
                 <Setter TargetName="IndeterminateIcon"
                         Property="Fill"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.Pressed.Stroke}" />
+                        Value="#FF000000" />
             </Trigger>
             <Trigger Property="IsEnabled"
                      Value="False">
@@ -129,14 +206,17 @@
         <Setter Property="Template"
                 Value="{DynamicResource CheckBoxControlTemplate}" />
         <Setter Property="Background"
-                Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.Background}" />
+                Value="#FFFDFDFD" />
         <Setter Property="Foreground"
-                Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
+                Value="Black" />
         <Setter Property="BorderThickness"
                 Value="1" />
         <Setter Property="BorderBrush"
-                Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.BorderBrush}" />
+                Value="#FFABABAB" />
         <Setter Property="Margin"
                 Value="2,2,2,2" />
     </Style>
+
+    <Style BasedOn="{StaticResource RibbonCheckBoxStyle}"
+           TargetType="{x:Type Fluent:CheckBox}" />
 </ResourceDictionary>
