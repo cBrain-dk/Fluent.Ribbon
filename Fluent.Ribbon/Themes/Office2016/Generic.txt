@@ -4,7 +4,7 @@ Office2016\Colors\Colors.xaml
 Office2016\Colors\ColorsWhite.xaml
 Office2016\Images\Images.xaml
 Generic\Controls\EmptyFocusStyle.xaml
-Office2010\Controls\ApplicationMenuItem.xaml
+Office2016\Controls\ApplicationMenuItem.xaml
 Office2016\Controls\ApplicationMenu.xaml
 Office2016\Controls\Backstage.xaml
 Office2016\Controls\RibbonTabItem.xaml
@@ -48,7 +48,7 @@ Generic\Controls\TextBox.xaml
 Office2016\Controls\Spinner.xaml
 Office2016\Controls\ComboBox.xaml
 Office2016\Controls\Ribbon.xaml
-Office2010\Controls\ColorGallery.xaml
+Controls\ColorGallery.xaml
 Generic\Controls\SeparatorTabItem.xaml
 Office2016\Controls\RibbonStatusBar.xaml
 Office2016\Controls\Slider.xaml

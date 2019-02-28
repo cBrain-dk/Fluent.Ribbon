@@ -9,6 +9,19 @@
   <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
   <Fluent:IconConverter x:Key="IconConvert" />
 
+  <DataTemplate x:Key="TitleHeaderTextTemplate">
+    <TextBlock x:Name="PART_Title"
+                           Margin="-2,0"
+                           VerticalAlignment="Center"
+                           d:LayoutOverrides="Width"
+                           HorizontalAlignment="Center"
+                           Text="{Binding Path=Title, RelativeSource={RelativeSource AncestorType={x:Type Fluent:RibbonWindow}}}"
+                           FontSize="14"
+                           Foreground="{Binding Path=TitleForeground, RelativeSource={RelativeSource AncestorType={x:Type Fluent:RibbonWindow}}}"
+                           TextWrapping="NoWrap"
+                           TextTrimming="CharacterEllipsis" />
+  </DataTemplate>
+  
   <ControlTemplate x:Key="RibbonWindowControlTemplate"
                      TargetType="{x:Type Fluent:RibbonWindow}">
     <Grid>
@@ -49,15 +62,7 @@
                                                HorizontalAlignment="Stretch"
                                                IsCollapsed="{TemplateBinding IsCollapsed}">
               <Fluent:RibbonTitleBar.Header>
-                <TextBlock x:Name="PART_Title"
-                           Margin="-2,0"
-                           VerticalAlignment="Center"
-                           d:LayoutOverrides="Width"
-                           HorizontalAlignment="Center"
-                           Text="{TemplateBinding Title}"
-                           Foreground="{TemplateBinding TitleForeground}"
-                           TextWrapping="NoWrap"
-                           TextTrimming="CharacterEllipsis" />
+                <ContentPresenter ContentTemplate="{StaticResource TitleHeaderTextTemplate}"/>
               </Fluent:RibbonTitleBar.Header>
             </Fluent:RibbonTitleBar>
           </DockPanel>
@@ -153,17 +158,13 @@
     </Style.Triggers>
   </Style>
 
-  <Style x:Key="BlueRibbonWindowStyle"
+    <Style x:Key="BlueRibbonWindowStyle"
          TargetType="{x:Type Fluent:RibbonWindow}" 
          BasedOn="{StaticResource RibbonWindowStyle}">
-    <Style.Resources>
-      <SolidColorBrush x:Key="ButtonCommandFontBrush" Color="White" />
-      <SolidColorBrush x:Key="TitleForeground" Color="White" />
-      <SolidColorBrush x:Key="CaptionButtonHoverBackgroundBrush" Color="{StaticResource BlueHoverColor}" />
-      <SolidColorBrush x:Key="CaptionButtonPressedBackgroundBrush" Color="{StaticResource BluePressedColor}" />
-      <SolidColorBrush x:Key="TabItemFontBrush" Color="White" />
-    </Style.Resources>
-    <Setter Property="Background" Value="{StaticResource RibbonThemeColorBrush}"/>
+        <Style.Resources>
+            <SolidColorBrush x:Key="WindowCommandIconForegroundBrush" Color="{DynamicResource BlueWindowCommandIconForegroundColor}" />
+        </Style.Resources>
+        <Setter Property="Background" Value="{StaticResource RibbonThemeColorBrush}"/>
   </Style>
 
 </ResourceDictionary>

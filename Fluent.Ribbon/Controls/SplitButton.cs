@@ -3,6 +3,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows;
+using System.Windows.Automation.Peers;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -10,6 +11,7 @@ using System.Windows.Input;
 // ReSharper disable once CheckNamespace
 namespace Fluent
 {
+    using Fluent.AutomationPeers;
     using Fluent.Internal.KnownBoxes;
 
     /// <summary>
@@ -108,7 +110,7 @@ namespace Fluent
         /// <summary>
         /// Identifies the routed Command dependency property.
         /// </summary>
-        public static readonly DependencyProperty CommandProperty = ButtonBase.CommandProperty.AddOwner(typeof(SplitButton), new FrameworkPropertyMetadata());
+        public static readonly DependencyProperty CommandProperty = ButtonBase.CommandProperty.AddOwner(typeof(SplitButton), new FrameworkPropertyMetadata(RibbonProperties.OnCommandChanged));
 
         /// <summary>
         /// Identifies the CommandTarget dependency property.
@@ -399,6 +401,7 @@ namespace Fluent
 
         #region Overrides
 
+        protected override bool IsEnabledCore => true;
         /// <summary>
         /// When overridden in a derived class, is invoked 
         /// whenever application code or internal processes call ApplyTemplate
@@ -446,16 +449,23 @@ namespace Fluent
 
             if (e.Key == Key.Enter)
             {
-                this.button.InvokeClick();
+                InvokeButtonClick();
             }
         }
 
         #endregion
 
+        internal void InvokeButtonClick()
+        {
+            if (!IsReadOnly)
+                this.button.InvokeClick();
+        }
+
         private void OnButtonClick(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
-            this.RaiseEvent(new RoutedEventArgs(ClickEvent, this));
+            if(!IsReadOnly)
+                this.RaiseEvent(new RoutedEventArgs(ClickEvent, this));
         }
 
     protected override Size MeasureOverride(Size constraint)
@@ -470,9 +480,12 @@ namespace Fluent
         return new Size(Math.Max(label.DesiredSize.Width, size.Width), size.Height);
     }
 
+    protected override AutomationPeer OnCreateAutomationPeer()
+        => new SplitButtonAutomationPeer(this);
+
     #endregion
 
-    #region Quick Access Item Creating
+        #region Quick Access Item Creating
 
     /// <summary>
     /// Gets control which represents shortcut item.

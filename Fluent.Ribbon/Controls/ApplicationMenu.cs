@@ -5,7 +5,8 @@ using System.Windows;
 // ReSharper disable once CheckNamespace
 namespace Fluent
 {
-    using Fluent.Internal.KnownBoxes;
+  using System.Windows.Automation.Peers;
+  using Fluent.Internal.KnownBoxes;
 
     /// <summary>
     /// Represents backstage button
@@ -116,6 +117,9 @@ namespace Fluent
 
         #endregion
 
-      
+    protected override AutomationPeer OnCreateAutomationPeer()
+    {
+      return new FrameworkElementAutomationPeer(this);
     }
+  }
 }

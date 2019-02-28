@@ -37,7 +37,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\build\bin\NET 4.5\Release\</OutputPath>
     <DefineConstants>TRACE;CODE_ANALYSIS;NET45</DefineConstants>
@@ -50,6 +50,7 @@
     <CodeAnalysisRuleSet>..\Fluent.Ribbon.ruleset</CodeAnalysisRuleSet>
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <Prefer32Bit>false</Prefer32Bit>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ControlzEx, Version=2.1.4.13, Culture=neutral, PublicKeyToken=f08b075e934b7045, processorArchitecture=MSIL">
@@ -65,6 +66,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xaml" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UIAutomationTypes" />
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
@@ -72,6 +75,15 @@
     <Compile Include="..\Shared\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AutomationPeers\AutomationPeerHelper.cs" />
+    <Compile Include="AutomationPeers\CheckBoxAutomationPeer.cs" />
+    <Compile Include="AutomationPeers\ILabelBy.cs" />
+    <Compile Include="AutomationPeers\MenuItemAutomationPeer.cs" />
+    <Compile Include="AutomationPeers\ButtonAutomationPeer.cs" />
+    <Compile Include="AutomationPeers\DropDownButtonAutomationPeer.cs" />
+    <Compile Include="AutomationPeers\RibbonAutomationPeer.cs" />
+    <Compile Include="AutomationPeers\SplitButtonAutomationPeer.cs" />
+    <Compile Include="AutomationPeers\ToggleButtonAutomationPeer.cs" />
     <Compile Include="Controls\ApplicationMenu.cs" />
     <Compile Include="AttachedProperties\RibbonProperties.cs" />
     <Compile Include="Controls\BackstageAdorner.cs" />
@@ -90,6 +102,7 @@
     <Compile Include="Converters\ColorToSolidColorBrushConverter.cs" />
     <Compile Include="Converters\EqualsToVisibilityConverter.cs" />
     <Compile Include="Converters\ObjectToStringConverter.cs" />
+    <Compile Include="Converters\ReadOnlyConverter.cs" />
     <Compile Include="Converters\SpinnerTextToValueConverter.cs" />
     <Compile Include="Extensions\DependencyObjectHelper.cs" />
     <Compile Include="Extensions\ICommandSourceExtensions.cs" />
@@ -106,7 +119,9 @@
     <Compile Include="Internal\KnownBoxes\StringBoxes.cs" />
     <Compile Include="Internal\KnownBoxes\VisibilityBoxes.cs" />
     <Compile Include="Internal\UIHelper.cs" />
+    <Compile Include="IReadOnlyControl.cs" />
     <Compile Include="IRibbonStateStorage.cs" />
+    <Compile Include="IToolTipCommand.cs" />
     <Compile Include="Localization\Languages\Arabic.cs" />
     <Compile Include="Localization\Languages\Azerbaijani.cs" />
     <Compile Include="Localization\Languages\Catalan.cs" />
@@ -145,7 +160,6 @@
     <Compile Include="Localization\Languages\Vietnamese.cs" />
     <Compile Include="Localization\RibbonLocalizationAttribute.cs" />
     <Compile Include="Localization\RibbonLocalizationBase.cs" />
-    <Compile Include="RibbonAutomationPeer.cs" />
     <Compile Include="RibbonLocalization.cs" />
     <Compile Include="StringRibbonStateStorage.cs" />
     <Compile Include="RibbonStateStorage.cs" />
@@ -235,6 +249,7 @@
     <Compile Include="Controls\ToggleButton.cs" />
     <Compile Include="Metro\Controls\WindowCommands.cs" />
     <Compile Include="Controls\StartScreenTabControl.cs" />
+    <Compile Include="XamlResource.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Documents\Features.xlsx" />
@@ -541,6 +556,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\Office2016\Controls\ApplicationMenuItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\Office2016\Controls\Backstage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -742,6 +761,7 @@
     <Resource Include="Themes\Office2016\Images\RibbonExpand.png" />
     <Resource Include="Themes\Office2016\Images\RibbonPin.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>SET tmpError=0

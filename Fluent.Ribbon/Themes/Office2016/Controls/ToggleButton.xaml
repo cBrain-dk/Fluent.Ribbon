@@ -18,11 +18,17 @@
                 Value="{DynamicResource DefaultFontBrush}" />
         <Setter Property="BorderThickness"
                 Value="1" />
-    <Setter Property="HorizontalAlignment" Value="Stretch"/>
-    <Setter Property="VerticalAlignment" Value="Stretch"/>
-    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-    <Setter Property="VerticalContentAlignment" Value="Stretch"/>
-    <Style.Triggers>
+        <Setter Property="Margin"
+                Value="2 0 2 0" />
+        <Setter Property="HorizontalAlignment"
+                Value="Stretch" />
+        <Setter Property="VerticalAlignment"
+                Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="Stretch" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Stretch" />
+        <Style.Triggers>
             <Trigger Property="Size"
                      Value="Large">
                 <Setter Property="Height"
@@ -159,15 +165,18 @@
                         TargetName="iconImage"
                         Value="{Binding Path=Icon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}" />
             </Trigger>
-            <Trigger Property="IsPressed"
-                     Value="True">
+            <MultiTrigger >
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsPressed" Value="True"/>
+                    <Condition Property="IsReadOnly" Value="False"/>
+                </MultiTrigger.Conditions>
                 <Setter Property="BorderBrush"
                         TargetName="border"
                         Value="{DynamicResource ButtonPressedOuterBorderBrush}" />
                 <Setter Property="Background"
                         TargetName="border"
                         Value="{DynamicResource ButtonPressedOuterBackgroundBrush}" />
-            </Trigger>
+            </MultiTrigger>
             <Trigger Property="IsChecked"
                      Value="True">
                 <Setter Property="BorderBrush"
@@ -192,12 +201,29 @@
                     </Setter.Value>
                 </Setter>
             </Trigger>
+            <Trigger Property="IsReadOnly"
+                     Value="True">
+                <Setter Property="Opacity"
+                        TargetName="iconImage"
+                        Value="0.5" />
+                <Setter Property="Opacity"
+                        TargetName="controlLabel"
+                        Value="0.5" />
+                <Setter Property="Effect"
+                        TargetName="iconImage">
+                    <Setter.Value>
+                        <Fluent:GrayscaleEffect />
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="IsMouseOver"
                                Value="True" />
                     <Condition Property="IsPressed"
                                Value="False" />
+                    <Condition Property="IsReadOnly" 
+                               Value="False"/>
                 </MultiTrigger.Conditions>
                 <Setter Property="Background"
                         TargetName="border"
@@ -214,6 +240,8 @@
                                Value="False" />
                     <Condition Property="IsChecked"
                                Value="True" />
+                    <Condition Property="IsReadOnly" 
+                               Value="False"/>
                 </MultiTrigger.Conditions>
                 <Setter Property="Background"
                         TargetName="border"

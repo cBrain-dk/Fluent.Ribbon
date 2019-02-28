@@ -100,7 +100,7 @@
                               Height="32"
                               VerticalAlignment="Top"
                               Margin="3,4,2,2"
-                              Content="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}"
+                              Content="{Binding LargeIcon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}"
                               Width="32"
                               SnapsToDevicePixels="True" />
         </Grid>
@@ -113,7 +113,7 @@
             </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
-                    <Condition Property="Icon"
+                    <Condition Property="LargeIcon"
                                Value="{x:Null}" />
                     <Condition Property="IsChecked"
                                Value="True" />
@@ -253,7 +253,7 @@
                               Height="32"
                               VerticalAlignment="Top"
                               Margin="3,4,2,2"
-                              Content="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}"
+                              Content="{Binding LargeIcon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}"
                               Width="32"
                               SnapsToDevicePixels="True" />
             <Path x:Name="path"
@@ -455,7 +455,7 @@
             </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
-                    <Condition Property="Icon"
+                    <Condition Property="LargeIcon"
                                Value="{x:Null}" />
                     <Condition Property="IsChecked"
                                Value="True" />
@@ -503,7 +503,7 @@
     </ControlTemplate>
 
     <!--Splited Menu Item Template-->
-    <ControlTemplate x:Key="SplitterApplicationMenuSecondLevelItemTemplate"
+    <ControlTemplate x:Key="SplitedApplicationMenuSecondLevelItemTemplate"
                      TargetType="{x:Type Fluent:MenuItem}">
         <ControlTemplate.Resources>
             <ResourceDictionary>
@@ -631,7 +631,7 @@
                               Height="32"
                               VerticalAlignment="Top"
                               Margin="3,4,2,2"
-                              Content="{Binding Icon, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}, RelativeSource={RelativeSource TemplatedParent}}"
+                              Content="{Binding LargeIcon, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}, RelativeSource={RelativeSource TemplatedParent}}"
                               Width="32"
                               SnapsToDevicePixels="True" />
             <Path x:Name="path"
@@ -733,7 +733,7 @@
             </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
-                    <Condition Property="Icon"
+                    <Condition Property="LargeIcon"
                                Value="{x:Null}" />
                     <Condition Property="IsChecked"
                                Value="True" />
@@ -817,7 +817,7 @@
                                Value="True" />
                 </MultiTrigger.Conditions>
                 <Setter Property="Template"
-                        Value="{DynamicResource SplitterApplicationMenuSecondLevelItemTemplate}" />
+                        Value="{DynamicResource SplitedApplicationMenuSecondLevelItemTemplate}" />
             </MultiTrigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
@@ -918,7 +918,7 @@
                               HorizontalAlignment="Center"
                               Height="32"
                               VerticalAlignment="Center"
-                              Content="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}"
+                              Content="{Binding LargeIcon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}"
                               Width="32"
                               Margin="3,2,2,2"
                               SnapsToDevicePixels="True" />
@@ -932,7 +932,7 @@
             </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
-                    <Condition Property="Icon"
+                    <Condition Property="LargeIcon"
                                Value="{x:Null}" />
                     <Condition Property="IsChecked"
                                Value="True" />
@@ -1058,7 +1058,7 @@
                               HorizontalAlignment="Center"
                               Height="32"
                               VerticalAlignment="Center"
-                              Content="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}"
+                              Content="{Binding LargeIcon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}"
                               Width="32"
                               Margin="3,2,2,2"
                               SnapsToDevicePixels="True" />
@@ -1256,7 +1256,7 @@
             </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
-                    <Condition Property="Icon"
+                    <Condition Property="LargeIcon"
                                Value="{x:Null}" />
                     <Condition Property="IsChecked"
                                Value="True" />
@@ -1417,7 +1417,7 @@
                               HorizontalAlignment="Center"
                               Height="32"
                               VerticalAlignment="Center"
-                              Content="{Binding Icon, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}, RelativeSource={RelativeSource TemplatedParent}}"
+                              Content="{Binding LargeIcon, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}, RelativeSource={RelativeSource TemplatedParent}}"
                               Width="32"
                               Margin="3,2,2,2"
                               SnapsToDevicePixels="True" />
@@ -1622,7 +1622,7 @@
             </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
-                    <Condition Property="Icon"
+                    <Condition Property="LargeIcon"
                                Value="{x:Null}" />
                     <Condition Property="IsChecked"
                                Value="True" />

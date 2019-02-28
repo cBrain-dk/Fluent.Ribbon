@@ -66,7 +66,7 @@
                                 <Ellipse Margin="3"
                                          VerticalAlignment="Stretch"
                                          Stretch="Fill"
-                                         Stroke="#FF6E7071"
+                                         Stroke="#FF575859"
                                          StrokeEndLineCap="Triangle"
                                          StrokeDashCap="Square"
                                          StrokeThickness="1"

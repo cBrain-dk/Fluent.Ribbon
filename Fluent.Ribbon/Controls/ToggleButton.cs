@@ -2,12 +2,15 @@
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
+using System;
+using System.Windows.Input;
+using System.Windows.Automation.Peers;
 
 // ReSharper disable once CheckNamespace
 namespace Fluent
-{
+{    
     using Fluent.Internal.KnownBoxes;
-
+    
     /// <summary>
     /// Represents toggle button
     /// </summary>
@@ -194,6 +197,37 @@ namespace Fluent
 
         #endregion
 
+        #region IsReadOnly
+
+        /// <summary>
+        /// Gets or sets Size for the element.
+        /// </summary>
+        public bool IsReadOnly
+        {
+            get { return (bool)this.GetValue(IsReadOnlyProperty); }
+            set { this.SetValue(IsReadOnlyProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for Size.  
+        /// This enables animation, styling, binding, etc...
+        /// </summary>
+        public static readonly DependencyProperty IsReadOnlyProperty = RibbonProperties.IsReadOnlyProperty.AddOwner(typeof(ToggleButton));
+
+        #endregion
+
+        public bool AllowToggle
+        {
+            get { return (bool)GetValue(AllowToggleProperty); }
+            set { SetValue(AllowToggleProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for CanToggle.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AllowToggleProperty =
+            DependencyProperty.Register("AllowToggle", typeof(bool), typeof(ToggleButton), new FrameworkPropertyMetadata(true) { BindsTwoWayByDefault = true});
+
+
+
         #endregion
 
         #region Constructors
@@ -209,6 +243,7 @@ namespace Fluent
             IsCheckedProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(ToggleButtonHelper.OnIsCheckedChanged, ToggleButtonHelper.CoerceIsChecked));
             ContextMenuService.Attach(type);
             ToolTipService.Attach(type);
+            CommandProperty.OverrideMetadata(typeof(ToggleButton), new FrameworkPropertyMetadata(RibbonProperties.OnCommandChanged));
         }
 
         /// <summary>
@@ -223,6 +258,8 @@ namespace Fluent
 
         #region Overrides
 
+        protected override bool IsEnabledCore => true;
+
         /// <summary>
         /// Called when a <see cref="T:System.Windows.Controls.Button"/> is clicked. 
         /// </summary>
@@ -233,8 +270,14 @@ namespace Fluent
             {
                 PopupService.RaiseDismissPopupEvent(this, DismissPopupMode.Always);
             }
+            if(AllowToggle && !IsReadOnly)
+                base.OnClick();
+        }
 
-            base.OnClick();
+
+        protected override AutomationPeer OnCreateAutomationPeer()
+        {
+            return new Fluent.AutomationPeers.ToggleButtonAutomationPeer(this);
         }
 
         #endregion
@@ -244,7 +287,8 @@ namespace Fluent
         /// </summary>
         public void InvokeClick()
         {
-            this.OnClick();
+            if(!IsReadOnly)
+                this.OnClick();
         }
 
         #region Quick Access Item Creating

@@ -16,12 +16,13 @@ namespace Fluent
 {
     using Fluent.Internal;
     using Fluent.Internal.KnownBoxes;
+    using System.Windows.Automation.Peers;
 
     /// <summary>
     /// Represents menu item
     /// </summary>
     [ContentProperty(nameof(Items))]
-    public class MenuItem : System.Windows.Controls.MenuItem, IQuickAccessItemProvider, IRibbonControl
+    public class MenuItem : System.Windows.Controls.MenuItem, IQuickAccessItemProvider, IRibbonControl, ILargeIconProvider
     {
         #region Fields
 
@@ -216,6 +217,25 @@ namespace Fluent
 
         #endregion
 
+        #region LargeIcon
+
+        /// <summary>
+        /// Gets or sets the large icon property
+        /// </summary>
+        public object LargeIcon
+        {
+          get { return (object)GetValue(LargeIconProperty); }
+          set { SetValue(LargeIconProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for LargeIcon.  This enables animation, styling, binding, etc...
+        /// </summary>
+        public static readonly DependencyProperty LargeIconProperty = 
+            DependencyProperty.Register(nameof(LargeIcon), typeof(object), typeof(MenuItem), new PropertyMetadata((object)null));
+
+        #endregion
+
         #region GroupName
 
         /// <summary>
@@ -371,6 +391,24 @@ namespace Fluent
 
         #endregion
 
+        #region IsReadOnly
+
+        /// <summary>
+        /// Gets or sets IsReadOnly for the element.
+        /// </summary>
+        public bool IsReadOnly
+        {
+            get { return (bool)this.GetValue(IsReadOnlyProperty); }
+            set { this.SetValue(IsReadOnlyProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for IsReadOnly.  
+        /// </summary>
+        public static readonly DependencyProperty IsReadOnlyProperty = RibbonProperties.IsReadOnlyProperty.AddOwner(typeof(MenuItem));
+
+        #endregion
+
         #endregion
 
         #region Events
@@ -401,6 +439,7 @@ namespace Fluent
             ContextMenuService.Attach(type);
             DefaultStyleKeyProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(type));
             IsCheckedProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(BooleanBoxes.FalseBox, OnIsCheckedChanged, CoerceIsChecked));
+            CommandProperty.OverrideMetadata(typeof(MenuItem), new FrameworkPropertyMetadata(RibbonProperties.OnCommandChanged));
         }
 
         /// <summary>
@@ -549,6 +588,8 @@ namespace Fluent
 
         #region Overrides
 
+        protected override bool IsEnabledCore => true;
+
         /// <summary>
         /// Creates or identifies the element that is used to display the given item.
         /// </summary>
@@ -607,7 +648,8 @@ namespace Fluent
                   PopupService.RaiseDismissPopupEventAsync(this, DismissPopupMode.Always);
             }
 
-            base.OnClick();
+            if(!IsReadOnly)
+                base.OnClick();
             if (!DismissPopupOnClick)
               this.Focus();
         }
@@ -737,6 +779,12 @@ namespace Fluent
             }
 
             return null;
+        }
+
+
+        protected override AutomationPeer OnCreateAutomationPeer()
+        {
+            return new Fluent.AutomationPeers.MenuItemAutomationPeer(this);
         }
 
         #endregion

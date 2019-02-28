@@ -1,10 +1,11 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Markup;
+using System.Windows.Automation.Peers;
 
 // ReSharper disable once CheckNamespace
 namespace Fluent
-{
+{    
     using Fluent.Internal.KnownBoxes;
 
     /// <summary>
@@ -183,6 +184,24 @@ namespace Fluent
 
         #endregion CornerRadius
 
+        #region IsReadOnly
+
+        /// <summary>
+        /// Gets or sets IsReadOnly for the element.
+        /// </summary>
+        public bool IsReadOnly
+        {
+            get { return (bool)this.GetValue(IsReadOnlyProperty); }
+            set { this.SetValue(IsReadOnlyProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for IsReadOnly.  
+        /// </summary>
+        public static readonly DependencyProperty IsReadOnlyProperty = RibbonProperties.IsReadOnlyProperty.AddOwner(typeof(Button));
+
+        #endregion
+
         #endregion
 
         #region Constructors
@@ -197,6 +216,7 @@ namespace Fluent
             DefaultStyleKeyProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(type));
             ContextMenuService.Attach(type);
             ToolTipService.Attach(type);
+            CommandProperty.OverrideMetadata(typeof(Button), new FrameworkPropertyMetadata(RibbonProperties.OnCommandChanged));
         }
 
         /// <summary>
@@ -205,11 +225,15 @@ namespace Fluent
         public Button()
         {
             ContextMenuService.Coerce(this);
+            
         }
 
         #endregion
 
         #region Overrides
+
+
+        protected override bool IsEnabledCore => true;
 
         /// <summary>
         /// Called when a <see cref="T:System.Windows.Controls.Button"/> is clicked. 
@@ -221,8 +245,13 @@ namespace Fluent
             {
                 PopupService.RaiseDismissPopupEvent(this, DismissPopupMode.Always);
             }
+            if(!IsReadOnly)
+                base.OnClick();
+        }
 
-            base.OnClick();
+        protected override AutomationPeer OnCreateAutomationPeer()
+        {
+            return new Fluent.AutomationPeers.ButtonAutomationPeer(this);
         }
 
         #endregion

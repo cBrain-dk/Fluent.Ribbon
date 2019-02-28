@@ -23,9 +23,26 @@ namespace Fluent
     /// </summary>
     public abstract class RibbonControl : Control, ICommandSource, IQuickAccessItemProvider, IRibbonControl
     {
+        #region IsReadOnly
 
-    #region WhiteIcon
-    public static readonly DependencyProperty WhiteIconProperty = DependencyProperty.RegisterAttached(
+        /// <summary>
+        /// Gets or sets IsReadOnly for the element.
+        /// </summary>
+        public bool IsReadOnly
+        {
+            get { return (bool)this.GetValue(IsReadOnlyProperty); }
+            set { this.SetValue(IsReadOnlyProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for IsReadOnly.  
+        /// </summary>
+        public static readonly DependencyProperty IsReadOnlyProperty = RibbonProperties.IsReadOnlyProperty.AddOwner(typeof(RibbonControl));
+
+        #endregion
+
+        #region WhiteIcon
+        public static readonly DependencyProperty WhiteIconProperty = DependencyProperty.RegisterAttached(
     "WhiteIcon",
     typeof(object),
     typeof(RibbonControl),
@@ -47,7 +64,7 @@ namespace Fluent
     }
     #endregion
 
-    #region IsQuickAccessItem
+        #region IsQuickAccessItem
     public static readonly DependencyProperty IsQuickAccessItemProperty = DependencyProperty.RegisterAttached(
     "IsQuickAccessItem",
     typeof(bool),
@@ -66,7 +83,7 @@ namespace Fluent
     }
     #endregion
 
-    #region KeyTip
+        #region KeyTip
 
     /// <summary>
     /// Gets or sets KeyTip for element.
@@ -388,7 +405,7 @@ namespace Fluent
             Bind(source, element, nameof(FontStyle), FontStyleProperty, BindingMode.OneWay);
             Bind(source, element, nameof(FontWeight), FontWeightProperty, BindingMode.OneWay);
 
-            Bind(source, element, nameof(Foreground), ForegroundProperty, BindingMode.OneWay);
+            //Bind(source, element, nameof(Foreground), ForegroundProperty, BindingMode.OneWay);
             Bind(source, element, nameof(IsEnabled), IsEnabledProperty, BindingMode.OneWay);
             Bind(source, element, nameof(Opacity), OpacityProperty, BindingMode.OneWay);
             Bind(source, element, nameof(SnapsToDevicePixels), SnapsToDevicePixelsProperty, BindingMode.OneWay);

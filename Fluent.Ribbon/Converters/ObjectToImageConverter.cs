@@ -53,6 +53,20 @@
                 return CreateImage(imageUri, desiredSize);
             }
 
+            var xamlResource = value as XamlResource;
+
+            if(xamlResource!=null)
+            {
+              var resource = Application.Current.TryFindResource(xamlResource.Key);
+                if(resource is DataTemplate)
+                {
+                    ContentPresenter cp = new ContentPresenter();
+                    cp.ContentTemplate = (DataTemplate)resource;
+                    return cp;
+                }
+                return resource;
+            }
+
             var imageSource = value as ImageSource;
 
             if (imageSource == null)
@@ -65,7 +79,7 @@
             // We have to use a frozen instance. Otherwise we run into trouble if the same instance is used in multiple locations.
             // In case of BitmapImage it even gets worse when using the same Uri...
             image.Source = (ImageSource)ExtractImage(imageSource, desiredSize).GetAsFrozen();
-            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
+            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
 
 
             return image;

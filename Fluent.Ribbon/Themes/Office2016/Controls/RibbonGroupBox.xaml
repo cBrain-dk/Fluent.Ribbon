@@ -699,7 +699,7 @@
                                     CornerRadius="1"
                                     d:LayoutOverrides="Width">
                               
-                              <ContentControl x:Name="popupContent" />
+                              <ContentControl x:Name="popupContent" Focusable="False" />
                             </Border>
 
                         </Grid>

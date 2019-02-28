@@ -21,8 +21,12 @@ namespace Fluent
     public class RibbonTitleBar : HeaderedItemsControl
     {
         #region Fields
-   
 
+        private int maxUpdateCount = 10;
+        private int updateCount = 0;
+        private int updateDelay = 3;
+        private DateTime startUpdateDataTime=DateTime.Now;
+        bool firstTimeInvalidate = true;
         // Quick access toolbar holder
         private FrameworkElement quickAccessToolbarHolder;
         // Header holder
@@ -199,6 +203,33 @@ namespace Fluent
         /// <returns>The size of the control, up to the maximum specified by constraint.</returns>
         protected override Size MeasureOverride(Size constraint)
         {
+            Fluent.QuickAccessToolBar quickAccessToolBar = QuickAccessToolBar as Fluent.QuickAccessToolBar;
+            if (constraint.Width < 1)
+                return constraint;
+            updateCount++;
+            if (DateTime.Now > startUpdateDataTime.AddSeconds(updateDelay))
+            {
+                updateCount = 0;
+                startUpdateDataTime = DateTime.Now;
+            }
+            if (updateCount >= maxUpdateCount && quickAccessToolBar!=null && quickAccessToolBar.Items.Count>0)
+            {
+                if (updateCount == maxUpdateCount)
+                {
+                    if(firstTimeInvalidate)
+                    {
+                        updateCount = 0;
+                        firstTimeInvalidate = false;
+                        Dispatcher.BeginInvoke(new Action(() => InvalidateMeasure()));
+                    }
+                    var ignore = System.Threading.Tasks.Task.Delay(new TimeSpan(0,0, 0, updateDelay,10)).ContinueWith((t) =>
+                    {
+                        Dispatcher.BeginInvoke(new Action(() => InvalidateMeasure()));
+                    });
+                }
+                return constraint;
+            }
+
             if (this.isAtLeastOneRequiredControlPresent == false)
             {
                 return base.MeasureOverride(constraint);
@@ -258,7 +289,7 @@ namespace Fluent
 
         // Update items size and positions
         private void Update(Size constraint)
-        {
+        {            
             var visibleGroups = this.Items.OfType<RibbonContextualTabGroup>()
                 .Where(group => group.InnerVisibility == Visibility.Visible && group.Items.Count > 0)
                 .ToList();

@@ -30,17 +30,6 @@
                         <Binding Source="0" />
                     </MultiBinding>
                 </Fluent:RibbonTitleBar.Margin>                
-                <Fluent:RibbonTitleBar.Header>
-                    <TextBlock x:Name="PART_Title"
-                               Margin="0"
-                               VerticalAlignment="Center"
-                               d:LayoutOverrides="Width"
-                               HorizontalAlignment="Center"
-                               Text="{Binding Path=Title,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
-                               Foreground="{DynamicResource TitleBrush}"
-                               TextWrapping="NoWrap"
-                               TextTrimming="CharacterEllipsis" />
-                </Fluent:RibbonTitleBar.Header>
             </Fluent:RibbonTitleBar>
 
             <Fluent:RibbonTabControl Menu="{TemplateBinding Menu}"

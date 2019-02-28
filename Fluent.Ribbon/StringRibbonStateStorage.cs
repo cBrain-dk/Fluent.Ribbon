@@ -285,7 +285,7 @@
 
             try
             {
-              if (!string.IsNullOrEmpty(GetSettings(ribbon)))
+              if (GetSettings(ribbon) != null)
               {
                 byte[] byteArray = Encoding.UTF8.GetBytes(GetSettings(ribbon));
                 using (MemoryStream stream = new MemoryStream(byteArray))
@@ -347,7 +347,7 @@
 
             if (splitted.Length != 2)
             {
-                return;
+              splitted = new string[] { "False,True", "" };
             }
 
             // Load Ribbon State
@@ -395,7 +395,6 @@
               if (menuItem.Target == null && menuItem.TargetName != null)
               {
                 menuItem.Target = ribbon.FindElement(menuItem.TargetName, ribbon);
-
               }
               menuItem.IsChecked = this.ribbon.IsInQuickAccessToolBar(menuItem.Target);
             }

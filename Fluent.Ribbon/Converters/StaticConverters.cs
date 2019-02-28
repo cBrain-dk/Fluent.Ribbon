@@ -34,5 +34,10 @@
         /// Get a static instance of <see cref="ObjectToStringConverter"/>
         /// </summary>
         public static readonly ObjectToStringConverter ObjectToStringConverter = new ObjectToStringConverter();
+
+        /// <summary>
+        /// Get a static instance of <see cref="ReadOnlyConverterConverter"/>
+        /// </summary>
+        public static readonly ReadOnlyConverter ReadOnlyConverter = new ReadOnlyConverter();
     }
 }

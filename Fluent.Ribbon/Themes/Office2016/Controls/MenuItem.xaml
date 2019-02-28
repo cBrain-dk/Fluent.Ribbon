@@ -56,6 +56,7 @@
                        Height="2" />
         </Grid>
     </ControlTemplate>
+    
     <ControlTemplate x:Key="ResizeVerticalThumbControlTemplate"
                      TargetType="{x:Type Thumb}">
         <Grid Background="#00000000">
@@ -273,6 +274,33 @@
             </MultiTrigger>
             <Trigger Property="IsEnabled"
                      Value="False">
+                <Setter Property="Opacity"
+                        TargetName="iconImage"
+                        Value="0.5" />
+                <Setter Property="Opacity"
+                        TargetName="image"
+                        Value="0.5" />
+                <Setter Property="Opacity"
+                        TargetName="textBlock"
+                        Value="0.5" />
+                <Setter Property="Opacity"
+                        TargetName="gestureTextBlock"
+                        Value="0.5" />
+                <Setter Property="Effect"
+                        TargetName="iconImage">
+                    <Setter.Value>
+                        <Fluent:GrayscaleEffect />
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Effect"
+                        TargetName="image">
+                    <Setter.Value>
+                        <Fluent:GrayscaleEffect />
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="Fluent:MenuItem.IsReadOnly"
+                     Value="True">
                 <Setter Property="Opacity"
                         TargetName="iconImage"
                         Value="0.5" />
@@ -520,6 +548,8 @@
                                Value="True" />
                     <Condition Property="IsEnabled"
                                Value="True" />
+                    <Condition Property="Fluent:MenuItem.IsReadOnly"
+                               Value="False" />
                 </MultiTrigger.Conditions>
                 <Setter Property="Visibility"
                         TargetName="border"
@@ -757,13 +787,18 @@
             </Popup>
         </Grid>
         <ControlTemplate.Triggers>
-            <Trigger Property="IsMouseOver"
-                     Value="True"
-                     SourceName="border_Copy">
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="Fluent:MenuItem.IsReadOnly"
+                               Value="False" />
+                    <Condition Property="IsMouseOver"
+                               Value="True"
+                               SourceName="border_Copy" />
+                </MultiTrigger.Conditions>
                 <Setter Property="Visibility"
                         TargetName="border1_Copy"
                         Value="Visible" />
-            </Trigger>
+            </MultiTrigger>
             <Trigger Property="Fluent:MenuItem.ResizeMode"
                      Value="None">
                 <Setter Property="Visibility"
@@ -892,8 +927,10 @@
             </MultiTrigger>
         </Style.Triggers>
     </Style>
+    
     <Style TargetType="{x:Type MenuItem}"
            BasedOn="{StaticResource MenuItemStyle}" />
+    
     <Style TargetType="{x:Type Fluent:MenuItem}"
            BasedOn="{StaticResource {x:Type MenuItem}}" />
 </ResourceDictionary>

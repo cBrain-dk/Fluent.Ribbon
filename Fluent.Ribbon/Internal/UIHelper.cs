@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Documents;
@@ -110,6 +111,44 @@
             }
 
             return (T)item;
+        }
+
+        private static IEnumerable<T> GetParentsCore<T>(DependencyObject element)
+            where T : class
+        {
+            var item = element;
+
+            while (item != null)
+            {
+                item = VisualTreeHelper.GetParent(item);
+
+                if (item is T)
+                    yield return item as T;
+            }
+
+            if (item == null)
+            {
+                item = element;
+
+                while (item != null)
+                {
+                    item = LogicalTreeHelper.GetParent(item);
+
+                    if (item is T)
+                        yield return item as T;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Finds the parent control of type <typeparamref name="T"/>.
+        /// First looks at the visual tree and then at the logical tree to find the parent.
+        /// </summary>
+        /// <returns>The found visual/logical parent or null.</returns>
+        public static List<T> GetParents<T>(DependencyObject element)
+        where T : class
+        {
+            return GetParentsCore<T>(element).Where(e => e != null).Distinct().Reverse().ToList();
         }
 
         /// <summary>

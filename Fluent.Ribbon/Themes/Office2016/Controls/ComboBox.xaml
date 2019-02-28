@@ -16,8 +16,6 @@
                 Value="Auto" />
     <Setter Property="Foreground"
                 Value="{DynamicResource DefaultFontBrush}" />
-    <Setter Property="FocusVisualStyle"
-                Value="{DynamicResource ControlStyleEmptyFocus}" />
   </Style>
 
   <ControlTemplate x:Key="RibbonComboButtonControlTemplate"
@@ -25,8 +23,8 @@
     <Border x:Name="border"
                 BorderThickness="{TemplateBinding BorderThickness}"
                 CornerRadius="0"
-                Background="White"
-                BorderBrush="{DynamicResource ButtonBorderBrush}"
+                Background="{DynamicResource TransparentBrush}" 
+                BorderBrush="{DynamicResource TransparentBrush}"
                 Height="Auto"
                 HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
                 VerticalAlignment="{TemplateBinding VerticalAlignment}">
@@ -137,15 +135,16 @@
         </StackPanel>
 
         <Border Height="Auto"
-                        BorderThickness="1,1,1,1"
-                        BorderBrush="{DynamicResource TextBoxBorderBrush}"
+                        BorderThickness="0"
+                        BorderBrush="{DynamicResource TransparentBrush}"
                         x:Name="PART_ContentBorder"
-                        Background="{DynamicResource TextBoxBackgroundBrush}"
+                        Background="{DynamicResource TransparentBrush}"
                         Grid.Column="1"
                         Grid.ColumnSpan="1"
                         Width="{TemplateBinding InputWidth}"
                         d:LayoutOverrides="GridBox"
-                        HorizontalAlignment="Right">
+                        HorizontalAlignment="Right"
+                        FocusVisualStyle="{DynamicResource ControlStyleEmptyFocus}">
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="*" />
@@ -319,7 +318,6 @@
               </Rectangle.Fill>
             </Rectangle>
             <Border x:Name="PART_DropDownBorder"
-                                Margin="0"
                                 MinWidth="{Binding ActualWidth, ElementName=PART_ContentBorder}"
                                 SnapsToDevicePixels="True"
                                 Background="{DynamicResource ContextMenuBarBackgroundBrush}"
@@ -372,7 +370,7 @@
                                                       BorderBrush="{DynamicResource GalleryBorderBrush}"
                                                       x:Name="PART_ScrollViewer"
                                                       Background="White"
-                                                      Margin="1"
+                                                      Margin="0"
                                                       SnapsToDevicePixels="True"
                                                       KeyboardNavigation.DirectionalNavigation="None"
                                                       VerticalAlignment="Stretch"
@@ -464,7 +462,7 @@
       <Trigger Property="Icon"
                      Value="{x:Null}">
         <Setter Property="Visibility"
-                        TargetName="iconImage"
+                        TargetName="stackPanel"
                         Value="Collapsed" />
       </Trigger>
       <Trigger Property="InputWidth"
@@ -513,31 +511,23 @@
           </Setter.Value>
         </Setter>
       </Trigger>
-      <Trigger Property="IsMouseOver"
-                     Value="True">
-        <Setter Property="BorderBrush"
-                        TargetName="PART_ContentBorder"
-                        Value="{DynamicResource TextBoxHoverBorderBrush}" />
-        <Setter Property="Background"
-                        TargetName="PART_EditableTextBox"
-                        Value="{DynamicResource TextBoxHoverBackgroundBrush}" />
-        <Setter Property="Background"
-                        TargetName="PART_ContentBorder"
-                        Value="{DynamicResource TextBoxHoverBackgroundBrush}" />
-      </Trigger>
 
-      <Trigger Property="IsKeyboardFocusWithin"
-                     Value="True">
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="IsMouseOver" 
+                     Value="True" 
+                     SourceName="PART_ContentBorder" />
+          <Condition Property="IsDropDownOpen"
+                     Value="False" />
+        </MultiTrigger.Conditions>
         <Setter Property="BorderBrush"
-                        TargetName="PART_ContentBorder"
-                        Value="{DynamicResource TextBoxHoverBorderBrush}" />
+                TargetName="PART_ContentBorder"
+                Value="{DynamicResource ComboBoxHoverInnerBorderBrush}" />
         <Setter Property="Background"
-                        TargetName="PART_EditableTextBox"
-                        Value="{DynamicResource TextBoxHoverBackgroundBrush}" />
-        <Setter Property="Background"
-                        TargetName="PART_ContentBorder"
-                        Value="{DynamicResource TextBoxHoverBackgroundBrush}" />
-      </Trigger>
+                TargetName="PART_ContentBorder"
+                Value="{DynamicResource ComboBoxHoverInnerBackgroundBrush}" />
+      </MultiTrigger>
+      
       <Trigger Property="HasItems"
                      Value="false">
         <Setter TargetName="PART_DropDownBorder"
@@ -571,7 +561,7 @@
     <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
                 Value="Disabled" />
     <Setter Property="FocusVisualStyle"
-                Value="{DynamicResource ControlStyleEmptyFocus}" />
+                Value="{DynamicResource TextBoxFocusVisual}" />
     <Setter Property="IsEditable"
                 Value="True" />
     <Setter Property="ScrollViewer.CanContentScroll"

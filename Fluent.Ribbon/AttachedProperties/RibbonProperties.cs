@@ -1,8 +1,10 @@
 ﻿// ReSharper disable once CheckNamespace
 namespace Fluent
 {
+    using System;
     using System.Diagnostics.CodeAnalysis;
     using System.Windows;
+    using System.Windows.Input;
     using System.Windows.Media;
     using Fluent.Extensibility;
 
@@ -11,6 +13,64 @@ namespace Fluent
     /// </summary>
     public class RibbonProperties
     {
+        #region internal class
+        
+        internal class CommandCanExecuteChanged
+        {
+            IRibbonControl RibbonControl { get; set; }
+            ICommand Command { get; set; }
+            internal CommandCanExecuteChanged(IRibbonControl ribbonControl,ICommand command)
+            {
+                RibbonControl = ribbonControl;
+                Command = command;
+            }
+
+            internal void RegisterCommand()
+            {
+                RibbonControl.IsReadOnly = !Command.CanExecute(null);
+                Command.CanExecuteChanged += CanExecuteChanged;
+            }
+            
+            internal void UnRegisterCommand()
+            {
+                RibbonControl.IsReadOnly=true;
+                Command.CanExecuteChanged -= CanExecuteChanged;
+            }
+
+            private void CanExecuteChanged(object sender, EventArgs e)
+            {
+                ICommand command = sender as ICommand;
+                if(command!=null)
+                    RibbonControl.IsReadOnly = !command.CanExecute(null);
+
+            }
+        }
+
+        #endregion
+        #region CommandCanExectue Property
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for TitleBarHeight.  
+        /// This enables animation, styling, binding, etc...
+        /// </summary>
+        public static readonly DependencyProperty CommandCanExectueProperty =
+            DependencyProperty.RegisterAttached("CommandCanExectue", typeof(CommandCanExecuteChanged), typeof(RibbonProperties),
+                new FrameworkPropertyMetadata(null));
+
+        internal static void SetCommandCanExectue(UIElement element, CommandCanExecuteChanged value)
+        {
+            element.SetValue(CommandCanExectueProperty, value);
+        }
+
+        internal static CommandCanExecuteChanged GetCommandCanExectue(UIElement element)
+        {
+            if (element == null)
+                return null;
+            return (CommandCanExecuteChanged)element.GetValue(CommandCanExectueProperty);
+        }
+
+        #endregion
+
         #region TitleBarHeight Property
 
         /// <summary>
@@ -160,6 +220,70 @@ namespace Fluent
             SetSize(element, GetSizeDefinition(element).GetSize(state));
         }
 
+        #endregion
+
+        #region IsReadOnly
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for Size.  
+        /// This enables animation, styling, binding, etc...
+        /// </summary>
+        public static readonly DependencyProperty IsReadOnlyProperty =
+            DependencyProperty.RegisterAttached("IsReadOnly", typeof(bool), typeof(RibbonProperties),
+                new FrameworkPropertyMetadata(false, OnReadOnlyChanged)
+        );
+
+        private static void OnReadOnlyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            FrameworkElement frameworkElement = d as FrameworkElement;
+            if(frameworkElement!=null)
+            {
+                if ((bool)e.NewValue == true)
+                {
+                    VisualStateManager.GoToState(frameworkElement, "Disabled", true);
+                }
+                else
+                    VisualStateManager.GoToState(frameworkElement, "Normal", true);
+            }
+        }
+
+
+
+        /// <summary>
+        /// Sets IsReadOnly for element
+        /// </summary>
+        public static void SetIsReadOnly(DependencyObject element, bool value)
+        {
+            element.SetValue(IsReadOnlyProperty, value);
+        }
+
+        /// <summary>
+        /// Gets IsReadOnly for element
+        /// </summary>
+        public static bool GetIsReadOnly(DependencyObject element)
+        {
+            return (bool)element.GetValue(IsReadOnlyProperty);
+        }
+
+        #endregion
+
+        #region Command
+        internal static void OnCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            IRibbonControl ribbonControl = d as IRibbonControl;
+            CommandCanExecuteChanged old = GetCommandCanExectue(d as UIElement);
+            if (old != null)
+                old.UnRegisterCommand();
+            ICommand newValue = e.NewValue as ICommand;
+            if (newValue != null && ribbonControl != null)
+            {
+                var temp = new CommandCanExecuteChanged(ribbonControl, newValue);
+                SetCommandCanExectue((UIElement)ribbonControl,temp);
+                temp.RegisterCommand();
+            }
+
+
+        }
         #endregion
     }
 }

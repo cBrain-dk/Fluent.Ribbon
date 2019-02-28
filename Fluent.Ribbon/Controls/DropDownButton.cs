@@ -8,12 +8,14 @@ namespace Fluent
   using System.Diagnostics.CodeAnalysis;
   using System.Threading;
   using System.Windows;
+    using System.Windows.Automation.Peers;
   using System.Windows.Controls;
   using System.Windows.Controls.Primitives;
   using System.Windows.Data;
   using System.Windows.Input;
   using System.Windows.Markup;
   using System.Windows.Threading;
+    using Fluent.AutomationPeers;
   using Fluent.Internal;
   using Fluent.Internal.KnownBoxes;
 
@@ -98,6 +100,24 @@ namespace Fluent
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty KeyTipProperty = Fluent.KeyTip.KeysProperty.AddOwner(typeof(DropDownButton));
+
+        #endregion
+
+        #region IsReadOnly
+
+        /// <summary>
+        /// Gets or sets IsReadOnly for the element.
+        /// </summary>
+        public bool IsReadOnly
+        {
+            get { return (bool)this.GetValue(IsReadOnlyProperty); }
+            set { this.SetValue(IsReadOnlyProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for IsReadOnly.  
+        /// </summary>
+        public static readonly DependencyProperty IsReadOnlyProperty = RibbonProperties.IsReadOnlyProperty.AddOwner(typeof(DropDownButton));
 
         #endregion
 
@@ -224,7 +244,18 @@ namespace Fluent
         /// </summary>
         public static readonly DependencyProperty IsDropDownOpenProperty =
             DependencyProperty.Register(nameof(IsDropDownOpen), typeof(bool), typeof(DropDownButton),
-            new PropertyMetadata(BooleanBoxes.FalseBox, OnIsDropDownOpenChanged));
+            new PropertyMetadata(BooleanBoxes.FalseBox, OnIsDropDownOpenChanged, CoerceValueIsDropDownOpen));
+
+        private static object CoerceValueIsDropDownOpen(DependencyObject d, object baseValue)
+        {
+            if(baseValue is bool boolBaseValue)
+            {
+                DropDownButton dropDownButton = (DropDownButton)d;
+                return BooleanBoxes.Box(!dropDownButton.IsReadOnly && boolBaseValue);
+            }
+
+            return baseValue;
+        }
 
         #endregion
 
@@ -466,6 +497,8 @@ namespace Fluent
 
         #region Overrides
 
+        protected override bool IsEnabledCore => true;
+
         /// <summary>
         /// Creates or identifies the element that is used to display the given item.
         /// </summary>
@@ -632,6 +665,12 @@ namespace Fluent
             return !control.IsDropDownOpen;
         }
 
+        /// <summary>
+        /// Override automation peer for screen readers
+        /// </summary>
+        /// <returns></returns>
+        protected override AutomationPeer OnCreateAutomationPeer() =>  new DropDownButtonAutomationPeer(this);
+
         #endregion
 
         #region Methods
@@ -709,6 +748,12 @@ namespace Fluent
             control.SetValue(System.Windows.Controls.ToolTipService.IsEnabledProperty, !newValue);
 
             Debug.WriteLine($"{control.Header} IsDropDownOpen: {newValue}");
+
+            if(UIElementAutomationPeer.FromElement(control) is DropDownButtonAutomationPeer peer)
+            {
+                peer.ResetChildrenCache();
+                peer.RaiseExpandCollapseAutomationEvent((bool)e.OldValue, newValue);
+            }
 
             if (newValue)
             {
