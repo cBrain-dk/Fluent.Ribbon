@@ -1,25 +1,24 @@
-﻿using System;
-using System.Collections;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Windows;
-using System.Windows.Automation.Peers;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Input;
-
-// ReSharper disable once CheckNamespace
+﻿// ReSharper disable once CheckNamespace
 namespace Fluent
 {
-    using Fluent.AutomationPeers;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Windows;
+    using System.Windows.Automation.Peers;
+    using System.Windows.Controls.Primitives;
+    using System.Windows.Data;
+    using System.Windows.Input;
+    using Fluent.Automation.Peers;
+    using Fluent.Extensibility;
     using Fluent.Internal.KnownBoxes;
 
     /// <summary>
-    /// Represents button control that allows 
+    /// Represents button control that allows
     /// you to add menu and handle clicks
     /// </summary>
     [TemplatePart(Name = "PART_Button", Type = typeof(ButtonBase))]
-    public class SplitButton : DropDownButton, IToggleButton, ICommandSource
+    public class SplitButton : DropDownButton, IToggleButton, ICommandSource, IKeyTipInformationProvider
     {
         #region Fields
 
@@ -27,147 +26,140 @@ namespace Fluent
         private ToggleButton button;
 
         private SplitButton quickAccessButton;
-        TwoLineLabel label;
 
         #endregion
 
         #region Properties
 
-        /// <summary>
-        /// Gets an enumerator for logical child elements of this element.
-        /// </summary>
+        /// <inheritdoc />
         protected override IEnumerator LogicalChildren
+        {
+            get
             {
-                get
+                var baseEnumerator = base.LogicalChildren;
+                while (baseEnumerator.MoveNext())
                 {
-                    var baseEnumerator = base.LogicalChildren;
-                    while (baseEnumerator.MoveNext())
-                    {
-                        yield return baseEnumerator.Current;
-                    }
+                    yield return baseEnumerator.Current;
+                }
 
-                    if (this.button != null)
-                    {
-                        yield return this.button;
-                    }
+                if (this.button != null)
+                {
+                    yield return this.button;
                 }
             }
+        }
 
-            #region Command
+        #region Command
 
-            /// <summary>
-            /// Gets or sets the command to invoke when this button is pressed. This is a dependency property.
-            /// </summary>
-            [Category("Action"), Localizability(LocalizationCategory.NeverLocalize), Bindable(true)]
-            public ICommand Command
+        /// <inheritdoc />
+        [Category("Action")]
+        [Localizability(LocalizationCategory.NeverLocalize)]
+        [Bindable(true)]
+        public ICommand Command
+        {
+            get
             {
-                get
-                {
-                    return (ICommand)this.GetValue(CommandProperty);
-                }
-                set
-                {
-                    this.SetValue(CommandProperty, value);
-                }
+                return (ICommand)this.GetValue(CommandProperty);
             }
 
-            /// <summary>
-            /// Gets or sets the parameter to pass to the System.Windows.Controls.Primitives.ButtonBase.Command property. This is a dependency property.
-            /// </summary>
-            [Bindable(true), Localizability(LocalizationCategory.NeverLocalize), Category("Action")]
-            public object CommandParameter
+            set
             {
-                get
-                {
-                    return this.GetValue(CommandParameterProperty);
-                }
-                set
-                {
-                    this.SetValue(CommandParameterProperty, value);
-                }
+                this.SetValue(CommandProperty, value);
+            }
+        }
+
+        /// <inheritdoc />
+        [Bindable(true)]
+        [Localizability(LocalizationCategory.NeverLocalize)]
+        [Category("Action")]
+        public object CommandParameter
+        {
+            get
+            {
+                return this.GetValue(CommandParameterProperty);
             }
 
-            /// <summary>
-            /// Gets or sets the element on which to raise the specified command. This is a dependency property.
-            /// </summary>
-            [Bindable(true), Category("Action")]
-            public IInputElement CommandTarget
+            set
             {
-                get
-                {
-                    return (IInputElement)this.GetValue(CommandTargetProperty);
-                }
-                set
-                {
-                    this.SetValue(CommandTargetProperty, value);
-                }
+                this.SetValue(CommandParameterProperty, value);
             }
+        }
+
+        /// <inheritdoc />
+        [Bindable(true)]
+        [Category("Action")]
+        public IInputElement CommandTarget
+        {
+            get
+            {
+                return (IInputElement)this.GetValue(CommandTargetProperty);
+            }
+
+            set
+            {
+                this.SetValue(CommandTargetProperty, value);
+            }
+        }
 
         /// <summary>
         /// Identifies the CommandParameter dependency property.
         /// </summary>
         public static readonly DependencyProperty CommandParameterProperty = ButtonBase.CommandParameterProperty.AddOwner(typeof(SplitButton), new FrameworkPropertyMetadata());
+
         /// <summary>
         /// Identifies the routed Command dependency property.
         /// </summary>
-        public static readonly DependencyProperty CommandProperty = ButtonBase.CommandProperty.AddOwner(typeof(SplitButton), new FrameworkPropertyMetadata(RibbonProperties.OnCommandChanged));
+        public static readonly DependencyProperty CommandProperty = ButtonBase.CommandProperty.AddOwner(typeof(SplitButton), new FrameworkPropertyMetadata());
 
         /// <summary>
         /// Identifies the CommandTarget dependency property.
         /// </summary>
         public static readonly DependencyProperty CommandTargetProperty = ButtonBase.CommandTargetProperty.AddOwner(typeof(SplitButton), new FrameworkPropertyMetadata());
 
-            #endregion
+        #endregion
 
-            #region GroupName
+        #region GroupName
 
-            /// <summary>
-            /// Gets or sets the name of the group that the toggle button belongs to. 
-            /// Use the GroupName property to specify a grouping of toggle buttons to 
-            /// create a mutually exclusive set of controls. You can use the GroupName 
-            /// property when only one selection is possible from a list of available 
-            /// options. When this property is set, only one ToggleButton in the specified
-            /// group can be selected at a time.
-            /// </summary>
-            public string GroupName
-            {
-                get { return (string)this.GetValue(GroupNameProperty); }
-                set { this.SetValue(GroupNameProperty, value); }
-            }
+        /// <inheritdoc />
+        public string GroupName
+        {
+            get { return (string)this.GetValue(GroupNameProperty); }
+            set { this.SetValue(GroupNameProperty, value); }
+        }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for GroupName.  
+        /// Using a DependencyProperty as the backing store for GroupName.
         /// This enables animation, styling, binding, etc...
         /// </summary>
-        public static readonly DependencyProperty GroupNameProperty =
-            DependencyProperty.Register(nameof(GroupName), typeof(string), typeof(SplitButton),
-            new PropertyMetadata(ToggleButtonHelper.OnGroupNameChanged));
+        public static readonly DependencyProperty GroupNameProperty = DependencyProperty.Register(nameof(GroupName), typeof(string), typeof(SplitButton));
 
-            #endregion
+        #endregion
 
-            #region IsChecked
+        #region IsChecked
 
-            /// <summary>
-            /// Gets or sets a value indicating whether SplitButton is checked
-            /// </summary>
-            public bool? IsChecked
-            {
-                get { return (bool)this.GetValue(IsCheckedProperty); }
-                set { this.SetValue(IsCheckedProperty, value); }
-            }
+        /// <inheritdoc />
+        public bool? IsChecked
+        {
+            get { return (bool)this.GetValue(IsCheckedProperty); }
+            set { this.SetValue(IsCheckedProperty, value); }
+        }
 
         /// <summary>
         /// Using a DependencyProperty as the backing store for IsChecked.  This enables animation, styling, binding, etc...
         /// </summary>
-        public static readonly DependencyProperty IsCheckedProperty =
-            DependencyProperty.Register(nameof(IsChecked), typeof(bool?), typeof(SplitButton), new FrameworkPropertyMetadata(BooleanBoxes.FalseBox, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnIsCheckedChanged, CoerceIsChecked));
+        public static readonly DependencyProperty IsCheckedProperty = System.Windows.Controls.Primitives.ToggleButton.IsCheckedProperty.AddOwner(typeof(SplitButton), new FrameworkPropertyMetadata(BooleanBoxes.FalseBox, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.Journal, OnIsCheckedChanged, CoerceIsChecked));
 
-           private static void OnIsCheckedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnIsCheckedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var button = (SplitButton)d;
             if (button.IsCheckable)
             {
-                if ((bool)e.NewValue)
+                var nullable = (bool?)e.NewValue;
+                if (nullable == null)
+                {
+                    button.RaiseEvent(new RoutedEventArgs(IndeterminateEvent, button));
+                }
+                else if (nullable.Value)
                 {
                     button.RaiseEvent(new RoutedEventArgs(CheckedEvent, button));
                 }
@@ -175,12 +167,10 @@ namespace Fluent
                 {
                     button.RaiseEvent(new RoutedEventArgs(UncheckedEvent, button));
                 }
-
-                ToggleButtonHelper.OnIsCheckedChanged(d, e);
             }
         }
 
-     private static object CoerceIsChecked(DependencyObject d, object basevalue)
+        private static object CoerceIsChecked(DependencyObject d, object basevalue)
         {
             var button = (SplitButton)d;
 
@@ -189,21 +179,21 @@ namespace Fluent
                 return false;
             }
 
-            return ToggleButtonHelper.CoerceIsChecked(d, basevalue);
+            return basevalue;
         }
 
-            #endregion
+        #endregion
 
-            #region IsCheckable
+        #region IsCheckable
 
-            /// <summary>
-            /// Gets or sets a value indicating whether SplitButton can be checked
-            /// </summary>
-            public bool IsCheckable
-            {
-                get { return (bool)this.GetValue(IsCheckableProperty); }
-                set { this.SetValue(IsCheckableProperty, value); }
-            }
+        /// <summary>
+        /// Gets or sets a value indicating whether SplitButton can be checked
+        /// </summary>
+        public bool IsCheckable
+        {
+            get { return (bool)this.GetValue(IsCheckableProperty); }
+            set { this.SetValue(IsCheckableProperty, value); }
+        }
 
         /// <summary>
         /// Using a DependencyProperty as the backing store for IsChecked.  This enables animation, styling, binding, etc...
@@ -211,18 +201,18 @@ namespace Fluent
         public static readonly DependencyProperty IsCheckableProperty =
             DependencyProperty.Register(nameof(IsCheckable), typeof(bool), typeof(SplitButton), new PropertyMetadata(BooleanBoxes.FalseBox));
 
-            #endregion
+        #endregion
 
-            #region DropDownToolTip
+        #region DropDownToolTip
 
-            /// <summary>
-            /// Gets or sets tooltip of dropdown part of split button
-            /// </summary>
-            public object DropDownToolTip
-            {
-                get { return this.GetValue(DropDownToolTipProperty); }
-                set { this.SetValue(DropDownToolTipProperty, value); }
-            }
+        /// <summary>
+        /// Gets or sets tooltip of dropdown part of split button
+        /// </summary>
+        public object DropDownToolTip
+        {
+            get { return this.GetValue(DropDownToolTipProperty); }
+            set { this.SetValue(DropDownToolTipProperty, value); }
+        }
 
         /// <summary>
         /// Using a DependencyProperty as the backing store for DropDownToolTip.  This enables animation, styling, binding, etc...
@@ -230,18 +220,18 @@ namespace Fluent
         public static readonly DependencyProperty DropDownToolTipProperty =
             DependencyProperty.Register(nameof(DropDownToolTip), typeof(object), typeof(SplitButton), new PropertyMetadata());
 
-            #endregion
+        #endregion
 
-            #region IsButtonEnabled
+        #region IsButtonEnabled
 
-            /// <summary>
-            /// Gets or sets a value indicating whether dropdown part of split button is enabled
-            /// </summary>
-            public bool IsButtonEnabled
-            {
-                get { return (bool)this.GetValue(IsButtonEnabledProperty); }
-                set { this.SetValue(IsButtonEnabledProperty, value); }
-            }
+        /// <summary>
+        /// Gets or sets a value indicating whether dropdown part of split button is enabled
+        /// </summary>
+        public bool IsButtonEnabled
+        {
+            get { return (bool)this.GetValue(IsButtonEnabledProperty); }
+            set { this.SetValue(IsButtonEnabledProperty, value); }
+        }
 
         /// <summary>
         /// Using a DependencyProperty as the backing store for IsDropDownEnabled.  This enables animation, styling, binding, etc...
@@ -249,18 +239,18 @@ namespace Fluent
         public static readonly DependencyProperty IsButtonEnabledProperty =
             DependencyProperty.Register(nameof(IsButtonEnabled), typeof(bool), typeof(SplitButton), new PropertyMetadata(BooleanBoxes.TrueBox));
 
-            #endregion
+        #endregion
 
-            #region IsDefinitive
+        #region IsDefinitive
 
-            /// <summary>
-            /// Gets or sets whether ribbon control click must close backstage
-            /// </summary>
-            public bool IsDefinitive
-            {
-                get { return (bool)this.GetValue(IsDefinitiveProperty); }
-                set { this.SetValue(IsDefinitiveProperty, value); }
-            }
+        /// <summary>
+        /// Gets or sets whether ribbon control click must close backstage
+        /// </summary>
+        public bool IsDefinitive
+        {
+            get { return (bool)this.GetValue(IsDefinitiveProperty); }
+            set { this.SetValue(IsDefinitiveProperty, value); }
+        }
 
         /// <summary>
         /// Using a DependencyProperty as the backing store for IsDefinitive.  This enables animation, styling, binding, etc...
@@ -268,9 +258,51 @@ namespace Fluent
         public static readonly DependencyProperty IsDefinitiveProperty =
             DependencyProperty.Register(nameof(IsDefinitive), typeof(bool), typeof(SplitButton), new PropertyMetadata(BooleanBoxes.TrueBox));
 
-            #endregion
+        #endregion
 
-            #endregion
+        #region KeyTipPostfix
+
+        /// <summary>
+        /// <see cref="DependencyProperty"/> for <see cref="PrimaryActionKeyTipPostfix"/>.
+        /// </summary>
+        public static readonly DependencyProperty PrimaryActionKeyTipPostfixProperty = DependencyProperty.Register(nameof(PrimaryActionKeyTipPostfix), typeof(string), typeof(SplitButton), new PropertyMetadata("A"));
+
+        /// <summary>
+        /// Gets or sets the postfix for the primary keytip action.
+        /// </summary>
+        public string PrimaryActionKeyTipPostfix
+        {
+            get { return (string)this.GetValue(PrimaryActionKeyTipPostfixProperty); }
+            set { this.SetValue(PrimaryActionKeyTipPostfixProperty, value); }
+        }
+
+        /// <summary>Identifies the <see cref="SecondaryActionKeyTipPostfix"/> dependency property.</summary>
+        public static readonly DependencyProperty SecondaryActionKeyTipPostfixProperty = DependencyProperty.Register(nameof(SecondaryActionKeyTipPostfix), typeof(string), typeof(SplitButton), new PropertyMetadata("B"));
+
+        /// <summary>
+        /// Gets or sets the postfix for the secondary keytip action.
+        /// </summary>
+        public string SecondaryActionKeyTipPostfix
+        {
+            get { return (string)this.GetValue(SecondaryActionKeyTipPostfixProperty); }
+            set { this.SetValue(SecondaryActionKeyTipPostfixProperty, value); }
+        }
+
+        #endregion KeyTipPostfix
+
+        /// <summary>Identifies the <see cref="SecondaryKeyTip"/> dependency property.</summary>
+        public static readonly DependencyProperty SecondaryKeyTipProperty = DependencyProperty.Register(nameof(SecondaryKeyTip), typeof(string), typeof(SplitButton), new PropertyMetadata(string.Empty));
+
+        /// <summary>
+        /// Gets or sets the keytip for the secondary action.
+        /// </summary>
+        public string SecondaryKeyTip
+        {
+            get { return (string)this.GetValue(SecondaryKeyTipProperty); }
+            set { this.SetValue(SecondaryKeyTipProperty, value); }
+        }
+
+        #endregion
 
         #region Events
 
@@ -337,11 +369,31 @@ namespace Fluent
             }
         }
 
+        /// <summary>
+        /// Occurs when button is unchecked
+        /// </summary>
+        public static readonly RoutedEvent IndeterminateEvent = System.Windows.Controls.Primitives.ToggleButton.IndeterminateEvent.AddOwner(typeof(SplitButton));
+
+        /// <summary>
+        /// Occurs when button is unchecked
+        /// </summary>
+        public event RoutedEventHandler Indeterminate
+        {
+            add
+            {
+                this.AddHandler(IndeterminateEvent, value);
+            }
+
+            remove
+            {
+                this.RemoveHandler(IndeterminateEvent, value);
+            }
+        }
+
         #endregion
 
         #region Constructors
 
-        [SuppressMessage("Microsoft.Performance", "CA1810")]
         static SplitButton()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(SplitButton), new FrameworkPropertyMetadata(typeof(SplitButton)));
@@ -401,30 +453,19 @@ namespace Fluent
 
         #region Overrides
 
-        protected override bool IsEnabledCore => true;
-        /// <summary>
-        /// When overridden in a derived class, is invoked 
-        /// whenever application code or internal processes call ApplyTemplate
-        /// </summary>
+        /// <inheritdoc />
         public override void OnApplyTemplate()
         {
             this.UnSubscribeEvents();
 
             this.button = this.GetTemplateChild("PART_Button") as ToggleButton;
 
-            this.label = this.GetTemplateChild("controlLabel") as TwoLineLabel;
-
             base.OnApplyTemplate();
 
             this.SubscribeEvents();
         }
-        /// <summary>
-        /// Invoked when an unhandled System.Windows.UIElement.PreviewMouseLeftButtonDown routed event 
-        /// reaches an element in its route that is derived from this class. Implement this method to add 
-        /// class handling for this event.
-        /// </summary>
-        /// <param name="e">The System.Windows.Input.MouseButtonEventArgs that contains the event data. 
-        /// The event data reports that the left mouse button was pressed.</param>
+
+        /// <inheritdoc />
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             if (!PopupService.IsMousePhysicallyOver(this.button))
@@ -437,79 +478,61 @@ namespace Fluent
             }
         }
 
+        /// <inheritdoc />
+        protected override AutomationPeer OnCreateAutomationPeer()
+        {
+            return new SplitButtonAutomationPeer(this);
+        }
+
         #region Overrides of DropDownButton
 
-        /// <summary>
-        /// Provides class handling for the <see cref="E:System.Windows.UIElement.KeyDown"/> routed event that occurs when the user presses a key.
-        /// </summary>
-        /// <param name="e">The event data for the <see cref="E:System.Windows.UIElement.KeyDown"/> event.</param>
+        /// <inheritdoc />
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
 
             if (e.Key == Key.Enter)
             {
-                InvokeButtonClick();
+                this.button.InvokeClick();
             }
         }
 
         #endregion
 
-        internal void InvokeButtonClick()
+        internal void AutomationButtonClick()
         {
-            if (!IsReadOnly)
-                this.button.InvokeClick();
+            this.button.InvokeClick();
         }
 
         private void OnButtonClick(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
-            if(!IsReadOnly)
-                this.RaiseEvent(new RoutedEventArgs(ClickEvent, this));
+            this.RaiseEvent(new RoutedEventArgs(ClickEvent, this));
         }
 
-    protected override Size MeasureOverride(Size constraint)
-    {
-      if (label != null && label.Text != null)
-        label.Measure(constraint);
-
-      Size size = base.MeasureOverride(constraint);
-      if (label == null)
-        return size;
-      else
-        return new Size(Math.Max(label.DesiredSize.Width, size.Width), size.Height);
-    }
-
-    protected override AutomationPeer OnCreateAutomationPeer()
-        => new SplitButtonAutomationPeer(this);
-
-    #endregion
+        #endregion
 
         #region Quick Access Item Creating
 
-    /// <summary>
-    /// Gets control which represents shortcut item.
-    /// This item MUST be synchronized with the original 
-    /// and send command to original one control.
-    /// </summary>
-    /// <returns>Control which represents shortcut item</returns>
-    public override FrameworkElement CreateQuickAccessItem()
+        /// <inheritdoc />
+        public override FrameworkElement CreateQuickAccessItem()
         {
-            var buttonForQAT = new SplitButton();
+            var buttonForQAT = new SplitButton
+                               {
+                                   CanAddButtonToQuickAccessToolBar = false
+                               };
+
             buttonForQAT.Click += (sender, e) => this.RaiseEvent(e);
+            buttonForQAT.DropDownOpened += this.OnQuickAccessOpened;
+
             RibbonProperties.SetSize(buttonForQAT, RibbonControlSize.Small);
-            buttonForQAT.CanAddButtonToQuickAccessToolBar = false;
             this.BindQuickAccessItem(buttonForQAT);
             this.BindQuickAccessItemDropDownEvents(buttonForQAT);
-            buttonForQAT.DropDownOpened += this.OnQuickAccessOpened;
             this.quickAccessButton = buttonForQAT;
             return buttonForQAT;
         }
 
-        /// <summary>
-        /// This method must be overridden to bind properties to use in quick access creating
-        /// </summary>
-        /// <param name="element">Toolbar item</param>
+        /// <inheritdoc />
         protected override void BindQuickAccessItem(FrameworkElement element)
         {
             RibbonControl.Bind(this, element, nameof(this.DisplayMemberPath), DisplayMemberPathProperty, BindingMode.OneWay);
@@ -544,7 +567,42 @@ namespace Fluent
         /// <summary>
         /// Using a DependencyProperty as the backing store for CanAddButtonToQuickAccessToolBar.  This enables animation, styling, binding, etc...
         /// </summary>
-        public static readonly DependencyProperty CanAddButtonToQuickAccessToolBarProperty = DependencyProperty.Register(nameof(CanAddButtonToQuickAccessToolBar), typeof(bool), typeof(SplitButton), new PropertyMetadata(BooleanBoxes.TrueBox, RibbonControl.OnCanAddToQuickAccessToolbarChanged));
+        public static readonly DependencyProperty CanAddButtonToQuickAccessToolBarProperty = DependencyProperty.Register(nameof(CanAddButtonToQuickAccessToolBar), typeof(bool), typeof(SplitButton), new PropertyMetadata(BooleanBoxes.TrueBox, RibbonControl.OnCanAddToQuickAccessToolBarChanged));
+
+        #region Implementation of IKeyTipInformationProvider
+
+        /// <inheritdoc />
+        public IEnumerable<KeyTipInformation> GetKeyTipInformations(bool hide)
+        {
+            if (string.IsNullOrEmpty(this.KeyTip) == false)
+            {
+                if (string.IsNullOrEmpty(this.SecondaryKeyTip))
+                {
+                    yield return new KeyTipInformation(this.KeyTip + this.PrimaryActionKeyTipPostfix, this.button, hide)
+                        {
+                            VisualTarget = this
+                        };
+                }
+                else
+                {
+                    yield return new KeyTipInformation(this.KeyTip, this.button, hide)
+                    {
+                        VisualTarget = this
+                    };
+                }
+            }
+
+            if (string.IsNullOrEmpty(this.SecondaryKeyTip) == false)
+            {
+                yield return new KeyTipInformation(this.SecondaryKeyTip, this, hide);
+            }
+            else if (string.IsNullOrEmpty(this.KeyTip) == false)
+            {
+                yield return new KeyTipInformation(this.KeyTip + this.SecondaryActionKeyTipPostfix, this, hide);
+            }
+        }
+
+        #endregion
 
         #endregion
     }

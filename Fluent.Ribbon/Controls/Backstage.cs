@@ -5,16 +5,15 @@ namespace Fluent
     using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Diagnostics.CodeAnalysis;
     using System.Windows;
+    using System.Windows.Data;
     using System.Windows.Documents;
     using System.Windows.Input;
     using System.Windows.Interop;
     using System.Windows.Markup;
     using System.Windows.Media;
+    using System.Windows.Media.Animation;
     using System.Windows.Threading;
-    using System.Threading;
-    using System.Threading.Tasks;
     using Fluent.Extensions;
     using Fluent.Internal;
     using Fluent.Internal.KnownBoxes;
@@ -32,10 +31,15 @@ namespace Fluent
         /// </summary>
         public event DependencyPropertyChangedEventHandler IsOpenChanged;
 
-        // Adorner for backstage
         private BackstageAdorner adorner;
 
         #region Properties
+
+        /// <summary>
+        /// Gets the <see cref="AdornerLayer"/> for the <see cref="Backstage"/>.
+        /// </summary>
+        /// <remarks>This is exposed to make it possible to show content on the same <see cref="AdornerLayer"/> as the backstage is shown on.</remarks>
+        public AdornerLayer AdornerLayer { get; private set; }
 
         /// <summary>
         /// Gets or sets whether backstage is shown
@@ -47,11 +51,11 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for IsOpen.  
+        /// Using a DependencyProperty as the backing store for IsOpen.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty IsOpenProperty =
-            DependencyProperty.Register(nameof(IsOpen), typeof(bool), typeof(Backstage), new PropertyMetadata(BooleanBoxes.FalseBox, OnIsOpenChanged, OnCoerceIsOpen));
+            DependencyProperty.Register(nameof(IsOpen), typeof(bool), typeof(Backstage), new PropertyMetadata(BooleanBoxes.FalseBox, OnIsOpenChanged, CoerceIsOpen));
 
         /// <summary>
         /// Gets or sets whether backstage can be openend or closed.
@@ -69,22 +73,6 @@ namespace Fluent
             DependencyProperty.Register(nameof(CanChangeIsOpen), typeof(bool), typeof(Backstage), new PropertyMetadata(BooleanBoxes.TrueBox));
 
         /// <summary>
-        /// Gets or sets the duration for the hide animation
-        /// </summary>
-        public Duration HideAnimationDuration
-        {
-            get { return (Duration)this.GetValue(HideAnimationDurationProperty); }
-            set { this.SetValue(HideAnimationDurationProperty, value); }
-        }
-
-        /// <summary>
-        /// Using a DependencyProperty as the backing store for HideAnimationDuration.  
-        /// This enables animation, styling, binding, etc...
-        /// </summary>
-        public static readonly DependencyProperty HideAnimationDurationProperty =
-            DependencyProperty.Register(nameof(HideAnimationDuration), typeof(Duration), typeof(Backstage), new PropertyMetadata());
-
-        /// <summary>
         /// Gets or sets whether context tabs on the titlebar should be hidden when backstage is open
         /// </summary>
         public bool HideContextTabsOnOpen
@@ -94,26 +82,26 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Gets or sets wether opening or closing should be animated.
+        /// Using a DependencyProperty as the backing store for HideContextTabsOnOpen.
+        /// This enables animation, styling, binding, etc...
         /// </summary>
-        public bool IsOpenAnimationEnabled
+        public static readonly DependencyProperty HideContextTabsOnOpenProperty =
+            DependencyProperty.Register(nameof(HideContextTabsOnOpen), typeof(bool), typeof(Backstage), new PropertyMetadata(BooleanBoxes.TrueBox));
+
+        /// <summary>
+        /// Gets or sets whether opening or closing should be animated.
+        /// </summary>
+        public bool AreAnimationsEnabled
         {
-            get { return (bool)this.GetValue(IsOpenAnimationEnabledProperty); }
-            set { this.SetValue(IsOpenAnimationEnabledProperty, value); }
+            get { return (bool)this.GetValue(AreAnimationsEnabledProperty); }
+            set { this.SetValue(AreAnimationsEnabledProperty, value); }
         }
 
         /// <summary>
         /// Using a DependencyProperty as the backing store for IsOpenAnimationEnabled.  This enables animation, styling, binding, etc...
-        /// </summary>        
-        public static readonly DependencyProperty IsOpenAnimationEnabledProperty =
-            DependencyProperty.Register(nameof(IsOpenAnimationEnabled), typeof(bool), typeof(Backstage), new PropertyMetadata(BooleanBoxes.TrueBox));
-
-        /// <summary>
-        /// Using a DependencyProperty as the backing store for HideContextTabsOnOpen.  
-        /// This enables animation, styling, binding, etc...
         /// </summary>
-        public static readonly DependencyProperty HideContextTabsOnOpenProperty =
-            DependencyProperty.Register(nameof(HideContextTabsOnOpen), typeof(bool), typeof(Backstage), new PropertyMetadata(BooleanBoxes.FalseBox));
+        public static readonly DependencyProperty AreAnimationsEnabledProperty =
+            DependencyProperty.Register(nameof(AreAnimationsEnabled), typeof(bool), typeof(Backstage), new PropertyMetadata(BooleanBoxes.TrueBox));
 
         /// <summary>
         /// Gets or sets whether to close the backstage when Esc is pressed
@@ -131,7 +119,7 @@ namespace Fluent
         public static readonly DependencyProperty CloseOnEscProperty =
             DependencyProperty.Register(nameof(CloseOnEsc), typeof(bool), typeof(Backstage), new PropertyMetadata(BooleanBoxes.TrueBox));
 
-        private static object OnCoerceIsOpen(DependencyObject d, object baseValue)
+        private static object CoerceIsOpen(DependencyObject d, object baseValue)
         {
             var backstage = (Backstage)d;
 
@@ -155,26 +143,27 @@ namespace Fluent
                 }
                 else
                 {
-                    if (backstage.HideAnimationDuration.HasTimeSpan)
-                    {
-                        var timespan = backstage.HideAnimationDuration.TimeSpan;
-
-                        Task.Factory.StartNew(() =>
-                        {
-                            Thread.Sleep(timespan);
-
-                            backstage.Dispatcher.RunInDispatcher(backstage.Hide);
-                        });
-                    }
-                    else
-                    {
-                        backstage.Hide();
-                    }
+                    backstage.Hide();
                 }
 
                 // Invoke the event
                 backstage.IsOpenChanged?.Invoke(backstage, e);
             }
+        }
+
+        /// <summary>
+        /// <see cref="DependencyProperty"/> for <see cref="UseHighestAvailableAdornerLayer"/>.
+        /// </summary>
+        public static readonly DependencyProperty UseHighestAvailableAdornerLayerProperty = DependencyProperty.Register(nameof(UseHighestAvailableAdornerLayer), typeof(bool), typeof(Backstage), new PropertyMetadata(BooleanBoxes.TrueBox));
+
+        /// <summary>
+        /// Gets or sets whether the highest available adorner layer should be used for the <see cref="BackstageAdorner"/>.
+        /// This means that we will try to look up the visual tree till we find the highest <see cref="AdornerDecorator"/>.
+        /// </summary>
+        public bool UseHighestAvailableAdornerLayer
+        {
+            get { return (bool)this.GetValue(UseHighestAvailableAdornerLayerProperty); }
+            set { this.SetValue(UseHighestAvailableAdornerLayerProperty, value); }
         }
 
         #region Content
@@ -189,7 +178,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Content.  
+        /// Using a DependencyProperty as the backing store for Content.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty ContentProperty =
@@ -198,24 +187,33 @@ namespace Fluent
         private static void OnContentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var backstage = (Backstage)d;
+
             if (e.OldValue != null)
             {
+                if (e.NewValue is DependencyObject dependencyObject)
+                {
+                    BindingOperations.ClearBinding(dependencyObject, VisibilityProperty);
+                }
+
                 backstage.RemoveLogicalChild(e.OldValue);
             }
 
             if (e.NewValue != null)
             {
                 backstage.AddLogicalChild(e.NewValue);
+
+                if (e.NewValue is DependencyObject dependencyObject)
+                {
+                    BindingOperations.SetBinding(dependencyObject, VisibilityProperty, new Binding { Path = new PropertyPath(VisibilityProperty), Source = backstage });
+                }
             }
         }
 
         #endregion
 
-        #region LogicalChildren 
+        #region LogicalChildren
 
-        /// <summary> 
-        /// Gets an enumerator for logical child elements of this element. 
-        /// </summary> 
+        /// <inheritdoc />
         protected override IEnumerator LogicalChildren
         {
             get
@@ -236,7 +234,6 @@ namespace Fluent
         /// <summary>
         /// Static constructor
         /// </summary>
-        [SuppressMessage("Microsoft.Performance", "CA1810")]
         static Backstage()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(Backstage), new FrameworkPropertyMetadata(typeof(Backstage)));
@@ -253,10 +250,30 @@ namespace Fluent
         {
             this.Loaded += this.OnBackstageLoaded;
             this.Unloaded += this.OnBackstageUnloaded;
+            this.DataContextChanged += this.Handle_DataContextChanged;
         }
 
-        private void OnPopupDismiss(object sender, DismissPopupEventArgs e)
+        private void Handle_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            if (this.adorner != null)
+            {
+                this.adorner.DataContext = e.NewValue;
+            }
+        }
+
+        /// <summary>
+        /// Called when this control receives the <see cref="PopupService.DismissPopupEvent"/>.
+        /// </summary>
+        protected virtual void OnDismissPopup(object sender, DismissPopupEventArgs e)
+        {
+            // Don't close on dismiss popup event if application lost focus
+            // or keytips should be shown.
+            if (e.DismissReason == DismissPopupReason.ApplicationLostFocus
+                || e.DismissReason == DismissPopupReason.ShowingKeyTips)
+            {
+                return;
+            }
+
             // Only close backstage when popups should always be closed.
             // "Always" applies to controls marked with IsDefinitive for example.
             if (e.DismissMode != DismissPopupMode.Always)
@@ -287,6 +304,8 @@ namespace Fluent
         private double savedWindowMinHeight = double.NaN;
         private double savedWindowWidth = double.NaN;
         private double savedWindowHeight = double.NaN;
+        private Window ownerWindow;
+        private Ribbon parentRibbon;
 
         /// <summary>
         /// Shows the <see cref="Backstage"/>
@@ -314,64 +333,90 @@ namespace Fluent
 
             this.ShowAdorner();
 
-            var parentRibbon = GetParentRibbon(this);
-            if (parentRibbon != null)
+            this.parentRibbon = GetParentRibbon(this);
+            if (this.parentRibbon != null)
             {
-                if (parentRibbon.TabControl != null)
+                if (this.parentRibbon.TabControl != null)
                 {
-                    parentRibbon.TabControl.IsDropDownOpen = false;
-                    parentRibbon.TabControl.HighlightSelectedItem = false;
-                    parentRibbon.TabControl.RequestBackstageClose += this.OnTabControlRequestBackstageClose;
+                    this.parentRibbon.TabControl.IsDropDownOpen = false;
+                    this.parentRibbon.TabControl.HighlightSelectedItem = false;
+                    this.parentRibbon.TabControl.RequestBackstageClose += this.HandleTabControlRequestBackstageClose;
                 }
 
-                // Disable QAT & title bar
-                if (parentRibbon.QuickAccessToolBar != null)
+                if (this.parentRibbon.QuickAccessToolBar != null)
                 {
-                    parentRibbon.QuickAccessToolBar.IsEnabled = false;
+                    this.parentRibbon.QuickAccessToolBar.IsEnabled = false;
                 }
 
-                if (parentRibbon.TitleBar != null)
+                if (this.parentRibbon.TitleBar != null)
                 {
-                    parentRibbon.TitleBar.IsEnabled = false;
-                    parentRibbon.TitleBar.HideContextTabs = this.HideContextTabsOnOpen;
+                    this.parentRibbon.TitleBar.HideContextTabs = this.HideContextTabsOnOpen;
                 }
             }
 
-            var window = Window.GetWindow(this);
+            this.ownerWindow = Window.GetWindow(this);
 
-            if (window == null
+            if (this.ownerWindow == null
                 && this.Parent != null)
             {
-                window = Window.GetWindow(this.Parent);
+                this.ownerWindow = Window.GetWindow(this.Parent);
             }
 
-            this.SaveWindowSize(window);
-            this.SaveWindowMinSize(window);
+            this.SaveWindowSize(this.ownerWindow);
+            this.SaveWindowMinSize(this.ownerWindow);
 
-            if (window != null)
+            if (this.ownerWindow != null)
             {
-                window.KeyDown += this.HandleWindowKeyDown;
+                this.ownerWindow.KeyDown += this.HandleOwnerWindowKeyDown;
 
                 if (this.savedWindowMinWidth < 500)
                 {
-                    window.MinWidth = 500;
+                    this.ownerWindow.MinWidth = 500;
                 }
 
                 if (this.savedWindowMinHeight < 400)
                 {
-                    window.MinHeight = 400;
+                    this.ownerWindow.MinHeight = 400;
                 }
 
-                window.SizeChanged += this.OnWindowSizeChanged;
+                this.ownerWindow.SizeChanged += this.HandleOwnerWindowSizeChanged;
 
                 // We have to collapse WindowsFormsHost while Backstage is open
-                this.CollapseWindowsFormsHosts(window);
+                this.CollapseWindowsFormsHosts(this.ownerWindow);
             }
 
             var content = this.Content as IInputElement;
             content?.Focus();
 
             return true;
+        }
+
+        /// <summary>
+        /// Hides the <see cref="Backstage"/>
+        /// </summary>
+        protected virtual void Hide()
+        {
+            // potentially fixes https://github.com/fluentribbon/Fluent.Ribbon/issues/489
+            if (this.Dispatcher.HasShutdownStarted
+                || this.Dispatcher.HasShutdownFinished)
+            {
+                return;
+            }
+
+            this.Loaded -= this.OnDelayedShow;
+
+            if (this.Content == null)
+            {
+                return;
+            }
+
+            if (!this.IsLoaded
+                || this.adorner == null)
+            {
+                return;
+            }
+
+            this.HideAdornerAndRestoreParentProperties();
         }
 
         private void ShowAdorner()
@@ -381,17 +426,90 @@ namespace Fluent
                 return;
             }
 
-            this.adorner.Visibility = Visibility.Visible;
+            if (this.AreAnimationsEnabled
+                && this.TryFindResource("Fluent.Ribbon.Storyboards.Backstage.IsOpenTrueStoryboard") is Storyboard storyboard)
+            {
+                storyboard = storyboard.Clone();
+
+                storyboard.CurrentStateInvalidated += HanldeStoryboardCurrentStateInvalidated;
+                storyboard.Completed += HandleStoryboardOnCompleted;
+
+                storyboard.Begin(this.adorner);
+            }
+            else
+            {
+                this.adorner.Visibility = Visibility.Visible;
+            }
+
+            void HanldeStoryboardCurrentStateInvalidated(object sender, EventArgs e)
+            {
+                this.adorner.Visibility = Visibility.Visible;
+                storyboard.CurrentStateInvalidated -= HanldeStoryboardCurrentStateInvalidated;
+            }
+
+            void HandleStoryboardOnCompleted(object sender, EventArgs args)
+            {
+                this.AdornerLayer?.Update();
+
+                storyboard.Completed -= HandleStoryboardOnCompleted;
+            }
         }
 
-        private void HideAdorner()
+        private void HideAdornerAndRestoreParentProperties()
         {
             if (this.adorner == null)
             {
                 return;
             }
 
-            this.adorner.Visibility = Visibility.Collapsed;
+            if (this.AreAnimationsEnabled
+                && this.TryFindResource("Fluent.Ribbon.Storyboards.Backstage.IsOpenFalseStoryboard") is Storyboard storyboard)
+            {
+                if (this.AdornerLayer != null)
+                {
+                    this.AdornerLayer.Visibility = Visibility.Collapsed;
+                }
+
+                storyboard = storyboard.Clone();
+
+                storyboard.Completed += HandleStoryboardOnCompleted;
+
+                storyboard.Begin(this.adorner);
+            }
+            else
+            {
+                this.adorner.Visibility = Visibility.Collapsed;
+                this.RestoreParentProperties();
+            }
+
+            void HandleStoryboardOnCompleted(object sender, EventArgs args)
+            {
+                if (this.adorner != null)
+                {
+                    this.adorner.Visibility = Visibility.Collapsed;
+                }
+
+                if (this.AdornerLayer != null)
+                {
+                    this.AdornerLayer.Visibility = Visibility.Visible;
+                }
+
+                this.RestoreParentProperties();
+
+                storyboard.Completed -= HandleStoryboardOnCompleted;
+            }
+        }
+
+        private static void HandleOpenBackstageCommandCanExecute(object sender, CanExecuteRoutedEventArgs args)
+        {
+            var target = ((BackstageAdorner)args.Source).Backstage;
+            args.CanExecute = target.CanChangeIsOpen;
+        }
+
+        private static void HandleOpenBackstageCommandExecuted(object sender, ExecutedRoutedEventArgs args)
+        {
+            var target = ((BackstageAdorner)args.Source).Backstage;
+            target.IsOpen = !target.IsOpen;
         }
 
         private void CreateAndAttachBackstageAdorner()
@@ -409,135 +527,109 @@ namespace Fluent
                 return;
             }
 
-            FrameworkElement elementToAdorn;
-
-            if (DesignerProperties.GetIsInDesignMode(this))
-            {
-                // TODO: in design mode it is required to use design time adorner
-                elementToAdorn = (FrameworkElement)VisualTreeHelper.GetParent(this);
-            }
-            else
-            {
-                elementToAdorn = UIHelper.GetParent<AdornerDecorator>(this) 
-                    ?? UIHelper.GetParent<AdornerDecorator>(LogicalTreeHelper.GetParent(this));
-            }
+            FrameworkElement elementToAdorn = UIHelper.GetParent<AdornerDecorator>(this)
+                                              ?? UIHelper.GetParent<AdornerDecorator>(this.Parent);
 
             if (elementToAdorn == null)
             {
                 return;
             }
 
-            var layer = UIHelper.GetAdornerLayer(elementToAdorn);
+            if (this.UseHighestAvailableAdornerLayer)
+            {
+                AdornerDecorator currentAdornerDecorator;
+                while ((currentAdornerDecorator = UIHelper.GetParent<AdornerDecorator>(elementToAdorn)) != null)
+                {
+                    elementToAdorn = currentAdornerDecorator;
+                }
+            }
 
-            if (layer == null)
+            this.AdornerLayer = UIHelper.GetAdornerLayer(elementToAdorn);
+
+            if (this.AdornerLayer == null)
             {
                 throw new Exception($"AdornerLayer could not be found for {this}.");
             }
 
             this.adorner = new BackstageAdorner(elementToAdorn, this);
-            layer.Add(this.adorner);
 
-            layer.CommandBindings.Add(new CommandBinding(RibbonCommands.OpenBackstage, HandleOpenBackstageCommandExecuted, HandleOpenBackstageCommandCanExecute));
-        }
+            BindingOperations.SetBinding(this.adorner, DataContextProperty, new Binding
+                                                                            {
+                                                                                Path = new PropertyPath(DataContextProperty),
+                                                                                Source = this
+                                                                            });
 
-        private static void HandleOpenBackstageCommandCanExecute(object sender, CanExecuteRoutedEventArgs args)
-        {
-            var target = ((BackstageAdorner)args.Source).Backstage;
-            args.CanExecute = target.CanChangeIsOpen;
-        }
+            this.AdornerLayer.Add(this.adorner);
 
-        private static void HandleOpenBackstageCommandExecuted(object sender, ExecutedRoutedEventArgs args)
-        {
-            var target = ((BackstageAdorner)args.Source).Backstage;
-            target.IsOpen = !target.IsOpen;
+            this.AdornerLayer.CommandBindings.Add(new CommandBinding(RibbonCommands.OpenBackstage, HandleOpenBackstageCommandExecuted, HandleOpenBackstageCommandCanExecute));
         }
 
         private void DestroyAdorner()
         {
-            if (this.adorner == null)
+            this.AdornerLayer?.CommandBindings.Clear();
+            this.AdornerLayer?.Remove(this.adorner);
+
+            if (this.adorner != null)
             {
-                return;
+                BindingOperations.ClearAllBindings(this.adorner);
             }
 
-            var layer = AdornerLayer.GetAdornerLayer(this.adorner);
-            layer?.CommandBindings.Clear();
-            layer?.Remove(this.adorner);
-
-            this.adorner.Clear();
+            this.adorner?.Clear();
             this.adorner = null;
+
+            this.AdornerLayer = null;
         }
 
-        private void OnDelayedShow(object sender, EventArgs args)
+        private void RestoreParentProperties()
         {
-            this.Loaded -= this.OnDelayedShow;
-
-            // Delaying show so everthing can load properly.
-            // If we don't run this in the background setting IsOpen=true on application start we don't have access to the Bastage from the BackstageTabControl.
-            this.RunInDispatcherAsync(() => this.Show(), DispatcherPriority.Background);
-        }
-
-        /// <summary>
-        /// Hides the <see cref="Backstage"/>
-        /// </summary>
-        protected virtual void Hide()
-        {
-            this.Loaded -= this.OnDelayedShow;
-
-            if (this.Content == null)
+            if (this.parentRibbon != null)
             {
-                return;
-            }
-
-            if (!this.IsLoaded
-                || this.adorner == null)
-            {
-                return;
-            }
-
-            this.HideAdorner();
-
-            var parentRibbon = GetParentRibbon(this);
-            if (parentRibbon != null)
-            {
-                if (parentRibbon.TabControl != null)
+                if (this.parentRibbon.TabControl != null)
                 {
-                    parentRibbon.TabControl.HighlightSelectedItem = true;
-                    parentRibbon.TabControl.RequestBackstageClose -= this.OnTabControlRequestBackstageClose;
+                    this.parentRibbon.TabControl.HighlightSelectedItem = true;
+                    this.parentRibbon.TabControl.RequestBackstageClose -= this.HandleTabControlRequestBackstageClose;
                 }
 
-                // Restore enable under QAT & title bar
-                if (parentRibbon.QuickAccessToolBar != null)
+                if (this.parentRibbon.QuickAccessToolBar != null)
                 {
-                    parentRibbon.QuickAccessToolBar.IsEnabled = true;
-                    parentRibbon.QuickAccessToolBar.Refresh();
+                    this.parentRibbon.QuickAccessToolBar.IsEnabled = true;
+                    this.parentRibbon.QuickAccessToolBar.Refresh();
                 }
 
-                if (parentRibbon.TitleBar != null)
+                if (this.parentRibbon.TitleBar != null)
                 {
-                    parentRibbon.TitleBar.IsEnabled = true;
-                    parentRibbon.TitleBar.HideContextTabs = false;
+                    this.parentRibbon.TitleBar.HideContextTabs = false;
                 }
+
+                this.parentRibbon = null;
             }
 
-            var window = Window.GetWindow(this);
-            if (window != null)
+            if (this.ownerWindow != null)
             {
-                window.PreviewKeyDown -= this.HandleWindowKeyDown;
-                window.SizeChanged -= this.OnWindowSizeChanged;
+                this.ownerWindow.PreviewKeyDown -= this.HandleOwnerWindowKeyDown;
+                this.ownerWindow.SizeChanged -= this.HandleOwnerWindowSizeChanged;
 
                 if (double.IsNaN(this.savedWindowMinWidth) == false
                     && double.IsNaN(this.savedWindowMinHeight) == false)
                 {
-                    window.MinWidth = this.savedWindowMinWidth;
-                    window.MinHeight = this.savedWindowMinHeight;
+                    this.ownerWindow.MinWidth = this.savedWindowMinWidth;
+                    this.ownerWindow.MinHeight = this.savedWindowMinHeight;
                 }
 
                 if (double.IsNaN(this.savedWindowWidth) == false
                     && double.IsNaN(this.savedWindowHeight) == false)
                 {
-                    window.Width = this.savedWindowWidth;
-                    window.Height = this.savedWindowHeight;
+                    this.ownerWindow.Width = this.savedWindowWidth;
+                    this.ownerWindow.Height = this.savedWindowHeight;
                 }
+
+                this.savedWindowMinWidth = double.NaN;
+                this.savedWindowMinHeight = double.NaN;
+
+                this.savedWindowWidth = double.NaN;
+                this.savedWindowHeight = double.NaN;
+                
+                this.ownerWindow = null;
             }
 
             // Uncollapse elements
@@ -547,6 +639,15 @@ namespace Fluent
             }
 
             this.collapsedElements.Clear();
+        }
+
+        private void OnDelayedShow(object sender, EventArgs args)
+        {
+            this.Loaded -= this.OnDelayedShow;
+
+            // Delaying show so everthing can load properly.
+            // If we don't run this in the background setting IsOpen=true on application start we don't have access to the Bastage from the BackstageTabControl.
+            this.RunInDispatcherAsync(() => this.Show(), DispatcherPriority.Background);
         }
 
         private void SaveWindowMinSize(Window window)
@@ -576,12 +677,12 @@ namespace Fluent
             this.savedWindowHeight = window.ActualHeight;
         }
 
-        private void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
+        private void HandleOwnerWindowSizeChanged(object sender, SizeChangedEventArgs e)
         {
             this.SaveWindowSize(Window.GetWindow(this));
         }
 
-        private void OnTabControlRequestBackstageClose(object sender, EventArgs e)
+        private void HandleTabControlRequestBackstageClose(object sender, EventArgs e)
         {
             this.IsOpen = false;
         }
@@ -589,28 +690,17 @@ namespace Fluent
         // We have to collapse WindowsFormsHost while Backstage is open
         private void CollapseWindowsFormsHosts(DependencyObject parent)
         {
-            if (parent == null)
+            switch (parent)
             {
-                return;
-            }
+                case null:
+                case BackstageAdorner _:
+                    return;
 
-            var frameworkElement = parent as FrameworkElement;
-
-            // Do not hide contents in the backstage area
-            if (parent is BackstageAdorner)
-            {
-                return;
-            }
-
-            if (frameworkElement != null)
-            {
-                if (parent is HwndHost
-                    && frameworkElement.Visibility != Visibility.Collapsed)
-                {
+                case FrameworkElement frameworkElement when parent is HwndHost
+                                                            && frameworkElement.Visibility != Visibility.Collapsed:
                     this.collapsedElements.Add(frameworkElement, frameworkElement.Visibility);
                     frameworkElement.Visibility = Visibility.Collapsed;
                     return;
-                }
             }
 
             // Traverse visual tree
@@ -620,10 +710,7 @@ namespace Fluent
             }
         }
 
-        /// <summary>
-        /// Invoked when an unhandled <see cref="E:System.Windows.Input.Keyboard.KeyDown"/> attached event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event. 
-        /// </summary>
-        /// <param name="e">The <see cref="T:System.Windows.Input.KeyEventArgs"/> that contains the event data.</param>
+        /// <inheritdoc />
         protected override void OnKeyDown(KeyEventArgs e)
         {
             if (e.Handled)
@@ -645,7 +732,7 @@ namespace Fluent
         }
 
         // Handles backstage Esc key keydown
-        private void HandleWindowKeyDown(object sender, KeyEventArgs e)
+        private void HandleOwnerWindowKeyDown(object sender, KeyEventArgs e)
         {
             if (this.CloseOnEsc == false
                 || e.Key != Key.Escape)
@@ -661,12 +748,12 @@ namespace Fluent
 
         private void OnBackstageLoaded(object sender, RoutedEventArgs e)
         {
-            this.AddHandler(PopupService.DismissPopupEvent, (DismissPopupEventHandler)this.OnPopupDismiss);
+            this.AddHandler(PopupService.DismissPopupEvent, (EventHandler<DismissPopupEventArgs>)this.OnDismissPopup);
         }
 
         private void OnBackstageUnloaded(object sender, RoutedEventArgs e)
         {
-            this.RemoveHandler(PopupService.DismissPopupEvent, (DismissPopupEventHandler)this.OnPopupDismiss);
+            this.RemoveHandler(PopupService.DismissPopupEvent, (EventHandler<DismissPopupEventArgs>)this.OnDismissPopup);
 
             this.DestroyAdorner();
         }
@@ -677,12 +764,7 @@ namespace Fluent
 
         #region Overrides
 
-        /// <summary>
-        /// Invoked when an unhandled System.Windows.UIElement.PreviewMouseLeftButtonDown routed event reaches an element 
-        /// in its route that is derived from this class. Implement this method to add class handling for this event.
-        /// </summary>
-        /// <param name="e">The System.Windows.Input.MouseButtonEventArgs that contains the event data.
-        ///  The event data reports that the left mouse button was pressed.</param>
+        /// <inheritdoc />
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
@@ -695,27 +777,23 @@ namespace Fluent
             this.Click();
         }
 
-        /// <summary>
-        /// Handles key tip pressed
-        /// </summary>
-        public override void OnKeyTipPressed()
+        /// <inheritdoc />
+        public override KeyTipPressedResult OnKeyTipPressed()
         {
             this.IsOpen = true;
             base.OnKeyTipPressed();
+
+            return KeyTipPressedResult.Empty;
         }
 
-        /// <summary>
-        /// Handles back navigation with KeyTips
-        /// </summary>
+        /// <inheritdoc />
         public override void OnKeyTipBack()
         {
             this.IsOpen = false;
             base.OnKeyTipBack();
         }
 
-        /// <summary>
-        /// When overridden in a derived class, is invoked whenever application code or internal processes call <see cref="M:System.Windows.FrameworkElement.ApplyTemplate"/>.
-        /// </summary>
+        /// <inheritdoc />
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
@@ -737,12 +815,7 @@ namespace Fluent
 
         #region Quick Access Toolbar
 
-        /// <summary>
-        /// Gets control which represents shortcut item.
-        /// This item MUST be syncronized with the original 
-        /// and send command to original one control.
-        /// </summary>
-        /// <returns>Control which represents shortcut item</returns>
+        /// <inheritdoc />
         public override FrameworkElement CreateQuickAccessItem()
         {
             throw new NotImplementedException();

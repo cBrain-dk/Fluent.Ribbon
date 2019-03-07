@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <RootNamespace>Fluent</RootNamespace>
+    <AssemblyName>Fluent</AssemblyName>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <NoWarn>$(NoWarn);NU5125</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Description>Fluent.Ribbon is a library that implements an Office-like user interface for the Windows Presentation Foundation (WPF). It provides controls such as RibbonTabControl, Backstage, Gallery, QuickAccessToolbar, ScreenTip and so on.</Description>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DefaultItemExcludes>$(DefaultItemExcludes);**/*.Template.xaml</DefaultItemExcludes>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <!-- We also have to exclude controls in release mode to reduce binary size -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);**/Controls/*.xaml</DefaultItemExcludes>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="**/*.fx;**/*.json" Exclude="$(BaseIntermediateOutputPath)/**/*" />
+    <None Include="**/Controls/*.xaml" />
+    <None Include="**/Styles.txt" />
+    <EmbeddedResource Include="**/*.Template.xaml" />
+    <EmbeddedResource Include="**/GeneratorParameters.json" />
+    <UpToDateCheckInput Include="**/*.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\License.txt" Pack="true" PackagePath="" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp3.0'">
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UIAutomationTypes" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ControlzEx" version="[4.0-alpha*, 5.0)" />
+  </ItemGroup>
+
+  <!-- Sign assembly -->
+  <PropertyGroup>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)/../Shared/SharedKey.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+  </PropertyGroup>
+
+  <!-- NuGet -->
+  <PropertyGroup>
+    <PackageId>Fluent.Ribbon</PackageId>
+    <Authors>Bastian Schmidt</Authors>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/fluentribbon/Fluent.Ribbon/master/License.txt</PackageLicenseUrl>
+    <!-- <PackageLicenseFile>License.txt</PackageLicenseFile> -->
+    <PackageProjectUrl>https://github.com/fluentribbon/Fluent.Ribbon</PackageProjectUrl>
+    <PackageIcon>../Images/Logo/Logo_32x32.png</PackageIcon>
+    <PackageIconUrl>https://raw.githubusercontent.com/fluentribbon/Fluent.Ribbon/master/Images/Logo/Logo_32x32.png</PackageIconUrl>
+    <PackageTags>fluent;office;ribbon;ribbonwindow;backstage;UI;XAML;Toolkit;Library;.NET;OSS;OpenSource</PackageTags>
+    <PackageReleaseNotes>https://github.com/fluentribbon/Fluent.Ribbon/blob/develop/Changelog.md</PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/fluentribbon/Fluent.Ribbon.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <GenerateLibraryLayout>true</GenerateLibraryLayout>
+  </PropertyGroup>
+
+ <Target Name="GenerateXamlFilesInner">
+    <PropertyGroup>
+      <XamlColorSchemeGeneratorPath>$(NuGetPackageRoot)/xamlcolorschemegenerator/$(XamlColorSchemeGeneratorVersion)/tools/XamlColorSchemeGenerator.exe</XamlColorSchemeGeneratorPath>
+      <!-- <XamlColorSchemeGeneratorPath>C:/DEV/OSS_Own/XamlColorSchemeGenerator/bin/Debug/XamlColorSchemeGenerator.exe</XamlColorSchemeGeneratorPath> -->
+      <XamlCombinePath>$(MSBuildProjectDirectory)/Themes/XamlCombine.exe</XamlCombinePath>
+      <!-- <XamlCombinePath>C:/DEV/OSS_Own/FluentRibbon/XamlCombine/bin/Debug/XamlCombine.exe</XamlCombinePath> -->
+    </PropertyGroup>
+    <!-- Generate theme files -->
+    <Exec Command="&quot;$(XamlColorSchemeGeneratorPath)&quot; &quot;$(MSBuildProjectDirectory)/Themes/Themes/GeneratorParameters.json&quot;"
+          WorkingDirectory="$(MSBuildProjectDirectory)/Themes/Themes" />
+    <!-- Combine xaml files -->
+    <Exec Command="&quot;$(XamlCombinePath)&quot; &quot;Styles.txt&quot; &quot;Styles.xaml&quot;"
+          WorkingDirectory="$(MSBuildProjectDirectory)/Themes" />
+  </Target>
+
+  <!-- Key to generating the xaml files at the right point in time is to do this before DispatchToInnerBuilds -->
+  <Target Name="GenerateXamlFiles" BeforeTargets="DispatchToInnerBuilds;BeforeBuild">
+    <!--TargetFramework=once is critical here, as it will not execute task from same project with same properties multiple times. 
+    We need to unify TargetFramework between empty, net45, netcoreapp3.0 etc.-->
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="GenerateXamlFilesInner" Properties="TargetFramework=once" />
+  </Target>
+</Project>

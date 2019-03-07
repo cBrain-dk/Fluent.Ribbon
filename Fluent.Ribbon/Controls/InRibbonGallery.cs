@@ -5,10 +5,9 @@ namespace Fluent
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
     using System.Diagnostics;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
-    using System.Threading;
     using System.Windows;
+    using System.Windows.Automation.Peers;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
     using System.Windows.Data;
@@ -17,17 +16,31 @@ namespace Fluent
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using System.Windows.Threading;
+    using Fluent.Automation.Peers;
     using Fluent.Extensibility;
+    using Fluent.Extensions;
     using Fluent.Internal;
     using Fluent.Internal.KnownBoxes;
 
     /// <summary>
-    /// Represents the In-Ribbon Gallery, a gallery-based control that exposes 
-    /// a default subset of items directly in the Ribbon. Any remaining items 
+    /// Represents the In-Ribbon Gallery, a gallery-based control that exposes
+    /// a default subset of items directly in the Ribbon. Any remaining items
     /// are displayed when a drop-down menu button is clicked
     /// </summary>
     [ContentProperty(nameof(Items))]
-    [SuppressMessage("Microsoft.Maintainability", "CA1506")]
+    [TemplatePart(Name = "PART_LayoutRoot", Type = typeof(FrameworkElement))]
+    [TemplatePart(Name = "PART_ExpandButton", Type = typeof(ToggleButton))]
+    [TemplatePart(Name = "PART_DropDownButton", Type = typeof(ToggleButton))]
+    [TemplatePart(Name = "PART_Popup", Type = typeof(Popup))]
+    [TemplatePart(Name = "PART_ResizeVerticalThumb", Type = typeof(Thumb))]
+    [TemplatePart(Name = "PART_ResizeBothThumb", Type = typeof(Thumb))]
+    [TemplatePart(Name = "PART_MenuPanel", Type = typeof(Panel))]
+    [TemplatePart(Name = "PART_FilterDropDownButton", Type = typeof(DropDownButton))]
+    [TemplatePart(Name = "PART_GalleryPanel", Type = typeof(GalleryPanel))]
+    [TemplatePart(Name = "PART_FakeImage", Type = typeof(Image))]
+    [TemplatePart(Name = "PART_ContentPresenter", Type = typeof(ContentControl))]
+    [TemplatePart(Name = "PART_PopupContentPresenter", Type = typeof(ContentControl))]
+    [TemplatePart(Name = "PART_ScrollViewer", Type = typeof(ScrollViewer))]
     public class InRibbonGallery : Selector, IScalableRibbonControl, IDropDownControl, IRibbonControl, IQuickAccessItemProvider, IRibbonSizeChangedSink, ILargeIconProvider
     {
         #region Fields
@@ -60,7 +73,7 @@ namespace Fluent
 
         private ScrollViewer scrollViewer;
 
-        // Needed to prevent drop down reopen 
+        // Needed to prevent drop down reopen
         private bool canOpenDropDown = true;
 
         private IInputElement focusedElement;
@@ -75,9 +88,7 @@ namespace Fluent
 
         #region Size
 
-        /// <summary>
-        /// Gets or sets Size for the element.
-        /// </summary>
+        /// <inheritdoc />
         public RibbonControlSize Size
         {
             get { return (RibbonControlSize)this.GetValue(SizeProperty); }
@@ -85,7 +96,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Size.  
+        /// Using a DependencyProperty as the backing store for Size.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty SizeProperty = RibbonProperties.SizeProperty.AddOwner(typeof(InRibbonGallery));
@@ -94,9 +105,7 @@ namespace Fluent
 
         #region SizeDefinition
 
-        /// <summary>
-        /// Gets or sets SizeDefinition for element.
-        /// </summary>
+        /// <inheritdoc />
         public RibbonControlSizeDefinition SizeDefinition
         {
             get { return (RibbonControlSizeDefinition)this.GetValue(SizeDefinitionProperty); }
@@ -104,7 +113,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for SizeDefinition.  
+        /// Using a DependencyProperty as the backing store for SizeDefinition.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty SizeDefinitionProperty = RibbonProperties.SizeDefinitionProperty.AddOwner(typeof(InRibbonGallery));
@@ -113,9 +122,7 @@ namespace Fluent
 
         #region KeyTip
 
-        /// <summary>
-        /// Gets or sets KeyTip for element.
-        /// </summary>
+        /// <inheritdoc />
         public string KeyTip
         {
             get { return (string)this.GetValue(KeyTipProperty); }
@@ -123,7 +130,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Keys.  
+        /// Using a DependencyProperty as the backing store for Keys.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty KeyTipProperty = Fluent.KeyTip.KeysProperty.AddOwner(typeof(InRibbonGallery));
@@ -132,9 +139,7 @@ namespace Fluent
 
         #region Header
 
-        /// <summary>
-        /// Gets or sets element Text
-        /// </summary>
+        /// <inheritdoc />
         public object Header
         {
             get { return this.GetValue(HeaderProperty); }
@@ -142,7 +147,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Header.  
+        /// Using a DependencyProperty as the backing store for Header.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty HeaderProperty = RibbonControl.HeaderProperty.AddOwner(typeof(InRibbonGallery));
@@ -151,9 +156,7 @@ namespace Fluent
 
         #region Icon
 
-        /// <summary>
-        /// Gets or sets Icon for the element
-        /// </summary>
+        /// <inheritdoc />
         public object Icon
         {
             get { return this.GetValue(IconProperty); }
@@ -163,31 +166,14 @@ namespace Fluent
         /// <summary>
         /// Using a DependencyProperty as the backing store for Icon.  This enables animation, styling, binding, etc...
         /// </summary>
-        public static readonly DependencyProperty IconProperty = RibbonControl.IconProperty.AddOwner(typeof(InRibbonGallery), new PropertyMetadata(OnIconChanged));
-
-        private static void OnIconChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var element = (InRibbonGallery)d;
-
-            var oldElement = e.OldValue as FrameworkElement;
-            if (oldElement != null)
-            {
-                element.RemoveLogicalChild(oldElement);
-            }
-
-            var newElement = e.NewValue as FrameworkElement;
-            if (newElement != null)
-            {
-                element.AddLogicalChild(newElement);
-            }
-        }
+        public static readonly DependencyProperty IconProperty = RibbonControl.IconProperty.AddOwner(typeof(InRibbonGallery), new PropertyMetadata(RibbonControl.OnIconChanged));
 
         #endregion
 
         #region MinItemsInDropDownRow
 
         /// <summary>
-        /// Min width of the Gallery 
+        /// Min width of the Gallery
         /// </summary>
         public int MinItemsInDropDownRow
         {
@@ -206,7 +192,7 @@ namespace Fluent
         #region MaxItemsInDropDownRow
 
         /// <summary>
-        /// Max width of the Gallery 
+        /// Max width of the Gallery
         /// </summary>
         public int MaxItemsInDropDownRow
         {
@@ -269,7 +255,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for GroupBy.  
+        /// Using a DependencyProperty as the backing store for GroupBy.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty GroupByProperty = DependencyProperty.Register(nameof(GroupBy), typeof(string), typeof(InRibbonGallery), new PropertyMetadata());
@@ -289,7 +275,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for GroupBy.  
+        /// Using a DependencyProperty as the backing store for GroupBy.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty GroupByAdvancedProperty = DependencyProperty.Register(nameof(GroupByAdvanced), typeof(Func<object, string>), typeof(InRibbonGallery), new PropertyMetadata());
@@ -364,12 +350,14 @@ namespace Fluent
                             this.groupsMenuButton.Items.Add(menuItem);
                         }
                     }
+
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems.OfType<GalleryGroupFilter>())
                     {
                         this.groupsMenuButton?.Items.Remove(this.GetFilterMenuItem(item));
                     }
+
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
@@ -399,6 +387,7 @@ namespace Fluent
                             this.groupsMenuButton.Items.Add(menuItem);
                         }
                     }
+
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     this.groupsMenuButton?.Items.Clear();
@@ -408,7 +397,7 @@ namespace Fluent
 
         /// <summary>
         /// Gets or sets selected filter
-        /// </summary>               
+        /// </summary>
         public GalleryGroupFilter SelectedFilter
         {
             get { return (GalleryGroupFilter)this.GetValue(SelectedFilterProperty); }
@@ -416,11 +405,11 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for SelectedFilter. 
+        /// Using a DependencyProperty as the backing store for SelectedFilter.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty SelectedFilterProperty =
-            DependencyProperty.Register(nameof(SelectedFilter), typeof(GalleryGroupFilter), typeof(InRibbonGallery), new PropertyMetadata(null, OnFilterChanged, CoerceSelectedFilter));
+            DependencyProperty.Register(nameof(SelectedFilter), typeof(GalleryGroupFilter), typeof(InRibbonGallery), new PropertyMetadata(null, OnSelectedFilterChanged, CoerceSelectedFilter));
 
         // Coerce selected filter
         private static object CoerceSelectedFilter(DependencyObject d, object basevalue)
@@ -436,14 +425,13 @@ namespace Fluent
         }
 
         // Handles filter property changed
-        private static void OnFilterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnSelectedFilterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var gallery = (InRibbonGallery)d;
-            var oldFilter = e.OldValue as GalleryGroupFilter;
 
-            if (oldFilter != null)
+            if (e.OldValue is GalleryGroupFilter oldFilter)
             {
-                System.Windows.Controls.MenuItem menuItem = gallery.GetFilterMenuItem(oldFilter);
+                var menuItem = gallery.GetFilterMenuItem(oldFilter);
 
                 if (menuItem != null)
                 {
@@ -451,13 +439,11 @@ namespace Fluent
                 }
             }
 
-            var filter = e.NewValue as GalleryGroupFilter;
-
-            if (filter != null)
+            if (e.NewValue is GalleryGroupFilter newFilter)
             {
-                gallery.SelectedFilterTitle = filter.Title;
-                gallery.SelectedFilterGroups = filter.Groups;
-                System.Windows.Controls.MenuItem menuItem = gallery.GetFilterMenuItem(filter);
+                gallery.SelectedFilterTitle = newFilter.Title;
+                gallery.SelectedFilterGroups = newFilter.Groups;
+                var menuItem = gallery.GetFilterMenuItem(newFilter);
 
                 if (menuItem != null)
                 {
@@ -466,7 +452,7 @@ namespace Fluent
             }
             else
             {
-                gallery.SelectedFilterTitle = "";
+                gallery.SelectedFilterTitle = string.Empty;
                 gallery.SelectedFilterGroups = null;
             }
 
@@ -486,7 +472,7 @@ namespace Fluent
             DependencyProperty.RegisterReadOnly(nameof(SelectedFilterTitle), typeof(string), typeof(InRibbonGallery), new PropertyMetadata());
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for SelectedFilterTitle. 
+        /// Using a DependencyProperty as the backing store for SelectedFilterTitle.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty SelectedFilterTitleProperty = SelectedFilterTitlePropertyKey.DependencyProperty;
@@ -504,14 +490,14 @@ namespace Fluent
             DependencyProperty.RegisterReadOnly(nameof(SelectedFilterGroups), typeof(string), typeof(InRibbonGallery), new PropertyMetadata());
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for SelectedFilterGroups. 
+        /// Using a DependencyProperty as the backing store for SelectedFilterGroups.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty SelectedFilterGroupsProperty = SelectedFilterGroupsPropertyKey.DependencyProperty;
 
         /// <summary>
         /// Gets whether gallery has selected filter
-        /// </summary>       
+        /// </summary>
         public bool HasFilter
         {
             get { return (bool)this.GetValue(HasFilterProperty); }
@@ -521,7 +507,7 @@ namespace Fluent
         private static readonly DependencyPropertyKey HasFilterPropertyKey = DependencyProperty.RegisterReadOnly(nameof(HasFilter), typeof(bool), typeof(InRibbonGallery), new PropertyMetadata(BooleanBoxes.FalseBox));
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for HasFilter.  
+        /// Using a DependencyProperty as the backing store for HasFilter.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty HasFilterProperty = HasFilterPropertyKey.DependencyProperty;
@@ -562,7 +548,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Selectable.  
+        /// Using a DependencyProperty as the backing store for Selectable.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty SelectableProperty =
@@ -578,19 +564,13 @@ namespace Fluent
 
         #region IsDropDownOpen
 
-        /// <summary>
-        /// Gets drop down popup
-        /// </summary>
+        /// <inheritdoc />
         public Popup DropDownPopup { get; private set; }
 
-        /// <summary>
-        /// Gets a value indicating whether context menu is opened
-        /// </summary>
+        /// <inheritdoc />
         public bool IsContextMenuOpened { get; set; }
 
-        /// <summary>
-        /// Gets or sets whether popup is opened
-        /// </summary>
+        /// <inheritdoc />
         public bool IsDropDownOpen
         {
             get { return (bool)this.GetValue(IsDropDownOpenProperty); }
@@ -598,7 +578,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for IsOpen.  
+        /// Using a DependencyProperty as the backing store for IsOpen.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty IsDropDownOpenProperty =
@@ -665,9 +645,7 @@ namespace Fluent
 
         #region LargeIcon
 
-        /// <summary>
-        /// Button large icon
-        /// </summary>
+        /// <inheritdoc />
         public object LargeIcon
         {
             get { return this.GetValue(LargeIconProperty); }
@@ -685,7 +663,7 @@ namespace Fluent
         #region Snapping
 
         /// <summary>
-        /// Snaps / Unsnaps the Visual 
+        /// Snaps / Unsnaps the Visual
         /// (remove visuals and substitute with freezed image)
         /// </summary>
         public bool IsSnapped
@@ -694,6 +672,7 @@ namespace Fluent
             {
                 return this.isSnapped;
             }
+
             set
             {
                 if (value == this.isSnapped)
@@ -713,14 +692,22 @@ namespace Fluent
 
                 if (value
                     && (int)this.ActualWidth > 0
-                    && (int)this.ActualHeight > 0)
+                    && (int)this.ActualHeight > 0
+                    && (int)this.galleryPanel.ActualWidth > 0
+                    && (int)this.galleryPanel.ActualHeight > 0)
                 {
                     // Render the freezed image
                     RenderOptions.SetBitmapScalingMode(this.snappedImage, BitmapScalingMode.NearestNeighbor);
-                    var renderTargetBitmap = new RenderTargetBitmap((int)this.galleryPanel.ActualWidth,
-                                                                                   (int)this.galleryPanel.ActualHeight, 96, 96,
-                                                                                   PixelFormats.Pbgra32);
+
+                    var renderTargetBitmap = new RenderTargetBitmap(
+                        (int)this.galleryPanel.ActualWidth,
+                        (int)this.galleryPanel.ActualHeight,
+                        96,
+                        96,
+                        PixelFormats.Pbgra32);
+
                     renderTargetBitmap.Render(this.galleryPanel);
+
                     this.snappedImage.Source = renderTargetBitmap;
                     this.snappedImage.FlowDirection = this.FlowDirection;
                     this.snappedImage.Width = this.galleryPanel.ActualWidth;
@@ -733,8 +720,6 @@ namespace Fluent
                 }
 
                 this.isSnapped = value;
-
-                this.InvalidateVisual();
             }
         }
 
@@ -771,7 +756,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for MaxItemsInRow.  
+        /// Using a DependencyProperty as the backing store for MaxItemsInRow.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty MaxItemsInRowProperty =
@@ -783,8 +768,7 @@ namespace Fluent
             var maxItemsInRow = (int)e.NewValue;
 
             if (gal.IsDropDownOpen == false
-                && gal.galleryPanel != null
-                && gal.galleryPanel.MaxItemsInRow < maxItemsInRow)
+                && gal.galleryPanel != null)
             {
                 gal.galleryPanel.MaxItemsInRow = maxItemsInRow;
             }
@@ -800,7 +784,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for MaxItemsInRow.  
+        /// Using a DependencyProperty as the backing store for MaxItemsInRow.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty MinItemsInRowProperty =
@@ -812,8 +796,7 @@ namespace Fluent
             var minItemsInRow = (int)e.NewValue;
 
             if (gal.IsDropDownOpen == false
-                && gal.galleryPanel != null
-                && gal.galleryPanel.MinItemsInRow > minItemsInRow)
+                && gal.galleryPanel != null)
             {
                 gal.galleryPanel.MinItemsInRow = minItemsInRow;
             }
@@ -897,21 +880,21 @@ namespace Fluent
 
         #endregion
 
-        #region IsReadOnly
+        #region GalleryPanelContainerHeight
 
         /// <summary>
-        /// Gets or sets IsReadOnly for the element.
+        /// <see cref="DependencyProperty"/> for <see cref="GalleryPanelContainerHeight"/>.
         /// </summary>
-        public bool IsReadOnly
+        public static readonly DependencyProperty GalleryPanelContainerHeightProperty = DependencyProperty.Register(nameof(GalleryPanelContainerHeight), typeof(double), typeof(InRibbonGallery), new PropertyMetadata(60D));
+
+        /// <summary>
+        /// Gets or sets the height of the container which hosts the <see cref="GalleryPanel"/>.
+        /// </summary>
+        public double GalleryPanelContainerHeight
         {
-            get { return (bool)this.GetValue(IsReadOnlyProperty); }
-            set { this.SetValue(IsReadOnlyProperty, value); }
+            get { return (double)this.GetValue(GalleryPanelContainerHeightProperty); }
+            set { this.SetValue(GalleryPanelContainerHeightProperty, value); }
         }
-
-        /// <summary>
-        /// Using a DependencyProperty as the backing store for IsReadOnly.  
-        /// </summary>
-        public static readonly DependencyProperty IsReadOnlyProperty = RibbonProperties.IsReadOnlyProperty.AddOwner(typeof(InRibbonGallery));
 
         #endregion
 
@@ -919,9 +902,7 @@ namespace Fluent
 
         #region Events
 
-        /// <summary>
-        /// Occurs when control is scaled
-        /// </summary>
+        /// <inheritdoc />
         public event EventHandler Scaled;
 
         /// <summary>
@@ -939,9 +920,8 @@ namespace Fluent
         #region Constructors
 
         /// <summary>
-        /// Static constructor
+        /// Initializes static members of the <see cref="InRibbonGallery"/> class.
         /// </summary>
-        [SuppressMessage("Microsoft.Performance", "CA1810")]
         static InRibbonGallery()
         {
             var type = typeof(InRibbonGallery);
@@ -984,32 +964,34 @@ namespace Fluent
 
         #region Overrides
 
-        /// <summary>
-        /// Handles key tip pressed
-        /// </summary>
-        public void OnKeyTipPressed()
+        /// <inheritdoc />
+        public KeyTipPressedResult OnKeyTipPressed()
         {
             this.IsDropDownOpen = true;
+
+            if (this.DropDownPopup?.Child != null)
+            {
+                Keyboard.Focus(this.DropDownPopup.Child);
+                this.DropDownPopup.Child.MoveFocus(new TraversalRequest(FocusNavigationDirection.First));
+
+                return new KeyTipPressedResult(false, true);
+            }
+
+            return new KeyTipPressedResult(false, true);
         }
 
-        /// <summary>
-        /// Handles back navigation with KeyTips
-        /// </summary>
+        /// <inheritdoc />
         public void OnKeyTipBack()
         {
             this.IsDropDownOpen = false;
         }
 
-        /// <summary>
-        /// Called when the selection changes.
-        /// </summary>
-        /// <param name="e">The event data.</param>
+        /// <inheritdoc />
         protected override void OnSelectionChanged(SelectionChangedEventArgs e)
         {
             foreach (var item in e.RemovedItems)
             {
-                var itemContainer = this.ItemContainerGenerator.ContainerFromItem(item) as GalleryItem;
-                if (itemContainer != null)
+                if (this.ItemContainerGenerator.ContainerFromItem(item) is GalleryItem itemContainer)
                 {
                     itemContainer.IsSelected = false;
                 }
@@ -1017,20 +999,16 @@ namespace Fluent
 
             foreach (var item in e.AddedItems)
             {
-                var itemContainer = this.ItemContainerGenerator.ContainerFromItem(item) as GalleryItem;
-                if (itemContainer != null)
+                if (this.ItemContainerGenerator.ContainerFromItem(item) is GalleryItem itemContainer)
                 {
-                    itemContainer.IsSelected = true;
+                    itemContainer.IsSelected = this.Selectable;
                 }
             }
 
             base.OnSelectionChanged(e);
         }
 
-        /// <summary>
-        /// When overridden in a derived class, is invoked whenever application 
-        /// code or internal processes call ApplyTemplate
-        /// </summary>
+        /// <inheritdoc />
         public override void OnApplyTemplate()
         {
             this.layoutRoot = this.GetTemplateChild("PART_LayoutRoot") as FrameworkElement;
@@ -1180,26 +1158,27 @@ namespace Fluent
             }
         }
 
-        // Handles drop down opened
+        // Handles drop down closed
         private void OnDropDownClosed(object sender, EventArgs e)
         {
             this.popupControlPresenter.Content = null;
             this.controlPresenter.Content = this.galleryPanel;
 
-            this.galleryPanel.IsGrouped = false;
             this.galleryPanel.MinItemsInRow = this.MinItemsInRow;
             this.galleryPanel.MaxItemsInRow = this.MaxItemsInRow;
-            this.galleryPanel.Width = double.NaN;
             this.galleryPanel.UpdateMinAndMaxWidth();
+            this.galleryPanel.IsGrouped = false;
 
-            this.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, (ThreadStart)(() =>
+            if (this.IsSnapped
+                && (this.quickAccessGallery == null || (this.quickAccessGallery != null && this.quickAccessGallery.IsDropDownOpen == false)))
             {
-                if (this.quickAccessGallery == null
-                    || (this.quickAccessGallery != null && this.quickAccessGallery.IsDropDownOpen == false))
-                {
-                    this.IsSnapped = false;
-                }
-            }));
+                this.galleryPanel.Width = this.snappedImage.Width;
+                this.galleryPanel.Height = this.snappedImage.Height;
+
+                this.galleryPanel.UpdateLayout();
+
+                this.IsSnapped = false;
+            }
 
             this.DropDownClosed?.Invoke(this, e);
 
@@ -1208,16 +1187,22 @@ namespace Fluent
                 Mouse.Capture(null);
             }
 
-            this.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, (ThreadStart)(() =>
-                                                                               {
-                                                                                   var selectedContainer = this.ItemContainerGenerator.ContainerFromItem(this.SelectedItem) as GalleryItem;
-                                                                                   selectedContainer?.BringIntoView();
-                                                                               }));
             this.dropDownButton.IsChecked = false;
             this.canOpenDropDown = true;
+
+            this.RunInDispatcherAsync(() =>
+                                      {
+                                          // request measure async. call will be ignored because we set IgnoreNextMeasureCall earlier, but we need to "free" width and height to support future resizes
+                                          this.galleryPanel.IgnoreNextMeasureCall = true;
+                                          this.galleryPanel.Width = double.NaN;
+                                          this.galleryPanel.Height = double.NaN;
+
+                                          var selectedContainer = this.ItemContainerGenerator.ContainerFromItem(this.SelectedItem) as GalleryItem;
+                                          selectedContainer?.BringIntoView();
+                                      }, DispatcherPriority.SystemIdle);
         }
 
-        // Handles drop down closed
+        // Handles drop down opened
         private void OnDropDownOpened(object sender, EventArgs e)
         {
             this.IsSnapped = true;
@@ -1225,11 +1210,10 @@ namespace Fluent
             this.controlPresenter.Content = null;
             this.popupControlPresenter.Content = this.galleryPanel;
 
-            this.galleryPanel.IsGrouped = true;
             this.galleryPanel.MinItemsInRow = this.MinItemsInDropDownRow;
             this.galleryPanel.MaxItemsInRow = this.MaxItemsInDropDownRow;
-            this.galleryPanel.Width = double.NaN;
             this.galleryPanel.UpdateMinAndMaxWidth();
+            this.galleryPanel.IsGrouped = true;
 
             this.DropDownOpened?.Invoke(this, e);
 
@@ -1297,11 +1281,7 @@ namespace Fluent
             }
         }
 
-        /// <summary>
-        /// Handles size property changing
-        /// </summary>
-        /// <param name="previous">Previous value</param>
-        /// <param name="current">Current value</param>
+        /// <inheritdoc />
         public void OnSizePropertyChanged(RibbonControlSize previous, RibbonControlSize current)
         {
             if (this.CanCollapseToButton)
@@ -1322,29 +1302,19 @@ namespace Fluent
             }
         }
 
-        /// <summary>
-        /// Creates or identifies the element that is used to display the given item.
-        /// </summary>
-        /// <returns>The element that is used to display the given item.</returns>
+        /// <inheritdoc />
         protected override DependencyObject GetContainerForItemOverride()
         {
             return new GalleryItem();
         }
 
-        /// <summary>
-        /// Determines if the specified item is (or is eligible to be) its own container.
-        /// </summary>
-        /// <param name="item">The item to check.</param>
-        /// <returns></returns>
+        /// <inheritdoc />
         protected override bool IsItemItsOwnContainerOverride(object item)
         {
             return item is GalleryItem;
         }
 
-        /// <summary>
-        /// Invoked when the <see cref="E:System.Windows.UIElement.KeyDown"/> event is received.
-        /// </summary>
-        /// <param name="e">Information about the event.</param>
+        /// <inheritdoc />
         protected override void OnKeyDown(KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
@@ -1391,24 +1361,19 @@ namespace Fluent
         // Handles resize vertical drag
         private void OnResizeVerticalDelta(object sender, DragDeltaEventArgs e)
         {
-            if (double.IsNaN(this.scrollViewer.Height))
+            if (double.IsNaN(this.menuPanel.Height))
             {
-                this.scrollViewer.Height = this.scrollViewer.ActualHeight;
+                this.menuPanel.Height = this.menuPanel.ActualHeight;
             }
 
-            this.scrollViewer.Height = Math.Max(this.layoutRoot.ActualHeight, Math.Min(Math.Max(this.galleryPanel.GetItemSize().Height, this.scrollViewer.Height + e.VerticalChange), this.MaxDropDownHeight));
+            this.menuPanel.Height = Math.Max(this.layoutRoot.ActualHeight, Math.Min(Math.Max(this.galleryPanel.GetItemSize().Height, this.menuPanel.Height + e.VerticalChange), this.MaxDropDownHeight));
         }
 
         #endregion
 
         #region QuickAccess
 
-        /// <summary>
-        /// Gets control which represents shortcut item.
-        /// This item MUST be syncronized with the original 
-        /// and send command to original one control.
-        /// </summary>
-        /// <returns>Control which represents shortcut item</returns>
+        /// <inheritdoc />
         public virtual FrameworkElement CreateQuickAccessItem()
         {
             var gallery = new InRibbonGallery();
@@ -1465,7 +1430,7 @@ namespace Fluent
             this.quickAccessGallery.Unloaded += this.OnQuickAccessMenuClosedOrUnloaded;
 
             this.UpdateLayout();
-            this.Dispatcher.BeginInvoke(DispatcherPriority.Render, (Action)this.Freeze);
+            this.RunInDispatcherAsync(this.Freeze, DispatcherPriority.Render);
         }
 
         private void OnQuickAccessMenuClosedOrUnloaded(object sender, EventArgs e)
@@ -1531,21 +1496,19 @@ namespace Fluent
                 }
             }
 
-            this.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, (ThreadStart)(() =>
-                                                                                     {
-                                                                                         if (this.IsDropDownOpen == false)
-                                                                                         {
-                                                                                             this.IsSnapped = false;
-                                                                                         }
+            this.RunInDispatcherAsync(() =>
+                                      {
+                                          if (this.IsDropDownOpen == false)
+                                          {
+                                              this.IsSnapped = false;
+                                          }
 
-                                                                                         var selectedContainer = this.ItemContainerGenerator.ContainerFromItem(this.SelectedItem) as GalleryItem;
-                                                                                         selectedContainer?.BringIntoView();
-                                                                                     }));
+                                          var selectedContainer = this.ItemContainerGenerator.ContainerFromItem(this.SelectedItem) as GalleryItem;
+                                          selectedContainer?.BringIntoView();
+                                      }, DispatcherPriority.SystemIdle);
         }
 
-        /// <summary>
-        /// Gets or sets whether control can be added to quick access toolbar
-        /// </summary>
+        /// <inheritdoc />
         public bool CanAddToQuickAccessToolBar
         {
             get { return (bool)this.GetValue(CanAddToQuickAccessToolBarProperty); }
@@ -1555,15 +1518,13 @@ namespace Fluent
         /// <summary>
         /// Using a DependencyProperty as the backing store for CanAddToQuickAccessToolBar.  This enables animation, styling, binding, etc...
         /// </summary>
-        public static readonly DependencyProperty CanAddToQuickAccessToolBarProperty = RibbonControl.CanAddToQuickAccessToolBarProperty.AddOwner(typeof(InRibbonGallery), new PropertyMetadata(BooleanBoxes.TrueBox, RibbonControl.OnCanAddToQuickAccessToolbarChanged));
+        public static readonly DependencyProperty CanAddToQuickAccessToolBarProperty = RibbonControl.CanAddToQuickAccessToolBarProperty.AddOwner(typeof(InRibbonGallery), new PropertyMetadata(BooleanBoxes.TrueBox, RibbonControl.OnCanAddToQuickAccessToolBarChanged));
 
         #endregion
 
         #region Implementation of IScalableRibbonControl
 
-        /// <summary>
-        /// Enlarge control size
-        /// </summary>
+        /// <inheritdoc />
         public void Enlarge()
         {
             if (this.IsCollapsed
@@ -1571,10 +1532,11 @@ namespace Fluent
             {
                 this.IsCollapsed = false;
             }
-            else if (this.galleryPanel.MinItemsInRow < this.MaxItemsInRow)
+            else if (this.galleryPanel.MinItemsInRow < this.MinItemsInRow
+                     || this.galleryPanel.MaxItemsInRow < this.MaxItemsInRow)
             {
-                this.galleryPanel.MinItemsInRow++;
-                this.galleryPanel.MaxItemsInRow = this.galleryPanel.MinItemsInRow;
+                this.galleryPanel.MinItemsInRow = Math.Min(this.galleryPanel.MinItemsInRow + 1, this.MinItemsInRow);
+                this.galleryPanel.MaxItemsInRow = Math.Min(this.galleryPanel.MaxItemsInRow + 1, this.MaxItemsInRow);
             }
             else
             {
@@ -1586,15 +1548,14 @@ namespace Fluent
             this.Scaled?.Invoke(this, EventArgs.Empty);
         }
 
-        /// <summary>
-        /// Reduce control size
-        /// </summary>
+        /// <inheritdoc />
         public void Reduce()
         {
-            if (this.galleryPanel.MinItemsInRow > this.MinItemsInRow)
+            if (this.galleryPanel.MinItemsInRow > 1
+                || this.galleryPanel.MaxItemsInRow > 1)
             {
-                this.galleryPanel.MinItemsInRow--;
-                this.galleryPanel.MaxItemsInRow = this.galleryPanel.MinItemsInRow;
+                this.galleryPanel.MinItemsInRow = Math.Max(this.galleryPanel.MinItemsInRow - 1, 0);
+                this.galleryPanel.MaxItemsInRow = Math.Max(this.galleryPanel.MaxItemsInRow - 1, 0);
             }
             else if (this.CanCollapseToButton
                      && this.IsCollapsed == false)
@@ -1605,11 +1566,30 @@ namespace Fluent
             {
                 return;
             }
+
             this.InvalidateMeasure();
 
             this.Scaled?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion
+
+        /// <inheritdoc />
+        void ILogicalChildSupport.AddLogicalChild(object child)
+        {
+            this.AddLogicalChild(child);
+        }
+
+        /// <inheritdoc />
+        void ILogicalChildSupport.RemoveLogicalChild(object child)
+        {
+            this.RemoveLogicalChild(child);
+        }
+
+        /// <inheritdoc />
+        protected override AutomationPeer OnCreateAutomationPeer()
+        {
+            return new InRibbonGalleryAutomationPeer(this);
+        }
     }
 }

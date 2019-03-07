@@ -23,8 +23,11 @@
         private RelayCommand exitCommand;
         private double zoom;
         private ICommand testCommand;
+
         private IList<string> manyItems;
-        private bool? isCheckedToggleButton3;
+        private IList<string> stringItems;
+
+        private bool? isCheckedToggleButton3 = true;
 
         private readonly Timer memoryTimer;
 
@@ -39,6 +42,7 @@
             this.ColorViewModel = new ColorViewModel();
             this.FontsViewModel = new FontsViewModel();
             this.GalleryViewModel = new GalleryViewModel();
+            this.IssueReprosViewModel = new IssueReprosViewModel();
 
             this.PreviewCommand = new RelayCommand<GalleryItem>(Preview);
             this.CancelPreviewCommand = new RelayCommand<GalleryItem>(CancelPreview);
@@ -48,8 +52,6 @@
             this.memoryTimer = new Timer(TimeSpan.FromSeconds(5).TotalMilliseconds);
             this.memoryTimer.Elapsed += this.HandleMemoryTimer_Elapsed;
             this.memoryTimer.Start();
-
-            ////string.Format("{0:##,000}", this.UsedMemory)
         }
 
         #region Properties
@@ -61,46 +63,68 @@
         public double Zoom
         {
             get { return this.zoom; }
+
             set
             {
-                if (value.Equals(this.zoom)) return;
+                if (value.Equals(this.zoom))
+                {
+                    return;
+                }
+
                 this.zoom = value;
-                this.OnPropertyChanged(nameof(this.Zoom));
+                this.OnPropertyChanged();
             }
         }
 
         public ColorViewModel ColorViewModel
         {
             get { return this.colorViewModel; }
+
             private set
             {
-                if (Equals(value, this.colorViewModel)) return;
+                if (Equals(value, this.colorViewModel))
+                {
+                    return;
+                }
+
                 this.colorViewModel = value;
-                this.OnPropertyChanged(nameof(this.ColorViewModel));
+                this.OnPropertyChanged();
             }
         }
 
         public FontsViewModel FontsViewModel
         {
             get { return this.fontsViewModel; }
+
             private set
             {
-                if (Equals(value, this.fontsViewModel)) return;
+                if (Equals(value, this.fontsViewModel))
+                {
+                    return;
+                }
+
                 this.fontsViewModel = value;
-                this.OnPropertyChanged(nameof(this.FontsViewModel));
+                this.OnPropertyChanged();
             }
         }
 
         public GalleryViewModel GalleryViewModel
         {
             get { return this.galleryViewModel; }
+
             private set
             {
-                if (Equals(value, this.galleryViewModel)) return;
+                if (Equals(value, this.galleryViewModel))
+                {
+                    return;
+                }
+
                 this.galleryViewModel = value;
-                this.OnPropertyChanged(nameof(this.GalleryViewModel));
+                this.OnPropertyChanged();
             }
         }
+
+        public IssueReprosViewModel IssueReprosViewModel { get; }
 
         /// <summary>
         /// Gets data items (uses as DataContext)
@@ -127,19 +151,27 @@
 
         public IList<string> ManyItems
         {
-            get { return this.manyItems ?? (this.manyItems = this.GenerateStrings(5000)); }
+            get { return this.manyItems ?? (this.manyItems = GenerateStrings(5000)); }
+        }
+
+        public IList<string> StringItems
+        {
+            get { return this.stringItems ?? (this.stringItems = GenerateStrings(25)); }
         }
 
         public bool? IsCheckedToggleButton3
         {
             get { return this.isCheckedToggleButton3; }
+
             set
             {
-                if (this.isCheckedToggleButton3 != value)
+                if (value == this.isCheckedToggleButton3)
                 {
-                    this.isCheckedToggleButton3 = value;
-                    this.OnPropertyChanged(nameof(this.IsCheckedToggleButton3));
+                    return;
                 }
+
+                this.isCheckedToggleButton3 = value;
+                this.OnPropertyChanged();
             }
         }
 
@@ -150,10 +182,16 @@
         public int BoundSpinnerValue
         {
             get { return this.boundSpinnerValue; }
+
             set
             {
+                if (value == this.boundSpinnerValue)
+                {
+                    return;
+                }
+
                 this.boundSpinnerValue = value;
-                this.OnPropertyChanged(nameof(this.BoundSpinnerValue));
+                this.OnPropertyChanged();
             }
         }
 
@@ -179,15 +217,7 @@
 
         public ICommand TestCommand
         {
-            get
-            {
-                if (this.testCommand == null)
-                {
-                    this.testCommand = new RelayCommand(() => MessageBox.Show("Test-Command"));
-                }
-
-                return this.testCommand;
-            }
+            get { return this.testCommand ?? (this.testCommand = new RelayCommand(() => MessageBox.Show("Test-Command"))); }
         }
 
         #endregion Properties
@@ -215,9 +245,11 @@
             Trace.WriteLine($"CancelPreview: {galleryItem}");
         }
 
-        private IList<string> GenerateStrings(int count)
+        private static IList<string> GenerateStrings(int count)
         {
-            return Enumerable.Repeat("Test", count).ToList();
+            return Enumerable.Range(0, count)
+                .Select(x => "Item " + (x + 1).ToString())
+                .ToList();
         }
 
         private void HandleMemoryTimer_Elapsed(object sender, ElapsedEventArgs e)

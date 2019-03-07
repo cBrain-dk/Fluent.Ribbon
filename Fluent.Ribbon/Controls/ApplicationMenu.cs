@@ -1,18 +1,20 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Windows;
-
 // ReSharper disable once CheckNamespace
 namespace Fluent
 {
-  using System.Windows.Automation.Peers;
-  using Fluent.Internal.KnownBoxes;
+    using System;
+    using System.Reflection;
+    using System.Windows;
+    using System.Windows.Controls;
+    using Fluent.Internal.KnownBoxes;
+    using System.Windows.Automation.Peers;
 
     /// <summary>
     /// Represents backstage button
     /// </summary>
     public class ApplicationMenu : DropDownButton
     {
+        private static readonly PropertyInfo targetElementPropertyInfo = typeof(ContextMenuEventArgs).GetProperty("TargetElement", BindingFlags.Instance | BindingFlags.NonPublic);
+
         #region Properties
 
         /// <summary>
@@ -102,24 +104,36 @@ namespace Fluent
 
     #endregion
 
-    #region Quick Access Toolbar
+        /// <inheritdoc />
+        protected override void OnContextMenuOpening(ContextMenuEventArgs e)
+        {
+            if (ReferenceEquals(e.Source, this))
+            {
+                var targetElement = targetElementPropertyInfo?.GetValue(e);
+                if (targetElement == null
+                    || ReferenceEquals(targetElement, this))
+                {
+                    e.Handled = true;
+                    return;
+                }
+            }
 
-    /// <summary>
-    /// Gets control which represents shortcut item.
-    /// This item MUST be syncronized with the original 
-    /// and send command to original one control.
-    /// </summary>
-    /// <returns>Control which represents shortcut item</returns>
-    public override FrameworkElement CreateQuickAccessItem()
+            base.OnContextMenuOpening(e);
+        }
+
+        #region Quick Access Toolbar
+
+        /// <inheritdoc />
+        public override FrameworkElement CreateQuickAccessItem()
         {
             throw new NotImplementedException();
         }
 
         #endregion
 
-    protected override AutomationPeer OnCreateAutomationPeer()
-    {
-      return new FrameworkElementAutomationPeer(this);
+       protected override AutomationPeer OnCreateAutomationPeer()
+       {
+         return new FrameworkElementAutomationPeer(this);
+       }
     }
-  }
 }

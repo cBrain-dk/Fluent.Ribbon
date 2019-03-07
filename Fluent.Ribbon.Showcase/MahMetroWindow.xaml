@@ -5,26 +5,59 @@
                    xmlns:Metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                    xmlns:fluentTest="clr-namespace:FluentTest"
                    Style="{DynamicResource CleanWindowStyleKey}"
-                   GlowBrush="{DynamicResource AccentColorBrush}"
-                   ShowIconOnTitleBar="False"
-                   ShowTitleBar="True"
                    WindowStartupLocation="CenterScreen"
                    Title="{Binding DataContext.Title, ElementName=TestContent}"
                    Height="768"
                    Width="1024"
                    x:Name="window"
-                   TitleCaps="False"
-                   WindowState="Normal">
+                   WindowState="Normal"
+                   TitleCharacterCasing="Normal"
+                   WindowTransitionsEnabled="False"
+                   GlowBrush="{DynamicResource AccentColorBrush}"
+                   ShowIconOnTitleBar="False"
+                   ShowTitleBar="True"
+                   ShowSystemMenuOnRightClick="False">
+    <Metro:MetroWindow.LayoutTransform>
+        <!-- todo: netcore => was using x:Reference before -->
+        <ScaleTransform ScaleX="{Binding DataContext.Zoom, ElementName=TestContent}"
+                        ScaleY="{Binding DataContext.Zoom, ElementName=TestContent}" />
+    </Metro:MetroWindow.LayoutTransform>
+    
     <Metro:MetroWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="{x:Type Fluent:BackstageTabControl}"
+                   TargetType="{x:Type Fluent:BackstageTabControl}"
+                   BasedOn="{StaticResource {x:Type Fluent:BackstageTabControl}}">
+                <Setter Property="SelectedContentMargin"
+                        Value="0" />
+            </Style>
         </ResourceDictionary>
     </Metro:MetroWindow.Resources>
+       
+    <Metro:MetroWindow.TitleTemplate>
+        <DataTemplate>
+            <Fluent:RibbonTitleBar x:Name="RibbonTitleBar"                                   
+                                   Header="{Binding Path=Title, RelativeSource={RelativeSource AncestorType=Window}}"/>
+        </DataTemplate>
+    </Metro:MetroWindow.TitleTemplate>
+    
+    <Metro:MetroWindow.LeftWindowCommands>
+        <Metro:WindowCommands>
+            <Button>Left</Button>
+        </Metro:WindowCommands>
+    </Metro:MetroWindow.LeftWindowCommands>
+    
+    <Metro:MetroWindow.RightWindowCommands>
+        <Metro:WindowCommands>
+            <Button>Right</Button>
+        </Metro:WindowCommands>
+    </Metro:MetroWindow.RightWindowCommands>    
+    
     <fluentTest:TestContent x:Name="TestContent" />
 </Metro:MetroWindow>

@@ -1,4 +1,5 @@
-﻿namespace Fluent
+﻿// ReSharper disable once CheckNamespace
+namespace Fluent
 {
     using System;
     using System.Collections.Generic;
@@ -7,11 +8,12 @@
     using System.Globalization;
     using System.Linq;
     using System.Reflection;
+    using System.Runtime.CompilerServices;
     using Fluent.Localization;
 
     /// <summary>
-    /// Contains localizable Ribbon's properties. 
-    /// Set Culture property to change current Ribbon localization or 
+    /// Contains localizable Ribbon's properties.
+    /// Set Culture property to change current Ribbon localization or
     /// set properties independently to use your localization
     /// </summary>
     public class RibbonLocalization : INotifyPropertyChanged
@@ -24,13 +26,13 @@
 
         #region Implementation of INotifyPropertyChanged
 
-        /// <summary>
-        /// Occurs then property is changed
-        /// </summary>
+        /// <inheritdoc />
         public event PropertyChangedEventHandler PropertyChanged;
 
-        // Raises PropertYChanegd event
-        private void RaisePropertyChanged(string propertyName)
+        /// <summary>
+        /// Raises the <see cref="PropertyChanged"/> event.
+        /// </summary>
+        protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -48,13 +50,14 @@
         public CultureInfo Culture
         {
             get { return this.culture; }
+
             set
             {
                 if (!Equals(this.culture, value))
                 {
                     this.culture = value;
                     this.LoadCulture(this.culture);
-                    this.RaisePropertyChanged(nameof(this.Culture));
+                    this.RaisePropertyChanged();
                 }
             }
         }
@@ -65,12 +68,13 @@
         public RibbonLocalizationBase Localization
         {
             get { return this.localization; }
+
             set
             {
                 if (!Equals(this.localization, value))
                 {
                     this.localization = value;
-                    this.RaisePropertyChanged(nameof(this.Localization));
+                    this.RaisePropertyChanged();
                 }
             }
         }
@@ -82,19 +86,14 @@
         {
             var localizationClasses = GetTypesInNamespace(Assembly.GetExecutingAssembly(), "Fluent.Localization.Languages");
 
-#if NET45
             this.localizationMap = localizationClasses.ToDictionary(x => x.GetCustomAttribute<RibbonLocalizationAttribute>().CultureName, x => x);
-#else
-            this.localizationMap = localizationClasses.ToDictionary(x => x.GetCustomAttributes(typeof(RibbonLocalizationAttribute), false).OfType<RibbonLocalizationAttribute>().First().CultureName, x => x);
-#endif
 
             this.Culture = CultureInfo.CurrentUICulture;
         }
 
         private void LoadCulture(CultureInfo requestedCulture)
         {
-            Type localizationClass;
-            if (this.localizationMap.TryGetValue(requestedCulture.Name, out localizationClass))
+            if (this.localizationMap.TryGetValue(requestedCulture.Name, out var localizationClass))
             {
                 this.Localization = (RibbonLocalizationBase)Activator.CreateInstance(localizationClass);
                 return;

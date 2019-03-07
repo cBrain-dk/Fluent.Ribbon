@@ -1,34 +1,32 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-
-// ReSharper disable once CheckNamespace
+﻿// ReSharper disable once CheckNamespace
 namespace Fluent
 {
-  using System.Windows.Automation.Peers;
-  using Extensions;
-  using Fluent.Internal;
-  using Fluent.Internal.KnownBoxes;
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Controls.Primitives;
+    using System.Windows.Data;
+    using System.Windows.Input;
+    using System.Windows.Media;
+    using System.Windows.Media.Imaging;
+    using System.Windows.Shapes;
+    using Fluent.Internal;
+    using Fluent.Internal.KnownBoxes;
 
-  /// <summary>
-  /// RibbonGroup represents a logical group of controls as they appear on
-  /// a RibbonTab.  These groups can resize its content
-  /// </summary>
-  [TemplatePart(Name = "PART_DialogLauncherButton", Type = typeof(Button))]
+    /// <summary>
+    /// RibbonGroup represents a logical group of controls as they appear on
+    /// a RibbonTab.  These groups can resize its content
+    /// </summary>
+    [TemplatePart(Name = "PART_DialogLauncherButton", Type = typeof(Button))]
     [TemplatePart(Name = "PART_Popup", Type = typeof(Popup))]
     [TemplatePart(Name = "PART_UpPanel", Type = typeof(Panel))]
-    public class RibbonGroupBox : ItemsControl, IQuickAccessItemProvider, IDropDownControl, IKeyTipedControl, IHeaderedControl
+    [TemplatePart(Name = "PART_ParentPanel", Type = typeof(Panel))]
+    [TemplatePart(Name = "PART_SnappedImage", Type = typeof(Image))]
+    public class RibbonGroupBox : HeaderedItemsControl, IQuickAccessItemProvider, IDropDownControl, IKeyTipedControl, IHeaderedControl, ILogicalChildSupport
     {
         #region Fields
 
@@ -51,9 +49,7 @@ namespace Fluent
 
         #region KeyTip
 
-        /// <summary>
-        /// Gets or sets KeyTip for element.
-        /// </summary>
+        /// <inheritdoc />
         public string KeyTip
         {
             get { return (string)this.GetValue(KeyTipProperty); }
@@ -61,21 +57,43 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Keys.  
+        /// Using a DependencyProperty as the backing store for Keys.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty KeyTipProperty = Fluent.KeyTip.KeysProperty.AddOwner(typeof(RibbonGroupBox));
 
         #endregion
 
-        /// <summary>
-        /// Gets drop down popup
-        /// </summary>
-        public Popup DropDownPopup { get; private set; }
+        #region Header-Options
 
         /// <summary>
-        /// Gets a value indicating whether context menu is opened
+        /// <see cref="DependencyProperty"/> for IsCollapsedHeaderContentPresenter.
         /// </summary>
+        public static readonly DependencyProperty IsCollapsedHeaderContentPresenterProperty = DependencyProperty.RegisterAttached("IsCollapsedHeaderContentPresenter", typeof(bool), typeof(RibbonGroupBox), new PropertyMetadata(default(bool)));
+
+        /// <summary>
+        /// Sets the value of <see cref="IsCollapsedHeaderContentPresenterProperty"/>.
+        /// </summary>
+        public static void SetIsCollapsedHeaderContentPresenter(DependencyObject element, bool value)
+        {
+            element.SetValue(IsCollapsedHeaderContentPresenterProperty, value);
+        }
+
+        /// <summary>
+        /// Gets the value of <see cref="IsCollapsedHeaderContentPresenterProperty"/>.
+        /// </summary>
+        [AttachedPropertyBrowsableForType(typeof(RibbonGroupBox))]
+        public static bool GetIsCollapsedHeaderContentPresenter(DependencyObject element)
+        {
+            return (bool)element.GetValue(IsCollapsedHeaderContentPresenterProperty);
+        }
+
+        #endregion
+
+        /// <inheritdoc />
+        public Popup DropDownPopup { get; private set; }
+
+        /// <inheritdoc />
         public bool IsContextMenuOpened { get; set; }
 
         #region State
@@ -90,18 +108,18 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for State.  
+        /// Using a DependencyProperty as the backing store for State.
         /// This enables animation, styling, binding, etc...
-        /// </summary> 
+        /// </summary>
         public static readonly DependencyProperty StateProperty =
-            DependencyProperty.Register(nameof(State), typeof(RibbonGroupBoxState), typeof(RibbonGroupBox), new PropertyMetadata(RibbonGroupBoxState.Large, StatePropertyChanged));
+            DependencyProperty.Register(nameof(State), typeof(RibbonGroupBoxState), typeof(RibbonGroupBox), new PropertyMetadata(RibbonGroupBoxState.Large, OnStateChanged));
 
         /// <summary>
         /// On state property changed
         /// </summary>
         /// <param name="d">Object</param>
         /// <param name="e">The event data</param>
-        private static void StatePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnStateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var ribbonGroupBox = (RibbonGroupBox)d;
             ribbonGroupBox.updateChildSizesItemContainerGeneratorAction.QueueAction();
@@ -122,7 +140,14 @@ namespace Fluent
                     continue;
                 }
 
-                RibbonProperties.SetAppropriateSize(element, groupBoxState);
+                var targetElement = element;
+
+                if (targetElement is ContentPresenter)
+                {
+                    targetElement = UIHelper.GetFirstVisualChild(targetElement) ?? targetElement;
+                }
+
+                RibbonProperties.SetAppropriateSize(targetElement, groupBoxState);
             }
         }
 
@@ -139,6 +164,7 @@ namespace Fluent
         internal int Scale
         {
             get { return this.scale; }
+
             set
             {
                 var difference = value - this.scale;
@@ -172,14 +198,6 @@ namespace Fluent
         private void OnScalableControlScaled(object sender, EventArgs e)
         {
             this.TryClearCache();
-        }
-
-        private void TryClearCache()
-        {
-            if (!this.SuppressCacheReseting)
-            {
-                this.cachedMeasures.Clear();
-            }
         }
 
         /// <summary>
@@ -219,32 +237,6 @@ namespace Fluent
 
         #endregion
 
-        #region Header
-
-        /// <summary>
-        /// Gets or sets group box header
-        /// </summary>
-        public string Header
-        {
-            get { return (string)this.GetValue(HeaderProperty); }
-            set { this.SetValue(HeaderProperty, value); }
-        }
-
-        /// <summary>
-        /// Using a DependencyProperty as the backing store for Header.  This enables animation, styling, binding, etc...
-        /// </summary>
-        public static readonly DependencyProperty HeaderProperty =
-            DependencyProperty.Register(nameof(Header), typeof(string), typeof(RibbonGroupBox), new PropertyMetadata());
-
-        object IHeaderedControl.Header
-        {
-            get { return this.Header; }
-
-            set { this.Header = (string)value; }
-        }
-
-        #endregion
-
         #region IsLauncherVisible
 
         /// <summary>
@@ -269,24 +261,24 @@ namespace Fluent
         /// <summary>
         /// Gets or sets key tip for dialog launcher button
         /// </summary>
-        [DisplayName("DialogLauncher Keys"),
-        Category("KeyTips"),
-        Description("Key tip keys for dialog launcher button")]
+        [DisplayName("DialogLauncher Keys")]
+        [Category("KeyTips")]
+        [Description("Key tip keys for dialog launcher button")]
         public string LauncherKeys
         {
-            get { return (string)this.GetValue(DialogLauncherButtonKeyTipKeysProperty); }
-            set { this.SetValue(DialogLauncherButtonKeyTipKeysProperty, value); }
+            get { return (string)this.GetValue(LauncherKeysProperty); }
+            set { this.SetValue(LauncherKeysProperty, value); }
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for 
+        /// Using a DependencyProperty as the backing store for
         /// LauncherKeys.  This enables animation, styling, binding, etc...
         /// </summary>
-        public static readonly DependencyProperty DialogLauncherButtonKeyTipKeysProperty =
+        public static readonly DependencyProperty LauncherKeysProperty =
             DependencyProperty.Register(nameof(LauncherKeys),
-            typeof(string), typeof(RibbonGroupBox), new PropertyMetadata(OnDialogLauncherButtonKeyTipKeysChanged));
+            typeof(string), typeof(RibbonGroupBox), new PropertyMetadata(OnLauncherKeysChanged));
 
-        private static void OnDialogLauncherButtonKeyTipKeysChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnLauncherKeysChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var ribbonGroupBox = (RibbonGroupBox)d;
             if (ribbonGroupBox.LauncherButton != null)
@@ -312,7 +304,12 @@ namespace Fluent
         /// Using a DependencyProperty as the backing store for LauncherIcon.  This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty LauncherIconProperty =
-            DependencyProperty.Register(nameof(LauncherIcon), typeof(object), typeof(RibbonGroupBox), new PropertyMetadata(OnIconChanged));
+            DependencyProperty.Register(nameof(LauncherIcon), typeof(object), typeof(RibbonGroupBox), new PropertyMetadata(OnLauncherIconChanged));
+
+        private static void OnLauncherIconChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            AddOrRemoveLogicalChild(d, e);
+        }
 
         #endregion
 
@@ -340,13 +337,16 @@ namespace Fluent
         /// <summary>
         /// Gets or sets the command to invoke when this button is pressed. This is a dependency property.
         /// </summary>
-        [Category("Action"), Localizability(LocalizationCategory.NeverLocalize), Bindable(true)]
+        [Category("Action")]
+        [Localizability(LocalizationCategory.NeverLocalize)]
+        [Bindable(true)]
         public ICommand LauncherCommand
         {
             get
             {
                 return (ICommand)this.GetValue(LauncherCommandProperty);
             }
+
             set
             {
                 this.SetValue(LauncherCommandProperty, value);
@@ -356,13 +356,16 @@ namespace Fluent
         /// <summary>
         /// Gets or sets the parameter to pass to the System.Windows.Controls.Primitives.ButtonBase.Command property. This is a dependency property.
         /// </summary>
-        [Bindable(true), Localizability(LocalizationCategory.NeverLocalize), Category("Action")]
+        [Bindable(true)]
+        [Localizability(LocalizationCategory.NeverLocalize)]
+        [Category("Action")]
         public object LauncherCommandParameter
         {
             get
             {
                 return this.GetValue(LauncherCommandParameterProperty);
             }
+
             set
             {
                 this.SetValue(LauncherCommandParameterProperty, value);
@@ -372,13 +375,15 @@ namespace Fluent
         /// <summary>
         /// Gets or sets the element on which to raise the specified command. This is a dependency property.
         /// </summary>
-        [Bindable(true), Category("Action")]
+        [Bindable(true)]
+        [Category("Action")]
         public IInputElement LauncherCommandTarget
         {
             get
             {
                 return (IInputElement)this.GetValue(LauncherCommandTargetProperty);
             }
+
             set
             {
                 this.SetValue(LauncherCommandTargetProperty, value);
@@ -389,6 +394,7 @@ namespace Fluent
         /// Identifies the System.Windows.Controls.Primitives.ButtonBase.CommandParameter dependency property.
         /// </summary>
         public static readonly DependencyProperty LauncherCommandParameterProperty = DependencyProperty.Register(nameof(LauncherCommandParameter), typeof(object), typeof(RibbonGroupBox), new PropertyMetadata());
+
         /// <summary>
         /// Identifies the routed System.Windows.Controls.Primitives.ButtonBase.Command dependency property.
         /// </summary>
@@ -447,24 +453,23 @@ namespace Fluent
         public Button LauncherButton
         {
             get { return (Button)this.GetValue(LauncherButtonProperty); }
-            private set { this.SetValue(launcherButtonPropertyKey, value); }
+            private set { this.SetValue(LauncherButtonPropertyKey, value); }
         }
 
-        private static readonly DependencyPropertyKey launcherButtonPropertyKey =
+        // ReSharper disable once InconsistentNaming
+        private static readonly DependencyPropertyKey LauncherButtonPropertyKey =
             DependencyProperty.RegisterReadOnly(nameof(LauncherButton), typeof(Button), typeof(RibbonGroupBox), new PropertyMetadata());
 
         /// <summary>
         /// Using a DependencyProperty as the backing store for LauncherButton.  This enables animation, styling, binding, etc...
         /// </summary>
-        public static readonly DependencyProperty LauncherButtonProperty = launcherButtonPropertyKey.DependencyProperty;
+        public static readonly DependencyProperty LauncherButtonProperty = LauncherButtonPropertyKey.DependencyProperty;
 
         #endregion
 
         #region IsOpen
 
-        /// <summary>
-        /// Gets or sets drop down popup visibility
-        /// </summary>
+        /// <inheritdoc />
         public bool IsDropDownOpen
         {
             get { return (bool)this.GetValue(IsDropDownOpenProperty); }
@@ -474,7 +479,7 @@ namespace Fluent
         /// <summary>
         /// Using a DependencyProperty as the backing store for IsOpen.  This enables animation, styling, binding, etc...
         /// </summary>
-        public static readonly DependencyProperty IsDropDownOpenProperty = DependencyProperty.Register(nameof(IsDropDownOpen), typeof(bool), typeof(RibbonGroupBox), new PropertyMetadata(BooleanBoxes.FalseBox, OnIsOpenChanged, CoerceIsDropDownOpen));
+        public static readonly DependencyProperty IsDropDownOpenProperty = DependencyProperty.Register(nameof(IsDropDownOpen), typeof(bool), typeof(RibbonGroupBox), new PropertyMetadata(BooleanBoxes.FalseBox, OnIsDropDownOpenChanged, CoerceIsDropDownOpen));
 
         private static object CoerceIsDropDownOpen(DependencyObject d, object basevalue)
         {
@@ -493,10 +498,7 @@ namespace Fluent
 
         #region LogicalChildren
 
-        /// <summary>
-        /// Gets an enumerator for the logical child objects of 
-        /// the System.Windows.Controls.ItemsControl object.
-        /// </summary>
+        /// <inheritdoc />
         protected override IEnumerator LogicalChildren
         {
             get
@@ -529,31 +531,14 @@ namespace Fluent
         /// <summary>
         /// Using a DependencyProperty as the backing store for Icon.  This enables animation, styling, binding, etc...
         /// </summary>
-        public static readonly DependencyProperty IconProperty = RibbonControl.IconProperty.AddOwner(typeof(RibbonGroupBox), new PropertyMetadata(OnIconChanged));
-
-        private static void OnIconChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var element = (RibbonGroupBox)d;
-
-            var oldElement = e.OldValue as FrameworkElement;
-            if (oldElement != null)
-            {
-                element.RemoveLogicalChild(oldElement);
-            }
-
-            var newElement = e.NewValue as FrameworkElement;
-            if (newElement != null)
-            {
-                element.AddLogicalChild(newElement);
-            }
-        }
+        public static readonly DependencyProperty IconProperty = RibbonControl.IconProperty.AddOwner(typeof(RibbonGroupBox), new PropertyMetadata(RibbonControl.OnIconChanged));
 
         #endregion
 
         #region IsSeparatorVisible
 
         /// <summary>
-        /// Gets or sets wether the groupbox shows a separator.
+        /// Gets or sets whether the groupbox shows a separator.
         /// </summary>
         public bool IsSeparatorVisible
         {
@@ -593,24 +578,36 @@ namespace Fluent
         #region Initialize
 
         /// <summary>
-        /// Static constructor
+        /// Initializes static members of the <see cref="RibbonGroupBox"/> class.
         /// </summary>
-        [SuppressMessage("Microsoft.Performance", "CA1810")]
         static RibbonGroupBox()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(RibbonGroupBox), new FrameworkPropertyMetadata(typeof(RibbonGroupBox)));
             VisibilityProperty.AddOwner(typeof(RibbonGroupBox), new PropertyMetadata(OnVisibilityChanged));
+            FontSizeProperty.AddOwner(typeof(RibbonGroupBox), new FrameworkPropertyMetadata(OnFontSizeChanged));
+            FontFamilyProperty.AddOwner(typeof(RibbonGroupBox), new FrameworkPropertyMetadata(OnFontFamilyChanged));
 
             PopupService.Attach(typeof(RibbonGroupBox));
 
             ContextMenuService.Attach(typeof(RibbonGroupBox));
         }
 
-        // Handles visibility changed
         private static void OnVisibilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var box = d as RibbonGroupBox;
-            box?.ClearCache();
+            var box = (RibbonGroupBox)d;
+            box.ClearCache();
+        }
+
+        private static void OnFontSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var box = (RibbonGroupBox)d;
+            box.ClearCache();
+        }
+
+        private static void OnFontFamilyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var box = (RibbonGroupBox)d;
+            box.ClearCache();
         }
 
         /// <summary>
@@ -621,7 +618,7 @@ namespace Fluent
             this.ToolTip = new ToolTip();
             ((ToolTip)this.ToolTip).Template = null;
             this.CoerceValue(ContextMenuProperty);
-            //this.Focusable = false;
+            this.Focusable = false;
 
             this.Loaded += this.OnLoaded;
             this.Unloaded += this.OnUnloaded;
@@ -725,24 +722,45 @@ namespace Fluent
 
         #region Methods
 
+        private static void AddOrRemoveLogicalChild(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var element = (RibbonGroupBox)d;
+
+            if (e.OldValue is FrameworkElement oldElement)
+            {
+                element.RemoveLogicalChild(oldElement);
+            }
+
+            if (e.NewValue is FrameworkElement newElement)
+            {
+                element.AddLogicalChild(newElement);
+            }
+        }
+
         /// <summary>
         /// Gets a panel with items
         /// </summary>
         /// <returns></returns>
-        internal Panel GetPanel() { return this.upPanel; }
+        internal Panel GetPanel()
+        {
+            return this.upPanel;
+        }
 
         /// <summary>
         /// Gets cmmon layout root for popup and groupbox
         /// </summary>
         /// <returns></returns>
-        internal Panel GetLayoutRoot() { return this.parentPanel; }
+        internal Panel GetLayoutRoot()
+        {
+            return this.parentPanel;
+        }
 
         #endregion
 
         #region Snapping
 
         /// <summary>
-        /// Snaps / Unsnaps the Visual 
+        /// Snaps / Unsnaps the Visual
         /// (remove visuals and substitute with freezed image)
         /// </summary>
         public bool IsSnapped
@@ -751,6 +769,7 @@ namespace Fluent
             {
                 return this.isSnapped;
             }
+
             set
             {
                 if (value == this.isSnapped)
@@ -762,7 +781,7 @@ namespace Fluent
                 {
                     if (this.IsVisible)
                     {
-                        // Render the freezed image                        
+                        // Render the freezed image
                         var renderTargetBitmap = new RenderTargetBitmap((int)this.ActualWidth, (int)this.ActualHeight, 96, 96, PixelFormats.Pbgra32);
                         renderTargetBitmap.Render((Visual)VisualTreeHelper.GetChild(this, 0));
                         this.snappedImage.FlowDirection = this.FlowDirection;
@@ -788,12 +807,14 @@ namespace Fluent
 
         #region Caching
 
+#pragma warning disable 414
         // Pair of chached states
         private struct StateScale
         {
             public RibbonGroupBoxState State;
             public int Scale;
         }
+#pragma warning restore 414
 
         // Cache
         private readonly Dictionary<StateScale, Size> cachedMeasures = new Dictionary<StateScale, Size>();
@@ -815,11 +836,12 @@ namespace Fluent
         {
             get
             {
-                Size result;
                 var stateScale = this.GetCurrentIntermediateStateScale();
 
-                if (this.cachedMeasures.TryGetValue(stateScale, out result) == false)
+                if (this.cachedMeasures.TryGetValue(stateScale, out var result) == false)
                 {
+                    var contentHeight = UIHelper.GetParent<RibbonTabControl>(this)?.ContentHeight ?? RibbonTabControl.DefaultContentHeight;
+
                     this.SuppressCacheReseting = true;
                     this.UpdateScalableControlSubscribing();
 
@@ -829,7 +851,8 @@ namespace Fluent
                     this.State = this.StateIntermediate;
                     this.Scale = this.ScaleIntermediate;
                     this.InvalidateLayout();
-                    this.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                    this.Measure(new Size(double.PositiveInfinity, contentHeight));
+                    this.cachedMeasures.Remove(stateScale);
                     this.cachedMeasures.Add(stateScale, this.DesiredSize);
                     result = this.DesiredSize;
 
@@ -837,12 +860,20 @@ namespace Fluent
                     this.State = backupState;
                     this.Scale = backupScale;
                     this.InvalidateLayout();
-                    this.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                    this.Measure(new Size(double.PositiveInfinity, contentHeight));
 
                     this.SuppressCacheReseting = false;
                 }
 
                 return result;
+            }
+        }
+
+        private void TryClearCache()
+        {
+            if (this.SuppressCacheReseting == false)
+            {
+                this.ClearCache();
             }
         }
 
@@ -888,16 +919,13 @@ namespace Fluent
 
         #region Overrides
 
-        /// <summary>
-        /// When overridden in a derived class, is invoked whenever application code 
-        /// or internal processes call System.Windows.FrameworkElement.ApplyTemplate().
-        /// </summary>
+        /// <inheritdoc />
         public override void OnApplyTemplate()
         {
             this.UnSubscribeEvents();
 
             // Clear cache
-            this.cachedMeasures.Clear();
+            this.ClearCache();
 
             this.LauncherButton = this.GetTemplateChild("PART_DialogLauncherButton") as Button;
 
@@ -929,13 +957,7 @@ namespace Fluent
             this.DropDownClosed?.Invoke(this, e);
         }
 
-        /// <summary>
-        /// Invoked when an unhandled System.Windows.UIElement.PreviewMouseLeftButtonDown
-        /// event reaches an element in its route that is derived from this class. 
-        /// Implement this method to add class handling for this event.
-        /// </summary>
-        /// <param name="e">The System.Windows.Input.MouseButtonEventArgs that contains the event data. 
-        /// The event data reports that the left mouse button was pressed.</param>
+        /// <inheritdoc />
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             if (ReferenceEquals(e.Source, this) == false
@@ -960,10 +982,7 @@ namespace Fluent
             }
         }
 
-        /// <summary>
-        /// Supports layout behavior when a child element is resized. 
-        /// </summary>
-        /// <param name="child">The child element that is being resized.</param>
+        /// <inheritdoc />
         protected override void OnChildDesiredSizeChanged(UIElement child)
         {
             base.OnChildDesiredSizeChanged(child);
@@ -1001,55 +1020,57 @@ namespace Fluent
             this.LauncherClick?.Invoke(this, e);
         }
 
+        /// <summary>
+        /// Handles IsOpen propertyu changes
+        /// </summary>
+        /// <param name="d">Object</param>
+        /// <param name="e">The event data</param>
+        private static void OnIsDropDownOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var ribbon = (RibbonGroupBox)d;
+
+            ribbon.OnIsDropDownOpenChanged();
+        }
+
+        private void OnIsDropDownOpenChanged()
+        {
+            if (this.IsDropDownOpen)
+            {
+                this.OnRibbonGroupBoxPopupOpening();
+            }
+            else
+            {
+                this.OnRibbonGroupBoxPopupClosing();
+            }
+        }
+
         // Handles popup closing
         private void OnRibbonGroupBoxPopupClosing()
         {
             //IsHitTestVisible = true;
             if (ReferenceEquals(Mouse.Captured, this))
             {
-               Mouse.Capture(null);
+                Mouse.Capture(null);
             }
         }
 
-            // handles popup opening
-            private void OnRibbonGroupBoxPopupOpening()
-            {
-                //IsHitTestVisible = false;            
-                Mouse.Capture(this, CaptureMode.SubTree);
-            }
+        // handles popup opening
+        private void OnRibbonGroupBoxPopupOpening()
+        {
+            //IsHitTestVisible = false;
+            Mouse.Capture(this, CaptureMode.SubTree);
+        }
 
-            /// <summary>
-            /// Handles IsOpen propertyu changes
-            /// </summary>
-            /// <param name="d">Object</param>
-            /// <param name="e">The event data</param>
-            private static void OnIsOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-            {
-                var ribbon = (RibbonGroupBox)d;
-
-                if (ribbon.IsDropDownOpen)
-                {
-                    ribbon.OnRibbonGroupBoxPopupOpening();
-                }
-                else
-                {
-                    ribbon.OnRibbonGroupBoxPopupClosing();
-                }
-            }
-
-            #endregion
+        #endregion
 
         #region Quick Access Item Creating
 
-        /// <summary>
-        /// Gets control which represents shortcut item.
-        /// This item MUST be syncronized with the original 
-        /// and send command to original one control.
-        /// </summary>
-        /// <returns>Control which represents shortcut item</returns>
-        public FrameworkElement CreateQuickAccessItem()
+        /// <inheritdoc />
+        public virtual FrameworkElement CreateQuickAccessItem()
         {
             var groupBox = new RibbonGroupBox();
+
+            RibbonControl.BindQuickAccessItem(this, groupBox);
 
             groupBox.DropDownOpened += this.OnQuickAccessOpened;
             groupBox.DropDownClosed += this.OnQuickAccessClosed;
@@ -1068,13 +1089,12 @@ namespace Fluent
             RibbonControl.Bind(this, groupBox, nameof(this.LauncherToolTip), LauncherToolTipProperty, BindingMode.OneWay);
             RibbonControl.Bind(this, groupBox, nameof(this.IsLauncherEnabled), IsLauncherEnabledProperty, BindingMode.OneWay);
             RibbonControl.Bind(this, groupBox, nameof(this.IsLauncherVisible), IsLauncherVisibleProperty, BindingMode.OneWay);
-            RibbonControl.Bind(this, groupBox, nameof(this.LauncherKeys), DialogLauncherButtonKeyTipKeysProperty, BindingMode.OneWay);
+            RibbonControl.Bind(this, groupBox, nameof(this.LauncherKeys), LauncherKeysProperty, BindingMode.OneWay);
             groupBox.LauncherClick += this.LauncherClick;
 
             if (this.Icon != null)
             {
-                var iconVisual = this.Icon as Visual;
-                if (iconVisual != null)
+                if (this.Icon is Visual iconVisual)
                 {
                     var rect = new Rectangle
                     {
@@ -1086,7 +1106,7 @@ namespace Fluent
                 }
                 else
                 {
-                    RibbonControl.Bind(this, groupBox, nameof(this.Icon), IconProperty, BindingMode.OneWay);
+                    RibbonControl.Bind(this, groupBox, nameof(this.Icon), RibbonControl.IconProperty, BindingMode.OneWay);
                 }
             }
 
@@ -1144,9 +1164,7 @@ namespace Fluent
             this.IsSnapped = false;
         }
 
-        /// <summary>
-        /// Gets or sets whether control can be added to quick access toolbar
-        /// </summary>
+        /// <inheritdoc />
         public bool CanAddToQuickAccessToolBar
         {
             get { return (bool)this.GetValue(CanAddToQuickAccessToolBarProperty); }
@@ -1157,32 +1175,52 @@ namespace Fluent
         /// Using a DependencyProperty as the backing store for CanAddToQuickAccessToolBar.  This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty CanAddToQuickAccessToolBarProperty =
-            DependencyProperty.Register(nameof(CanAddToQuickAccessToolBar), typeof(bool), typeof(RibbonGroupBox), new PropertyMetadata(BooleanBoxes.TrueBox, RibbonControl.OnCanAddToQuickAccessToolbarChanged));
+            DependencyProperty.Register(nameof(CanAddToQuickAccessToolBar), typeof(bool), typeof(RibbonGroupBox), new PropertyMetadata(BooleanBoxes.TrueBox, RibbonControl.OnCanAddToQuickAccessToolBarChanged));
 
         #endregion
 
         #region Implementation of IKeyTipedControl
 
-        /// <summary>
-        /// Handles key tip pressed
-        /// </summary>
-        public void OnKeyTipPressed()
+        /// <inheritdoc />
+        public KeyTipPressedResult OnKeyTipPressed()
         {
             if (this.State == RibbonGroupBoxState.Collapsed
                 || this.State == RibbonGroupBoxState.QuickAccess)
             {
                 this.IsDropDownOpen = true;
+
+                if (this.DropDownPopup?.Child != null)
+                {
+                    Keyboard.Focus(this.DropDownPopup.Child);
+                    this.DropDownPopup.Child.MoveFocus(new TraversalRequest(FocusNavigationDirection.First));
+
+                    return new KeyTipPressedResult(true, true);
+                }
+
+                return new KeyTipPressedResult(false, true);
             }
+
+            return KeyTipPressedResult.Empty;
         }
 
-        /// <summary>
-        /// Handles back navigation with KeyTips
-        /// </summary>
+        /// <inheritdoc />
         public void OnKeyTipBack()
         {
             this.IsDropDownOpen = false;
         }
 
         #endregion
+
+        /// <inheritdoc />
+        void ILogicalChildSupport.AddLogicalChild(object child)
+        {
+            this.AddLogicalChild(child);
+        }
+
+        /// <inheritdoc />
+        void ILogicalChildSupport.RemoveLogicalChild(object child)
+        {
+            this.RemoveLogicalChild(child);
+        }
     }
 }

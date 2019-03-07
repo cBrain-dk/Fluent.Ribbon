@@ -8,6 +8,7 @@
     using System.IO;
     using System.IO.IsolatedStorage;
     using System.Linq;
+    using System.Security.Cryptography;
     using System.Text;
     using System.Windows;
     using System.Windows.Threading;
@@ -18,6 +19,8 @@
     /// </summary>
     public class RibbonStateStorage : IRibbonStateStorage
     {
+        private static readonly MD5 md5Hasher = MD5.Create();
+
         private readonly Ribbon ribbon;
 
         // Name of the isolated storage file
@@ -43,18 +46,14 @@
         }
 
         /// <summary>
-        /// Gets wether this object already got disposed.
+        /// Gets whether this object already got disposed.
         /// </summary>
         protected bool Disposed { get; private set; }
 
-        /// <summary>
-        /// Gets wether state is currently loading.
-        /// </summary>
+        /// <inheritdoc />
         public bool IsLoading { get; private set; }
 
-        /// <summary>
-        /// Gets or sets whether state is loaded.
-        /// </summary>
+        /// <inheritdoc />
         public bool IsLoaded { get; private set; }
 
         /// <summary>
@@ -89,23 +88,19 @@
                     stringForHash += "." + this.ribbon.Name;
                 }
 
-                this.isolatedStorageFileName = "Fluent.Ribbon.State.2.0." + stringForHash.GetHashCode().ToString("X");
+                this.isolatedStorageFileName = "Fluent.Ribbon.State." + BitConverter.ToInt32(md5Hasher.ComputeHash(Encoding.Default.GetBytes(stringForHash)), 0).ToString("X");
                 return this.isolatedStorageFileName;
             }
         }
 
-        /// <summary>
-        /// Save current state to a temporary storage.
-        /// </summary>
+        /// <inheritdoc />
         public virtual void SaveTemporary()
         {
             this.memoryStream.Position = 0;
             this.Save(this.memoryStream);
         }
 
-        /// <summary>
-        /// Save current state to a persistent storage.
-        /// </summary>
+        /// <inheritdoc />
         public virtual void Save()
         {
             // Check whether automatic save is valid now
@@ -179,11 +174,10 @@
             // Foreach items and see whether path is found for the item
             foreach (var element in this.ribbon.GetQuickAccessElements())
             {
-                string path;
                 var control = element.Key as FrameworkElement;
 
                 if (control != null
-                    && paths.TryGetValue(control, out path))
+                    && paths.TryGetValue(control, out var path))
                 {
                     builder.Append(path);
                     builder.Append(';');
@@ -201,21 +195,14 @@
             return builder;
         }
 
-        /// <summary>
-        /// Load state from a temporary storage.
-        /// </summary>
+        /// <inheritdoc />
         public virtual void LoadTemporary()
         {
             this.memoryStream.Position = 0;
             this.Load(this.memoryStream);
         }
 
-        /// <summary>
-        /// Loads the State from Isolated Storage (in user store for domain)
-        /// </summary>
-        /// <remarks>
-        /// Sets <see cref="IsLoaded" /> after it's finished to prevent a race condition with saving the state to the MemoryStream.
-        /// </remarks>
+        /// <inheritdoc />
         public virtual void Load()
         {
             // Don't save or load state in design mode
@@ -228,8 +215,8 @@
 
             if (this.ribbon.AutomaticStateManagement == false)
             {
-                this.IsLoaded = true;
                 Debug.WriteLine("State not loaded from isolated storage. Because automatic state management is disabled.");
+                this.IsLoaded = true;
                 return;
             }
 
@@ -426,7 +413,7 @@
             }
         }
 
-        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+        /// <inheritdoc />
         public void Dispose()
         {
             this.Dispose(true);
@@ -437,7 +424,7 @@
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        /// <param name="disposing">Defines wether managed resources should also be freed.</param>
+        /// <param name="disposing">Defines whether managed resources should also be freed.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (this.Disposed)

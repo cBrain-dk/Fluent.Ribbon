@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-
-// ReSharper disable once CheckNamespace
+﻿// ReSharper disable once CheckNamespace
 namespace Fluent
 {
-    using Fluent.Helpers;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Input;
+    using System.Windows.Media;
+    using Fluent.Extensions;
+    using Fluent.Internal;
     using Fluent.Internal.KnownBoxes;
 
     /// <summary>
@@ -17,15 +16,49 @@ namespace Fluent
     /// </summary>
     public class RibbonContextualTabGroup : Control
     {
-        #region Fields
-
-        // Collection of ribbon tab items
-
-        private Window parentWidow;
-
-        #endregion
-
         #region Properties
+
+        /// <summary>
+        /// <see cref="DependencyProperty"/> for <see cref="TabItemSelectedForeground"/>
+        /// </summary>
+        public static readonly DependencyProperty TabItemSelectedForegroundProperty = DependencyProperty.Register(nameof(TabItemSelectedForeground), typeof(Brush), typeof(RibbonContextualTabGroup), new PropertyMetadata(default(Brush)));
+
+        /// <summary>
+        /// Gets or sets the foreground brush to be used for a selected <see cref="RibbonTabItem"/> belonging to this group.
+        /// </summary>
+        public Brush TabItemSelectedForeground
+        {
+            get { return (Brush)this.GetValue(TabItemSelectedForegroundProperty); }
+            set { this.SetValue(TabItemSelectedForegroundProperty, value); }
+        }
+
+        /// <summary>
+        /// <see cref="DependencyProperty"/> for <see cref="TabItemMouseOverForeground"/>
+        /// </summary>
+        public static readonly DependencyProperty TabItemMouseOverForegroundProperty = DependencyProperty.Register(nameof(TabItemMouseOverForeground), typeof(Brush), typeof(RibbonContextualTabGroup), new PropertyMetadata(default(Brush)));
+
+        /// <summary>
+        /// Gets or sets the foreground brush to be used when the mouse is over a <see cref="RibbonTabItem"/> belonging to this group.
+        /// </summary>
+        public Brush TabItemMouseOverForeground
+        {
+            get { return (Brush)this.GetValue(TabItemMouseOverForegroundProperty); }
+            set { this.SetValue(TabItemMouseOverForegroundProperty, value); }
+        }
+
+        /// <summary>
+        /// <see cref="DependencyProperty"/> for <see cref="TabItemSelectedMouseOverForeground"/>
+        /// </summary>
+        public static readonly DependencyProperty TabItemSelectedMouseOverForegroundProperty = DependencyProperty.Register(nameof(TabItemSelectedMouseOverForeground), typeof(Brush), typeof(RibbonContextualTabGroup), new PropertyMetadata(default(Brush)));
+
+        /// <summary>
+        /// Gets or sets the foreground brush to be used when the mouse is over a selected <see cref="RibbonTabItem"/> belonging to this group.
+        /// </summary>
+        public Brush TabItemSelectedMouseOverForeground
+        {
+            get { return (Brush)this.GetValue(TabItemSelectedMouseOverForegroundProperty); }
+            set { this.SetValue(TabItemSelectedMouseOverForegroundProperty, value); }
+        }
 
         /// <summary>
         /// Gets or sets group header
@@ -37,7 +70,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Header.  
+        /// Using a DependencyProperty as the backing store for Header.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty HeaderProperty =
@@ -59,21 +92,6 @@ namespace Fluent
         public List<RibbonTabItem> Items { get; } = new List<RibbonTabItem>();
 
         /// <summary>
-        /// Gets or sets a value indicating whether parent window is maximized
-        /// </summary>
-        public bool IsWindowMaximized
-        {
-            get { return (bool)this.GetValue(IsWindowMaximizedProperty); }
-            set { this.SetValue(IsWindowMaximizedProperty, value); }
-        }
-
-        /// <summary>
-        /// Using a DependencyProperty as the backing store for IsWindowMaximized.  This enables animation, styling, binding, etc...
-        /// </summary>
-        public static readonly DependencyProperty IsWindowMaximizedProperty =
-            DependencyProperty.Register(nameof(IsWindowMaximized), typeof(bool), typeof(RibbonContextualTabGroup), new PropertyMetadata(BooleanBoxes.FalseBox));
-
-        /// <summary>
         /// Gets or sets the visibility this group for internal use (this enables us to hide this group when all items in this group are hidden)
         /// </summary>
         public Visibility InnerVisibility
@@ -83,34 +101,40 @@ namespace Fluent
         }
 
         private static readonly DependencyPropertyKey InnerVisibilityPropertyKey =
-            DependencyProperty.RegisterReadOnly(nameof(InnerVisibility), typeof(Visibility), typeof(RibbonContextualTabGroup), new PropertyMetadata(VisibilityBoxes.Visible));
+            DependencyProperty.RegisterReadOnly(nameof(InnerVisibility), typeof(Visibility), typeof(RibbonContextualTabGroup), new PropertyMetadata(VisibilityBoxes.Visible, OnInnerVisibilityChanged));
 
         /// <summary>
         /// Using a DependencyProperty as the backing store for InnerVisibility.  This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty InnerVisibilityProperty = InnerVisibilityPropertyKey.DependencyProperty;
 
+        private static void OnInnerVisibilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var contextGroup = (RibbonContextualTabGroup)d;
+
+            if (contextGroup.IsLoaded == false)
+            {
+                return;
+            }
+
+            // Delaying forced redraw fixes #536
+            contextGroup.RunInDispatcherAsync(() => ForceRedraw(contextGroup));
+        }
+
         /// <summary>
         /// Gets the first visible TabItem in this group
         /// </summary>
-        public RibbonTabItem FirstVisibleItem
-        {
-            get
-            {
-                return this.GetFirstVisibleItem();
-            }
-        }
+        public RibbonTabItem FirstVisibleItem => this.GetFirstVisibleItem();
+
+        /// <summary>
+        /// Gets the first visible TabItem in this group
+        /// </summary>
+        public RibbonTabItem FirstVisibleAndEnabledItem => this.GetFirstVisibleAndEnabledItem();
 
         /// <summary>
         /// Gets the last visible TabItem in this group
         /// </summary>
-        public RibbonTabItem LastVisibleItem
-        {
-            get
-            {
-                return this.GetLastVisibleItem();
-            }
-        }
+        public RibbonTabItem LastVisibleItem => this.GetLastVisibleItem();
 
         #endregion
 
@@ -119,7 +143,6 @@ namespace Fluent
         /// <summary>
         /// Static constructor
         /// </summary>
-        [SuppressMessage("Microsoft.Performance", "CA1810")]
         static RibbonContextualTabGroup()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(RibbonContextualTabGroup), new FrameworkPropertyMetadata(typeof(RibbonContextualTabGroup)));
@@ -135,16 +158,9 @@ namespace Fluent
         {
             var group = (RibbonContextualTabGroup)d;
 
-            foreach (var tab in group.Items)
-            {
-                tab.Visibility = group.Visibility;
-            }
-
             group.UpdateInnerVisiblityAndGroupBorders();
 
-            var titleBar = group.Parent as RibbonTitleBar;
-
-            titleBar?.InvalidateMeasure();
+            ForceRedraw(group);
         }
 
         /// <summary>
@@ -158,41 +174,23 @@ namespace Fluent
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            this.parentWidow = Window.GetWindow(this);
-
             this.SubscribeEvents();
             this.UpdateInnerVisibility();
-
-            if (this.parentWidow != null)
-            {
-                this.IsWindowMaximized = this.parentWidow.WindowState == WindowState.Maximized;
-            }
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
             this.UnSubscribeEvents();
-
-            this.parentWidow = null;
         }
 
         private void SubscribeEvents()
         {
             // Always unsubscribe events to ensure we don't subscribe twice
             this.UnSubscribeEvents();
-
-            if (this.parentWidow != null)
-            {
-                this.parentWidow.StateChanged += this.OnParentWindowStateChanged;
-            }
         }
 
         private void UnSubscribeEvents()
         {
-            if (this.parentWidow != null)
-            {
-                this.parentWidow.StateChanged -= this.OnParentWindowStateChanged;
-            }
         }
 
         #endregion
@@ -227,6 +225,11 @@ namespace Fluent
         private RibbonTabItem GetLastVisibleItem()
         {
             return this.Items.LastOrDefault(item => item.Visibility == Visibility.Visible);
+        }
+
+        private RibbonTabItem GetFirstVisibleAndEnabledItem()
+        {
+            return this.Items.FirstOrDefault(item => item.Visibility == Visibility.Visible && item.IsEnabled);
         }
 
         /// <summary>
@@ -275,23 +278,15 @@ namespace Fluent
 
         #region Override
 
-        /// <summary>
-        /// Invoked when an unhandled System.Windows.UIElement.MouseLeftButtonUp�routed event 
-        /// reaches an element in its route that is derived from this class. Implement this method to 
-        /// add class handling for this event.
-        /// </summary>
-        /// <param name="e">The System.Windows.Input.MouseButtonEventArgs that contains the event data. 
-        /// The event data reports that the left mouse button was released.</param>
+        /// <inheritdoc />
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
-            var firstVisibleItem = this.FirstVisibleItem;
+            var firstVisibleItem = this.FirstVisibleAndEnabledItem;
 
             if (e.ClickCount == 1
                 && firstVisibleItem != null)
             {
-                var currentSelectedItem = firstVisibleItem.TabControlParent?.SelectedItem as RibbonTabItem;
-
-                if (currentSelectedItem != null)
+                if (firstVisibleItem.TabControlParent?.SelectedItem is RibbonTabItem currentSelectedItem)
                 {
                     currentSelectedItem.IsSelected = false;
                 }
@@ -312,17 +307,6 @@ namespace Fluent
             base.OnMouseLeftButtonUp(e);
         }
 
-        /// <summary>
-        /// Raises the MouseDoubleClick routed event
-        /// </summary>
-        /// <param name="e">The event data</param>
-        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
-        {
-            base.OnMouseLeftButtonDown(e);
-
-            WindowSteeringHelper.HandleMouseLeftButtonDown(e, false, true);
-        }
-
         #endregion
 
         /// <summary>
@@ -330,12 +314,22 @@ namespace Fluent
         /// </summary>
         private void UpdateInnerVisibility()
         {
-            this.InnerVisibility = this.Visibility == Visibility.Visible && this.Items.Any(item => item.Visibility == Visibility.Visible) ? Visibility.Visible : Visibility.Collapsed;
+            this.InnerVisibility = this.Visibility == Visibility.Visible && this.Items.Any(item => item.Visibility == Visibility.Visible)
+                ? Visibility.Visible
+                : Visibility.Collapsed;
         }
 
-        private void OnParentWindowStateChanged(object sender, EventArgs e)
+        private static void ForceRedraw(RibbonContextualTabGroup contextGroup)
         {
-            this.IsWindowMaximized = this.parentWidow.WindowState == WindowState.Maximized;
+            contextGroup.ForceMeasure();
+
+            foreach (var ribbonTabItem in contextGroup.Items)
+            {
+                ribbonTabItem.ForceMeasure();
+            }
+
+            var ribbonTitleBar = UIHelper.GetParent<RibbonTitleBar>(contextGroup);
+            ribbonTitleBar?.ForceMeasureAndArrange();
         }
     }
 }
