@@ -79,9 +79,7 @@ namespace Fluent
 
         #region Logical & Visual Tree
 
-        /// <summary>
-        /// Gets the number of visual child elements within this element.
-        /// </summary>
+        /// <inheritdoc />
         protected override int VisualChildrenCount
         {
             get
@@ -102,14 +100,7 @@ namespace Fluent
             }
         }
 
-        /// <summary>
-        /// Overrides System.Windows.Media.Visual.GetVisualChild(System.Int32),
-        /// and returns a child at the specified index from a collection of child elements.
-        /// </summary>
-        /// <param name="index">The zero-based index of the requested
-        /// child element in the collection</param>
-        /// <returns>The requested child element. This should not return null;
-        /// if the provided index is out of range, an exception is thrown</returns>
+        /// <inheritdoc />
         protected override Visual GetVisualChild(int index)
         {
             if (this.LayoutDefinitions.Count == 0)
@@ -126,9 +117,7 @@ namespace Fluent
             return this.actualChildren[index];
         }
 
-        /// <summary>
-        /// Gets an enumerator for logical child elements of this element
-        /// </summary>
+        /// <inheritdoc />
         protected override IEnumerator LogicalChildren
         {
             get
@@ -210,11 +199,7 @@ namespace Fluent
 
         #region Size Property Changing
 
-        /// <summary>
-        /// Handles size property changing
-        /// </summary>
-        /// <param name="previous">Previous value</param>
-        /// <param name="current">Current value</param>
+        /// <inheritdoc />
         public void OnSizePropertyChanged(RibbonControlSize previous, RibbonControlSize current)
         {
             foreach (var frameworkElement in this.actualChildren)
@@ -230,15 +215,7 @@ namespace Fluent
 
         #region Layout Overriding
 
-        /// <summary>
-        /// Measures all of the RibbonGroupBox, and resize them appropriately
-        /// to fit within the available room
-        /// </summary>
-        /// <param name="availableSize">The available size that
-        /// this element can give to child elements.</param>
-        /// <returns>The size that the panel determines it needs during
-        /// layout, based on its calculations of child element sizes.
-        /// </returns>
+        /// <inheritdoc />
         protected override Size MeasureOverride(Size availableSize)
         {
             var layoutDefinition = this.GetCurrentLayoutDefinition();
@@ -285,13 +262,7 @@ namespace Fluent
             }
         }
 
-        /// <summary>
-        /// When overridden in a derived class, positions child elements and determines
-        /// a size for a System.Windows.FrameworkElement derived class.
-        /// </summary>
-        /// <param name="finalSize">The final area within the parent that this
-        /// element should use to arrange itself and its children.</param>
-        /// <returns>The actual size used.</returns>
+        /// <inheritdoc />
         protected override Size ArrangeOverride(Size finalSize)
         {
             var layoutDefinition = this.GetCurrentLayoutDefinition();
@@ -371,9 +342,7 @@ namespace Fluent
 
         private RibbonToolBarControlGroup GetControlGroup(RibbonToolBarControlGroupDefinition controlGroupDefinition)
         {
-            RibbonToolBarControlGroup controlGroup;
-
-            if (this.cachedControlGroups.TryGetValue(controlGroupDefinition, out controlGroup))
+            if (this.cachedControlGroups.TryGetValue(controlGroupDefinition, out var controlGroup))
             {
                 return controlGroup;
             }
@@ -446,8 +415,7 @@ namespace Fluent
                     {
                         #region Add separator
 
-                        Separator separator;
-                        if (!this.separatorCache.TryGetValue(rowIndex, out separator))
+                        if (this.separatorCache.TryGetValue(rowIndex, out var separator) == false)
                         {
                             separator = new Separator
                                         {
@@ -487,8 +455,7 @@ namespace Fluent
                 for (var i = 0; i < row.Children.Count; i++)
                 {
                     // Control Definition Case
-                    var ribbonToolBarControlDefinition = row.Children[i] as RibbonToolBarControlDefinition;
-                    if (ribbonToolBarControlDefinition != null)
+                    if (row.Children[i] is RibbonToolBarControlDefinition ribbonToolBarControlDefinition)
                     {
                         var control = this.GetControl(ribbonToolBarControlDefinition);
 
@@ -522,8 +489,7 @@ namespace Fluent
                     }
 
                     // Control Group Definition Case
-                    var ribbonToolBarControlGroupDefinition = row.Children[i] as RibbonToolBarControlGroupDefinition;
-                    if (ribbonToolBarControlGroupDefinition != null)
+                    if (row.Children[i] is RibbonToolBarControlGroupDefinition ribbonToolBarControlGroupDefinition)
                     {
                         var control = this.GetControlGroup(ribbonToolBarControlGroupDefinition);
 
@@ -610,17 +576,10 @@ namespace Fluent
 
         #region QAT Support
 
-        // (!) RibbonToolBar must not to be in QAT
-
-        /// <summary>
-        /// Gets control which represents shortcut item.
-        /// This item MUST be syncronized with the original
-        /// and send command to original one control.
-        /// </summary>
-        /// <returns>Control which represents shortcut item</returns>
+        /// <inheritdoc />
         public override FrameworkElement CreateQuickAccessItem()
         {
-            return new Control();
+            throw new NotImplementedException();
         }
 
         #endregion

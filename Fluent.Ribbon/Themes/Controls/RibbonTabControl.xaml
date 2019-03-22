@@ -15,47 +15,16 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Stretch"
                 Width="22">
-            <Border.ToolTip>
-                <Fluent:ScreenTip x:Name="screenTip"
-                                  Title="{Binding Source={x:Static Fluent:RibbonLocalization.Current}, Path=Localization.MinimizeButtonScreenTipTitle, Mode=OneWay}"
-                                  Text="{Binding Source={x:Static Fluent:RibbonLocalization.Current}, Path=Localization.MinimizeButtonScreenTipText, Mode=OneWay}" />
-            </Border.ToolTip>
-            <Grid>
-                <Image x:Name="iconImage"
-                        HorizontalAlignment="Center"
-                        Height="Auto"
-                        Stretch="None"
-                        VerticalAlignment="Center"
-                        Source="/Fluent;Component/Themes/Images/RibbonCollapse.png"
-                        Width="Auto"
-                        Margin="2" />
-                <Image x:Name="iconImageChecked"
-                        Visibility="Collapsed"
-                        HorizontalAlignment="Center"
-                        Height="Auto"
-                        Stretch="None"
-                        VerticalAlignment="Center"
-                        Source="/Fluent;Component/Themes/Images/RibbonExpand.png"
-                        Width="Auto"
-                        Margin="2" />
-            </Grid>
+            <ContentPresenter x:Name="iconImage"
+                              Width="16"
+                              Height="16"
+                              Margin="2"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              Content="{converters:ObjectToImageConverter {Binding Icon, RelativeSource={RelativeSource TemplatedParent}}, '16,16', {Binding RelativeSource={RelativeSource TemplatedParent}}}"                                                            
+                              SnapsToDevicePixels="True" />
         </Border>
         <ControlTemplate.Triggers>
-            <Trigger Property="IsChecked"
-                     Value="True">
-                <Setter Property="Visibility"
-                        TargetName="iconImage"
-                        Value="Collapsed" />
-                <Setter Property="Visibility"
-                        TargetName="iconImageChecked"
-                        Value="Visible" />
-                <Setter Property="Title"
-                        TargetName="screenTip"
-                        Value="{Binding Source={x:Static Fluent:RibbonLocalization.Current}, Path=Localization.ExpandButtonScreenTipTitle , Mode=OneWay}" />
-                <Setter Property="Text"
-                        TargetName="screenTip"
-                        Value="{Binding Source={x:Static Fluent:RibbonLocalization.Current}, Path=Localization.ExpandButtonScreenTipText , Mode=OneWay}" />
-            </Trigger>
             <Trigger Property="IsPressed"
                      Value="True">
                 <Setter Property="BorderBrush"
@@ -108,6 +77,12 @@
                 Value="False" />
         <Setter Property="Template"
                 Value="{DynamicResource RibbonTabControlControlTemplate}" />
+        <Setter Property="CanMinimize"
+                Value="{Binding CanMinimize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:Ribbon}}, Mode=TwoWay}" />
+        <Setter Property="IsMinimized"
+                Value="{Binding IsMinimized, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:Ribbon}}, Mode=TwoWay}" />
+        <Setter Property="ContentGapHeight"
+                Value="{Binding ContentGapHeight, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:Ribbon}}}" />
     </Style>
 
     <ControlTemplate x:Key="RibbonTabControlControlTemplate"
@@ -243,7 +218,7 @@
                                 Margin="0"
                                 Focusable="False">
                     <ContentPresenter ContentSource="SelectedContent"
-                                      x:Name="contentPresenter"
+                                      x:Name="PART_SelectedContentPresenter"
                                       HorizontalAlignment="Stretch"
                                       Margin="0" />
                 </ContentControl>
@@ -259,8 +234,8 @@
                   TextElement.Foreground="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabControl.TabsGrid.Foreground}"
                   HorizontalAlignment="Stretch"
                   Width="Auto"
-                  Margin="0"               
-                  Grid.RowSpan="1"
+                  Margin="0"
+                  Grid.Row="0"
                   KeyboardNavigation.TabIndex="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -271,11 +246,14 @@
 
                 <Fluent:WindowSteeringHelperControl Grid.ColumnSpan="4" />
 
+                <!-- Margin on bottom is need to keep the border surrounding the content area visible below the menu presenter -->
                 <ContentPresenter Grid.Column="0"
                                   VerticalAlignment="Stretch"
-                                  ContentSource="Menu" />
+                                  ContentSource="Menu"
+                                  Margin="0 0 0 1" />
 
                 <Fluent:RibbonScrollViewer Grid.Column="1"
+                                           Visibility="{Binding AreTabHeadersVisible, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource boolToVisibilityConverter}}"
                                            HorizontalAlignment="Left"
                                            Margin="0"
                                            Width="Auto"
@@ -292,28 +270,21 @@
                                                 KeyboardNavigation.TabIndex="1" />
                 </Fluent:RibbonScrollViewer>
 
-                <StackPanel x:Name="toolbarPlaceholder"
-                            HorizontalAlignment="Right"
+                <StackPanel HorizontalAlignment="Right"
                             Grid.Column="3"
                             Orientation="Horizontal"
                             Margin="0,0,0,1">
-                    <Grid Width="22"
-                          Height="22">
-                        <Image x:Name="image"
-                               Source="/Fluent;Component/Themes/Images/RibbonPin.png"
-                               Stretch="None"
-                               Visibility="Collapsed" />
-                        <Fluent:ToggleButton x:Name="PART_MinimizeButton"
-                                             Margin="0"
-                                             Width="22"
-                                             Height="22"
-                                             Size="Small"
-                                             Style="{DynamicResource RibbonTabControlToggleButtonStyle}"
-                                             IsChecked="{Binding Path=IsMinimized, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                             Visibility="{TemplateBinding CanMinimize, Converter={StaticResource boolToVisibilityConverter}}" />
-                    </Grid>
+                    <Fluent:ToggleButton x:Name="PART_MinimizeButton"
+                                         Margin="0"
+                                         Width="22"
+                                         Height="22"
+                                         Size="Small"
+                                         Style="{DynamicResource RibbonTabControlToggleButtonStyle}"
+                                         IsChecked="{Binding Path=IsMinimized, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                         Visibility="{TemplateBinding CanMinimize, Converter={StaticResource boolToVisibilityConverter}}" />
 
                     <StackPanel x:Name="PART_ToolbarPanel"
+                                Visibility="{Binding IsToolBarVisible, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource boolToVisibilityConverter}}"
                                 Orientation="Horizontal" />
                 </StackPanel>
             </Grid>
@@ -321,7 +292,6 @@
             <Popup x:Name="PART_Popup"
                    PlacementTarget="{Binding Path=SelectedTabItem, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"
                    Placement="Custom"
-                   StaysOpen="True"
                    AllowsTransparency="True"
                    PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}"
                    IsOpen="{TemplateBinding IsDropDownOpen}"
@@ -355,6 +325,18 @@
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="IsMinimized"
+                     Value="False">
+                <Setter TargetName="PART_MinimizeButton"
+                        Property="Icon" 
+                        Value="{DynamicResource Fluent.Ribbon.Images.RibbonCollapse}" />
+                <Setter TargetName="PART_MinimizeButton" Property="ToolTip">
+                    <Setter.Value>
+                        <Fluent:ScreenTip Title="{Binding Source={x:Static Fluent:RibbonLocalization.Current}, Path=Localization.MinimizeButtonScreenTipTitle, Mode=OneWay}"
+                                          Text="{Binding Source={x:Static Fluent:RibbonLocalization.Current}, Path=Localization.MinimizeButtonScreenTipText, Mode=OneWay}" />
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="IsMinimized"
                      Value="True">
                 <Setter Property="MinHeight"
                         TargetName="rowDefinition"
@@ -368,11 +350,17 @@
                         Value="{x:Null}" />
                 <Setter Property="Content"
                         TargetName="popupContentControl"
-                        Value="{Binding ElementName=contentPresenter, Mode=OneWay}" />
+                        Value="{Binding ElementName=PART_SelectedContentPresenter, Mode=OneWay}" />
                 <!-- Switch content to popup END -->
-                <Setter Property="Visibility"
-                        TargetName="image"
-                        Value="Collapsed" />
+                <Setter TargetName="PART_MinimizeButton" 
+                        Property="Icon"
+                        Value="{DynamicResource Fluent.Ribbon.Images.RibbonExpand}" />
+                <Setter TargetName="PART_MinimizeButton" Property="ToolTip">
+                    <Setter.Value>
+                        <Fluent:ScreenTip Title="{Binding Source={x:Static Fluent:RibbonLocalization.Current}, Path=Localization.ExpandButtonScreenTipTitle, Mode=OneWay}"
+                                          Text="{Binding Source={x:Static Fluent:RibbonLocalization.Current}, Path=Localization.ExpandButtonScreenTipText, Mode=OneWay}" />
+                    </Setter.Value>
+                </Setter>
             </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
@@ -381,12 +369,9 @@
                     <Condition Property="IsMinimized"
                                Value="True" />
                 </MultiTrigger.Conditions>
-                <Setter Property="Visibility"
-                        TargetName="image"
-                        Value="Visible" />
-                <Setter Property="Opacity"
-                        TargetName="PART_MinimizeButton"
-                        Value="0" />
+                <Setter TargetName="PART_MinimizeButton"
+                        Property="Icon" 
+                        Value="{DynamicResource Fluent.Ribbon.Images.RibbonPin}" />
             </MultiTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
