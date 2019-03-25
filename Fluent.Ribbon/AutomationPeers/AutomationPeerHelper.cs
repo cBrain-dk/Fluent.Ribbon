@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Automation;
-using System.Windows.Automation.Peers;
-using System.Windows.Input;
-using Fluent.Internal;
-
-namespace Fluent.AutomationPeers
+﻿namespace Fluent.AutomationPeers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Windows;
+    using System.Windows.Automation;
+    using System.Windows.Automation.Peers;
+    using System.Windows.Input;
+    using Fluent.Internal;
+
+    /// <summary>
+    /// Helper class for providing automation properties
+    /// </summary>
     public static class AutomationPeerHelper
     {
         #region Methods for JAWS
@@ -17,10 +20,14 @@ namespace Fluent.AutomationPeers
             string helpText = GetHelpText(automationPeer);
 
             if (string.IsNullOrEmpty(name))
+            {
                 return helpText;
+            }
 
             if (!string.IsNullOrEmpty(helpText) && !string.Equals(name, helpText))
+            {
                 return $"{name} - {helpText}";
+            }
 
             return name;
         }
@@ -31,10 +38,14 @@ namespace Fluent.AutomationPeers
             string acceleratorKey = GetAcceleratorKey(automationPeer);
 
             if (string.IsNullOrEmpty(accessKey))
+            {
                 return acceleratorKey;
+            }
 
             if (!string.IsNullOrEmpty(acceleratorKey) && !string.Equals(accessKey, acceleratorKey))
+            {
                 return $"{accessKey} - {acceleratorKey}";
+            }
 
             return accessKey;
         }
@@ -44,7 +55,9 @@ namespace Fluent.AutomationPeers
         public static bool IsEnabledCore(FrameworkElementAutomationPeer automationPeer)
         {
             if (automationPeer.Owner is IReadOnlyControl readOnlyControl)
+            {
                 return !readOnlyControl.IsReadOnly && automationPeer.Owner.IsEnabled;
+            }
 
             return automationPeer.Owner.IsEnabled;
         }
@@ -53,7 +66,9 @@ namespace Fluent.AutomationPeers
         {
             string acceleratorKey = AutomationProperties.GetAcceleratorKey(automationPeer.Owner);
             if (!string.IsNullOrEmpty(acceleratorKey))
+            {
                 return acceleratorKey;
+            }
 
             if (automationPeer.Owner is ICommandSource commandSource
                 && commandSource.Command is IToolTipCommand toolTipCommand)
@@ -68,7 +83,9 @@ namespace Fluent.AutomationPeers
         {
             string accessKey = AutomationProperties.GetAccessKey(automationPeer.Owner);
             if (!string.IsNullOrEmpty(accessKey))
+            {
                 return accessKey;
+            }
 
             if (automationPeer.Owner is IKeyTipedControl keyTipedControl
                 && !string.IsNullOrEmpty(keyTipedControl.KeyTip))
@@ -76,6 +93,7 @@ namespace Fluent.AutomationPeers
                 var parents = UIHelper.GetParents<IKeyTipedControl>(automationPeer.Owner);
                 return GetKeyTip(parents, keyTipedControl);
             }
+
             return string.Empty;
         }
 
@@ -83,7 +101,9 @@ namespace Fluent.AutomationPeers
         {
             string name = AutomationProperties.GetName(automationPeer.Owner);
             if (!string.IsNullOrEmpty(name))
+            {
                 return name;
+            }
 
             if (automationPeer.Owner is IHeaderedControl headeredControl
                     && headeredControl.Header is string header
@@ -106,14 +126,20 @@ namespace Fluent.AutomationPeers
         {
             string helpText = AutomationProperties.GetHelpText(automationPeer.Owner);
             if (!string.IsNullOrEmpty(helpText))
+            {
                 return helpText;
+            }
 
             FrameworkElement fe = automationPeer.Owner as FrameworkElement;
             if (fe == null)
+            {
                 return string.Empty;
+            }
 
             if (fe.ToolTip is string toolTipString)
+            {
                 return toolTipString;
+            }
 
             if (fe.ToolTip is ScreenTip screenTip)
             {
@@ -138,7 +164,10 @@ namespace Fluent.AutomationPeers
         {
             UIElement element = AutomationProperties.GetLabeledBy(automationPeer.Owner);
             if (element is ILabelBy labelBy)
+            {
                 return labelBy.GetLabelByAutomationPeer();
+            }
+
             return null;
         }
         #endregion
@@ -147,13 +176,17 @@ namespace Fluent.AutomationPeers
         private static string GetKeyTip(List<IKeyTipedControl> keyTipedControls, IKeyTipedControl ribbonControl)
         {
             if (string.IsNullOrEmpty(ribbonControl.KeyTip))
+            {
                 return null;
+            }
 
             string sKeyTip = "Alt, ";
             foreach (var keyTip in keyTipedControls)
             {
                 if (!(keyTip is RibbonGroupBox ribbonGroupBox) || ribbonGroupBox.State == RibbonGroupBoxState.Collapsed)
+                {
                     sKeyTip += keyTip.KeyTip + "," + " ";
+                }
             }
 
             sKeyTip += ribbonControl.KeyTip;
