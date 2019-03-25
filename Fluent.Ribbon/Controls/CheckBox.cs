@@ -133,7 +133,7 @@ namespace Fluent
         public static readonly DependencyProperty IsReadOnlyProperty = RibbonProperties.IsReadOnlyProperty.AddOwner(typeof(CheckBox));
 
         #endregion
-        
+
         #endregion
 
         #region Constructors
@@ -162,17 +162,16 @@ namespace Fluent
 
         #region Overrides
 
+        /// <inheritdoc/>
         protected override bool IsEnabledCore => true;
 
+        /// <inheritdoc/>
         protected override void OnClick()
         {
-            if(!IsReadOnly)
+            if (!this.IsReadOnly)
+            {
                 base.OnClick();
-        }
-
-        protected override AutomationPeer OnCreateAutomationPeer()
-        {
-            return new Fluent.AutomationPeers.CheckBoxAutomationPeer(this);
+            }
         }
 
         #endregion

@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Automation.Peers;
-
-namespace Fluent.AutomationPeers
+﻿namespace Fluent.AutomationPeers
 {
-  public interface ILabelBy
-  {
-    AutomationPeer GetLabelByAutomationPeer();
-  }
+    using System.Windows.Automation.Peers;
+
+    /// <summary>
+    /// Interface for controls where the connected label is part of the screen reader tip
+    /// </summary>
+    public interface ILabelBy
+    {
+        /// <summary>
+        /// Get the automation peer for a label
+        /// </summary>
+        /// <returns></returns>
+        AutomationPeer GetLabelByAutomationPeer();
+    }
 }

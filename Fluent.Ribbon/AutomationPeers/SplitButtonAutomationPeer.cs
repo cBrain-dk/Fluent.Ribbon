@@ -1,24 +1,34 @@
-﻿using System.Windows;
-using System.Windows.Automation;
-using System.Windows.Automation.Peers;
-using System.Windows.Automation.Provider;
-
-namespace Fluent.AutomationPeers
+﻿namespace Fluent.AutomationPeers
 {
-    // Should probably implement IToggleProvider as well, since SplitButton contains a ToggleButton
+    using System.Windows.Automation;
+    using System.Windows.Automation.Peers;
+    using System.Windows.Automation.Provider;
+
+    /// <inheritdoc />
     public class SplitButtonAutomationPeer : DropDownButtonAutomationPeer, IInvokeProvider, IExpandCollapseProvider
     {
-        private SplitButton SplitButton => (SplitButton)Owner;
-        public SplitButtonAutomationPeer(SplitButton owner) : base(owner)
-        { }
+        private SplitButton SplitButton => (SplitButton)this.Owner;
 
+        /// <summary>
+        /// Base constructor
+        /// </summary>
+        /// <param name="owner">Owning control</param>
+        public SplitButtonAutomationPeer(SplitButton owner) 
+            : base(owner)
+        {
+        }
+
+        /// <inheritdoc />
         protected override AutomationControlType GetAutomationControlTypeCore()
             => AutomationControlType.SplitButton;
 
-        override public object GetPattern(PatternInterface patternInterface)
+        /// <inheritdoc />
+        public override object GetPattern(PatternInterface patternInterface)
         {
             if (patternInterface == PatternInterface.Invoke)
+            {
                 return this;
+            }
 
             return base.GetPattern(patternInterface);
         }
@@ -26,10 +36,12 @@ namespace Fluent.AutomationPeers
         #region IInvokeProvider
         void IInvokeProvider.Invoke()
         {
-            if (!IsEnabled())
+            if (!this.IsEnabled())
+            {
                 throw new ElementNotEnabledException();
+            }
 
-            SplitButton.InvokeButtonClick();
+            this.SplitButton.AutomationButtonClick();
         }
         #endregion
     }

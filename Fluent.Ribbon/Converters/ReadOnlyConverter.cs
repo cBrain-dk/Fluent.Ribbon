@@ -1,29 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Data;
-
-namespace Fluent.Converters
+﻿namespace Fluent.Converters
 {
+    using System;
+    using System.Globalization;
+    using System.Windows;
+    using System.Windows.Data;
+
+    /// <summary>
+    /// Converter for calculating enabled state based on a parent control (which may or may not implement IsReadOnly)
+    /// </summary>
     public class ReadOnlyConverter : IValueConverter
     {
-
         #region Implementation of IValueConverter
 
         /// <inheritdoc />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            FrameworkElement frameworkElement = value as FrameworkElement;
-            IRibbonControl c = value as IRibbonControl;
-
-            if (c != null)
+            if (value is IRibbonControl c)
+            {
                 return !c.IsReadOnly;
-            if(frameworkElement!=null)
+            }
+
+            if (value is FrameworkElement frameworkElement)
+            {
                 return frameworkElement.IsEnabled;
+            }
 
             return true;
         }

@@ -219,7 +219,7 @@ namespace Fluent
 
         private static object CoerceValueIsDropDownOpen(DependencyObject d, object baseValue)
         {
-            if(baseValue is bool boolBaseValue)
+            if (baseValue is bool boolBaseValue)
             {
                 DropDownButton dropDownButton = (DropDownButton)d;
                 return BooleanBoxes.Box(!dropDownButton.IsReadOnly && boolBaseValue);
@@ -468,6 +468,7 @@ namespace Fluent
 
         #region Overrides
 
+        /// <inheritdoc/>
         protected override bool IsEnabledCore => true;
 
         /// <summary>
@@ -631,7 +632,7 @@ namespace Fluent
         /// Override automation peer for screen readers
         /// </summary>
         /// <returns></returns>
-        protected override AutomationPeer OnCreateAutomationPeer() =>  new DropDownButtonAutomationPeer(this);
+        protected override AutomationPeer OnCreateAutomationPeer() => new DropDownButtonAutomationPeer(this);
 
         #endregion
 
@@ -710,12 +711,6 @@ namespace Fluent
             this.SetValue(System.Windows.Controls.ToolTipService.IsEnabledProperty, !newValue);
 
             Debug.WriteLine($"{this.Header} IsDropDownOpen: {newValue}");
-
-            if(UIElementAutomationPeer.FromElement(control) is DropDownButtonAutomationPeer peer)
-            {
-                peer.ResetChildrenCache();
-                peer.RaiseExpandCollapseAutomationEvent((bool)e.OldValue, newValue);
-            }
 
             if (newValue)
             {
@@ -904,12 +899,6 @@ namespace Fluent
                     yield return item;
                 }
             }
-        }
-
-        /// <inheritdoc />
-        protected override AutomationPeer OnCreateAutomationPeer()
-        {
-            return new DropDownButtonAutomationPeer(this);
         }
 
         #region MenuItem workarounds

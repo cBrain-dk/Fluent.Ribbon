@@ -4,6 +4,7 @@ namespace Fluent
     using System;
     using System.Reflection;
     using System.Windows;
+    using System.Windows.Automation.Peers;
     using System.Windows.Controls;
     using Fluent.Internal.KnownBoxes;
 
@@ -122,9 +123,10 @@ namespace Fluent
 
         #endregion
 
-    protected override AutomationPeer OnCreateAutomationPeer()
-    {
-      return new FrameworkElementAutomationPeer(this);
+        /// <inheritdoc/>
+        protected override AutomationPeer OnCreateAutomationPeer()
+        {
+            return new FrameworkElementAutomationPeer(this);
+        }
     }
-  }
 }

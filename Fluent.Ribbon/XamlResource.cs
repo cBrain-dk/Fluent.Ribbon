@@ -1,24 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Fluent
+﻿namespace Fluent
 {
-  /// <summary>
-  /// </summary>
-  public class XamlResource
-  {
     /// <summary>
+    /// Placeholder object for an image defined as a path
     /// </summary>
-    public string Key { get; set; }
-    /// <summary>
-    /// </summary>
-    public XamlResource(string key)
+    public class XamlResource
     {
-      Key = key;
-    }
+        /// <summary>
+        /// Name of the datatemplate representing the object
+        /// </summary>
+        public string Key { get; set; }
 
-  }
+        /// <summary>
+        /// The data loaded from the datatemplate
+        /// </summary>
+        public XamlResource(string key)
+        {
+            this.Key = key;
+        }
+    }
 }

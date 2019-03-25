@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Fluent
+﻿namespace Fluent
 {
+    /// <summary>
+    /// Marks a control as implementing th IsReadOnly scheme (accessibly by keyboard even when it is not enabled)
+    /// </summary>
     public interface IReadOnlyControl
     {
         /// <summary>

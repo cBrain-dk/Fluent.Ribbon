@@ -192,14 +192,13 @@ namespace Fluent
         public Button()
         {
             ContextMenuService.Coerce(this);
-            
         }
 
         #endregion
 
         #region Overrides
 
-
+        /// <inheritdoc/>
         protected override bool IsEnabledCore => true;
 
         /// <summary>
@@ -212,13 +211,11 @@ namespace Fluent
             {
                 PopupService.RaiseDismissPopupEvent(this, DismissPopupMode.Always);
             }
-            if(!IsReadOnly)
-                base.OnClick();
-        }
 
-        protected override AutomationPeer OnCreateAutomationPeer()
-        {
-            return new Fluent.AutomationPeers.ButtonAutomationPeer(this);
+            if (!this.IsReadOnly)
+            {
+                base.OnClick();
+            }
         }
 
         #endregion

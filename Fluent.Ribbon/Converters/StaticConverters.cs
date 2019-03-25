@@ -36,7 +36,7 @@
         public static readonly ObjectToStringConverter ObjectToStringConverter = new ObjectToStringConverter();
 
         /// <summary>
-        /// Get a static instance of <see cref="ReadOnlyConverterConverter"/>
+        /// Get a static instance of <see cref="ReadOnlyConverter"/>
         /// </summary>
         public static readonly ReadOnlyConverter ReadOnlyConverter = new ReadOnlyConverter();
     }

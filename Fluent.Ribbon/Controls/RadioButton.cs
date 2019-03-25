@@ -161,13 +161,17 @@ namespace Fluent
         #endregion
 
         #region Overrides
-        
+
+        /// <inheritdoc />
         protected override bool IsEnabledCore => true;
 
+        /// <inheritdoc />
         protected override void OnClick()
         {
-            if(!IsReadOnly)
+            if (!this.IsReadOnly)
+            {
                 base.OnClick();
+            }
         }
 
         #endregion

@@ -45,6 +45,24 @@
     <PackageReference Include="ControlzEx" version="[4.0-alpha*, 5.0)" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Themes\Generic\Controls\RadioButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Themes\Generic\Controls\RibbonTitleBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Themes\Generic\Controls\WindowCommands.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Themes\Office2013\Controls\Ribbon.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Themes\Office2016\Controls\ApplicationMenuItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+  </ItemGroup>
+
   <!-- Sign assembly -->
   <PropertyGroup>
     <SignAssembly>True</SignAssembly>

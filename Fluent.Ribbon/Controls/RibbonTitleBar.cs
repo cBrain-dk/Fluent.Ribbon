@@ -27,8 +27,8 @@ namespace Fluent
         private int maxUpdateCount = 10;
         private int updateCount = 0;
         private int updateDelay = 3;
-        private DateTime startUpdateDataTime=DateTime.Now;
-        bool firstTimeInvalidate = true;
+        private DateTime startUpdateDataTime = DateTime.Now;
+        private bool firstTimeInvalidate = true;
         // Quick access toolbar holder
         private FrameworkElement quickAccessToolbarHolder;
         // Header holder
@@ -221,30 +221,36 @@ namespace Fluent
         /// <inheritdoc />
         protected override Size MeasureOverride(Size constraint)
         {
-            Fluent.QuickAccessToolBar quickAccessToolBar = QuickAccessToolBar as Fluent.QuickAccessToolBar;
+            Fluent.QuickAccessToolBar quickAccessToolBar = this.QuickAccessToolBar as Fluent.QuickAccessToolBar;
             if (constraint.Width < 1)
+            {
                 return constraint;
-            updateCount++;
-            if (DateTime.Now > startUpdateDataTime.AddSeconds(updateDelay))
-            {
-                updateCount = 0;
-                startUpdateDataTime = DateTime.Now;
             }
-            if (updateCount >= maxUpdateCount && quickAccessToolBar!=null && quickAccessToolBar.Items.Count>0)
+
+            this.updateCount++;
+            if (DateTime.Now > this.startUpdateDataTime.AddSeconds(this.updateDelay))
             {
-                if (updateCount == maxUpdateCount)
+                this.updateCount = 0;
+                this.startUpdateDataTime = DateTime.Now;
+            }
+
+            if (this.updateCount >= this.maxUpdateCount && quickAccessToolBar != null && quickAccessToolBar.Items.Count > 0)
+            {
+                if (this.updateCount == this.maxUpdateCount)
                 {
-                    if(firstTimeInvalidate)
+                    if (this.firstTimeInvalidate)
                     {
-                        updateCount = 0;
-                        firstTimeInvalidate = false;
-                        Dispatcher.BeginInvoke(new Action(() => InvalidateMeasure()));
+                        this.updateCount = 0;
+                        this.firstTimeInvalidate = false;
+                        this.Dispatcher.BeginInvoke(new Action(() => this.InvalidateMeasure()));
                     }
-                    var ignore = System.Threading.Tasks.Task.Delay(new TimeSpan(0,0, 0, updateDelay,10)).ContinueWith((t) =>
-                    {
-                        Dispatcher.BeginInvoke(new Action(() => InvalidateMeasure()));
-                    });
+
+                    var ignore = System.Threading.Tasks.Task.Delay(new TimeSpan(0, 0, 0, this.updateDelay, 10)).ContinueWith((t) =>
+                      {
+                          this.Dispatcher.BeginInvoke(new Action(() => this.InvalidateMeasure()));
+                      });
                 }
+
                 return constraint;
             }
 
@@ -327,7 +333,7 @@ namespace Fluent
 
         // Update items size and positions
         private void Update(Size constraint)
-        {            
+        {
             var visibleGroups = this.Items.OfType<RibbonContextualTabGroup>()
                             .Where(group => group.InnerVisibility == Visibility.Visible && group.Items.Count > 0)
                             .ToList();

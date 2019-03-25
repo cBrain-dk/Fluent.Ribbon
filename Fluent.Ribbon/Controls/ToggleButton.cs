@@ -6,7 +6,7 @@ namespace Fluent
     using System.Windows.Data;
     using System.Windows.Markup;
     using Fluent.Internal.KnownBoxes;
-    
+
     /// <summary>
     /// Represents toggle button
     /// </summary>
@@ -158,7 +158,7 @@ namespace Fluent
         #region IsReadOnly
 
         /// <summary>
-        /// Gets or sets Size for the element.
+        /// Gets or sets IsReadOnly for the element.
         /// </summary>
         public bool IsReadOnly
         {
@@ -174,17 +174,22 @@ namespace Fluent
 
         #endregion
 
+        #region AllowToggle
+
+        /// <summary>
+        /// Gets or sets AllowToggle for the element.
+        /// </summary>
         public bool AllowToggle
         {
-            get { return (bool)GetValue(AllowToggleProperty); }
-            set { SetValue(AllowToggleProperty, value); }
+            get { return (bool)this.GetValue(AllowToggleProperty); }
+            set { this.SetValue(AllowToggleProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for CanToggle.  This enables animation, styling, binding, etc...
+        /// <summary>Identifies the <see cref="AllowToggle"/> dependency property.</summary>
         public static readonly DependencyProperty AllowToggleProperty =
-            DependencyProperty.Register("AllowToggle", typeof(bool), typeof(ToggleButton), new FrameworkPropertyMetadata(true) { BindsTwoWayByDefault = true});
+            DependencyProperty.Register("AllowToggle", typeof(bool), typeof(ToggleButton), new FrameworkPropertyMetadata(true) { BindsTwoWayByDefault = true });
 
-
+        #endregion
 
         #endregion
 
@@ -214,6 +219,7 @@ namespace Fluent
 
         #region Overrides
 
+        /// <inheritdoc/>
         protected override bool IsEnabledCore => true;
 
         /// <summary>
@@ -226,23 +232,23 @@ namespace Fluent
             {
                 PopupService.RaiseDismissPopupEvent(this, DismissPopupMode.Always);
             }
-            if(AllowToggle && !IsReadOnly)
-                base.OnClick();
-        }
 
             // fix for #481
             // We can't overwrite OnToggle because it's "internal protected"...
             if (string.IsNullOrEmpty(this.GroupName) == false)
             {
                 // Only forward click if button is not checked to prevent wrong bound values
-                if (this.IsChecked == false)
+                if (this.IsChecked == false && this.AllowToggle && !this.IsReadOnly)
                 {
                     base.OnClick();
                 }
             }
             else
             {
-                base.OnClick();
+                if (this.AllowToggle && !this.IsReadOnly)
+                {
+                    base.OnClick();
+                }
             }
         }
 
@@ -253,11 +259,6 @@ namespace Fluent
             base.OnChecked(e);
         }
 
-        protected override AutomationPeer OnCreateAutomationPeer()
-        {
-            return new Fluent.AutomationPeers.ToggleButtonAutomationPeer(this);
-        }
-
         #endregion
 
         /// <summary>
@@ -265,8 +266,7 @@ namespace Fluent
         /// </summary>
         public void InvokeClick()
         {
-            if(!IsReadOnly)
-                this.OnClick();
+            this.OnClick();
         }
 
         #region Quick Access Item Creating

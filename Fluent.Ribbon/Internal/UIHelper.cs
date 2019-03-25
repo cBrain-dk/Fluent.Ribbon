@@ -185,7 +185,9 @@
                 item = VisualTreeHelper.GetParent(item);
 
                 if (item is T)
+                {
                     yield return item as T;
+                }
             }
 
             if (item == null)
@@ -197,7 +199,9 @@
                     item = LogicalTreeHelper.GetParent(item);
 
                     if (item is T)
+                    {
                         yield return item as T;
+                    }
                 }
             }
         }
@@ -266,7 +270,7 @@
             }
         }
 
-        public static T FindVisualChildByName<T>(DependencyObject parent, string name) 
+        public static T FindVisualChildByName<T>(DependencyObject parent, string name)
             where T : DependencyObject
         {
             if (parent == null)

@@ -453,7 +453,9 @@ namespace Fluent
 
         #region Overrides
 
+        /// <inheritdoc/>
         protected override bool IsEnabledCore => true;
+
         /// <summary>
         /// When overridden in a derived class, is invoked 
         /// whenever application code or internal processes call ApplyTemplate
@@ -482,12 +484,6 @@ namespace Fluent
             }
         }
 
-        /// <inheritdoc />
-        protected override AutomationPeer OnCreateAutomationPeer()
-        {
-            return new SplitButtonAutomationPeer(this);
-        }
-
         #region Overrides of DropDownButton
 
         /// <inheritdoc />
@@ -497,7 +493,7 @@ namespace Fluent
 
             if (e.Key == Key.Enter)
             {
-                InvokeButtonClick();
+                this.AutomationButtonClick();
             }
         }
 
@@ -505,33 +501,27 @@ namespace Fluent
 
         internal void AutomationButtonClick()
         {
-          if (!IsReadOnly)
-            this.button.InvokeClick();
+            if (!this.IsReadOnly)
+            {
+                this.button.InvokeClick();
+            }
         }
 
         private void OnButtonClick(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
-            if(!IsReadOnly)
+
+            if (!this.IsReadOnly)
+            {
                 this.RaiseEvent(new RoutedEventArgs(ClickEvent, this));
+            }
         }
 
-    protected override Size MeasureOverride(Size constraint)
-    {
-      if (label != null && label.Text != null)
-        label.Measure(constraint);
+        /// <inheritdoc/>
+        protected override AutomationPeer OnCreateAutomationPeer()
+            => new SplitButtonAutomationPeer(this);
 
-      Size size = base.MeasureOverride(constraint);
-      if (label == null)
-        return size;
-      else
-        return new Size(Math.Max(label.DesiredSize.Width, size.Width), size.Height);
-    }
-
-    protected override AutomationPeer OnCreateAutomationPeer()
-        => new SplitButtonAutomationPeer(this);
-
-    #endregion
+        #endregion
 
         #region Quick Access Item Creating
 
@@ -539,9 +529,9 @@ namespace Fluent
         public override FrameworkElement CreateQuickAccessItem()
         {
             var buttonForQAT = new SplitButton
-                               {
-                                   CanAddButtonToQuickAccessToolBar = false
-                               };
+            {
+                CanAddButtonToQuickAccessToolBar = false
+            };
 
             buttonForQAT.Click += (sender, e) => this.RaiseEvent(e);
             buttonForQAT.DropDownOpened += this.OnQuickAccessOpened;
@@ -600,9 +590,9 @@ namespace Fluent
                 if (string.IsNullOrEmpty(this.SecondaryKeyTip))
                 {
                     yield return new KeyTipInformation(this.KeyTip + this.PrimaryActionKeyTipPostfix, this.button, hide)
-                        {
-                            VisualTarget = this
-                        };
+                    {
+                        VisualTarget = this
+                    };
                 }
                 else
                 {

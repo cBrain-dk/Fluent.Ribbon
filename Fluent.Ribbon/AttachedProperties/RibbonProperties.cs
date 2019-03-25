@@ -1,6 +1,7 @@
 ﻿// ReSharper disable once CheckNamespace
 namespace Fluent
 {
+    using System;
     using System.Windows;
     using System.Windows.Input;
     using System.Windows.Media;
@@ -12,35 +13,38 @@ namespace Fluent
     public static class RibbonProperties
     {
         #region internal class
-        
+
         internal class CommandCanExecuteChanged
         {
-            IRibbonControl RibbonControl { get; set; }
-            ICommand Command { get; set; }
-            internal CommandCanExecuteChanged(IRibbonControl ribbonControl,ICommand command)
+            private IRibbonControl RibbonControl { get; set; }
+
+            private ICommand Command { get; set; }
+
+            internal CommandCanExecuteChanged(IRibbonControl ribbonControl, ICommand command)
             {
-                RibbonControl = ribbonControl;
-                Command = command;
+                this.RibbonControl = ribbonControl;
+                this.Command = command;
             }
 
             internal void RegisterCommand()
             {
-                RibbonControl.IsReadOnly = !Command.CanExecute(null);
-                Command.CanExecuteChanged += CanExecuteChanged;
+                this.RibbonControl.IsReadOnly = !this.Command.CanExecute(null);
+                this.Command.CanExecuteChanged += this.CanExecuteChanged;
             }
-            
+
             internal void UnRegisterCommand()
             {
-                RibbonControl.IsReadOnly=true;
-                Command.CanExecuteChanged -= CanExecuteChanged;
+                this.RibbonControl.IsReadOnly = true;
+                this.Command.CanExecuteChanged -= this.CanExecuteChanged;
             }
 
             private void CanExecuteChanged(object sender, EventArgs e)
             {
                 ICommand command = sender as ICommand;
-                if(command!=null)
-                    RibbonControl.IsReadOnly = !command.CanExecute(null);
-
+                if (command != null)
+                {
+                    this.RibbonControl.IsReadOnly = !command.CanExecute(null);
+                }
             }
         }
 
@@ -62,9 +66,7 @@ namespace Fluent
 
         internal static CommandCanExecuteChanged GetCommandCanExectue(UIElement element)
         {
-            if (element == null)
-                return null;
-            return (CommandCanExecuteChanged)element.GetValue(CommandCanExectueProperty);
+            return element == null ? null : (CommandCanExecuteChanged)element.GetValue(CommandCanExectueProperty);
         }
 
         #endregion
@@ -224,26 +226,23 @@ namespace Fluent
         /// Using a DependencyProperty as the backing store for Size.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
-        public static readonly DependencyProperty IsReadOnlyProperty =
-            DependencyProperty.RegisterAttached("IsReadOnly", typeof(bool), typeof(RibbonProperties),
-                new FrameworkPropertyMetadata(false, OnReadOnlyChanged)
-        );
+        public static readonly DependencyProperty IsReadOnlyProperty = DependencyProperty.RegisterAttached("IsReadOnly", typeof(bool), typeof(RibbonProperties), new FrameworkPropertyMetadata(false, OnIsReadOnlyChanged));
 
-        private static void OnReadOnlyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnIsReadOnlyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             FrameworkElement frameworkElement = d as FrameworkElement;
-            if(frameworkElement!=null)
+            if (frameworkElement != null)
             {
                 if ((bool)e.NewValue == true)
                 {
                     VisualStateManager.GoToState(frameworkElement, "Disabled", true);
                 }
                 else
+                {
                     VisualStateManager.GoToState(frameworkElement, "Normal", true);
+                }
             }
         }
-
-
 
         /// <summary>
         /// Sets IsReadOnly for element
@@ -341,23 +340,23 @@ namespace Fluent
 
         #endregion
 
-    #region Command
+        #region Command
         internal static void OnCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            IRibbonControl ribbonControl = d as IRibbonControl;
             CommandCanExecuteChanged old = GetCommandCanExectue(d as UIElement);
             if (old != null)
-                old.UnRegisterCommand();
-            ICommand newValue = e.NewValue as ICommand;
-            if (newValue != null && ribbonControl != null)
             {
-                var temp = new CommandCanExecuteChanged(ribbonControl, newValue);
-                SetCommandCanExectue((UIElement)ribbonControl,temp);
-                temp.RegisterCommand();
+                old.UnRegisterCommand();
             }
 
-
+            if (e.NewValue is ICommand newValue && d is IRibbonControl ribbonControl)
+            {
+                var temp = new CommandCanExecuteChanged(ribbonControl, newValue);
+                SetCommandCanExectue((UIElement)ribbonControl, temp);
+                temp.RegisterCommand();
+            }
         }
+
         #endregion
     }
 }

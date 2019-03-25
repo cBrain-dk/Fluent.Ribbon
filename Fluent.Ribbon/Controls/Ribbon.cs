@@ -266,11 +266,11 @@ namespace Fluent
         private static MenuItem CreateMenuItemForContextMenu(ICommand command)
         {
             return new MenuItem
-                   {
-                       Command = command,
-                       CanAddToQuickAccessToolBar = false,
-                       ContextMenu = null
-                   };
+            {
+                Command = command,
+                CanAddToQuickAccessToolBar = false,
+                ContextMenu = null
+            };
         }
 
         /// <inheritdoc />
@@ -1894,26 +1894,26 @@ namespace Fluent
             {
                 Debug.WriteLine($"Adding \"{element}\" to QuickAccessToolBar.");
 
-        var control = QuickAccessItemsProvider.GetQuickAccessItem(element);
-        control.IsVisibleChanged += QuickAccessItem_IsVisibleChanged;
+                var control = QuickAccessItemsProvider.GetQuickAccessItem(element);
+                control.IsVisibleChanged += this.QuickAccessItem_IsVisibleChanged;
 
                 this.QuickAccessElements.Add(element, control);
                 this.QuickAccessToolBar.Items.Add(control);
             }
         }
 
-    private void QuickAccessItem_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-    {
-      if (IsLoaded && !(bool)e.OldValue && (bool)e.NewValue)
-      {
-        Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render,
-          new Action(() => { this.TitleBar.InvalidateMeasure(); }));
-      }
-    }
+        private void QuickAccessItem_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (this.IsLoaded && !(bool)e.OldValue && (bool)e.NewValue)
+            {
+                this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render,
+                  new Action(() => { this.TitleBar.InvalidateMeasure(); }));
+            }
+        }
 
-    private static IRibbonControl FindParentRibbonControl(DependencyObject element)
-    {
-      var parent = LogicalTreeHelper.GetParent(element);
+        private static IRibbonControl FindParentRibbonControl(DependencyObject element)
+        {
+            var parent = LogicalTreeHelper.GetParent(element);
 
             while (parent != null)
             {
@@ -1936,16 +1936,16 @@ namespace Fluent
         {
             Debug.WriteLine("Removing \"{0}\" from QuickAccessToolBar.", element);
 
-      if (this.IsInQuickAccessToolBar(element))
-      {
-        var quickAccessItem = this.QuickAccessElements[element];
-        quickAccessItem.IsVisibleChanged -= QuickAccessItem_IsVisibleChanged;
+            if (this.IsInQuickAccessToolBar(element))
+            {
+                var quickAccessItem = this.QuickAccessElements[element];
+                quickAccessItem.IsVisibleChanged -= this.QuickAccessItem_IsVisibleChanged;
 
-        this.QuickAccessElements.Remove(element);
-        this.QuickAccessToolBar.Items.Remove(quickAccessItem);
-        this.RibbonStateStorage.Save();
-      }
-    }
+                this.QuickAccessElements.Remove(element);
+                this.QuickAccessToolBar.Items.Remove(quickAccessItem);
+                this.RibbonStateStorage.Save();
+            }
+        }
 
         /// <summary>
         /// Clears quick access toolbar
@@ -1955,7 +1955,7 @@ namespace Fluent
             this.QuickAccessElements.Clear();
             this.QuickAccessToolBar?.Items.Clear();
         }
-        
+
         /// <summary>
         /// Provided a QAT item return the corresponding control in the ribbon
         /// </summary>
@@ -2004,24 +2004,26 @@ namespace Fluent
             this.LoadInitialState();
         }
 
-    private void OnKeyDown(object sender, KeyEventArgs e)
-    {
-      if (e.Handled)
-        return;
-
-      if (e.Key == Key.F1
-          && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
-      {
-        if (this.TabControl.HasItems)
+        private void OnKeyDown(object sender, KeyEventArgs e)
         {
-          if (this.CanMinimize)
-          {
-            this.IsMinimized = !this.IsMinimized;
-            e.Handled = true;
-          }
+            if (e.Handled)
+            {
+                return;
+            }
+
+            if (e.Key == Key.F1
+                && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+            {
+                if (this.TabControl.HasItems)
+                {
+                    if (this.CanMinimize)
+                    {
+                        this.IsMinimized = !this.IsMinimized;
+                        e.Handled = true;
+                    }
+                }
+            }
         }
-      }
-    }
 
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
