@@ -28,7 +28,8 @@
             {
                 return (string)value;
             }
-            return "";
+
+            return string.Empty;
         }
 
         /// <summary>

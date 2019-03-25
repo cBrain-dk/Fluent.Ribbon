@@ -6,10 +6,9 @@
                     xmlns:Converters="clr-namespace:Fluent.Converters"
                     mc:Ignorable="d">
 
-  <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-  <Fluent:IconConverter x:Key="IconConvert" />
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
-  <ControlTemplate x:Key="RibbonWindowControlTemplate"
+    <ControlTemplate x:Key="RibbonWindowControlTemplate"
                      TargetType="{x:Type Fluent:RibbonWindow}">
     <Grid>
       <AdornerDecorator x:Name="Adorner">
@@ -32,7 +31,7 @@
                                Width="16"
                                Margin="0,1,0,0"
                                Visibility="{TemplateBinding IsIconVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                               Source="{TemplateBinding Icon, Converter={StaticResource IconConvert}}"
+                               Source="{Fluent:IconConverter {Binding Icon, RelativeSource={RelativeSource TemplatedParent}}, {Binding RelativeSource={RelativeSource TemplatedParent}}}"
                                SnapsToDevicePixels="True" />
 
             <ContentPresenter x:Name="PART_WindowCommands"
@@ -125,12 +124,9 @@
            TargetType="{x:Type Fluent:RibbonWindow}">
     <Setter Property="BorderThickness"
                 Value="1" />
-    <Setter Property="BorderBrush"
+        <Setter Property="BorderBrush"
                 Value="{DynamicResource RibbonThemeColorBrush}" />
-    <!-- GlassFrameThickness != 0 enables the default window drop shadow -->
-    <Setter Property="GlassFrameThickness"
-                Value="1" />
-    <Setter Property="Foreground"
+        <Setter Property="Foreground"
                 Value="{DynamicResource BlackBrush}" />
     <Setter Property="TitleForeground"
                 Value="{DynamicResource TitleForeground}" />

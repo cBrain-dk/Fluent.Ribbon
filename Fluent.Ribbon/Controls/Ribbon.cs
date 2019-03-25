@@ -1942,6 +1942,27 @@ namespace Fluent
             this.QuickAccessElements.Clear();
             this.QuickAccessToolBar?.Items.Clear();
         }
+        
+        /// <summary>
+        /// Provided a QAT item return the corresponding control in the ribbon
+        /// </summary>
+        /// <param name="quickAcessItem">Item in the QuickAccessToolbar</param>
+        /// <returns></returns>
+        public UIElement GetQuickAccessElement(UIElement quickAcessItem)
+        {
+            if (quickAcessItem == null)
+            {
+                return null;
+            }
+
+            KeyValuePair<UIElement, UIElement> item = this.QuickAccessElements.FirstOrDefault(i => i.Value == quickAcessItem);
+            if (item.Key != null)
+            {
+                return item.Key;
+            }
+
+            return null;
+        }
 
         #endregion
 

@@ -27,6 +27,7 @@ namespace Fluent
     [TemplatePart(Name = "PART_ToolbarDownButton", Type = typeof(DropDownButton))]
     [TemplatePart(Name = "PART_ToolBarPanel", Type = typeof(Panel))]
     [TemplatePart(Name = "PART_ToolBarOverflowPanel", Type = typeof(Panel))]
+    [TemplatePart(Name = "PART_CustomizeQuickAccessToolbar", Type = typeof(MenuItem))]
     public class QuickAccessToolBar : Control
     {
         #region Events
@@ -365,9 +366,9 @@ namespace Fluent
                 this.showBelow.Click -= this.OnShowBelowClick;
             }
 
-            if(this.showCustimizeQuickAcess!=null)
+            if (this.showCustimizeQuickAcess != null)
             {
-              this.showCustimizeQuickAcess.Click -= this.OnShowCustimizeQuickAcess;
+                this.showCustimizeQuickAcess.Click -= this.OnShowCustimizeQuickAcess;
             }
 
             this.showAbove = this.GetTemplateChild("PART_ShowAbove") as MenuItem;
@@ -386,14 +387,15 @@ namespace Fluent
 
             if (this.showCustimizeQuickAcess != null)
             {
-              var parentRibbon = this.Parent as Ribbon;
+                var parentRibbon = this.Parent as Ribbon;
 
-              if (parentRibbon != null && parentRibbon.CanCustomizeQuickAccessToolBar)
-                this.showCustimizeQuickAcess.Visibility = Visibility.Visible;
+                if (parentRibbon != null && parentRibbon.CanCustomizeQuickAccessToolBar)
+                {
+                    this.showCustimizeQuickAcess.Visibility = Visibility.Visible;
+                }
 
-              this.showCustimizeQuickAcess.Click += this.OnShowCustimizeQuickAcess;
+                this.showCustimizeQuickAcess.Click += this.OnShowCustimizeQuickAcess;
             }
-
 
             if (this.menuDownButton != null)
             {
@@ -459,10 +461,11 @@ namespace Fluent
             this.cachedConstraint = default;
         }
 
-        private bool _toolBarDownIsOpen;
+        private bool toolBarDownIsOpen;
+
         private void OnToolBarDownClosed(object sender, EventArgs e)
         {
-            _toolBarDownIsOpen = false;
+            this.toolBarDownIsOpen = false;
             this.toolBarOverflowPanel.Children.Clear();
         }
 
@@ -477,7 +480,8 @@ namespace Fluent
             {
                 this.toolBarOverflowPanel.Children.Add(this.Items[i]);
             }
-            _toolBarDownIsOpen = true;
+
+            this.toolBarDownIsOpen = true;
         }
 
         /// <summary>
@@ -492,15 +496,13 @@ namespace Fluent
 
         private void OnShowCustimizeQuickAcess(object sender, RoutedEventArgs e)
         {
-        
-          var parentRibbon = this.Parent as Ribbon;
+            var parentRibbon = this.Parent as Ribbon;
 
-          if (parentRibbon != null)
-          {
-            Ribbon.CustomizeQuickAccessToolbarCommand.Execute(this, parentRibbon);
-          }
+            if (parentRibbon != null)
+            {
+                Ribbon.CustomizeQuickAccessToolbarCommand.Execute(this, parentRibbon);
+            }
         }
-
 
         /// <summary>
         /// Handles show above menu item click
@@ -515,7 +517,7 @@ namespace Fluent
         /// <inheritdoc />
         protected override Size MeasureOverride(Size constraint)
         {
-            if ((this.cachedConstraint == constraint && !this.itemsHadChanged) || _toolBarDownIsOpen)
+            if ((this.cachedConstraint == constraint && !this.itemsHadChanged) || this.toolBarDownIsOpen)
             {
                 return base.MeasureOverride(constraint);
             }

@@ -3,46 +3,46 @@
                     xmlns:System="clr-namespace:System;assembly=mscorlib"
                     xmlns:Fluent="clr-namespace:Fluent">
 
-  <Color x:Key="{x:Static Fluent:MetroColors.ThemeColorKey}">#4697DE</Color>
-  <Color x:Key="CommandHoverColor">#E5E5E5</Color>
-  <Color x:Key="CommandPressedColor">#CACACB</Color>
-  <!--outlook blue-->
-  <!--<Color x:Key="HoverColor">#C5C5C5</Color>
+    <Color x:Key="Fluent.Ribbon.Colors.IdealForegroundColor">#4697DE</Color>
+    <Color x:Key="CommandHoverColor">#E5E5E5</Color>
+    <Color x:Key="CommandPressedColor">#CACACB</Color>
+    <!--outlook blue-->
+    <!--<Color x:Key="HoverColor">#C5C5C5</Color>
   <Color x:Key="PressedColor">#AEAEAE</Color>
   <SolidColorBrush x:Key="RibbonThemeColorBrush" Color="#0173C7" />-->
 
-  <!--cbrain blue 10 % color change-->
-  <Color x:Key="BlueHoverColor">#60B1F8</Color>
-  <Color x:Key="BluePressedColor">#2D7EC5</Color>
-  <SolidColorBrush x:Key="RibbonThemeColorBrush" Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}" />
+    <!--cbrain blue 10 % color change-->
+    <Color x:Key="BlueHoverColor">#60B1F8</Color>
+    <Color x:Key="BluePressedColor">#2D7EC5</Color>
+    <SolidColorBrush x:Key="RibbonThemeColorBrush" Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
 
-  <!--cbrain blue 15 % color change-->
-  <!--<Color x:Key="HoverColor">#6CBDFF</Color>
+    <!--cbrain blue 15 % color change-->
+    <!--<Color x:Key="HoverColor">#6CBDFF</Color>
   <Color x:Key="PressedColor">#2071B8</Color>
   <SolidColorBrush x:Key="RibbonThemeColorBrush" Color="#4697DE" />-->
 
-  <!--cbrain blue 20 % color change-->
-  <!--<Color x:Key="HoverColor">#79CAFF</Color>
+    <!--cbrain blue 20 % color change-->
+    <!--<Color x:Key="HoverColor">#79CAFF</Color>
   <Color x:Key="PressedColor">#1364AB</Color>
   <SolidColorBrush x:Key="RibbonThemeColorBrush" Color="#4697DE" />-->
 
-  <SolidColorBrush x:Key="CaptionButtonHoverBackgroundBrush" Color="{DynamicResource CommandHoverColor}" />
-  <SolidColorBrush x:Key="CaptionButtonPressedBackgroundBrush" Color="{DynamicResource CommandPressedColor}"  />
+    <SolidColorBrush x:Key="CaptionButtonHoverBackgroundBrush" Color="{DynamicResource CommandHoverColor}" />
+    <SolidColorBrush x:Key="CaptionButtonPressedBackgroundBrush" Color="{DynamicResource CommandPressedColor}"  />
 
-  <SolidColorBrush x:Key="RedCaptionButtonHoverBackgroundBrush" Color="#E81123" />
-  <SolidColorBrush x:Key="RedCaptionButtonPressedBackgroundBrush" Color="#F1707A" />
+    <SolidColorBrush x:Key="RedCaptionButtonHoverBackgroundBrush" Color="#E81123" />
+    <SolidColorBrush x:Key="RedCaptionButtonPressedBackgroundBrush" Color="#F1707A" />
 
-  <SolidColorBrush x:Key="BlueButtonHoverBackgroundBrush" Color="{DynamicResource BlueHoverColor}" />
-  <SolidColorBrush x:Key="BlueButtonPressedBackgroundBrush" Color="{DynamicResource BluePressedColor}" />
+    <SolidColorBrush x:Key="BlueButtonHoverBackgroundBrush" Color="{DynamicResource BlueHoverColor}" />
+    <SolidColorBrush x:Key="BlueButtonPressedBackgroundBrush" Color="{DynamicResource BluePressedColor}" />
 
-  <SolidColorBrush x:Key="RibbonTopBorderBrush"
+    <SolidColorBrush x:Key="RibbonTopBorderBrush"
                      Color="#F1F1F1" />
     <SolidColorBrush x:Key="RibbonBackgoundBrush"
                      Color="#F1F1F1" />
     <SolidColorBrush x:Key="ActiveTabBackgroundBrush"
                      Color="#F1F1F1" />
-  <SolidColorBrush x:Key="MouseOverTabBackgroundBrush" Color="{StaticResource BlueHoverColor}" />
-  <SolidColorBrush x:Key="GroupSeparatorBrush"
+    <SolidColorBrush x:Key="MouseOverTabBackgroundBrush" Color="{StaticResource BlueHoverColor}" />
+    <SolidColorBrush x:Key="GroupSeparatorBrush"
                      Color="#FFE1E1E1" />
     <SolidColorBrush x:Key="DefaultFontBrush"
                      Color="#FF444444" />
@@ -54,24 +54,24 @@
                      Color="White" />
     <SolidColorBrush x:Key="ButtonCommandFontBrush"
                      Color="#FF212121" />
-  <SolidColorBrush x:Key="TitleForeground"
+    <SolidColorBrush x:Key="TitleForeground"
                      Color="Black" />
-  <SolidColorBrush x:Key="PahtColor"
+    <SolidColorBrush x:Key="PahtColor"
                      Color="#FF444444" />
 
 
 
-  <SolidColorBrush x:Key="GroupHoverBrush"
+    <SolidColorBrush x:Key="GroupHoverBrush"
                      Color="#FFF7F7F7" />
     <SolidColorBrush x:Key="GroupHighlightBrush"
                      Color="#FFF0F0F0" />
 
     <SolidColorBrush x:Key="StatusBarBorderBrushBrush"
-                     Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}" />
+                     Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
     <SolidColorBrush x:Key="StatusBarInnerBorderBrush"
-                     Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}" />
+                     Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
     <SolidColorBrush x:Key="StatusBarInnerBackgroundBrush"
-                     Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}" />
+                     Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
     <LinearGradientBrush x:Key="StatusBarSeparatorBackgroundBrush"
                          EndPoint="0.5,1"
                          StartPoint="0.5,0">
@@ -176,7 +176,7 @@
     </LinearGradientBrush>
 
     <SolidColorBrush x:Key="BackstagePanelBackgroundBrush"
-                     Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}" />
+                     Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
 
     <LinearGradientBrush x:Key="ButtonBackgroundBrush"
                          EndPoint="0.5,1"

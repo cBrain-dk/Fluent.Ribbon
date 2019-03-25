@@ -32,18 +32,18 @@
     <GradientStop Offset="1" />
   </LinearGradientBrush>
 
-  <SolidColorBrush x:Key="BackstageControlHoverBorderBrush" Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}" />
-  <SolidColorBrush x:Key="BackstageControlFocusBorderBrush" Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}"  />
-  <SolidColorBrush x:Key="BackstageControlActiveBorderBrush" Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}"  />
-  <SolidColorBrush x:Key="BackstageGalleryItemHoverBackgroundBrush" Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}" />
-  <SolidColorBrush x:Key="BackstageGalleryItemSelectedBackgroundBrush" Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}"  />
-  <SolidColorBrush x:Key="BackstageToggleButtonCheckedBackgroundBrush" Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}"  />
-  <SolidColorBrush x:Key="BackstageToggleButtonCheckedBorderBrush" Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}" />
+  <SolidColorBrush x:Key="BackstageControlHoverBorderBrush" Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
+  <SolidColorBrush x:Key="BackstageControlFocusBorderBrush" Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
+  <SolidColorBrush x:Key="BackstageControlActiveBorderBrush" Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
+  <SolidColorBrush x:Key="BackstageGalleryItemHoverBackgroundBrush" Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
+  <SolidColorBrush x:Key="BackstageGalleryItemSelectedBackgroundBrush" Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}"  />
+  <SolidColorBrush x:Key="BackstageToggleButtonCheckedBackgroundBrush" Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
+  <SolidColorBrush x:Key="BackstageToggleButtonCheckedBorderBrush" Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
 
-  <SolidColorBrush x:Key="CheckBoxHoverBackgroundBrush" Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}" />
-  <SolidColorBrush x:Key="CheckBoxHoverBorderBrush" Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}" />
-  <SolidColorBrush x:Key="CheckBoxPressedBackgroundBrush" Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}" />
-  <SolidColorBrush x:Key="CheckBoxPressedBorderBrush" Color="{DynamicResource {x:Static Fluent:MetroColors.ThemeColorKey}}" />
+  <SolidColorBrush x:Key="CheckBoxHoverBackgroundBrush" Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
+  <SolidColorBrush x:Key="CheckBoxHoverBorderBrush" Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
+  <SolidColorBrush x:Key="CheckBoxPressedBackgroundBrush" Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
+  <SolidColorBrush x:Key="CheckBoxPressedBorderBrush" Color="{DynamicResource Fluent.Ribbon.Colors.IdealForegroundColor}" />
 
   <Color x:Key="GrayHoverColor">#C5C5C5</Color>
   <Color x:Key="GrayPressedColor">#AEAEAE</Color>

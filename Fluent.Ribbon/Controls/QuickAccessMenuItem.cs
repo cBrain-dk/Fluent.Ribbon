@@ -114,6 +114,22 @@ namespace Fluent
 
         #endregion
 
+        #region TargetName Property
+
+        /// <summary>
+        /// Gets or sets the name of the target control
+        /// </summary>
+        public string TargetName
+        {
+            get { return (string)this.GetValue(TargetNameProperty); }
+            set { this.SetValue(TargetNameProperty, value); }
+        }
+
+        /// <summary>Identifies the <see cref="TargetName"/> dependency property.</summary>
+        public static readonly DependencyProperty TargetNameProperty = DependencyProperty.Register("TargetName", typeof(string), typeof(QuickAccessMenuItem));
+
+        #endregion
+
         #region Overrides
 
         /// <inheritdoc />

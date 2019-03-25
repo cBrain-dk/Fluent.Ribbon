@@ -20,50 +20,61 @@ namespace Fluent
     /// </summary>
     public abstract class RibbonControl : Control, ICommandSource, IQuickAccessItemProvider, IRibbonControl
     {
+        #region WhiteIcon
 
-    #region WhiteIcon
-    public static readonly DependencyProperty WhiteIconProperty = DependencyProperty.RegisterAttached(
-    "WhiteIcon",
-    typeof(object),
-    typeof(RibbonControl),
-    new FrameworkPropertyMetadata(null, IconChanged)
-  );
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for WhiteIcon.
+        /// This enables animation, styling, binding, etc...
+        /// </summary>
+        public static readonly DependencyProperty WhiteIconProperty = DependencyProperty.RegisterAttached("WhiteIcon", typeof(object), typeof(RibbonControl), new FrameworkPropertyMetadata(null, OnWhiteIconChanged));
 
-    private static void IconChanged(DependencyObject targetObject, DependencyPropertyChangedEventArgs e)
-    {
+        private static void OnWhiteIconChanged(DependencyObject targetObject, DependencyPropertyChangedEventArgs e)
+        {
+        }
 
-    }
+        /// <summary>Helper for setting <see cref="WhiteIconProperty"/> on <paramref name="element"/>.</summary>
+        /// <param name="element"><see cref="UIElement"/> to set <see cref="WhiteIconProperty"/> on.</param>
+        /// <param name="value">WhiteIcon property value.</param>
+        public static void SetWhiteIcon(UIElement element, object value)
+        {
+            element.SetValue(WhiteIconProperty, value);
+        }
 
-    public static void SetWhiteIcon(UIElement element, object value)
-    {
-      element.SetValue(WhiteIconProperty, value);
-    }
-    public static object GetWhiteIcon(UIElement element)
-    {
-      return element.GetValue(WhiteIconProperty);
-    }
-    #endregion
+        /// <summary>Helper for getting <see cref="WhiteIconProperty"/> from <paramref name="element"/>.</summary>
+        /// <param name="element"><see cref="UIElement"/> to read <see cref="WhiteIconProperty"/> from.</param>
+        /// <returns>WhiteIcon property value.</returns>
+        public static object GetWhiteIcon(UIElement element)
+        {
+            return element.GetValue(WhiteIconProperty);
+        }
+        #endregion
 
-    #region IsQuickAccessItem
-    public static readonly DependencyProperty IsQuickAccessItemProperty = DependencyProperty.RegisterAttached(
-    "IsQuickAccessItem",
-    typeof(bool),
-    typeof(RibbonControl),
-    new FrameworkPropertyMetadata(false)
-  );
+        #region IsQuickAccessItem
 
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for IsQuickAccessItem.
+        /// This enables animation, styling, binding, etc...
+        /// </summary>
+        public static readonly DependencyProperty IsQuickAccessItemProperty = DependencyProperty.RegisterAttached("IsQuickAccessItem", typeof(bool), typeof(RibbonControl), new FrameworkPropertyMetadata(false));
 
-    public static void SetIsQuickAccessItem(UIElement element, bool value)
-    {
-      element.SetValue(IsQuickAccessItemProperty, value);
-    }
-    public static bool GetIsQuickAccessItem(UIElement element)
-    {
-      return (bool)element.GetValue(IsQuickAccessItemProperty);
-    }
-    #endregion
+        /// <summary>Helper for setting <see cref="IsQuickAccessItemProperty"/> on <paramref name="element"/>.</summary>
+        /// <param name="element"><see cref="UIElement"/> to set <see cref="IsQuickAccessItemProperty"/> on.</param>
+        /// <param name="value">IsQuickAccessItem property value.</param>
+        public static void SetIsQuickAccessItem(UIElement element, bool value)
+        {
+            element.SetValue(IsQuickAccessItemProperty, value);
+        }
 
-    #region KeyTip
+        /// <summary>Helper for getting <see cref="IsQuickAccessItemProperty"/> from <paramref name="element"/>.</summary>
+        /// <param name="element"><see cref="UIElement"/> to read <see cref="IsQuickAccessItemProperty"/> from.</param>
+        /// <returns>IsQuickAccessItem property value.</returns>
+        public static bool GetIsQuickAccessItem(UIElement element)
+        {
+            return (bool)element.GetValue(IsQuickAccessItemProperty);
+        }
+        #endregion
+
+        #region KeyTip
 
         /// <inheritdoc />
         public string KeyTip
@@ -337,7 +348,7 @@ namespace Fluent
         {
             Bind(source, element, nameof(source.DataContext), DataContextProperty, BindingMode.OneWay);
             RibbonControl.SetIsQuickAccessItem(element, true);
-            
+
             if (source is ICommandSource)
             {
                 if (source is MenuItem)
@@ -410,13 +421,15 @@ namespace Fluent
                     Bind(source, element, nameof(IRibbonControl.Icon), IconProperty, BindingMode.OneWay);
                 }
             }
-              
+
             Bind(source, element, new PropertyPath(RibbonControl.WhiteIconProperty), RibbonControl.WhiteIconProperty, BindingMode.OneWay);
 
             var attachedProperties = DependencyObjectHelper.GetAttachedProperties(source);
             foreach (var attachedProperty in attachedProperties)
-              RibbonControl.Bind(source, element, new PropertyPath(attachedProperty), attachedProperty, BindingMode.OneWay);
-            
+            {
+                RibbonControl.Bind(source, element, new PropertyPath(attachedProperty), attachedProperty, BindingMode.OneWay);
+            }
+
             RibbonProperties.SetSize(element, RibbonControlSize.Small);
         }
 
@@ -501,12 +514,12 @@ namespace Fluent
             var tabItemPos = control.PointToScreen(new Point(0, 0));
 #pragma warning disable 618
             var tabItemRect = new RECT
-                              {
-                                  Left = (int)tabItemPos.X,
-                                  Top = (int)tabItemPos.Y,
-                                  Right = (int)tabItemPos.X + (int)control.ActualWidth,
-                                  Bottom = (int)tabItemPos.Y + (int)control.ActualHeight
-                              };
+            {
+                Left = (int)tabItemPos.X,
+                Top = (int)tabItemPos.Y,
+                Right = (int)tabItemPos.X + (int)control.ActualWidth,
+                Bottom = (int)tabItemPos.Y + (int)control.ActualHeight
+            };
             var monitor = NativeMethods.MonitorFromRect(ref tabItemRect, MonitorOptions.MONITOR_DEFAULTTONEAREST);
             if (monitor != IntPtr.Zero)
             {

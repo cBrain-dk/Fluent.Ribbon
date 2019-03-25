@@ -1,59 +1,56 @@
 ﻿namespace Fluent
 {
-  using System;
-  using System.Collections.Generic;
-  using System.ComponentModel;
-  using System.Diagnostics;
-  using System.Globalization;
-  using System.IO;
-  using System.IO.IsolatedStorage;
-  using System.Linq;
-  using System.Text;
-  using System.Windows;
-  using System.Windows.Markup;
-  using System.Windows.Threading;
-  using Fluent.Extensions;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.IO;
+    using System.IO.IsolatedStorage;
+    using System.Text;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Threading;
+    using Fluent.Extensions;
 
-  /// <summary>
-  /// Handles loading and saving the state of a <see cref="Ribbon"/> from/to a <see cref="MemoryStream"/>, for temporary storage, and from/to <see cref="IsolatedStorage"/>, for persistent storage.
-  /// </summary>
-  public class StringRibbonStateStorage : IRibbonStateStorage
-  {
     /// <summary>
-    /// Getter
+    /// Handles loading and saving the state of a <see cref="Ribbon"/> from/to a <see cref="MemoryStream"/>, for temporary storage, and from/to <see cref="IsolatedStorage"/>, for persistent storage.
     /// </summary>
-    public static string GetSettings(DependencyObject obj)
+    public class StringRibbonStateStorage : IRibbonStateStorage
     {
-      return (string)obj.GetValue(SettingsProperty);
-    }
+        /// <summary>
+        /// Getter
+        /// </summary>
+        public static string GetSettings(DependencyObject obj)
+        {
+            return (string)obj.GetValue(SettingsProperty);
+        }
 
-    /// <summary>
-    /// Setter
-    /// </summary>
-    public static void SetSettings(DependencyObject obj, string value)
-    {
-      obj.SetValue(SettingsProperty, value);
-    }
+        /// <summary>
+        /// Setter
+        /// </summary>
+        public static void SetSettings(DependencyObject obj, string value)
+        {
+            obj.SetValue(SettingsProperty, value);
+        }
 
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for Title.  This enables animation, styling, binding, etc...
+        /// </summary>
+        public static readonly DependencyProperty SettingsProperty =
+            DependencyProperty.RegisterAttached("Settings", typeof(string), typeof(StringRibbonStateStorage), new FrameworkPropertyMetadata(null, OnSettingsChanged) { BindsTwoWayByDefault = true });
 
-    /// <summary>
-    /// Using a DependencyProperty as the backing store for Title.  This enables animation, styling, binding, etc...
-    /// </summary>
-    public static readonly DependencyProperty SettingsProperty =
-        DependencyProperty.RegisterAttached("Settings", typeof(string), typeof(StringRibbonStateStorage), new FrameworkPropertyMetadata(null, OnSettingsChanged) { BindsTwoWayByDefault = true });
+        /// <summary>
+        /// Settings changed
+        /// </summary>
+        public static void OnSettingsChanged(DependencyObject targetObject, DependencyPropertyChangedEventArgs e)
+        {
+            Ribbon self = (Ribbon)targetObject;
 
-    /// <summary>
-    /// Settings changed
-    /// </summary>
-    public static void OnSettingsChanged(DependencyObject targetObject, DependencyPropertyChangedEventArgs e)
-    {
-      Ribbon self = (Ribbon)targetObject;
+            self.RibbonStateStorage.Load();
+        }
 
-      self.RibbonStateStorage.Load();
-    }
-
-
-    private readonly Ribbon ribbon;
+        private readonly Ribbon ribbon;
 
         // Name of the isolated storage file
         private string isolatedStorageFileName;
@@ -69,11 +66,10 @@
             this.memoryStream = new MemoryStream();
         }
 
-
-    /// <summary>
-    /// Destructor for this instance.
-    /// </summary>
-    ~StringRibbonStateStorage()
+        /// <summary>
+        /// Finalizes an instance of the <see cref="StringRibbonStateStorage"/> class.
+        /// </summary>
+        ~StringRibbonStateStorage()
         {
             this.Dispose(false);
         }
@@ -82,6 +78,7 @@
         /// Gets wether state is currently saving.
         /// </summary>
         public bool IsSaving { get; private set; }
+
         /// <summary>
         /// Gets wether this object already got disposed.
         /// </summary>
@@ -109,7 +106,7 @@
                     return this.isolatedStorageFileName;
                 }
 
-                var stringForHash = "";
+                var stringForHash = string.Empty;
                 var window = Window.GetWindow(this.ribbon);
 
                 if (window != null)
@@ -163,14 +160,14 @@
 
             try
             {
-              this.IsSaving = true;
-              MemoryStream stream = new MemoryStream();
-              this.Save(stream);
-              stream.Position = 0;
-              using (var streamReader = new StreamReader(stream))
-              {
-                 SetSettings(ribbon, streamReader.ReadToEnd());
-              }
+                this.IsSaving = true;
+                MemoryStream stream = new MemoryStream();
+                this.Save(stream);
+                stream.Position = 0;
+                using (var streamReader = new StreamReader(stream))
+                {
+                    SetSettings(this.ribbon, streamReader.ReadToEnd());
+                }
             }
             catch (Exception ex)
             {
@@ -178,7 +175,7 @@
             }
             finally
             {
-              this.IsSaving = false;
+                this.IsSaving = false;
             }
         }
 
@@ -220,30 +217,30 @@
 
             // Save QAT items
             var paths = new Dictionary<FrameworkElement, string>();
-            this.ribbon.TraverseLogicalTree(this.ribbon, "", paths);
+            this.ribbon.TraverseLogicalTree(this.ribbon, string.Empty, paths);
 
             // Foreach items and see whether path is found for the item
             foreach (var element in this.ribbon.QuickAccessToolBar.Items)
             {
-              string path;
-              FrameworkElement control = this.ribbon.GetQuickAccessElement(element) as FrameworkElement;
+                FrameworkElement control = this.ribbon.GetQuickAccessElement(element) as FrameworkElement;
 
-              if (control != null
-                  && paths.TryGetValue(control, out path))
-              {
-                builder.Append(control.Name);
-                builder.Append(';');
-              }
-              else
-              {
-                // Item is not found in logical tree, output to debug console
-                var controlName = (control != null && string.IsNullOrEmpty(control.Name) == false)
-                    ? string.Format(CultureInfo.InvariantCulture, " (name of the control is {0})", control.Name)
-                    : string.Empty;
+                if (control != null
+                    && paths.TryGetValue(control, out string path))
+                {
+                    builder.Append(control.Name);
+                    builder.Append(';');
+                }
+                else
+                {
+                    // Item is not found in logical tree, output to debug console
+                    var controlName = (control != null && string.IsNullOrEmpty(control.Name) == false)
+                        ? string.Format(CultureInfo.InvariantCulture, " (name of the control is {0})", control.Name)
+                        : string.Empty;
 
-                //Debug.WriteLine("Control " + element.Key.GetType().Name + " is not found in logical tree during QAT saving" + controlName);
-              }
+                    //Debug.WriteLine("Control " + element.Key.GetType().Name + " is not found in logical tree during QAT saving" + controlName);
+                }
             }
+
             return builder;
         }
 
@@ -265,9 +262,15 @@
         public virtual void Load()
         {
             if (this.IsSaving)
-              return;
+            {
+                return;
+            }
+
             if (this.ribbon.QuickAccessToolBar == null)
-              return;
+            {
+                return;
+            }
+
             // Don't save or load state in design mode
             if (DesignerProperties.GetIsInDesignMode(this.ribbon))
             {
@@ -285,20 +288,19 @@
 
             try
             {
-              if (!string.IsNullOrEmpty(GetSettings(ribbon)))
-              {
-                byte[] byteArray = Encoding.UTF8.GetBytes(GetSettings(ribbon));
-                using (MemoryStream stream = new MemoryStream(byteArray))
+                if (!string.IsNullOrEmpty(GetSettings(this.ribbon)))
                 {
-                  this.Load(stream);
-                  // Copy loaded state to MemoryStream for temporary storage.
-                  // Temporary storage is used for style changes etc. so we can apply the current state again.
-                  stream.Position = 0;
-                  this.memoryStream.Position = 0;
-                  stream.CopyTo(this.memoryStream);
+                    byte[] byteArray = Encoding.UTF8.GetBytes(GetSettings(this.ribbon));
+                    using (MemoryStream stream = new MemoryStream(byteArray))
+                    {
+                        this.Load(stream);
+                        // Copy loaded state to MemoryStream for temporary storage.
+                        // Temporary storage is used for style changes etc. so we can apply the current state again.
+                        stream.Position = 0;
+                        this.memoryStream.Position = 0;
+                        stream.CopyTo(this.memoryStream);
+                    }
                 }
-
-              }
             }
             catch (Exception ex)
             {
@@ -369,7 +371,7 @@
         protected virtual void LoadQuickAccessItems(string quickAccessItemsData)
         {
             // Load items
-            var items = quickAccessItemsData.Split(new [] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            var items = quickAccessItemsData.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 
             this.ribbon.ClearQuickAccessToolBar();
 
@@ -392,12 +394,12 @@
             // Sync QAT menu items
             foreach (var menuItem in this.ribbon.QuickAccessItems)
             {
-              if (menuItem.Target == null && menuItem.TargetName != null)
-              {
-                menuItem.Target = ribbon.FindElement(menuItem.TargetName, ribbon);
+                if (menuItem.Target == null && menuItem.TargetName != null)
+                {
+                    menuItem.Target = Internal.UIHelper.FindVisualChildByName<Control>(this.ribbon, menuItem.TargetName);
+                }
 
-              }
-              menuItem.IsChecked = this.ribbon.IsInQuickAccessToolBar(menuItem.Target);
+                menuItem.IsChecked = this.ribbon.IsInQuickAccessToolBar(menuItem.Target);
             }
         }
 
@@ -408,7 +410,7 @@
         /// <returns>The created quick access item or <c>null</c> of the creation failed.</returns>
         protected virtual UIElement CreateQuickAccessItem(string data)
         {
-            var result = this.ribbon.FindElement(data, ribbon);
+            var result = Internal.UIHelper.FindVisualChildByName<Control>(this.ribbon, data);
 
             if (result == null
                 || QuickAccessItemsProvider.IsSupported(result) == false)
@@ -485,7 +487,5 @@
 
             this.Disposed = true;
         }
-
-
-  }
+    }
 }

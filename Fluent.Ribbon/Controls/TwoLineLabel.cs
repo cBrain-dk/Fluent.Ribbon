@@ -124,6 +124,7 @@ namespace Fluent
             this.UpdateTextRun();
         }
 
+        /// <inheritdoc />
         protected override Size MeasureOverride(Size constraint)
         {
           this.textRun.Measure(constraint);
