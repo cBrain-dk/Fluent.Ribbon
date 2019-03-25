@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:Fluent="clr-namespace:Fluent"
-                    xmlns:Converters="clr-namespace:Fluent.Converters">
+                    xmlns:converters="clr-namespace:Fluent.Converters">
     <ControlTemplate x:Key="StartScreenTabControlTemplate"
                      TargetType="{x:Type Fluent:StartScreenTabControl}">
         <ControlTemplate.Resources>
@@ -9,26 +9,26 @@
                 <Style x:Key="{x:Type ScrollBar}"
                        TargetType="{x:Type ScrollBar}"
                        BasedOn="{StaticResource ScrollBarWhite}" />
+                <Style x:Key="{x:Type Fluent:Button}"
+                       TargetType="{x:Type Fluent:Button}"
+                       BasedOn="{StaticResource Fluent.Ribbon.Styles.Backstage.Button}" />
                 <Style x:Key="{x:Type Fluent:DropDownButton}"
                        TargetType="{x:Type Fluent:DropDownButton}"
-                       BasedOn="{StaticResource DropDownButtonBackstageStyle}" />
+                       BasedOn="{StaticResource Fluent.Ribbon.Styles.Backstage.DropDownButton}" />
                 <Style x:Key="{x:Type Fluent:ComboBox}"
                        TargetType="{x:Type Fluent:ComboBox}"
-                       BasedOn="{StaticResource ComboBoxBackstageStyle}" />
-                <Style x:Key="{x:Type Fluent:Spinner}"
-                       TargetType="{x:Type Fluent:Spinner}"
-                       BasedOn="{StaticResource SpinnerBackstageStyle}" />
-                <Style TargetType="{x:Type Fluent:SeparatorTabItem}"
-                       BasedOn="{StaticResource BackstageSeparatorTabItemStyle}" />
+                       BasedOn="{StaticResource Fluent.Ribbon.Styles.Backstage.ComboBox}" />
             </ResourceDictionary>
         </ControlTemplate.Resources>
         <Grid x:Name="grid">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition MinWidth="342"
+                <ColumnDefinition MinWidth="{TemplateBinding ItemsPanelMinWidth}"
                                   Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Grid VerticalAlignment="Stretch"
+            
+            <Grid x:Name="PART_LeftContentGrid"
+                  VerticalAlignment="Stretch"                  
                   Background="{TemplateBinding ItemsPanelBackground}"
                   Margin="{TemplateBinding LeftContentMargin}">
                 <Border Padding="15,25">
@@ -43,12 +43,13 @@
                                                     IsEnabled="{TemplateBinding IsWindowSteeringHelperEnabled}" />
             </Grid>
 
-            <Grid Height="Auto"
+            <Grid x:Name="PART_SelectedContentGrid"
+                  Height="Auto"
                   Grid.Column="1"
-                  Background="{DynamicResource BackstageBackgroundBrush}"
+                  Background="{DynamicResource WhiteBrush}"
                   Margin="{TemplateBinding SelectedContentMargin}">
                 <Border Padding="33,16"
-                        Background="White">
+                        Background="{DynamicResource WhiteBrush}">
                     <ContentPresenter x:Name="PART_SelectedContentHost"
                                       HorizontalAlignment="Stretch"
                                       VerticalAlignment="Stretch"

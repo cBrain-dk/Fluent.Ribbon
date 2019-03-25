@@ -1,85 +1,36 @@
-# http://www.appveyor.com/docs/appveyor-yml
+# configuration for develop and master branch
 
-# configuration for develop/CI branch
 -
   branches:
     only:
       - develop
-
-  version: 5.0.0-dev{build}
-  configuration: Release
-
-  init:
-    - ps: Update-AppveyorBuild -Version "$($env:appveyor_build_version.Remove($env:appveyor_build_version.IndexOf("-dev") + "-dev".Length))$($env:appveyor_build_number.PadLeft(4, '0'))"
-
-  # Install scripts. (runs after repo cloning)
-  install:
-    - cmd: set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
-
-  before_build:
-    - cmd: msbuild Fluent.Ribbon.msbuild /target:Restore /v:m /nologo
-
-  build_script:
-    - msbuild Fluent.Ribbon.msbuild /target:Build /v:m /nologo
-
-  after_build:
-    - cmd: msbuild Fluent.Ribbon.msbuild /target:RunTests /v:m /nologo
-    - cmd: msbuild Fluent.Ribbon.msbuild /target:RunPack /v:m /nologo
-    - ps: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit3/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestResult.xml))
-
-  artifacts:
-    - path: Publish\**\*.nupkg
-      name: NuGet
-  
-    - path: Publish\**\*.zip
-      name: zip
-
-  assembly_info:
-    patch: true
-    file: Shared\GlobalAssemblyInfo.*
-    assembly_version: "{version}"
-    assembly_file_version: "{version}"
-    assembly_informational_version: "{version}"
-
-  notifications:
-    - provider: Webhook
-      url: https://webhooks.gitter.im/e/855da764a995f5aa1a24
-      on_build_success: true
-      on_build_failure: true
-      on_build_status_changed: false
-
-# configuration for master/CI branch
--
-  branches:
-    only:
       - master
 
-  version: 4.0.3.{build}
+  skip_tags: true
+  image: Visual Studio 2019 Preview
   configuration: Release
+  platform: Any CPU
+  test: off
 
-  # Install scripts. (runs after repo cloning)
+  pull_requests:
+    do_not_increment_build_number: false
+
+  # Install dotnet core 3.0 latest (alpha!!), as this is not provided on AppVeyor yet
   install:
-    - nuget restore
+    - ps: Start-FileDownload 'https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-win-x64.exe'
+    - ps: Start-Process .\dotnet-sdk-latest-win-x64.exe "/install /norestart /quiet /log sdkinstall.log" -NoNewWindow -Wait
 
-  build:
-    verbosity: minimal
+  build_script:
+    - ps: .\build.ps1 -Target CI -Verbosity Verbose
 
   after_build:
-    - cmd: Tools\GitLink.exe . -u https://github.com/fluentribbon/Fluent.Ribbon
-    - cmd: nuget pack Fluent.Ribbon.nuspec -Version %appveyor_build_version% -Properties Configuration=%configuration%
-    - ps: Get-ChildItem .\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
-
-  assembly_info:
-    patch: true
-    file: Shared\GlobalAssemblyInfo.*
-    assembly_version: "{version}"
-    assembly_file_version: "{version}"
-    assembly_informational_version: "{version}"
+    - ps: gci -Filter *.trx -Path .\TestResults\ | % { (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/mstest/$($env:APPVEYOR_JOB_ID)", (Resolve-Path $_.FullName)) }
 
   artifacts:
-    - path: build/bin
-      name: Fluent.Ribbon.$(appveyor_build_version)
-      type: zip
+    - path: \package\*.*
+
+  nuget:
+    disable_publish_on_pr: true
 
   notifications:
     - provider: Webhook

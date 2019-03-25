@@ -53,7 +53,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Hides the <see cref="StartScreen"/>.
+        /// Hides the <see cref="StartScreen" />.
         /// </summary>
         protected override void Hide()
         {

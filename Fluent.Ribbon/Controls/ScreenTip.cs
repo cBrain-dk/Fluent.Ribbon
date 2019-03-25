@@ -2,21 +2,22 @@
 namespace Fluent
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using System.Windows;
-    using System.Windows.Media;
+    using System.Windows.Automation.Peers;
     using System.Windows.Controls;
-    using System.Windows.Documents;
     using System.Windows.Controls.Primitives;
+    using System.Windows.Documents;
     using System.Windows.Input;
+    using System.Windows.Media;
+    using Fluent.Automation.Peers;
     using Fluent.Internal.KnownBoxes;
 
     /// <summary>
-    /// ScreenTips display the name of the control, 
-    /// the keyboard shortcut for the control, and a brief description 
-    /// of how to use the control. ScreenTips also can provide F1 support, 
-    /// which opens help and takes the user directly to the related 
-    /// help topic for the control whose ScreenTip was 
+    /// ScreenTips display the name of the control,
+    /// the keyboard shortcut for the control, and a brief description
+    /// of how to use the control. ScreenTips also can provide F1 support,
+    /// which opens help and takes the user directly to the related
+    /// help topic for the control whose ScreenTip was
     /// displayed when the F1 button was pressed
     /// </summary>
     public class ScreenTip : ToolTip
@@ -26,7 +27,6 @@ namespace Fluent
         /// <summary>
         /// Static constructor
         /// </summary>
-        [SuppressMessage("Microsoft.Performance", "CA1810")]
         static ScreenTip()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ScreenTip), new FrameworkPropertyMetadata(typeof(ScreenTip)));
@@ -53,7 +53,11 @@ namespace Fluent
         {
             if (this.PlacementTarget == null)
             {
+#if NETCOREAPP3_0
+                return Array.Empty<CustomPopupPlacement>();
+#else
                 return new CustomPopupPlacement[] { };
+#endif
             }
 
             Ribbon ribbon = null;
@@ -86,7 +90,7 @@ namespace Fluent
                 && topLevelElement is Window == false
                 && decoratorChild != null)
             {
-                // Placed on Popup?                
+                // Placed on Popup?
                 var belowY = decoratorChild.TranslatePoint(new Point(0, ((FrameworkElement)decoratorChild).ActualHeight), this.PlacementTarget).Y;
                 var aboveY = decoratorChild.TranslatePoint(new Point(0, 0), this.PlacementTarget).Y - popupSize.Height;
                 var below = new CustomPopupPlacement(new Point(rightToLeftOffset, belowY + 1), PopupPrimaryAxis.Horizontal);
@@ -94,9 +98,11 @@ namespace Fluent
                 return new[] { below, above };
             }
 
-            return new[] {
+            return new[]
+            {
                 new CustomPopupPlacement(new Point(rightToLeftOffset, this.PlacementTarget.RenderSize.Height + 1), PopupPrimaryAxis.Horizontal),
-                new CustomPopupPlacement(new Point(rightToLeftOffset, -popupSize.Height - 1), PopupPrimaryAxis.Horizontal)};
+                new CustomPopupPlacement(new Point(rightToLeftOffset, -popupSize.Height - 1), PopupPrimaryAxis.Horizontal)
+            };
         }
 
         private static bool IsContextMenuChild(UIElement element)
@@ -106,7 +112,8 @@ namespace Fluent
                 var parent = VisualTreeHelper.GetParent(element) as UIElement;
                 //if (parent is ContextMenuBar) return true;
                 element = parent;
-            } while (element != null);
+            }
+            while (element != null);
 
             return false;
         }
@@ -130,15 +137,13 @@ namespace Fluent
 
         private static UIElement GetDecoratorChild(UIElement popupRoot)
         {
-            if (popupRoot == null)
+            switch (popupRoot)
             {
-                return null;
-            }
+                case null:
+                    return null;
 
-            var decorator = popupRoot as AdornerDecorator;
-            if (decorator != null)
-            {
-                return decorator.Child;
+                case AdornerDecorator decorator:
+                    return decorator.Child;
             }
 
             for (var i = 0; i < VisualTreeHelper.GetChildrenCount(popupRoot); i++)
@@ -155,15 +160,14 @@ namespace Fluent
 
         private static void FindControls(UIElement obj, ref Ribbon ribbon, ref UIElement topLevelElement)
         {
-            if (obj == null)
+            switch (obj)
             {
-                return;
-            }
+                case null:
+                    return;
 
-            var objRibbon = obj as Ribbon;
-            if (objRibbon != null)
-            {
-                ribbon = objRibbon;
+                case Ribbon objRibbon:
+                    ribbon = objRibbon;
+                    break;
             }
 
             var parentVisual = VisualTreeHelper.GetParent(obj) as UIElement;
@@ -184,9 +188,9 @@ namespace Fluent
         /// <summary>
         /// Gets or sets title of the screen tip
         /// </summary>
-        [System.ComponentModel.DisplayName("Title"),
-        System.ComponentModel.Category("Screen Tip"),
-        System.ComponentModel.Description("Title of the screen tip")]
+        [System.ComponentModel.DisplayName("Title")]
+        [System.ComponentModel.Category("Screen Tip")]
+        [System.ComponentModel.Description("Title of the screen tip")]
         public string Title
         {
             get { return (string)this.GetValue(TitleProperty); }
@@ -194,11 +198,13 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Title. 
+        /// Using a DependencyProperty as the backing store for Title.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty TitleProperty =
+#pragma warning disable WPF0010 // Default value type must match registered type.
             DependencyProperty.Register(nameof(Title), typeof(string), typeof(ScreenTip), new PropertyMetadata(StringBoxes.Empty));
+#pragma warning restore WPF0010 // Default value type must match registered type.
 
         #endregion
 
@@ -207,9 +213,9 @@ namespace Fluent
         /// <summary>
         /// Gets or sets text of the screen tip
         /// </summary>
-        [System.ComponentModel.DisplayName("Text"),
-        System.ComponentModel.Category("Screen Tip"),
-        System.ComponentModel.Description("Main text of the screen tip")]
+        [System.ComponentModel.DisplayName("Text")]
+        [System.ComponentModel.Category("Screen Tip")]
+        [System.ComponentModel.Description("Main text of the screen tip")]
         public string Text
         {
             get { return (string)this.GetValue(TextProperty); }
@@ -217,11 +223,13 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Text.  
+        /// Using a DependencyProperty as the backing store for Text.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty TextProperty =
+#pragma warning disable WPF0010 // Default value type must match registered type.
             DependencyProperty.Register(nameof(Text), typeof(string), typeof(ScreenTip), new PropertyMetadata(StringBoxes.Empty));
+#pragma warning restore WPF0010 // Default value type must match registered type.
 
         #endregion
 
@@ -230,9 +238,9 @@ namespace Fluent
         /// <summary>
         /// Gets or sets disable reason of the associated screen tip's control
         /// </summary>
-        [System.ComponentModel.DisplayName("Disable Reason"),
-        System.ComponentModel.Category("Screen Tip"),
-        System.ComponentModel.Description("Describe here what would cause disable of the control")]
+        [System.ComponentModel.DisplayName("Disable Reason")]
+        [System.ComponentModel.Category("Screen Tip")]
+        [System.ComponentModel.Description("Describe here what would cause disable of the control")]
         public string DisableReason
         {
             get { return (string)this.GetValue(DisableReasonProperty); }
@@ -240,11 +248,13 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for DisableReason. 
+        /// Using a DependencyProperty as the backing store for DisableReason.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty DisableReasonProperty =
+#pragma warning disable WPF0010 // Default value type must match registered type.
             DependencyProperty.Register(nameof(DisableReason), typeof(string), typeof(ScreenTip), new PropertyMetadata(StringBoxes.Empty));
+#pragma warning restore WPF0010 // Default value type must match registered type.
 
         #endregion
 
@@ -253,9 +263,9 @@ namespace Fluent
         /// <summary>
         /// Gets or sets help topic of the ScreenTip
         /// </summary>
-        [System.ComponentModel.DisplayName("Help Topic"),
-        System.ComponentModel.Category("Screen Tip"),
-        System.ComponentModel.Description("Help topic (it will be used to execute help)")]
+        [System.ComponentModel.DisplayName("Help Topic")]
+        [System.ComponentModel.Category("Screen Tip")]
+        [System.ComponentModel.Description("Help topic (it will be used to execute help)")]
         public object HelpTopic
         {
             get { return this.GetValue(HelpTopicProperty); }
@@ -263,7 +273,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for HelpTopic.  
+        /// Using a DependencyProperty as the backing store for HelpTopic.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty HelpTopicProperty =
@@ -276,9 +286,9 @@ namespace Fluent
         /// <summary>
         /// Gets or sets image of the screen tip
         /// </summary>
-        [System.ComponentModel.DisplayName("Image"),
-        System.ComponentModel.Category("Screen Tip"),
-        System.ComponentModel.Description("Image of the screen tip")]
+        [System.ComponentModel.DisplayName("Image")]
+        [System.ComponentModel.Category("Screen Tip")]
+        [System.ComponentModel.Description("Image of the screen tip")]
         public ImageSource Image
         {
             get { return (ImageSource)this.GetValue(ImageProperty); }
@@ -286,7 +296,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Image.  
+        /// Using a DependencyProperty as the backing store for Image.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty ImageProperty =
@@ -295,12 +305,13 @@ namespace Fluent
         #endregion
 
         #region ShowHelp Property
+
         /// <summary>
         /// Shows or hides the Help Label
         /// </summary>
-        [System.ComponentModel.DisplayName("HelpLabelVisibility"),
-        System.ComponentModel.Category("Screen Tip"),
-        System.ComponentModel.Description("Sets the visibility of the F1 Help Label")]
+        [System.ComponentModel.DisplayName("HelpLabelVisibility")]
+        [System.ComponentModel.Category("Screen Tip")]
+        [System.ComponentModel.Description("Sets the visibility of the F1 Help Label")]
         public Visibility HelpLabelVisibility
         {
             get { return (Visibility)this.GetValue(HelpLabelVisibilityProperty); }
@@ -308,7 +319,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store the boolean.  
+        /// Using a DependencyProperty as the backing store the boolean.
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty HelpLabelVisibilityProperty =
@@ -336,9 +347,9 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for BelowRibbon.  
+        /// Using a DependencyProperty as the backing store for BelowRibbon.
         /// This enables animation, styling, binding, etc...
-        /// </summary> 
+        /// </summary>
         public static readonly DependencyProperty IsRibbonAlignedProperty =
             DependencyProperty.Register(nameof(IsRibbonAligned), typeof(bool), typeof(ScreenTip),
             new PropertyMetadata(BooleanBoxes.TrueBox));
@@ -388,6 +399,12 @@ namespace Fluent
         }
 
         #endregion
+
+        /// <inheritdoc />
+        protected override AutomationPeer OnCreateAutomationPeer()
+        {
+            return new ScreenTipAutomationPeer(this);
+        }
     }
 
     /// <summary>
@@ -396,11 +413,6 @@ namespace Fluent
     public class ScreenTipHelpEventArgs : EventArgs
     {
         /// <summary>
-        /// Gets help topic associated with screen tip
-        /// </summary>
-        public object HelpTopic { get; private set; }
-
-        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="helpTopic">Help topic</param>
@@ -408,5 +420,10 @@ namespace Fluent
         {
             this.HelpTopic = helpTopic;
         }
+
+        /// <summary>
+        /// Gets help topic associated with screen tip
+        /// </summary>
+        public object HelpTopic { get; }
     }
 }

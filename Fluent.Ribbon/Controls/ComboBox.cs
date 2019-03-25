@@ -2,10 +2,8 @@
 namespace Fluent
 {
     using System;
-    using System.Diagnostics;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Threading;
     using System.Windows;
+    using System.Windows.Automation.Peers;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
     using System.Windows.Data;
@@ -13,14 +11,21 @@ namespace Fluent
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using System.Windows.Threading;
+    using Fluent.Extensions;
     using Fluent.Internal;
     using Fluent.Internal.KnownBoxes;
 
     /// <summary>
-	///     Represents custom Fluent UI ComboBox
-	/// </summary>
-	[TemplatePart(Name = "PART_ResizeBothThumb", Type = typeof(Thumb))]
+    ///     Represents custom Fluent UI ComboBox
+    /// </summary>
+    [TemplatePart(Name = "PART_ResizeBothThumb", Type = typeof(Thumb))]
     [TemplatePart(Name = "PART_ResizeVerticalThumb", Type = typeof(Thumb))]
+    [TemplatePart(Name = "PART_MenuPanel", Type = typeof(Panel))]
+    [TemplatePart(Name = "PART_SelectedImage", Type = typeof(Image))]
+    [TemplatePart(Name = "PART_ContentSite", Type = typeof(ContentPresenter))]
+    [TemplatePart(Name = "PART_ContentBorder", Type = typeof(Border))]
+    [TemplatePart(Name = "PART_ScrollViewer", Type = typeof(ScrollViewer))]
+    [TemplatePart(Name = "PART_DropDownBorder", Type = typeof(Border))]
     public class ComboBox : System.Windows.Controls.ComboBox, IQuickAccessItemProvider, IRibbonControl, IDropDownControl
     {
         #region Fields
@@ -45,8 +50,6 @@ namespace Fluent
         // Is visual currently snapped
         private bool isSnapped;
 
-        //private GalleryPanel galleryPanel;
-
         private ScrollViewer scrollViewer;
 
         private bool canSizeY;
@@ -57,9 +60,7 @@ namespace Fluent
 
         #region Size
 
-        /// <summary>
-        ///     Gets or sets Size for the element.
-        /// </summary>
+        /// <inheritdoc />
         public RibbonControlSize Size
         {
             get { return (RibbonControlSize)this.GetValue(SizeProperty); }
@@ -76,9 +77,7 @@ namespace Fluent
 
         #region SizeDefinition
 
-        /// <summary>
-        ///     Gets or sets SizeDefinition for element.
-        /// </summary>
+        /// <inheritdoc />
         public RibbonControlSizeDefinition SizeDefinition
         {
             get { return (RibbonControlSizeDefinition)this.GetValue(SizeDefinitionProperty); }
@@ -95,9 +94,7 @@ namespace Fluent
 
         #region KeyTip
 
-        /// <summary>
-        ///     Gets or sets KeyTip for element.
-        /// </summary>
+        /// <inheritdoc />
         public string KeyTip
         {
             get { return (string)this.GetValue(KeyTipProperty); }
@@ -112,21 +109,15 @@ namespace Fluent
 
         #endregion
 
-        /// <summary>
-        ///     Gets drop down popup
-        /// </summary>
+        /// <inheritdoc />
         public Popup DropDownPopup { get; private set; }
 
-        /// <summary>
-        ///     Gets a value indicating whether context menu is opened
-        /// </summary>
+        /// <inheritdoc />
         public bool IsContextMenuOpened { get; set; }
 
         #region Header
 
-        /// <summary>
-        ///     Gets or sets element Text
-        /// </summary>
+        /// <inheritdoc />
         public object Header
         {
             get { return (string)this.GetValue(HeaderProperty); }
@@ -143,9 +134,7 @@ namespace Fluent
 
         #region Icon
 
-        /// <summary>
-        ///     Gets or sets Icon for the element
-        /// </summary>
+        /// <inheritdoc />
         public object Icon
         {
             get { return this.GetValue(IconProperty); }
@@ -155,24 +144,7 @@ namespace Fluent
         /// <summary>
         ///     Using a DependencyProperty as the backing store for Icon.  This enables animation, styling, binding, etc...
         /// </summary>
-        public static readonly DependencyProperty IconProperty = RibbonControl.IconProperty.AddOwner(typeof(ComboBox), new PropertyMetadata(OnIconChanged));
-
-        private static void OnIconChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var element = (ComboBox)d;
-
-            var oldElement = e.OldValue as FrameworkElement;
-            if (oldElement != null)
-            {
-                element.RemoveLogicalChild(oldElement);
-            }
-
-            var newElement = e.NewValue as FrameworkElement;
-            if (newElement != null)
-            {
-                element.AddLogicalChild(newElement);
-            }
-        }
+        public static readonly DependencyProperty IconProperty = RibbonControl.IconProperty.AddOwner(typeof(ComboBox), new PropertyMetadata(RibbonControl.OnIconChanged));
 
         #endregion
 
@@ -242,10 +214,19 @@ namespace Fluent
         private bool IsSnapped
         {
             get { return this.isSnapped; }
+
             set
             {
-                if (value == this.isSnapped) return;
-                if (this.snappedImage == null) return;
+                if (value == this.isSnapped)
+                {
+                    return;
+                }
+
+                if (this.snappedImage == null)
+                {
+                    return;
+                }
+
                 if (value && ((int)this.contentSite.ActualWidth > 0) && ((int)this.contentSite.ActualHeight > 0))
                 {
                     // Render the freezed image
@@ -302,7 +283,6 @@ namespace Fluent
         /// <summary>
         ///     Static constructor
         /// </summary>
-        [SuppressMessage("Microsoft.Performance", "CA1810")]
         static ComboBox()
         {
             var type = typeof(ComboBox);
@@ -310,10 +290,10 @@ namespace Fluent
             PopupService.Attach(type);
             ContextMenuService.Attach(type);
             DefaultStyleKeyProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(type));
-            SelectedItemProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(OnSelectionItemChanged, CoerceSelectedItem));
+            SelectedItemProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(OnSelectedItemChanged, CoerceSelectedItem));
         }
 
-        private static void OnSelectionItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnSelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var combo = (ComboBox)d;
             if (combo.isQuickAccessOpened == false
@@ -348,17 +328,12 @@ namespace Fluent
 
         #region QuickAccess
 
-        /// <summary>
-        ///     Gets control which represents shortcut item.
-        ///     This item MUST be syncronized with the original
-        ///     and send command to original one control.
-        /// </summary>
-        /// <returns>Control which represents shortcut item</returns>
+        /// <inheritdoc />
         public virtual FrameworkElement CreateQuickAccessItem()
         {
             var combo = new ComboBox();
             RibbonControl.BindQuickAccessItem(this, combo);
-            RibbonControl.Bind(this, combo, nameof(this.ActualWidth), WidthProperty, BindingMode.OneWay);
+            RibbonControl.Bind(this, combo, nameof(this.ActualWidth), MaxWidthProperty, BindingMode.OneWay);
             RibbonControl.Bind(this, combo, nameof(this.InputWidth), InputWidthProperty, BindingMode.OneWay);
             RibbonControl.Bind(this, combo, nameof(this.IsEditable), IsEditableProperty, BindingMode.OneWay);
             RibbonControl.Bind(this, combo, nameof(this.IsReadOnly), IsReadOnlyProperty, BindingMode.OneWay);
@@ -374,7 +349,11 @@ namespace Fluent
             RibbonControl.Bind(this, combo, nameof(this.SelectedValuePath), SelectedValuePathProperty, BindingMode.OneWay);
             RibbonControl.Bind(this, combo, nameof(this.MaxDropDownHeight), MaxDropDownHeightProperty, BindingMode.OneWay);
             combo.DropDownOpened += this.OnQuickAccessOpened;
-            if (this.IsEditable) combo.GotFocus += this.OnQuickAccessTextBoxGetFocus;
+            if (this.IsEditable)
+            {
+                combo.GotFocus += this.OnQuickAccessTextBoxGetFocus;
+            }
+
             this.quickAccessCombo = combo;
             this.UpdateQuickAccessCombo();
             return combo;
@@ -383,14 +362,22 @@ namespace Fluent
         private void OnQuickAccessTextBoxGetFocus(object sender, RoutedEventArgs e)
         {
             this.isQuickAccessFocused = true;
-            if (!this.isQuickAccessOpened) this.Freeze();
+            if (!this.isQuickAccessOpened)
+            {
+                this.Freeze();
+            }
+
             this.quickAccessCombo.LostFocus += this.OnQuickAccessTextBoxLostFocus;
         }
 
         private void OnQuickAccessTextBoxLostFocus(object sender, RoutedEventArgs e)
         {
             this.quickAccessCombo.LostFocus -= this.OnQuickAccessTextBoxLostFocus;
-            if (!this.isQuickAccessOpened) this.Unfreeze();
+            if (!this.isQuickAccessOpened)
+            {
+                this.Unfreeze();
+            }
+
             this.isQuickAccessFocused = false;
         }
 
@@ -407,14 +394,14 @@ namespace Fluent
 
             if (this.isQuickAccessFocused == false)
             {
-                this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)this.FreezeAnBringSelectedItemIntoView);
+                this.RunInDispatcherAsync(this.FreezeAnBringSelectedItemIntoView);
             }
         }
 
         private void FreezeAnBringSelectedItemIntoView()
         {
             this.Freeze();
-            this.Dispatcher.BeginInvoke(DispatcherPriority.Input, (ThreadStart)this.BringSelectedItemIntoView);
+            this.RunInDispatcherAsync(this.BringSelectedItemIntoView, DispatcherPriority.Input);
         }
 
         private void BringSelectedItemIntoView()
@@ -431,7 +418,11 @@ namespace Fluent
         private void OnQuickAccessMenuClosed(object sender, EventArgs e)
         {
             this.quickAccessCombo.DropDownClosed -= this.OnQuickAccessMenuClosed;
-            if (!this.isQuickAccessFocused) this.Unfreeze();
+            if (!this.isQuickAccessFocused)
+            {
+                this.Unfreeze();
+            }
+
             this.isQuickAccessOpened = false;
         }
 
@@ -475,22 +466,22 @@ namespace Fluent
 
             if (this.IsEditable == false)
             {
-                this.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, (ThreadStart)(() =>
-                                                                                              {
-                                                                                                  this.quickAccessCombo.IsSnapped = true;
-                                                                                                  this.IsSnapped = true;
-                                                                                                  if (this.snappedImage != null &&
-                                                                                                      this.quickAccessCombo.snappedImage != null)
-                                                                                                  {
-                                                                                                      this.quickAccessCombo.snappedImage.Source = this.snappedImage.Source;
-                                                                                                      this.quickAccessCombo.snappedImage.Visibility = Visibility.Visible;
-                                                                                                      if (this.quickAccessCombo.IsSnapped == false)
-                                                                                                      {
-                                                                                                          this.quickAccessCombo.isSnapped = true;
-                                                                                                      }
-                                                                                                  }
-                                                                                                  this.IsSnapped = false;
-                                                                                              }));
+                this.RunInDispatcherAsync(() =>
+                                          {
+                                              this.quickAccessCombo.IsSnapped = true;
+                                              this.IsSnapped = true;
+                                              if (this.snappedImage != null &&
+                                                  this.quickAccessCombo.snappedImage != null)
+                                              {
+                                                  this.quickAccessCombo.snappedImage.Source = this.snappedImage.Source;
+                                                  this.quickAccessCombo.snappedImage.Visibility = Visibility.Visible;
+                                                  if (this.quickAccessCombo.IsSnapped == false)
+                                                  {
+                                                      this.quickAccessCombo.isSnapped = true;
+                                                  }
+                                              }
+                                              this.IsSnapped = false;
+                                          }, DispatcherPriority.ApplicationIdle);
             }
         }
 
@@ -500,9 +491,7 @@ namespace Fluent
             this.UpdateQuickAccessCombo();
         }
 
-        /// <summary>
-        ///     Gets or sets whether control can be added to quick access toolbar
-        /// </summary>
+        /// <inheritdoc />
         public bool CanAddToQuickAccessToolBar
         {
             get { return (bool)this.GetValue(CanAddToQuickAccessToolBarProperty); }
@@ -513,16 +502,13 @@ namespace Fluent
         ///     Using a DependencyProperty as the backing store for CanAddToQuickAccessToolBar.  This enables animation, styling,
         ///     binding, etc...
         /// </summary>
-        public static readonly DependencyProperty CanAddToQuickAccessToolBarProperty = RibbonControl.CanAddToQuickAccessToolBarProperty.AddOwner(typeof(ComboBox), new PropertyMetadata(BooleanBoxes.TrueBox, RibbonControl.OnCanAddToQuickAccessToolbarChanged));
+        public static readonly DependencyProperty CanAddToQuickAccessToolBarProperty = RibbonControl.CanAddToQuickAccessToolBarProperty.AddOwner(typeof(ComboBox), new PropertyMetadata(BooleanBoxes.TrueBox, RibbonControl.OnCanAddToQuickAccessToolBarChanged));
 
         #endregion
 
         #region Overrides
 
-        /// <summary>
-        ///     When overridden in a derived class, is invoked whenever application code or internal processes call
-        ///     <see cref="M:System.Windows.FrameworkElement.ApplyTemplate" />.
-        /// </summary>
+        /// <inheritdoc />
         public override void OnApplyTemplate()
         {
             this.DropDownPopup = this.GetTemplateChild("PART_Popup") as Popup;
@@ -531,6 +517,7 @@ namespace Fluent
             {
                 this.resizeVerticalThumb.DragDelta -= this.OnResizeVerticalDelta;
             }
+
             this.resizeVerticalThumb = this.GetTemplateChild("PART_ResizeVerticalThumb") as Thumb;
             if (this.resizeVerticalThumb != null)
             {
@@ -541,6 +528,7 @@ namespace Fluent
             {
                 this.resizeBothThumb.DragDelta -= this.OnResizeBothDelta;
             }
+
             this.resizeBothThumb = this.GetTemplateChild("PART_ResizeBothThumb") as Thumb;
             if (this.resizeBothThumb != null)
             {
@@ -552,9 +540,16 @@ namespace Fluent
             this.snappedImage = this.GetTemplateChild("PART_SelectedImage") as Image;
             this.contentSite = this.GetTemplateChild("PART_ContentSite") as ContentPresenter;
 
-            if (this.contentBorder != null) this.contentBorder.PreviewMouseDown -= this.OnContentBorderPreviewMouseDown;
+            if (this.contentBorder != null)
+            {
+                this.contentBorder.PreviewMouseDown -= this.OnContentBorderPreviewMouseDown;
+            }
+
             this.contentBorder = this.GetTemplateChild("PART_ContentBorder") as Border;
-            if (this.contentBorder != null) this.contentBorder.PreviewMouseDown += this.OnContentBorderPreviewMouseDown;
+            if (this.contentBorder != null)
+            {
+                this.contentBorder.PreviewMouseDown += this.OnContentBorderPreviewMouseDown;
+            }
 
             this.scrollViewer = this.GetTemplateChild("PART_ScrollViewer") as ScrollViewer;
 
@@ -563,10 +558,7 @@ namespace Fluent
             base.OnApplyTemplate();
         }
 
-        /// <summary>
-        ///     Reports when a combo box's popup opens.
-        /// </summary>
-        /// <param name="e">The event data for the <see cref="E:System.Windows.Controls.ComboBox.DropDownOpened" /> event.</param>
+        /// <inheritdoc />
         protected override void OnDropDownOpened(EventArgs e)
         {
             base.OnDropDownOpened(e);
@@ -607,10 +599,7 @@ namespace Fluent
             popupChild?.UpdateLayout();
         }
 
-        /// <summary>
-        ///     Reports when a combo box's popup closes.
-        /// </summary>
-        /// <param name="e">The event data for the <see cref="E:System.Windows.Controls.ComboBox.DropDownClosed" /> event.</param>
+        /// <inheritdoc />
         protected override void OnDropDownClosed(EventArgs e)
         {
             base.OnDropDownClosed(e);
@@ -635,7 +624,7 @@ namespace Fluent
             if (this.focusedElement != null)
             {
                 this.focusedElement.LostKeyboardFocus -= this.OnFocusedElementLostKeyboardFocus;
-            }            
+            }
 
             this.focusedElement = Keyboard.FocusedElement;
 
@@ -651,13 +640,12 @@ namespace Fluent
             }
         }
 
-        /// <summary>
-        ///     Invoked when a <see cref="E:System.Windows.Input.Keyboard.PreviewKeyDown" /> attached routed event occurs.
-        /// </summary>
-        /// <param name="e">Event data.</param>
+        /// <inheritdoc />
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
-            if (this.IsEditable && ((e.Key == Key.Down) || (e.Key == Key.Up)) && !this.IsDropDownOpen)
+            if (this.IsEditable
+                && ((e.Key == Key.Down) || (e.Key == Key.Up))
+                && !this.IsDropDownOpen)
             {
                 this.IsDropDownOpen = true;
                 e.Handled = true;
@@ -667,173 +655,111 @@ namespace Fluent
             base.OnPreviewKeyDown(e);
         }
 
-        /// <summary>
-        ///     Invoked when a <see cref="E:System.Windows.Input.Keyboard.KeyDown" /> attached routed event occurs.
-        /// </summary>
-        /// <param name="e">Event data.</param>
+        /// <inheritdoc />
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            if (e.Key == Key.Down)
+            var baseKeyDownCalled = false;
+
+            if ((this.Menu != null && this.Menu.IsKeyboardFocusWithin == false)
+                && e.Key != Key.Tab)
             {
-                Debug.WriteLine("Down pressed. FocusedElement - " + Keyboard.FocusedElement);
-                if (this.Menu != null 
-                    && this.Menu.Items.Contains(this.Menu.ItemContainerGenerator.ItemFromContainer((DependencyObject)Keyboard.FocusedElement)))
-                {
-                    var indexOfMSelectedItem = this.Menu.ItemContainerGenerator.IndexFromContainer((DependencyObject)Keyboard.FocusedElement);
+                base.OnKeyDown(e);
 
-                    if (indexOfMSelectedItem != this.Menu.Items.Count - 1)
-                    {
-                        Keyboard.Focus(this.Menu.ItemContainerGenerator.ContainerFromIndex(indexOfMSelectedItem + 1) as IInputElement);
-                    }
-                    else
-                    {
-                        if ((this.Items.Count > 0) && !this.IsEditable)
-                        {
-                            Keyboard.Focus(this.ItemContainerGenerator.ContainerFromIndex(0) as IInputElement);
-                        }
-                        else Keyboard.Focus(this.Menu.Items[0] as IInputElement);
-                    }
+                baseKeyDownCalled = true;
+
+                if (e.Handled)
+                {
+                    return;
                 }
-                else if (this.Items.Contains(this.ItemContainerGenerator.ItemFromContainer((DependencyObject)Keyboard.FocusedElement)))
-                {
-                    var indexOfSelectedItem = this.ItemContainerGenerator.IndexFromContainer((DependencyObject)Keyboard.FocusedElement);
+            }
 
-                    if (indexOfSelectedItem != this.Items.Count - 1)
+            if (this.Menu != null
+                && this.Menu.Items.IsEmpty == false)
+            {
+                if (e.Key == Key.Tab)
+                {
+                    if (this.Menu.IsKeyboardFocusWithin)
                     {
-                        Keyboard.Focus(this.ItemContainerGenerator.ContainerFromIndex(indexOfSelectedItem + 1) as IInputElement);
+                        Keyboard.Focus(this.ItemContainerGenerator.ContainerFromIndex(0) as IInputElement);
                     }
                     else
                     {
-                        if (this.Menu != null
-                            && this.Menu.Items.Count > 0
-                            && this.IsEditable == false)
+                        Keyboard.Focus(this.Menu.ItemContainerGenerator.ContainerFromIndex(0) as IInputElement);
+                    }
+
+                    e.Handled = true;
+                    return;
+                }
+
+                if (this.Menu.Items.Contains(this.Menu.ItemContainerGenerator.ItemFromContainer((DependencyObject)Keyboard.FocusedElement)))
+                {
+                    if (e.Key == Key.Down)
+                    {
+                        var indexOfMenuSelectedItem = this.Menu.ItemContainerGenerator.IndexFromContainer((DependencyObject)Keyboard.FocusedElement);
+
+                        if (indexOfMenuSelectedItem != this.Menu.Items.Count - 1)
+                        {
+                            Keyboard.Focus(this.Menu.ItemContainerGenerator.ContainerFromIndex(indexOfMenuSelectedItem + 1) as IInputElement);
+                        }
+                        else
                         {
                             Keyboard.Focus(this.Menu.ItemContainerGenerator.ContainerFromIndex(0) as IInputElement);
                         }
-                        else
-                        {
-                            Keyboard.Focus(this.ItemContainerGenerator.ContainerFromIndex(0) as IInputElement);
-                        }
+
+                        e.Handled = true;
+                        return;
                     }
-                }
-                else if (this.SelectedItem != null)
-                {
-                    Keyboard.Focus(this.ItemContainerGenerator.ContainerFromItem(this.SelectedItem) as IInputElement);
-                }
 
-                e.Handled = true;
-                Debug.WriteLine("FocusedElement - " + Keyboard.FocusedElement);
-                return;
-            }
-            else if (e.Key == Key.Up)
-            {
-                Debug.WriteLine("Up pressed. FocusedElement - " + Keyboard.FocusedElement);
-
-                if (this.Menu != null 
-                    && this.Menu.Items.Contains(this.Menu.ItemContainerGenerator.ItemFromContainer((DependencyObject)Keyboard.FocusedElement)))
-                {
-                    var indexOfMSelectedItem = this.Menu.ItemContainerGenerator.IndexFromContainer((DependencyObject)Keyboard.FocusedElement);
-
-                    if (indexOfMSelectedItem != 0)
+                    if (e.Key == Key.Up)
                     {
-                        Keyboard.Focus(this.Menu.ItemContainerGenerator.ContainerFromIndex(indexOfMSelectedItem - 1) as IInputElement);
-                    }
-                    else
-                    {
-                        if (this.Items.Count > 0
-                            && this.IsEditable == false)
+                        var indexOfMenuSelectedItem = this.Menu.ItemContainerGenerator.IndexFromContainer((DependencyObject)Keyboard.FocusedElement);
+
+                        if (indexOfMenuSelectedItem != 0)
                         {
-                            Keyboard.Focus(this.ItemContainerGenerator.ContainerFromIndex(this.Items.Count - 1) as IInputElement);
+                            Keyboard.Focus(this.Menu.ItemContainerGenerator.ContainerFromIndex(indexOfMenuSelectedItem - 1) as IInputElement);
                         }
                         else
-                        {
-                            Keyboard.Focus(this.Menu.Items[this.Menu.Items.Count - 1] as IInputElement);
-                        }
-                    }
-                }
-                else if (this.Items.Contains(this.ItemContainerGenerator.ItemFromContainer((DependencyObject)Keyboard.FocusedElement)))
-                {
-                    var indexOfSelectedItem = this.ItemContainerGenerator.IndexFromContainer((DependencyObject)Keyboard.FocusedElement);
-                    if (indexOfSelectedItem != 0)
-                    {
-                        Keyboard.Focus(this.ItemContainerGenerator.ContainerFromIndex(indexOfSelectedItem - 1) as IInputElement);
-                    }
-                    else
-                    {
-                        if (this.Menu != null
-                            && this.Menu.Items.Count > 0
-                            && this.IsEditable == false)
                         {
                             Keyboard.Focus(this.Menu.ItemContainerGenerator.ContainerFromIndex(this.Menu.Items.Count - 1) as IInputElement);
                         }
-                        else
-                        {
-                            Keyboard.Focus(this.ItemContainerGenerator.ContainerFromIndex(this.Items.Count - 1) as IInputElement);
-                        }
+
+                        e.Handled = true;
+                        return;
                     }
                 }
-                else if (this.SelectedItem != null)
-                {
-                    Keyboard.Focus(this.ItemContainerGenerator.ContainerFromItem(this.SelectedItem) as IInputElement);
-                }
-
-                Debug.WriteLine("FocusedElement - " + Keyboard.FocusedElement);
-                e.Handled = true;
-                return;
             }
-            else if ((e.Key == Key.Return) && !this.IsEditable && this.IsDropDownOpen)
+
+            if (baseKeyDownCalled == false
+                && e.Handled == false)
             {
-                var element = Keyboard.FocusedElement as DependencyObject;
-
-                // only try to select if we got a focusedElement
-                if (element != null)
-                {
-                    var newSelectedIndex = this.ItemContainerGenerator.IndexFromContainer(element);
-
-                    // only set the selected index if the focused element was in a container in this combobox
-                    if (newSelectedIndex > -1)
-                    {
-                        this.SelectedIndex = newSelectedIndex;
-                    }
-                }
+                base.OnKeyDown(e);
             }
-
-            base.OnKeyDown(e);
         }
 
         #endregion
 
         #region Methods
 
-        /// <summary>
-        ///     Handles key tip pressed
-        /// </summary>
-        public virtual void OnKeyTipPressed()
+        /// <inheritdoc />
+        public virtual KeyTipPressedResult OnKeyTipPressed()
         {
-            this.Dispatcher.BeginInvoke(
-                DispatcherPriority.Normal,
-                (DispatcherOperationCallback)delegate (object arg)
-                {
-                    var ctrl = (ComboBox)arg;
-
-                    // Edge case: Whole dropdown content is disabled
-                    if (ctrl.IsKeyboardFocusWithin == false)
-                    {
-                        Keyboard.Focus(ctrl);
-                    }
-                    return null;
-                },
-                this);
+            // Edge case: Whole dropdown content is disabled
+            if (this.IsKeyboardFocusWithin == false)
+            {
+                Keyboard.Focus(this);
+            }
 
             if (this.IsEditable == false)
             {
                 this.IsDropDownOpen = true;
+
+                return new KeyTipPressedResult(true, true);
             }
+
+            return new KeyTipPressedResult(true, false);
         }
 
-        /// <summary>
-        ///     Handles back navigation with KeyTips
-        /// </summary>
+        /// <inheritdoc />
         public void OnKeyTipBack()
         {
         }
@@ -873,7 +799,7 @@ namespace Fluent
                 return;
             }
 
-            var delta = monitorRight - this.PointToScreen(new Point()).X - popupChild.ActualWidth - e.HorizontalChange;
+            var delta = monitorRight - this.PointToScreen(default).X - popupChild.ActualWidth - e.HorizontalChange;
             var deltaX = popupChild.ActualWidth - this.scrollViewer.ActualWidth;
             var deltaBorders = this.dropDownBorder.ActualWidth - this.scrollViewer.ActualWidth;
 
@@ -883,7 +809,7 @@ namespace Fluent
             }
             else
             {
-                this.scrollViewer.Width = Math.Max(0, Math.Max(monitorRight - this.PointToScreen(new Point()).X - deltaX, this.ActualWidth - deltaBorders));
+                this.scrollViewer.Width = Math.Max(0, Math.Max(monitorRight - this.PointToScreen(default).X - deltaX, this.ActualWidth - deltaBorders));
             }
         }
 
@@ -909,5 +835,20 @@ namespace Fluent
         }
 
         #endregion
+
+        /// <inheritdoc />
+        void ILogicalChildSupport.AddLogicalChild(object child)
+        {
+            this.AddLogicalChild(child);
+        }
+
+        /// <inheritdoc />
+        void ILogicalChildSupport.RemoveLogicalChild(object child)
+        {
+            this.RemoveLogicalChild(child);
+        }
+
+        /// <inheritdoc />
+        protected override AutomationPeer OnCreateAutomationPeer() => new Fluent.Automation.Peers.ComboBoxAutomationPeer(this);
     }
 }

@@ -1,20 +1,28 @@
-﻿namespace FluentTest
+﻿#pragma warning disable SA1402 // File may only contain a single class
+namespace FluentTest
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
     using System.Text;
     using System.Threading;
+    using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Data;
     using System.Windows.Input;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using Fluent;
+    using FluentTest.Adorners;
+    using FluentTest.Helpers;
     using FluentTest.ViewModels;
+    using MahApps.Metro.Controls;
+    using MahApps.Metro.Controls.Dialogs;
     using Button = Fluent.Button;
 
-    public partial class TestContent
+    public partial class TestContent : UserControl
     {
         private readonly MainViewModel viewModel;
 
@@ -28,6 +36,61 @@
 
             this.viewModel = new MainViewModel();
             this.DataContext = this.viewModel;
+
+            ColorGallery.RecentColors.Add(((SolidColorBrush)Application.Current.Resources["Fluent.Ribbon.Brushes.AccentBaseColorBrush"]).Color);
+
+            this.Loaded += this.TestContent_Loaded;
+        }
+
+        public static readonly DependencyProperty BrushesProperty = DependencyProperty.Register(nameof(Brushes), typeof(List<KeyValuePair<string, Brush>>), typeof(TestContent), new PropertyMetadata(default(List<KeyValuePair<string, Brush>>)));
+
+        public List<KeyValuePair<string, Brush>> Brushes
+        {
+            get { return (List<KeyValuePair<string, Brush>>)this.GetValue(BrushesProperty); }
+            set { this.SetValue(BrushesProperty, value); }
+        }
+
+        private static IEnumerable<KeyValuePair<string, Brush>> GetBrushes()
+        {
+            var brushes = typeof(Brushes)
+                          .GetProperties()
+                          .Where(prop =>
+                                     typeof(Brush).IsAssignableFrom(prop.PropertyType))
+                          .Select(prop =>
+                                      new KeyValuePair<string, Brush>(prop.Name, (Brush)prop.GetValue(null, null)));
+            
+            return ThemeManager.ColorSchemes.Select(x => new KeyValuePair<string, Brush>(x.Name, x.ShowcaseBrush))
+                               .Concat(brushes)
+                               .OrderBy(x => x.Key);
+        }
+
+        private string selectedMenu = "Backstage";
+
+        public string SelectedMenu
+        {
+            get => this.selectedMenu;
+            set
+            {
+                this.selectedMenu = value;
+
+                switch (this.selectedMenu)
+                {
+                    case "ApplicationMenu":
+                        this.ApplicationMenu.Visibility = Visibility.Visible;
+                        this.Backstage.Visibility = Visibility.Collapsed;
+                        break;
+
+                    case "Backstage":
+                        this.ApplicationMenu.Visibility = Visibility.Collapsed;
+                        this.Backstage.Visibility = Visibility.Visible;
+                        break;
+
+                    case "Empty menu":
+                        this.ApplicationMenu.Visibility = Visibility.Collapsed;
+                        this.Backstage.Visibility = Visibility.Collapsed;
+                        break;
+                }
+            }
         }
 
         private void HookEvents()
@@ -38,6 +101,50 @@
             this.buttonBold.Unchecked += (s, e) => Debug.WriteLine("Unchecked");
 
             this.PreviewMouseWheel += this.OnPreviewMouseWheel;
+        }
+
+        private void TestContent_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.Loaded -= this.TestContent_Loaded;
+
+            this.InitializeBrushes();
+        }
+
+        private void InitializeBrushes()
+        {
+            var currentBrushes = new[]
+                                 {
+                                     new KeyValuePair<string, Brush>("Initial glow", GetCurrentGlowBrush()),
+                                     new KeyValuePair<string, Brush>("Initial non active glow", GetCurrentNonActiveGlowBrush()),
+                                 };
+
+            this.Brushes = currentBrushes.Concat(GetBrushes()).ToList();
+
+            Brush GetCurrentGlowBrush()
+            {
+                switch (Window.GetWindow(this))
+                {
+                    case RibbonWindow x:
+                        return x.GlowBrush;
+                    case MetroWindow x:
+                        return x.GlowBrush;
+                }
+
+                return null;
+            }
+
+            Brush GetCurrentNonActiveGlowBrush()
+            {
+                switch (Window.GetWindow(this))
+                {
+                    case RibbonWindow x:
+                        return x.NonActiveGlowBrush;
+                    case MetroWindow x:
+                        return x.NonActiveGlowBrush;
+                }
+
+                return null;
+            }
         }
 
         private static void OnScreenTipHelpPressed(object sender, ScreenTipHelpEventArgs e)
@@ -57,10 +164,13 @@
             var wnd = new Window
             {
                 Content = $"Launcher-Window for: {groupBox.Header}",
-                Owner = Window.GetWindow(this)
+                Width = 300,
+                Height = 100,
+                Owner = Window.GetWindow(this),
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
             };
 
-            wnd.Show();
+            wnd.ShowDialog();
         }
 
         private void OnSplitClick(object sender, RoutedEventArgs e)
@@ -116,14 +226,11 @@
                 return "NULL";
             }
 
-            var ribbonControl = element as IHeaderedControl;
-
-            var header = ribbonControl != null
+            var header = element is IHeaderedControl ribbonControl
                            ? ribbonControl.Header
                            : string.Empty;
 
-            var frameworkElement = element as FrameworkElement;
-            var name = frameworkElement != null
+            var name = element is FrameworkElement frameworkElement
                            ? frameworkElement.Name
                            : string.Empty;
 
@@ -167,12 +274,7 @@
         {
             var treeView = sender as TreeView;
 
-            if (treeView == null)
-            {
-                return;
-            }
-
-            var item = treeView.SelectedItem as TreeViewItem;
+            var item = treeView?.SelectedItem as TreeViewItem;
             if (item == null)
             {
                 return;
@@ -234,16 +336,6 @@
             wnd.Show();
         }
 
-        private void OnPrintVisualClick(object sender, RoutedEventArgs e)
-        {
-            var printDlg = new PrintDialog();
-
-            if (printDlg.ShowDialog() == true)
-            {
-                printDlg.PrintVisual(this, "Main Window");
-            }
-        }
-
         private void AddRibbonTab_OnClick(object sender, RoutedEventArgs e)
         {
             var tab = new RibbonTabItem
@@ -262,15 +354,48 @@
             this.ribbon.Tabs.Add(tab);
         }
 
-        private void HandleSaveAsClick(object sender, RoutedEventArgs e)
+        private async void HandleSaveAsClick(object sender, RoutedEventArgs e)
         {
-            var w = new Window();
-            w.ShowDialog();
+            var progressAdornerChild = new Border
+                                      {
+                                          VerticalAlignment = VerticalAlignment.Stretch,
+                                          HorizontalAlignment = HorizontalAlignment.Stretch,
+                                          Background = new SolidColorBrush(Colors.Black) { Opacity = 0.25 },
+                                          IsHitTestVisible = true,
+                                          Child = new ProgressBar
+                                                  {
+                                                      IsIndeterminate = true,
+                                                      Width = 300,
+                                                      Height = 20,
+                                                      VerticalAlignment = VerticalAlignment.Center,
+                                                      HorizontalAlignment = HorizontalAlignment.Center
+                                                  }
+                                      };
+            BindingOperations.SetBinding(progressAdornerChild, WidthProperty, new Binding(nameof(this.Backstage.AdornerLayer.ActualWidth)) { Source = this.Backstage.AdornerLayer });
+            BindingOperations.SetBinding(progressAdornerChild, HeightProperty, new Binding(nameof(this.Backstage.AdornerLayer.ActualHeight)) { Source = this.Backstage.AdornerLayer });
+
+            var progressAdorner = new SimpleControlAdorner(this.Backstage.AdornerLayer)
+                                  {
+                                      Child = progressAdornerChild
+                                  };
+
+            this.Backstage.AdornerLayer.Add(progressAdorner);
+
+            await Task.Delay(TimeSpan.FromSeconds(3));
+
+            this.Backstage.AdornerLayer.Remove(progressAdorner);
+
+            BindingOperations.ClearAllBindings(progressAdornerChild);
         }
 
         private void OpenRegularWindow_OnClick(object sender, RoutedEventArgs e)
         {
             new RegularWindow().Show();
+        }
+
+        private void OpenMinimalRibbonWindowSample_OnClick(object sender, RoutedEventArgs e)
+        {
+            new MinimalWindowSample().Show();
         }
 
         private void OpenMahMetroWindow_OnClick(object sender, RoutedEventArgs e)
@@ -302,7 +427,9 @@
                 return;
             }
 
-            this.zoomSlider.Value += e.Delta > 0 ? 0.1 : -0.1;
+            var newZoomValue = this.zoomSlider.Value + (e.Delta > 0 ? 0.1 : -0.1);
+
+            this.zoomSlider.Value = Math.Max(Math.Min(newZoomValue, this.zoomSlider.Maximum), this.zoomSlider.Minimum);
 
             e.Handled = true;
         }
@@ -317,6 +444,31 @@
             new TestWindow().ShowDialog();
         }
 
+        private void OpenRibbonWindowOnNewThread_OnClick(object sender, RoutedEventArgs e)
+        {
+            var thread = new Thread(() =>
+                                    {
+                                        new TestWindow().Show();
+                                        System.Windows.Threading.Dispatcher.Run();
+                                    })
+                         {
+                             IsBackground = true
+                         };
+            thread.SetApartmentState(ApartmentState.STA);
+
+            thread.Start();
+        }
+
+        private void OpenRibbonWindowColorized_OnClick(object sender, RoutedEventArgs e)
+        {
+            new RibbonWindowColorized().Show();
+        }
+
+        private void OpenRibbonWindowWithBackgroundImage_OnClick(object sender, RoutedEventArgs e)
+        {
+            new RibbonWindowWithBackgroundImage().Show();
+        }
+
         private void ShowStartScreen_OnClick(object sender, RoutedEventArgs e)
         {
             this.startScreen.Shown = false;
@@ -327,28 +479,48 @@
         {
             this.viewModel.FontsViewModel.FontsData.Add($"Added item {this.viewModel.FontsViewModel.FontsData.Count}");
         }
+
+        private void CreateThemeResourceDictionaryButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.ThemeResourceDictionaryTextBox.Text = ThemeHelper.CreateTheme("Dark", this.ThemeColorGallery.SelectedColor ?? this.viewModel.ColorViewModel.ThemeColor, this.ThemeColorGallery.SelectedColor ?? this.viewModel.ColorViewModel.ThemeColor, changeImmediately: this.ChangeImmediatelyCheckBox.IsChecked ?? false).Item1;
+        }
+
+        private void HandleResetSavedState_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.ribbon.AutomaticStateManagement = false;
+            this.ribbon.RibbonStateStorage.Reset();
+
+            System.Windows.Forms.Application.Restart();
+            Application.Current.Shutdown();
+        }
+
+        private async void HandleShowMetroMessage(object sender, RoutedEventArgs e)
+        {
+            var metroWindow = Window.GetWindow(this) as MetroWindow;
+
+            if (metroWindow == null)
+            {
+                return;
+            }
+
+            await metroWindow.ShowMessageAsync("Test", "Message");
+        }
     }
 
     public class TestRoutedCommand
     {
-        public static RoutedCommand TestPresenterCommand = new RoutedCommand("TestPresenterCommand", typeof(TestRoutedCommand));
+        public static RoutedCommand TestPresenterCommand { get; } = new RoutedCommand("TestPresenterCommand", typeof(TestRoutedCommand));
 
-        public ICommand ItemCommand
-        {
-            get { return TestPresenterCommand; }
-        }
+        public ICommand ItemCommand => TestPresenterCommand;
 
-        public CommandBinding ItemCommandBinding
-        {
-            get { return new CommandBinding(TestPresenterCommand, this.OnTestCommandExecuted, this.CanExecuteTestCommand); }
-        }
+        public CommandBinding ItemCommandBinding => new CommandBinding(TestPresenterCommand, OnTestCommandExecuted, CanExecuteTestCommand);
 
-        private void CanExecuteTestCommand(object sender, CanExecuteRoutedEventArgs e)
+        private static void CanExecuteTestCommand(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
         }
 
-        private void OnTestCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        private static void OnTestCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             MessageBox.Show("TestPresenterCommand");
         }
