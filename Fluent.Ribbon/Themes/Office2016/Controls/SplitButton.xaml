@@ -3,7 +3,7 @@
                     xmlns:Fluent="clr-namespace:Fluent"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                    xmlns:Converters="clr-namespace:Fluent.Converters"
+                    xmlns:converters="clr-namespace:Fluent.Converters"
                     mc:Ignorable="d">
     <Style x:Key="RibbonSplitButtonStyle"
            TargetType="{x:Type Fluent:SplitButton}">
@@ -14,29 +14,37 @@
         <Setter Property="Width"
                 Value="Auto" />
         <Setter Property="Foreground"
-                Value="{DynamicResource DefaultFontBrush}" />
+                Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
         <Setter Property="SnapsToDevicePixels"
                 Value="False" />
-        <Setter Property="Margin"
-                Value="2 0 2 0" />
         <Setter Property="HorizontalAlignment"
                 Value="Left" />
-        <Setter Property="VerticalAlignment"
-                Value="Stretch" />
         <Setter Property="HorizontalContentAlignment"
                 Value="Left" />
         <Setter Property="VerticalContentAlignment"
                 Value="Center" />
+        <Setter Property="Fluent:KeyTip.AutoPlacement"
+                Value="False" />
         <Style.Triggers>
             <Trigger Property="Size"
                      Value="Large">
                 <Setter Property="Height"
                         Value="68" />
+                <Setter Property="Fluent:KeyTip.HorizontalAlignment"
+                        Value="Center" />
+                <Setter Property="Fluent:KeyTip.VerticalAlignment"
+                        Value="Bottom" />
             </Trigger>
             <Trigger Property="Size"
                      Value="Middle">
                 <Setter Property="Height"
                         Value="22" />
+                <Setter Property="Fluent:KeyTip.HorizontalAlignment"
+                        Value="Right" />
+                <Setter Property="Fluent:KeyTip.VerticalAlignment"
+                        Value="Center" />
+                <Setter Property="Fluent:KeyTip.Margin"
+                        Value="0,0,-5,0" />
             </Trigger>
             <Trigger Property="Size"
                      Value="Small">
@@ -44,23 +52,29 @@
                         Value="22" />
                 <Setter Property="Width"
                         Value="32" />
+                <Setter Property="Fluent:KeyTip.HorizontalAlignment"
+                        Value="Right" />
+                <Setter Property="Fluent:KeyTip.VerticalAlignment"
+                        Value="Center" />
+                <Setter Property="Fluent:KeyTip.Margin"
+                        Value="0,0,-5,0" />
             </Trigger>
-      <Trigger Property="Fluent:RibbonControl.IsQuickAccessItem"
+            <Trigger Property="Fluent:RibbonControl.IsQuickAccessItem"
                      Value="True">
-        <Setter Property="Height"
+                <Setter Property="Height"
                         Value="30" />
-        <Setter Property="Width"
+                <Setter Property="Width"
                         Value="33" />
-        <Setter Property="HorizontalAlignment"
+                <Setter Property="HorizontalAlignment"
                         Value="Stretch" />
-        <Setter Property="HorizontalContentAlignment"
+                <Setter Property="HorizontalContentAlignment"
                         Value="Center" />
-        <Setter Property="VerticalAlignment"
+                <Setter Property="VerticalAlignment"
                         Value="Stretch" />
-        <Setter Property="VerticalContentAlignment"
+                <Setter Property="VerticalContentAlignment"
                         Value="Center" />
-      </Trigger>
-    </Style.Triggers>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <ControlTemplate x:Key="RibbonSplitButtonControlTemplate"
@@ -72,12 +86,13 @@
         <Grid>
             <Border BorderThickness="1"
                     Name="PART_ButtonBorder"
-                    BorderBrush="{DynamicResource TransparentBrush}"
-                    Background="{DynamicResource TransparentBrush}"
+                    BorderBrush="Transparent"
+                    Background="Transparent"
                     VerticalAlignment="Stretch">
                 <StackPanel Orientation="Vertical"
-                            Name="stackPanel">
-                    <Fluent:ToggleButton x:Name="PART_Button" Focusable="False"
+                            Name="stackPanel"
+                            KeyboardNavigation.TabNavigation="Local">
+                    <Fluent:ToggleButton x:Name="PART_Button"
                                          Command="{TemplateBinding Command}"
                                          CommandParameter="{TemplateBinding CommandParameter}"
                                          CommandTarget="{TemplateBinding CommandTarget}"
@@ -85,23 +100,23 @@
                                          Height="Auto"
                                          Width="Auto"
                                          Style="{DynamicResource InnerButtonStyle}"
-                                         LargeIcon="{Binding LargeIcon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}"
-                                         Icon="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static Converters:StaticConverters.ObjectToImageConverter}}"
+                                         LargeIcon="{Binding LargeIcon, RelativeSource={RelativeSource TemplatedParent}}"
+                                         Icon="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}"
                                          IsEnabled="{TemplateBinding IsButtonEnabled}"
                                          Header="{TemplateBinding Header}"
                                          ToolTip="{TemplateBinding ToolTip}"
+                                         GroupName="{Binding GroupName, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                          IsChecked="{Binding IsChecked, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                          IsDefinitive="{TemplateBinding IsDefinitive}"
                                          CanAddToQuickAccessToolBar="{TemplateBinding CanAddButtonToQuickAccessToolBar}" />
                     <Border BorderThickness="0,0,0,0"
                             Name="downBorder"
-                            BorderBrush="{DynamicResource TransparentBrush}"
-                            Background="{DynamicResource TransparentBrush}"
+                            BorderBrush="Transparent"
+                            Background="Transparent"
                             Margin="0,0,0,0">
                         <Grid>
                             <Fluent:TwoLineLabel x:Name="controlLabel"
                                                  Text="{TemplateBinding Header}"
-                                                 Style="{DynamicResource TwoLineLabelStyle}"
                                                  HorizontalAlignment="Center"
                                                  VerticalAlignment="Center"
                                                  Margin="2,1,2,2"
@@ -120,17 +135,16 @@
                    VerticalAlignment="Top"
                    Grid.ColumnSpan="2">
                 <Grid Name="DropDown"
+                      IsEnabled="{TemplateBinding IsEnabled}"
                       SnapsToDevicePixels="True"
                       Margin="0"
                       VerticalAlignment="Top">
                     <Border x:Name="PART_DropDownBorder"
                             MinWidth="{TemplateBinding ActualWidth}"
                             SnapsToDevicePixels="True"
-                            Background="{DynamicResource ContextMenuBarBackgroundBrush}"
-                            BorderBrush="{DynamicResource ContextMenuBarBorderBrush}"
+                            Background="{DynamicResource Fluent.Ribbon.Brushes.DropDown.BackgroundBrush}"
+                            BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.DropDown.BorderBrush}"
                             BorderThickness="1"
-                            CornerRadius="1"
-                            d:LayoutOverrides="Width, Height"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Top">
                         <Grid Width="Auto"
@@ -140,7 +154,7 @@
                             <Border VerticalAlignment="Top"
                                     Width="Auto"
                                     Height="Auto"
-                                    BorderBrush="{DynamicResource ContextMenuBarBackgroundBrush}"
+                                    BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.DropDown.BackgroundBrush}"
                                     BorderThickness="1" />
                             <Grid Margin="1"
                                   HorizontalAlignment="Stretch"
@@ -154,8 +168,8 @@
                                               Margin="1"
                                               MaxHeight="{TemplateBinding MaxDropDownHeight}"
                                               SnapsToDevicePixels="True"
-                                              ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+                                              VerticalScrollBarVisibility="Auto"
+                                              HorizontalScrollBarVisibility="Hidden">
                                     <StackPanel x:Name="PART_MenuPanel"
                                                 Orientation="Vertical"
                                                 IsItemsHost="True"
@@ -165,11 +179,10 @@
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Top"
                                         Height="11"
-                                        BorderBrush="{DynamicResource ContextMenuBarResizeBorderBrush}"
+                                        BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.DropDown.Resize.BorderBrush}"
                                         BorderThickness="0,1,0,0"
                                         Grid.Row="1"
-                                        CornerRadius="0,0,1,1"
-                                        Background="{DynamicResource ContextMenuBarResizeBackgoundBrush}">
+                                        Background="{DynamicResource Fluent.Ribbon.Brushes.DropDown.Resize.BackgroundBrush}">
                                     <Grid>
                                         <Thumb x:Name="PART_ResizeVerticalThumb"
                                                HorizontalAlignment="Stretch"
@@ -230,10 +243,10 @@
                      Value="True">
                 <Setter Property="BorderBrush"
                         TargetName="PART_ButtonBorder"
-                        Value="{DynamicResource ButtonPressedOuterBorderBrush}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.BorderBrush}" />
                 <Setter Property="Background"
                         TargetName="PART_ButtonBorder"
-                        Value="{DynamicResource ButtonPressedInnerBorderBrush}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.Background}" />
             </Trigger>
             <Trigger Property="Size"
                      Value="Small">
@@ -248,7 +261,7 @@
                         Value="10" />
                 <Setter Property="Margin"
                         TargetName="controlLabel"
-                        Value="1,-19,1,0" />
+                        Value="0,-19,0,0" />
                 <Setter Property="Text"
                         TargetName="controlLabel"
                         Value="" />
@@ -269,7 +282,7 @@
                         Value="10" />
                 <Setter Property="Margin"
                         TargetName="controlLabel"
-                        Value="2,-19,1,0" />
+                        Value="0,-19,0,0" />
                 <Setter Property="Text"
                         TargetName="controlLabel"
                         Value="" />
@@ -301,12 +314,12 @@
             </Trigger>
             <Trigger Property="IsDropDownOpen"
                      Value="True">
-                <Setter Property="Background"
-                        TargetName="PART_ButtonBorder"
-                        Value="{DynamicResource ButtonPressedInnerBackgroundBrush}" />
                 <Setter Property="BorderBrush"
                         TargetName="PART_ButtonBorder"
-                        Value="{DynamicResource ButtonPressedInnerBorderBrush}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.BorderBrush}" />
+                <Setter Property="Background"
+                        TargetName="PART_ButtonBorder"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.Background}" />
             </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
@@ -320,7 +333,7 @@
                 </MultiTrigger.Conditions>
                 <Setter Property="BorderBrush"
                         TargetName="PART_ButtonBorder"
-                        Value="{DynamicResource ButtonHoverInnerBorderBrush}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
             </MultiTrigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
@@ -334,13 +347,13 @@
                 </MultiTrigger.Conditions>
                 <Setter Property="BorderBrush"
                         TargetName="PART_ButtonBorder"
-                        Value="{DynamicResource ButtonHoverOuterBorderBrush}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
                 <Setter Property="Background"
                         TargetName="downBorder"
-                        Value="{DynamicResource ButtonHoverOuterBorderBrush}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
                 <Setter Property="BorderBrush"
                         TargetName="downBorder"
-                        Value="{DynamicResource ButtonHoverOuterBorderBrush}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
             </MultiTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
@@ -354,17 +367,46 @@
                 Value="Stretch" />
         <Setter Property="HorizontalAlignment"
                 Value="Stretch" />
+        <Setter Property="Fluent:KeyTip.AutoPlacement"
+                Value="{Binding Path=(Fluent:KeyTip.AutoPlacement), RelativeSource={RelativeSource AncestorType={x:Type Fluent:SplitButton}}}" />
+        <Style.Triggers>
+            <Trigger Property="Size"
+                     Value="Large">
+                <Setter Property="Fluent:KeyTip.HorizontalAlignment"
+                        Value="Center" />
+                <Setter Property="Fluent:KeyTip.VerticalAlignment"
+                        Value="Top" />
+            </Trigger>
+            <Trigger Property="Size"
+                     Value="Middle">
+                <Setter Property="Fluent:KeyTip.HorizontalAlignment"
+                        Value="Left" />
+                <Setter Property="Fluent:KeyTip.VerticalAlignment"
+                        Value="Center" />
+                <Setter Property="Fluent:KeyTip.Margin"
+                        Value="-5,0,0,0" />
+            </Trigger>
+            <Trigger Property="Size"
+                     Value="Small">
+                <Setter Property="Fluent:KeyTip.HorizontalAlignment"
+                        Value="Left" />
+                <Setter Property="Fluent:KeyTip.VerticalAlignment"
+                        Value="Center" />
+                <Setter Property="Fluent:KeyTip.Margin"
+                        Value="-5,0,0,0" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <ControlTemplate x:Key="InnerButtonControlTemplate"
                      TargetType="{x:Type Fluent:ToggleButton}">
         <Border x:Name="border"
                 BorderThickness="0"
-                Background="{DynamicResource TransparentBrush}"
-                BorderBrush="{DynamicResource TransparentBrush}"
+                Background="Transparent"
+                BorderBrush="Transparent"
                 Height="Auto"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
+                HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                VerticalAlignment="{TemplateBinding VerticalAlignment}"
                 SnapsToDevicePixels="False">
             <Grid Height="Auto">
                 <Rectangle x:Name="rectangle"
@@ -374,7 +416,6 @@
                 <StackPanel x:Name="stackPanel"
                             Width="Auto"
                             Orientation="Vertical"
-                            d:LayoutOverrides="Width, Height"
                             HorizontalAlignment="Stretch"
                             SnapsToDevicePixels="True">
                     <ContentPresenter x:Name="iconImage"
@@ -382,12 +423,11 @@
                                       HorizontalAlignment="Center"
                                       Height="32"
                                       VerticalAlignment="Center"
-                                      Content="{TemplateBinding LargeIcon}"
+                                      Content="{converters:ObjectToImageConverter {Binding LargeIcon, RelativeSource={RelativeSource TemplatedParent}}, '32,32', {Binding RelativeSource={RelativeSource TemplatedParent}}}"
                                       Width="32"
                                       SnapsToDevicePixels="True" />
                     <Fluent:TwoLineLabel x:Name="controlLabel"
                                          Text="{TemplateBinding Header}"
-                                         Style="{DynamicResource TwoLineLabelStyle}"
                                          HorizontalAlignment="Stretch"
                                          VerticalAlignment="Center"
                                          Margin="2,0,2,2"
@@ -400,10 +440,10 @@
                      Value="True">
                 <Setter Property="BorderBrush"
                         TargetName="border"
-                        Value="{DynamicResource ButtonPressedOuterBorderBrush}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.BorderBrush}" />
                 <Setter Property="Background"
                         TargetName="border"
-                        Value="{DynamicResource ButtonPressedOuterBackgroundBrush}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.Background}" />
             </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
@@ -416,10 +456,10 @@
                 </MultiTrigger.Conditions>
                 <Setter Property="Background"
                         TargetName="border"
-                        Value="{DynamicResource ButtonHoverOuterBackgroundBrush}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.Background}" />
                 <Setter Property="BorderBrush"
                         TargetName="border"
-                        Value="{DynamicResource ButtonHoverOuterBorderBrush}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
             </MultiTrigger>
             <Trigger Property="IsEnabled"
                      Value="False">
@@ -458,7 +498,7 @@
                         Value="1,0,2,0" />
                 <Setter Property="Content"
                         TargetName="iconImage"
-                        Value="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}" />
+                        Value="{converters:ObjectToImageConverter {Binding Icon, RelativeSource={RelativeSource TemplatedParent}}, '16,16', {Binding RelativeSource={RelativeSource TemplatedParent}}}" />
                 <Setter Property="Margin"
                         TargetName="controlLabel"
                         Value="2,0,2,1" />
@@ -494,7 +534,7 @@
                         Value="1,0,2,0" />
                 <Setter Property="Content"
                         TargetName="iconImage"
-                        Value="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}" />
+                        Value="{converters:ObjectToImageConverter {Binding Icon, RelativeSource={RelativeSource TemplatedParent}}, '16,16', {Binding RelativeSource={RelativeSource TemplatedParent}}}" />
                 <Setter Property="Visibility"
                         TargetName="controlLabel"
                         Value="Visible" />

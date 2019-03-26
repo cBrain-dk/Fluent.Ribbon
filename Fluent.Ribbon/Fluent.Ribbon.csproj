@@ -33,6 +33,12 @@
     <UpToDateCheckInput Include="**/*.xaml" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Themes\Office2016\Controls\RadioButton.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Themes\Office2016\Controls\RadioButton.xaml" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="..\License.txt" Pack="true" PackagePath="licenses/License.txt" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp3.0'">
@@ -56,9 +62,6 @@
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Themes\Office2013\Controls\Ribbon.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Themes\Office2016\Controls\ApplicationMenuItem.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>

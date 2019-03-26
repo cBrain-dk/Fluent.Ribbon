@@ -3,12 +3,15 @@
                     xmlns:Fluent="clr-namespace:Fluent"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                    xmlns:Converters="clr-namespace:Fluent.Converters"
                     mc:Ignorable="d">
     <Style x:Key="ToolTipStyle"
            TargetType="{x:Type ToolTip}">
         <Setter Property="Foreground"
-                Value="{DynamicResource DefaultFontBrush}" />
+                Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
+        <Setter Property="Background"
+                Value="{DynamicResource Fluent.Ribbon.Brushes.ScreenTip.Background}" />
+        <Setter Property="BorderBrush"
+                Value="{DynamicResource Fluent.Ribbon.Brushes.ScreenTip.BorderBrush}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToolTip}">
@@ -22,9 +25,9 @@
                             <RowDefinition Height="5" />
                         </Grid.RowDefinitions>
                         <Border Grid.RowSpan="1"
-                                BorderThickness="1"            
-                                BorderBrush="{DynamicResource ScreenTipBorderBrush}"
-                                Background="{DynamicResource ScreenTipBackgroundBrush}">
+                                BorderThickness="1"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}">
                             <ContentPresenter Margin="4,4,4,4" />
                         </Border>
                     </Grid>
@@ -46,8 +49,8 @@
             </Grid.RowDefinitions>
             <Border Grid.RowSpan="1"
                     BorderThickness="1"
-                    BorderBrush="{DynamicResource ScreenTipBorderBrush}"
-                    Background="{DynamicResource ScreenTipBackgroundBrush}">
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    Background="{TemplateBinding Background}">
                 <Grid>
                     <StackPanel x:Name="screenTipPanel">
                         <TextBlock x:Name="title"
@@ -64,12 +67,12 @@
                                    Margin="7,5,3,7"
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Top"
+                                   Stretch="Uniform"
                                    Source="{TemplateBinding Property=Image}"
                                    MaxHeight="48" />
                             <TextBlock Text="{TemplateBinding Property=Text}"
                                        TextWrapping="Wrap"
                                        Margin="8,0,8,6"
-                                       Foreground="{DynamicResource ScreenTipFontBrush}"
                                        Grid.Column="1" />
                         </Grid>
                         <Border x:Name="separator"
@@ -78,16 +81,17 @@
                                 HorizontalAlignment="Stretch"
                                 Visibility="{Binding ElementName=disableReasonSection, Path=Visibility}"
                                 Margin="5"
-                                Background="{DynamicResource ScreenTipSeparatorBackgroundBrush}"
+                                Background="{DynamicResource GrayBrush6}"
                                 BorderThickness="0,0,0,1"
-                                IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Control, AncestorLevel=2},Converter={x:Static Converters:StaticConverters.ReadOnlyConverter}}" />
+                                IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Control, AncestorLevel=2}}" />
                         <Grid x:Name="disableReasonSection">
                             <Image Width="16"
                                    Height="16"
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Top"
                                    Margin="5,0,0,0"
-                                   Source="{DynamicResource ScreenTipWarningImage}" />
+                                   Stretch="Uniform"
+                                   Source="{DynamicResource Fluent.Ribbon.Images.Warning}" />
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -99,7 +103,6 @@
                                            Text="{Binding Source={x:Static Fluent:RibbonLocalization.Current}, Path=Localization.ScreenTipDisableReasonHeader, Mode=OneWay}"
                                            TextWrapping="Wrap"
                                            Margin="28,0,5,2"
-                                           Foreground="{DynamicResource ScreenTipFontBrush}"
                                            HorizontalAlignment="Stretch"
                                            Grid.Row="0"
                                            FontWeight="Bold" />
@@ -107,13 +110,11 @@
                                            Text="{TemplateBinding Property=DisableReason}"
                                            TextWrapping="Wrap"
                                            Margin="28,0,5,6"
-                                           Foreground="{DynamicResource ScreenTipFontBrush}"
                                            HorizontalAlignment="Stretch"
                                            Grid.Row="1" />
                                 <TextBlock x:Name="helpText"
                                            TextWrapping="Wrap"
                                            Margin="28,0,5,6"
-                                           Foreground="{DynamicResource ScreenTipFontBrush}"
                                            Grid.RowSpan="1"
                                            Grid.Row="2"
                                            HorizontalAlignment="Stretch"
@@ -126,7 +127,7 @@
                                 HorizontalAlignment="Stretch"
                                 Visibility="{TemplateBinding Property=HelpLabelVisibility}"
                                 Margin="5"
-                                Background="{DynamicResource ScreenTipSeparatorBackgroundBrush}"
+                                Background="{DynamicResource GrayBrush6}"
                                 BorderThickness="0,0,0,1" />
                         <Grid x:Name="helpSection"
                               Visibility="{TemplateBinding Property=HelpLabelVisibility}">
@@ -135,13 +136,13 @@
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Top"
                                    Margin="5,0,0,0"
-                                   Source="{DynamicResource ScreenTipHelpImage}" />
+                                   Stretch="Uniform"
+                                   Source="{DynamicResource Fluent.Ribbon.Images.Help}" />
                             <TextBlock x:Uid="HelpText"
                                        x:Name="textBlock"
                                        Text="{Binding Source={x:Static Fluent:RibbonLocalization.Current}, Path=Localization.ScreenTipF1LabelHeader, Mode=OneWay}"
                                        TextWrapping="Wrap"
                                        Margin="28,0,6,6"
-                                       Foreground="{DynamicResource ScreenTipFontBrush}"
                                        FontWeight="Bold"
                                        HorizontalAlignment="Stretch" />
                             <ContentControl x:Name="helpTopic"
@@ -250,14 +251,18 @@
                 <Setter Property="Visibility"
                         TargetName="image"
                         Value="Collapsed" />
-            </Trigger>            
+            </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
     <Style x:Key="ScreenTipStyle"
            TargetType="{x:Type Fluent:ScreenTip}">
         <Setter Property="Foreground"
-                Value="{DynamicResource DefaultFontBrush}" />
+                Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
+        <Setter Property="Background"
+                Value="{DynamicResource Fluent.Ribbon.Brushes.ScreenTip.Background}" />
+        <Setter Property="BorderBrush"
+                Value="{DynamicResource Fluent.Ribbon.Brushes.ScreenTip.BorderBrush}" />
         <Setter Property="Width"
                 Value="205" />
         <Setter Property="Template"

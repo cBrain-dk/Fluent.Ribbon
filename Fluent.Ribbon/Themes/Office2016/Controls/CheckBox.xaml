@@ -83,7 +83,7 @@
                               Fluent:FrameworkHelper.UseLayoutRounding="False"
                               Opacity="0"
                               Stretch="Fill"
-                              Stroke="#FF666666"
+                              Stroke="{DynamicResource Fluent.Ribbon.Brushes.HighlightBrush}"
                               StrokeEndLineCap="Triangle"
                               StrokeStartLineCap="Triangle"
                               StrokeThickness="1.5" />
@@ -91,9 +91,9 @@
                                    Width="7"
                                    Height="7"
                                    Opacity="0"
-                                   Fill="#FF666666" />
+                                   Fill="{DynamicResource GrayBrush2}" />
                         <Rectangle x:Name="DisabledVisualElement"
-                                   Fill="White"
+                                   Fill="{DynamicResource WhiteBrush}"
                                    Opacity="0"
                                    RadiusX="1"
                                    RadiusY="1" />
@@ -124,10 +124,6 @@
                             IsTabStop="False"
                             Margin="2,0,0,0"
                             Foreground="{TemplateBinding Foreground}">
-                <!--<ContentControl.Foreground>
-                    <SolidColorBrush x:Name="ContentPresenterWrapperColor"
-                                     Color="Black" />
-                </ContentControl.Foreground>-->
                 <ContentPresenter x:Name="contentPresenter"
                                   Margin="{TemplateBinding Padding}"
                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -141,43 +137,43 @@
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="IsMouseOver"
-                     Value="True"/>
+                               Value="True"/>
                     <Condition Property="IsReadOnly"
-                     Value="False"/>
+                               Value="False"/>
                 </MultiTrigger.Conditions>
                 <Setter TargetName="border"
                         Property="BorderBrush"
-                        Value="{DynamicResource CheckBoxHoverBorderBrush}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
                 <Setter TargetName="border"
                         Property="Background"
-                        Value="{DynamicResource CheckBoxHoverBackgroundBrush}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.Background}" />
                 <Setter TargetName="CheckIcon"
                         Property="Stroke"
-                        Value="#FF333333" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.MouseOver.Stroke}" />
                 <Setter TargetName="IndeterminateIcon"
                         Property="Fill"
-                        Value="#FF333333" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.MouseOver.Stroke}" />
             </MultiTrigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
-                    <Condition Property="IsReadOnly"
-                     Value="False"/>
                     <Condition Property="IsPressed"
-                     Value="True"/>
+                               Value="True"/>
+                    <Condition Property="IsReadOnly"
+                               Value="False"/>
                 </MultiTrigger.Conditions>
 
                 <Setter TargetName="border"
                         Property="BorderBrush"
-                        Value="{DynamicResource CheckBoxPressedBorderBrush}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.BorderBrush}" />
                 <Setter TargetName="border"
                         Property="Background"
-                        Value="{DynamicResource CheckBoxPressedBackgroundBrush}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.Background}" />
                 <Setter TargetName="CheckIcon"
                         Property="Stroke"
-                        Value="#FF000000" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.Pressed.Stroke}" />
                 <Setter TargetName="IndeterminateIcon"
                         Property="Fill"
-                        Value="#FF000000" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.Pressed.Stroke}" />
             </MultiTrigger>
             <Trigger Property="IsEnabled"
                      Value="False">
@@ -256,13 +252,13 @@
         <Setter Property="Template"
                 Value="{DynamicResource CheckBoxControlTemplate}" />
         <Setter Property="Background"
-                Value="#FFFDFDFD" />
+                Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.Background}" />
         <Setter Property="Foreground"
-                Value="{DynamicResource CheckBoxFontBrush}" />
+                Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
         <Setter Property="BorderThickness"
                 Value="1" />
         <Setter Property="BorderBrush"
-                Value="#FFABABAB" />
+                Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.BorderBrush}" />
         <Setter Property="Margin"
                 Value="6,2,4,2" />
     <Style.Triggers>
