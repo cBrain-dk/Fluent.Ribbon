@@ -21,12 +21,6 @@
         }
 
         /// <inheritdoc />
-        protected override string GetClassNameCore()
-        {
-            return "SplitButton";
-        }
-
-        /// <inheritdoc />
         protected override AutomationControlType GetAutomationControlTypeCore()
         {
             return AutomationControlType.SplitButton;

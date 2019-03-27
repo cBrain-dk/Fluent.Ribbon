@@ -1,4 +1,4 @@
-﻿namespace Fluent.AutomationPeers
+﻿namespace Fluent.Automation
 {
     using System;
     using System.Collections.Generic;
@@ -190,21 +190,6 @@
             return string.Empty;
         }
 
-        /// <summary>
-        /// Get the label from an automation peer
-        /// </summary>
-        /// <param name="automationPeer">The peer to extract from</param>
-        /// <returns></returns>
-        public static AutomationPeer GetLabeledBy(FrameworkElementAutomationPeer automationPeer)
-        {
-            UIElement element = AutomationProperties.GetLabeledBy(automationPeer.Owner);
-            if (element is ILabelBy labelBy)
-            {
-                return labelBy.GetLabelByAutomationPeer();
-            }
-
-            return null;
-        }
         #endregion
 
         #region Helper methods

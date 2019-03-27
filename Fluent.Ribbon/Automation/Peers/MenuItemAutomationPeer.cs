@@ -1,13 +1,11 @@
-﻿namespace Fluent.AutomationPeers
+﻿namespace Fluent.Automation.Peers
 {
     /// <inheritdoc />
-    public class CheckBoxAutomationPeer : System.Windows.Automation.Peers.CheckBoxAutomationPeer
+    public class MenuItemAutomationPeer : System.Windows.Automation.Peers.MenuItemAutomationPeer
     {
-        /// <summary>
-        /// Base constructor
-        /// </summary>
-        /// <param name="owner">Owning control</param>
-        public CheckBoxAutomationPeer(CheckBox owner)
+        /// <summary>Initializes a new instance of the <see cref="T:MenuItemAutomationPeer" /> class.</summary>
+        /// <param name="owner">The element associated with this automation peer.</param>
+        public MenuItemAutomationPeer(MenuItem owner)
             : base(owner)
         {
         }

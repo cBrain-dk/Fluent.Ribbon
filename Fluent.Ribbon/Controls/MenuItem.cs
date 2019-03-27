@@ -726,7 +726,7 @@ namespace Fluent
         /// <inheritdoc />
         protected override AutomationPeer OnCreateAutomationPeer()
         {
-            return new Fluent.AutomationPeers.MenuItemAutomationPeer(this);
+            return new Fluent.Automation.Peers.MenuItemAutomationPeer(this);
         }
 
         #endregion
