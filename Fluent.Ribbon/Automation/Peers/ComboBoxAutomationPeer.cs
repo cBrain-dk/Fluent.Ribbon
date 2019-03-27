@@ -13,20 +13,33 @@
         }
 
         /// <inheritdoc />
+        protected override bool IsEnabledCore()
+        {
+            return AutomationPeerHelper.IsEnabledCore(this);
+        }
+
+        /// <inheritdoc />
+        protected override string GetAcceleratorKeyCore()
+        {
+            return AutomationPeerHelper.GetAcceleratorKey(this);
+        }
+
+        /// <inheritdoc />
+        protected override string GetAccessKeyCore()
+        {
+            return AutomationPeerHelper.GetAccessKeyAndAcceleratorKey(this);
+        }
+
+        /// <inheritdoc />
+        protected override string GetHelpTextCore()
+        {
+            return AutomationPeerHelper.GetHelpText(this);
+        }
+
+        /// <inheritdoc />
         protected override string GetNameCore()
         {
-            var text = base.GetNameCore();
-            var owner = (IHeaderedControl)this.Owner;
-
-            if (string.IsNullOrEmpty(text))
-            {
-                if (owner.Header is string headerString)
-                {
-                    return headerString;
-                }
-            }
-
-            return text;
+            return AutomationPeerHelper.GetNameAndHelpText(this);
         }
     }
 }

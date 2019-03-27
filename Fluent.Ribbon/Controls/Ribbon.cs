@@ -11,6 +11,7 @@ namespace Fluent
     using System.Linq;
     using System.Threading;
     using System.Windows;
+    using System.Windows.Automation.Peers;
     using System.Windows.Controls;
     using System.Windows.Data;
     using System.Windows.Input;
@@ -1975,6 +1976,12 @@ namespace Fluent
             }
 
             return null;
+        }
+
+        /// <inheritdoc/>
+        protected override AutomationPeer OnCreateAutomationPeer()
+        {
+            return new Fluent.Automation.Peers.RibbonAutomationPeer(this);
         }
 
         #endregion
