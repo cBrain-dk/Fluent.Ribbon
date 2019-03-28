@@ -11,7 +11,7 @@ namespace Fluent
     /// <summary>
     /// Represents backstage tab item
     /// </summary>
-    public class BackstageTabItem : ContentControl, IKeyTipedControl, ILogicalChildSupport
+    public class BackstageTabItem : ContentControl, IKeyTipedControl, IHeaderedControl, ILogicalChildSupport
     {
         #region Icon
 
@@ -42,6 +42,20 @@ namespace Fluent
         /// Dependency property for <see cref="KeyTip"/>
         /// </summary>
         public static readonly DependencyProperty KeyTipProperty = Fluent.KeyTip.KeysProperty.AddOwner(typeof(BackstageTabItem));
+
+        /// <summary>
+        /// Gets or sets whether button can be added to quick access toolbar
+        /// </summary>
+        public bool CanAddButtonToQuickAccessToolBar
+        {
+            get { return (bool)this.GetValue(CanAddButtonToQuickAccessToolBarProperty); }
+            set { this.SetValue(CanAddButtonToQuickAccessToolBarProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for CanAddButtonToQuickAccessToolBar.  This enables animation, styling, binding, etc...
+        /// </summary>
+        public static readonly DependencyProperty CanAddButtonToQuickAccessToolBarProperty = DependencyProperty.Register(nameof(CanAddButtonToQuickAccessToolBar), typeof(bool), typeof(BackstageTabItem), new PropertyMetadata(BooleanBoxes.TrueBox, RibbonControl.OnCanAddToQuickAccessToolBarChanged));
 
         /// <summary>
         /// Gets or sets a value indicating whether the tab is selected
@@ -96,7 +110,9 @@ namespace Fluent
         /// </summary>
         static BackstageTabItem()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(BackstageTabItem), new FrameworkPropertyMetadata(typeof(BackstageTabItem)));
+            var type = typeof(BackstageTabItem);
+            DefaultStyleKeyProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(typeof(BackstageTabItem)));
+            CanAddButtonToQuickAccessToolBarProperty.OverrideMetadata(type, new PropertyMetadata(false));
         }
 
         #region Overrides

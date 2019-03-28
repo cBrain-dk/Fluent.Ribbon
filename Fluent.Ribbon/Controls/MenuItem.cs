@@ -268,6 +268,25 @@ namespace Fluent
 
         #endregion
 
+        #region DismissPopup
+
+        /// <summary>
+        /// Useless property only used in secon level application menu items
+        /// </summary>
+        public bool DismissPopupOnClick
+        {
+            get { return (bool)this.GetValue(DismissPopupOnClickProperty); }
+            set { this.SetValue(DismissPopupOnClickProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for Description.  This enables animation, styling, binding, etc...
+        /// </summary>
+        public static readonly DependencyProperty DismissPopupOnClickProperty =
+            DependencyProperty.Register(nameof(DismissPopupOnClick), typeof(bool), typeof(MenuItem), new UIPropertyMetadata(true));
+
+        #endregion
+
         #endregion
 
         #region Events
@@ -556,7 +575,10 @@ namespace Fluent
             if (this.IsDefinitive
                 && (!this.HasItems || this.IsSplited))
             {
-                PopupService.RaiseDismissPopupEventAsync(this, DismissPopupMode.Always);
+                if (this.DismissPopupOnClick)
+                {
+                    PopupService.RaiseDismissPopupEventAsync(this, DismissPopupMode.Always);
+                }
             }
 
             var revertIsChecked = false;
@@ -576,6 +598,11 @@ namespace Fluent
             if (!this.IsReadOnly)
             {
                 base.OnClick();
+            }
+
+            if (!this.DismissPopupOnClick)
+            {
+                this.Focus();
             }
 
             if (revertIsChecked)
