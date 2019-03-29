@@ -52,10 +52,8 @@ namespace Fluent
             set { this.SetValue(CanAddButtonToQuickAccessToolBarProperty, value); }
         }
 
-        /// <summary>
-        /// Using a DependencyProperty as the backing store for CanAddButtonToQuickAccessToolBar.  This enables animation, styling, binding, etc...
-        /// </summary>
-        public static readonly DependencyProperty CanAddButtonToQuickAccessToolBarProperty = DependencyProperty.Register(nameof(CanAddButtonToQuickAccessToolBar), typeof(bool), typeof(BackstageTabItem), new PropertyMetadata(BooleanBoxes.TrueBox, RibbonControl.OnCanAddToQuickAccessToolBarChanged));
+        /// <summary>Identifies the <see cref="CanAddButtonToQuickAccessToolBar"/> dependency property.</summary>
+        public static readonly DependencyProperty CanAddButtonToQuickAccessToolBarProperty = DependencyProperty.Register(nameof(CanAddButtonToQuickAccessToolBar), typeof(bool), typeof(BackstageTabItem), new PropertyMetadata(false, RibbonControl.OnCanAddToQuickAccessToolBarChanged));
 
         /// <summary>
         /// Gets or sets a value indicating whether the tab is selected
@@ -112,7 +110,6 @@ namespace Fluent
         {
             var type = typeof(BackstageTabItem);
             DefaultStyleKeyProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(typeof(BackstageTabItem)));
-            CanAddButtonToQuickAccessToolBarProperty.OverrideMetadata(type, new PropertyMetadata(false));
         }
 
         #region Overrides
