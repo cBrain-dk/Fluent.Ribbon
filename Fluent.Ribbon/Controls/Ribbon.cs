@@ -47,8 +47,23 @@ namespace Fluent
         /// <returns>Instance of a state storage class.</returns>
         protected virtual IRibbonStateStorage CreateRibbonStateStorage()
         {
-            return new RibbonStateStorage(this);
+            return Activator.CreateInstance(this.RibbonStateStorageType, this) as RibbonStateStorage;
         }
+
+        /// <summary>
+        /// Property for defining the RibbonStateStorageType.
+        /// </summary>
+        public Type RibbonStateStorageType
+        {
+            get { return (Type)this.GetValue(RibbonStateStorageTypeProperty); }
+            set { this.SetValue(RibbonStateStorageTypeProperty, value); }
+        }
+
+        /// <summary>
+        /// <see cref="DependencyProperty"/> for <see cref="RibbonStateStorageType"/>
+        /// </summary>
+        public static readonly DependencyProperty RibbonStateStorageTypeProperty =
+            DependencyProperty.Register(nameof(RibbonStateStorageType), typeof(Type), typeof(Ribbon), new PropertyMetadata(typeof(RibbonStateStorage)));
 
         #region Constants
 

@@ -55,6 +55,25 @@ namespace Fluent
 
         #endregion
 
+        #region TitleBarHeader
+
+        /// <summary>
+        /// Gets or sets the content of the title bar header
+        /// </summary>
+        public UIElement TitleBarHeader
+        {
+            get { return (UIElement)this.GetValue(TitleBarHeaderProperty); }
+            set { this.SetValue(TitleBarHeaderProperty, value); }
+        }
+
+        /// <summary>
+        /// <see cref="DependencyProperty"/> for <see cref="TitleBarHeader"/>.
+        /// </summary>
+        public static readonly DependencyProperty TitleBarHeaderProperty =
+            DependencyProperty.Register(nameof(TitleBarHeader), typeof(UIElement), typeof(RibbonWindow), new PropertyMetadata(null));
+
+        #endregion
+
         /// <summary>
         /// Gets or sets the height which is used to render the window title.
         /// </summary>
@@ -336,6 +355,11 @@ namespace Fluent
             base.OnApplyTemplate();
 
             this.TitleBar = this.GetTemplateChild(PART_RibbonTitleBar) as RibbonTitleBar;
+
+            if (this.TitleBarHeader != null)
+            {
+                this.TitleBar.Header = this.TitleBarHeader;
+            }
 
             if (this.iconImage != null)
             {
