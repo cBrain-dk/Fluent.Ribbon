@@ -47,23 +47,8 @@ namespace Fluent
         /// <returns>Instance of a state storage class.</returns>
         protected virtual IRibbonStateStorage CreateRibbonStateStorage()
         {
-            return Activator.CreateInstance(this.RibbonStateStorageType, this) as RibbonStateStorage;
+            return new RibbonStateStorage(this);
         }
-
-        /// <summary>
-        /// Property for defining the RibbonStateStorageType.
-        /// </summary>
-        public Type RibbonStateStorageType
-        {
-            get { return (Type)this.GetValue(RibbonStateStorageTypeProperty); }
-            set { this.SetValue(RibbonStateStorageTypeProperty, value); }
-        }
-
-        /// <summary>
-        /// <see cref="DependencyProperty"/> for <see cref="RibbonStateStorageType"/>
-        /// </summary>
-        public static readonly DependencyProperty RibbonStateStorageTypeProperty =
-            DependencyProperty.Register(nameof(RibbonStateStorageType), typeof(Type), typeof(Ribbon), new PropertyMetadata(typeof(RibbonStateStorage)));
 
         #region Constants
 
@@ -1997,6 +1982,49 @@ namespace Fluent
         protected override AutomationPeer OnCreateAutomationPeer()
         {
             return new Fluent.Automation.Peers.RibbonAutomationPeer(this);
+        }
+
+        /// <summary>
+        /// Move a quickaccess item one step to the left (towards the beginning of the list of items)
+        /// </summary>
+        /// <param name="element">The quickaccess item to be moved</param>
+        public bool MoveUp(UIElement element)
+        {
+            this.QuickAccessElements.TryGetValue(element, out UIElement quickElement);
+
+            if (quickElement != null)
+            {
+                int index = this.QuickAccessToolBar.Items.IndexOf(quickElement);
+                if (index > 0)
+                {
+                    this.QuickAccessToolBar.Items.Move(index, index - 1);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Move a quickaccess item one step to the right (towards the end of the list of items)
+        /// </summary>
+        /// <param name="element">The quickaccess item to be moved</param>
+        /// <returns></returns>
+        public bool MoveDown(UIElement element)
+        {
+            this.QuickAccessElements.TryGetValue(element, out UIElement quickElement);
+
+            if (quickElement != null)
+            {
+                int index = this.QuickAccessToolBar.Items.IndexOf(quickElement);
+                if (index < this.QuickAccessToolBar.Items.Count - 1)
+                {
+                    this.QuickAccessToolBar.Items.Move(index, index + 1);
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         #endregion
