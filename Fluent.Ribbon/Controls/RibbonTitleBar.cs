@@ -41,6 +41,8 @@ namespace Fluent
         private Rect headerRect;
         // Items rect
         private Rect itemsRect;
+        // Width of window commands (minimize, maximize, close)
+        private readonly double windowCommandWidth;
 
         #endregion
 
@@ -134,6 +136,15 @@ namespace Fluent
         public RibbonTitleBar()
         {
             WindowChrome.SetIsHitTestVisibleInChrome(this, true);
+            var windowCommands = UIHelper.FindVisualChildByName<FrameworkElement>(Window.GetWindow(this), "PART_WindowCommands");
+            if (windowCommands == null || windowCommands.ActualWidth == 0)
+            {
+                this.windowCommandWidth = 110;
+            }
+            else
+            {
+                this.windowCommandWidth = windowCommands.ActualWidth;
+            }
         }
 
         #endregion
@@ -388,7 +399,23 @@ namespace Fluent
                     }
                     else if (this.HeaderAlignment == HorizontalAlignment.Center)
                     {
-                        this.headerRect = new Rect(this.quickAccessToolbarHolder.DesiredSize.Width + Math.Max(0, (allTextWidth / 2) - (this.headerHolder.DesiredSize.Width / 2)), 0, Math.Min(allTextWidth, this.headerHolder.DesiredSize.Width), constraint.Height);
+                        double headerSpace = 25;
+                        double windowWidth = Window.GetWindow(this)?.Width ?? 0;
+                        if (windowWidth > (this.quickAccessToolbarHolder.DesiredSize.Width + this.headerHolder.DesiredSize.Width + this.windowCommandWidth))
+                        {
+                            if (this.quickAccessToolbarHolder.DesiredSize.Width + headerSpace < ((windowWidth / 2) - (this.headerHolder.DesiredSize.Width / 2)))
+                            {
+                                this.headerRect = new Rect((windowWidth / 2) - (this.headerHolder.DesiredSize.Width / 2), 0, Math.Min(allTextWidth, this.headerHolder.DesiredSize.Width), constraint.Height);
+                            }
+                            else
+                            {
+                                this.headerRect = new Rect(this.quickAccessToolbarHolder.DesiredSize.Width + headerSpace, 0, Math.Min(allTextWidth - 50, this.headerHolder.DesiredSize.Width), constraint.Height);
+                            }
+                        }
+                        else
+                        {
+                            this.headerRect = new Rect(this.quickAccessToolbarHolder.DesiredSize.Width + headerSpace + Math.Max(0, ((allTextWidth - headerSpace) / 2) - (this.headerHolder.DesiredSize.Width / 2)), 0, Math.Min(allTextWidth - headerSpace, this.headerHolder.DesiredSize.Width), constraint.Height);
+                        }
                     }
                     else if (this.HeaderAlignment == HorizontalAlignment.Right)
                     {

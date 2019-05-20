@@ -45,6 +45,11 @@
         private static readonly ImageSource imageNotFoundImageSource = (ImageSource)CreateImageNotFoundImageSource().GetAsFrozen();
 
         /// <summary>
+        /// Gets the current instance for storing the state of this control.
+        /// </summary>
+        public static ICustomOjbectToImagerConverter CustomOjbectToImagerConverter { get; set; }
+
+        /// <summary>
         /// Creates a new instance.
         /// </summary>
         public ObjectToImageConverter()
@@ -129,6 +134,15 @@
             else if (parameter is Size size)
             {
                 desiredSize = size;
+            }
+
+            if (CustomOjbectToImagerConverter != null)
+            {
+                FrameworkElement image = CustomOjbectToImagerConverter.Convert(value, targetType, parameter, culture);
+                if (image != null)
+                {
+                    return image;
+                }
             }
 
             return this.Convert(value, null, desiredSize, targetType);

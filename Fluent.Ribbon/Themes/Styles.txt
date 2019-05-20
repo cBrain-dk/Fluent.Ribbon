@@ -23,7 +23,7 @@ Controls\RibbonContextualTabGroup.xaml
 Controls\RibbonTitleBar.xaml
 Controls\KeyTip.xaml
 Office2016\Controls\QuickAccessToolBar.xaml
-Office2016\Controls\Menu.xaml
+Controls\Menu.xaml
 Office2016\Controls\MenuItem.xaml
 Controls\MenuSeparator.xaml
 Controls\RibbonMenu.xaml
