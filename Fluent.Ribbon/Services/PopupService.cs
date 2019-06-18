@@ -413,6 +413,11 @@ namespace Fluent
             {
                 control.IsContextMenuOpened = true;
                 Debug.WriteLine("Context menu opening");
+
+                if (control is FrameworkElement element)
+                {
+                    element.ContextMenu.PlacementTarget = e.Source as UIElement;
+                }
             }
         }
 

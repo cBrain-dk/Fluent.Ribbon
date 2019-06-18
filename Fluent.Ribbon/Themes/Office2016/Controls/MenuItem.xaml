@@ -239,6 +239,8 @@
                                Value="True" />
                     <Condition Property="IsEnabled"
                                Value="True" />
+                    <Condition Property="Fluent:MenuItem.IsReadOnly"
+                               Value="False" />
                 </MultiTrigger.Conditions>
                 <Setter Property="Visibility"
                         TargetName="border"
@@ -535,6 +537,8 @@
                                Value="True" />
                     <Condition Property="IsEnabled"
                                Value="True" />
+                    <Condition Property="Fluent:MenuItem.IsReadOnly"
+                               Value="False" />
                 </MultiTrigger.Conditions>
                 <Setter Property="Visibility"
                         TargetName="border"
@@ -961,6 +965,8 @@
                                Value="True" />
                     <Condition Property="IsEnabled"
                                Value="True" />
+                    <Condition Property="IsReadOnly"
+                               Value="False" />
                 </MultiTrigger.Conditions>
                 <Setter Property="Visibility"
                         TargetName="border"

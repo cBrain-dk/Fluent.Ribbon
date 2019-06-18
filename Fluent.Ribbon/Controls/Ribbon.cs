@@ -284,7 +284,6 @@ namespace Fluent
         /// <inheritdoc />
         protected override void OnContextMenuClosing(ContextMenuEventArgs e)
         {
-            contextMenuOwner = null;
             base.OnContextMenuClosing(e);
         }
 
