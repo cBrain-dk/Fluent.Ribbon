@@ -376,7 +376,7 @@
                                     <ScrollViewer Focusable="False"
                                                     BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.Control.BorderBrush}"
                                                     x:Name="PART_ScrollViewer"
-                                                    Background="{DynamicResource WhiteBrush}"
+                                                    Background="{DynamicResource Fluent.Ribbon.Brushes.DropDown.BackgroundBrush}"
                                                     Margin="1"
                                                     SnapsToDevicePixels="True"
                                                     KeyboardNavigation.DirectionalNavigation="None"
