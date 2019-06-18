@@ -286,11 +286,13 @@ namespace Fluent
         static ComboBox()
         {
             var type = typeof(ComboBox);
+
+            DefaultStyleKeyProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(type));
+            SelectedItemProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(OnSelectedItemChanged, CoerceSelectedItem));
+
             ToolTipService.Attach(type);
             PopupService.Attach(type);
             ContextMenuService.Attach(type);
-            DefaultStyleKeyProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(type));
-            SelectedItemProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(OnSelectedItemChanged, CoerceSelectedItem));
         }
 
         private static void OnSelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -480,6 +482,7 @@ namespace Fluent
                                                       this.quickAccessCombo.isSnapped = true;
                                                   }
                                               }
+                                              
                                               this.IsSnapped = false;
                                           }, DispatcherPriority.ApplicationIdle);
             }

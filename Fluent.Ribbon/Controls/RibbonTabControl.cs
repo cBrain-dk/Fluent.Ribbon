@@ -51,6 +51,12 @@ namespace Fluent
         /// </summary>
         public event EventHandler RequestBackstageClose;
 
+        /// <inheritdoc />
+        public event EventHandler DropDownOpened;
+
+        /// <inheritdoc />
+        public event EventHandler DropDownClosed;
+
         #endregion
 
         #region Properties
@@ -365,9 +371,12 @@ namespace Fluent
         static RibbonTabControl()
         {
             var type = typeof(RibbonTabControl);
+
             DefaultStyleKeyProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(typeof(RibbonTabControl)));
             IsTabStopProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(BooleanBoxes.FalseBox));
+
             KeyboardNavigation.DirectionalNavigationProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(KeyboardNavigationMode.Contained));
+
             ContextMenuService.Attach(type);
             PopupService.Attach(type);
         }
@@ -797,6 +806,8 @@ namespace Fluent
             {
                 Mouse.Capture(null);
             }
+
+            this.DropDownClosed?.Invoke(this, EventArgs.Empty);
         }
 
         // handles ribbon popup opening
@@ -808,6 +819,8 @@ namespace Fluent
             }
 
             Mouse.Capture(this, CaptureMode.SubTree);
+
+            this.DropDownOpened?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
