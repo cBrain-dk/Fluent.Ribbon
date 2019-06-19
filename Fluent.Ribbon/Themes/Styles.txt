@@ -1,6 +1,4 @@
-Office2016\Colors\Colors.xaml
-Office2016\Colors\ColorsWhite.xaml
-Controls\Button.xaml
+Office2016\Controls\Button.xaml
 Controls\WindowCommands.xaml
 Controls\EmptyFocusStyle.xaml
 Controls\ApplicationMenuItem.xaml
@@ -11,7 +9,6 @@ Office2016\Controls\RibbonTabControl.xaml
 Controls\RibbonGroupBox.xaml
 Office2016\Controls\ScreenTip.xaml
 Controls\TwoLineLabel.xaml
-Office2016\Controls\Button.xaml
 Office2016\Controls\ToggleButton.xaml
 Office2016\Controls\DropDownButton.xaml
 Office2016\Controls\SplitButton.xaml

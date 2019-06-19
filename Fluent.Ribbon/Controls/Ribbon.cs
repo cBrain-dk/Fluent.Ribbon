@@ -264,12 +264,11 @@ namespace Fluent
             RibbonControl.Bind(RibbonContextMenu, MinimizeTheRibbonMenuItem, nameof(System.Windows.Controls.ContextMenu.PlacementTarget), System.Windows.Controls.MenuItem.CommandParameterProperty, BindingMode.OneWay);
         }
 
-        private static MenuItem CreateMenuItemForContextMenu(ICommand command)
+        private static System.Windows.Controls.MenuItem CreateMenuItemForContextMenu(ICommand command)
         {
-            return new MenuItem
+            return new System.Windows.Controls.MenuItem
             {
                 Command = command,
-                CanAddToQuickAccessToolBar = false,
                 ContextMenu = null
             };
         }
