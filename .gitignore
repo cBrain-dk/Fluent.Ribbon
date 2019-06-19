@@ -60,3 +60,4 @@ TestResult.xml
 # Allowed files
 !Fluent.Ribbon/Themes/XamlCombine.exe
 !Fluent.Ribbon/Themes/Theme.Template.xaml
+/nugetBuild.config
