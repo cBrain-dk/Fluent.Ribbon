@@ -83,7 +83,7 @@
                               Fluent:FrameworkHelper.UseLayoutRounding="False"
                               Opacity="0"
                               Stretch="Fill"
-                              Stroke="{DynamicResource Fluent.Ribbon.Brushes.HighlightBrush}"
+                              Stroke="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.Stroke}"
                               StrokeEndLineCap="Triangle"
                               StrokeStartLineCap="Triangle"
                               StrokeThickness="1.5" />
@@ -143,10 +143,10 @@
                 </MultiTrigger.Conditions>
                 <Setter TargetName="border"
                         Property="BorderBrush"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.MouseOver.BorderBrush}" />
                 <Setter TargetName="border"
                         Property="Background"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.Background}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.MouseOver.Background}" />
                 <Setter TargetName="CheckIcon"
                         Property="Stroke"
                         Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.MouseOver.Stroke}" />
@@ -164,10 +164,10 @@
 
                 <Setter TargetName="border"
                         Property="BorderBrush"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.BorderBrush}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.Pressed.BorderBrush}" />
                 <Setter TargetName="border"
                         Property="Background"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.Background}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.Pressed.Background}" />
                 <Setter TargetName="CheckIcon"
                         Property="Stroke"
                         Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.Pressed.Stroke}" />

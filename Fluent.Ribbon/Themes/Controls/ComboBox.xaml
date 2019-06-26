@@ -23,7 +23,7 @@
                      TargetType="{x:Type Fluent:ToggleButton}">
         <Border x:Name="border"
                 BorderThickness="{TemplateBinding BorderThickness}"
-                Background="{DynamicResource WhiteBrush}"
+                Background="Transparent"
                 BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.Control.BorderBrush}"
                 Height="Auto"
                 HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
@@ -33,7 +33,7 @@
                 <Rectangle x:Name="rectangle"
                            StrokeThickness="0"
                            Visibility="Collapsed"
-                           Fill="{DynamicResource WhiteBrush}">
+                           Fill="Transparent">
                 </Rectangle>
                 <Path x:Name="path"
                       HorizontalAlignment="Center"
@@ -83,6 +83,9 @@
                 </MultiTrigger.Conditions>
                 <Setter Property="Fill"
                         TargetName="rectangle"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.Background}" />
+                <Setter Property="Background"
+                        TargetName="border"
                         Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.Background}" />
                 <Setter Property="BorderBrush"
                         TargetName="border"

@@ -1,0 +1,273 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:options="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib"
+                    mc:Ignorable="options d">
+    <!-- Matadata -->
+    <system:String x:Key="Theme.Name">F2.HighContrast</system:String>
+    <system:String x:Key="Theme.DisplayName">F2 High Contrast Theme</system:String>
+    <system:String x:Key="Theme.BaseColorScheme">Dark</system:String>
+    <system:String x:Key="Theme.ColorScheme">cBrain.HighContrast</system:String>
+    <SolidColorBrush x:Key="Theme.ShowcaseBrush" Color="Black" options:Freeze="True" />
+
+    <!-- COLORS -->
+
+    <!-- Accent colors -->
+    <Color x:Key="Fluent.Ribbon.Colors.AccentBaseColor">Black</Color>
+    <!--80%-->
+    <Color x:Key="Fluent.Ribbon.Colors.AccentColor80">Black</Color>
+    <!--60%-->
+    <Color x:Key="Fluent.Ribbon.Colors.AccentColor60">Black</Color>
+    <!--40%-->
+    <Color x:Key="Fluent.Ribbon.Colors.AccentColor40">Black</Color>
+    <!--20%-->
+    <Color x:Key="Fluent.Ribbon.Colors.AccentColor20">Black</Color>
+
+    <Color x:Key="Fluent.Ribbon.Colors.HighlightColor">#FF00FFFF</Color>
+
+    <!-- Base colors -->
+    <Color x:Key="BlackColor">#FF000000</Color>
+    <Color x:Key="BlackColor20">#51000000</Color>
+    <Color x:Key="WhiteColor">#FFFFFFFF</Color>
+    <Color x:Key="WhiteColor20">#51FFFFFF</Color>
+    <Color x:Key="Gray1">#FF333333</Color>
+    <Color x:Key="Gray2">#FF7F7F7F</Color>
+    <Color x:Key="Gray3">#FF9D9D9D</Color>
+    <Color x:Key="Gray4">#FFA59F93</Color>
+    <Color x:Key="Gray5">#FFB9B9B9</Color>
+    <Color x:Key="Gray6">#FFCCCCCC</Color>
+    <Color x:Key="Gray7">#FFD8D8D9</Color>
+    <Color x:Key="Gray8">#FFE0E0E0</Color>
+    <Color x:Key="Gray9">#5EC9C9C9</Color>
+    <Color x:Key="Gray10">#FFF7F7F7</Color>
+
+    <Color x:Key="TransparentWhiteColor">#00FFFFFF</Color>
+    <Color x:Key="Fluent.Ribbon.Colors.HighTransparentWhiteColor">#17FFFFFF</Color>
+
+    <!-- Foreground -->
+    <Color x:Key="Fluent.Ribbon.Colors.IdealForegroundColor">White</Color>
+    <!-- Stolen from Colorful.Blue -->
+    <Color x:Key="Fluent.Ribbon.Colors.DarkIdealForegroundDisabledColor">#FF3FF23F</Color>
+    <!-- Lightgray -->
+
+    <!-- Misc colors, currently unused in Fluent -->
+    <Color x:Key="Fluent.Ribbon.Colors.ExtremeHighlightColor">#FF999900</Color>
+    <!-- Info yellow -->
+    <Color x:Key="Fluent.Ribbon.Colors.DarkExtremeHighlightColor">#FFA700A7</Color>
+    <!-- Warning red -->
+
+    <Color x:Key="HighlightGreen">#FF408840</Color>
+
+    <Color x:Key="HighContrastHover">#FF00FFFF</Color>
+
+    <Color x:Key="HighContrastDisabledForeground">#FF3FF23F</Color>
+
+    <!-- END COLORS -->
+
+    <!-- BRUSHES -->
+
+    <!-- Accent brushes -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.AccentBaseColorBrush" Color="{StaticResource Fluent.Ribbon.Colors.AccentBaseColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.AccentColorBrush80" Color="{StaticResource Fluent.Ribbon.Colors.AccentColor80}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.AccentColorBrush60" Color="{StaticResource Fluent.Ribbon.Colors.AccentColor60}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.AccentColorBrush40" Color="{StaticResource Fluent.Ribbon.Colors.AccentColor40}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.AccentColorBrush20" Color="{StaticResource Fluent.Ribbon.Colors.AccentColor20}" options:Freeze="True" />
+
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.HighlightBrush" Color="{StaticResource Fluent.Ribbon.Colors.HighlightColor}" options:Freeze="True" />
+
+    <!-- Misc brushes -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ExtremeHighlightBrush" Color="{StaticResource Fluent.Ribbon.Colors.ExtremeHighlightColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.DarkExtremeHighlightBrush" Color="{StaticResource Fluent.Ribbon.Colors.DarkExtremeHighlightColor}" options:Freeze="True" />
+
+    <!-- Base brushes -->
+    <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="WhiteBrush20" Color="{StaticResource WhiteColor20}" options:Freeze="True" />
+    <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource BlackColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="BlackBrush20" Color="{StaticResource BlackColor20}" options:Freeze="True" />
+    <SolidColorBrush x:Key="GrayBrush1" Color="{StaticResource Gray1}" options:Freeze="True" />
+    <SolidColorBrush x:Key="GrayBrush2" Color="{StaticResource Gray2}" options:Freeze="True" />
+    <SolidColorBrush x:Key="GrayBrush3" Color="{StaticResource Gray3}" options:Freeze="True" />
+    <SolidColorBrush x:Key="GrayBrush4" Color="{StaticResource Gray4}" options:Freeze="True" />
+    <SolidColorBrush x:Key="GrayBrush5" Color="{StaticResource Gray5}" options:Freeze="True" />
+    <SolidColorBrush x:Key="GrayBrush6" Color="{StaticResource Gray6}" options:Freeze="True" />
+    <SolidColorBrush x:Key="GrayBrush7" Color="{StaticResource Gray7}" options:Freeze="True" />
+    <SolidColorBrush x:Key="GrayBrush8" Color="{StaticResource Gray8}" options:Freeze="True" />
+    <SolidColorBrush x:Key="GrayBrush9" Color="{StaticResource Gray9}" options:Freeze="True" />
+    <SolidColorBrush x:Key="GrayBrush10" Color="{StaticResource Gray10}" options:Freeze="True" />
+
+    <SolidColorBrush x:Key="TransparentWhiteBrush" Color="{StaticResource TransparentWhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="HighTransparentWhiteBrush" Color="{StaticResource Fluent.Ribbon.Colors.HighTransparentWhiteColor}" options:Freeze="True" />
+
+    <!-- Foreground -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.IdealForegroundColorBrush" Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.IdealForegroundDisabledBrush" Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" Opacity="0.4" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.DarkIdealForegroundDisabledBrush" Color="{StaticResource Fluent.Ribbon.Colors.DarkIdealForegroundDisabledColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.LabelTextBrush" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <!-- Color_001 / ForegroundBrush -->
+
+    <!-- Generic control brushes -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Control.BorderBrush" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Control.Disabled.BorderBrush" Color="{StaticResource WhiteColor20}" options:Freeze="True" />
+
+    <!-- From here on everything is initially taken from Colorful.Blue -->
+    <!-- BackstageTabControl -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.BackstageTabControl.Button.MouseOver.Background" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.BackstageTabControl.ItemsPanelBackground" Color="{StaticResource BlackColor}" options:Freeze="True" />
+
+    <!-- BackstageTabItem -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.BackstageTabItem.Header.Foreground" Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.BackstageTabItem.MouseOver.Background" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.BackstageTabItem.Selected.Background" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
+
+    <!-- Button -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Button.MouseOver.Background" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Button.Pressed.BorderBrush" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Button.Pressed.Background" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
+
+    <!-- ToggleButton -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ToggleButton.Checked.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ToggleButton.Checked.BorderBrush" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ToggleButton.CheckedMouseOver.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ToggleButton.CheckedMouseOver.BorderBrush" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
+
+    <!-- CheckBox -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.BorderBrush" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.Stroke" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.MouseOver.Stroke" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.MouseOver.BorderBrush" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.MouseOver.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.Pressed.Stroke" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.Pressed.BorderBrush" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.Pressed.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+
+    <!-- ColorGallery -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ColorGallery.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ColorGallery.Item.BorderBrush" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+
+    <!-- DropDown -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.DropDown.BackgroundBrush" Color="{StaticResource BlackColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.DropDown.BorderBrush" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.DropDown.Resize.BorderBrush" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.DropDown.Resize.BackgroundBrush" Color="{StaticResource BlackColor}" options:Freeze="True" />
+
+    <!-- Gallery -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Gallery.Header.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+
+    <!-- GalleryGroupContainer -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.GalleryGroupContainer.Header.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+
+    <!-- GalleryItem -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.GalleryItem.MouseOver" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.GalleryItem.Selected" Color="{StaticResource HighlightGreen}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.GalleryItem.Pressed" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
+
+    <!-- Images -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Images.QuickAccessToolbarDropDown" Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Images.QuickAccessToolbarExtender" Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Images.RibbonCollapse" Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Images.RibbonExpand" Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Images.RibbonPin" Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" options:Freeze="True" />
+
+    <!-- KeyTip -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.KeyTip.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.KeyTip.BorderBrush" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+
+    <!-- MenuItem -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.MenuItem.Background" Color="Transparent" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ApplicationMenuItem.CheckBox.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ApplicationMenuItem.CheckBox.BorderBrush" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+
+    <LinearGradientBrush x:Key="Fluent.Ribbon.MenuItem.SubMenu.Arrow.Fill" EndPoint="0.945,0.872" StartPoint="0.055,0.128" options:Freeze="True">
+        <GradientStop Color="{StaticResource WhiteColor}" Offset="1" />
+        <GradientStop Color="{StaticResource WhiteColor}" />
+    </LinearGradientBrush>
+
+    <!-- Ribbon -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Ribbon.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+
+    <!-- RibbonContextualTabGroup -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonContextualTabGroup.Background.OpacityMask" Color="#14000000" options:Freeze="True" />
+
+    <!-- RibbonGroupBox -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonGroupBox.Collapsed.BorderBrush" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonGroupBox.Collapsed.MouseOver.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonGroupBox.DropDownOpen.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonGroupBox.Header.Foreground" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+
+    <!-- RibbonTabControl -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonTabControl.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonTabControl.Foreground" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonTabControl.Content.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonTabControl.Content.BorderBrush" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonTabControl.Content.Foreground" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonTabControl.TabsGrid.Background" Color="Transparent" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonTabControl.TabsGrid.Foreground" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+
+    <!-- RibbonContextualTabGroup -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonContextualTabGroup.TabItemSelectedForeground" Color="{StaticResource HighlightGreen}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonContextualTabGroup.TabItemMouseOverForeground" Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonContextualTabGroup.TabItemSelectedMouseOverForeground" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+
+    <!-- RibbonTabItem -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonTabItem.Foreground" Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonTabItem.BorderBrush" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonTabItem.Active.Background" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonTabItem.MouseOver.Background" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonTabItem.MouseOver.Foreground" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonTabItem.Selected.Foreground" Color="{StaticResource BlackColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonTabItem.Selected.MouseOver.Foreground" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonTabItem.Contextual.Background.OpacityMask" Color="#14000000" options:Freeze="True" />
+
+    <!-- RibbonWindow -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonWindow.TitleBackground" Color="{StaticResource BlackColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonWindow.TitleForeground" Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" options:Freeze="True" />
+
+    <!-- Separator -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Separator.BorderBrush" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Separator.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.GroupSeparator.Background" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+
+    <!-- ScreenTip -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ScreenTip.BorderBrush" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ScreenTip.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+
+    <!-- Scroll-Buttons -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ScrollButton.Default.BorderBrush" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ScrollButton.Default.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+
+    <!-- ScrollBar -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ScrollBar.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ScrollThumb.Default.BorderBrush" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ScrollThumb.Default.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+
+    <!-- ScrollViewer -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ScrollViewer.Button.BorderBrush" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ScrollViewer.Button.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+
+    <!-- TextBox -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.TextBox.BorderBrush" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.TextBox.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.TextBox.CaretBrush" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.TextBox.SelectionBrush" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.TextBox.MouseOver.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.TextBox.MouseOver.BorderBrush" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.TextBox.Disabled.Background" Color="{StaticResource BlackColor20}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.TextBox.Disabled.BorderBrush" Color="{StaticResource WhiteColor20}" options:Freeze="True" />
+
+    <!-- WindowCommands -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.Foreground" Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.Background" Color="{StaticResource BlackColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.MouseOver.Background" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.Pressed.Background" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
+
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.WindowCommands.CloseButton.MouseOver.Background" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.WindowCommands.CloseButton.Pressed.Background" Color="{StaticResource  HighContrastHover}" options:Freeze="True" />
+
+    <!-- END BRUSHES -->
+</ResourceDictionary>

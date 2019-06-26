@@ -56,7 +56,7 @@ $nuspecData = @"
 
 Out-File -FilePath ".\root\Fluent.dll.nuspec" -InputObject $nuspecData
 
-Copy-Item -Path ".\$dotNetVersion" -Destination ".\root\lib\$dotNetVersion" -Recurse -Force
+Copy-Item -Path ".\$dotNetVersion" -Destination ".\root\lib" -Recurse -Force
 
 $nugetExe = "nuget.exe"
 &$nugetExe pack .\root\Fluent.dll.nuspec -OutputDirectory .\root\

@@ -39,6 +39,10 @@ namespace FluentTest
         {
             ThemeManager.IsAutomaticWindowsAppModeSettingSyncEnabled = true;
             ThemeManager.SyncThemeWithWindowsAppModeSetting();
+            ThemeManager.AddTheme(new System.Uri("pack://application:,,,/Fluent.Ribbon.Showcase;component/Themes/Light.F2.xaml"));
+            ThemeManager.AddTheme(new System.Uri("pack://application:,,,/Fluent.Ribbon.Showcase;component/Themes/Dark.F2.xaml"));
+
+            ThemeManager.ChangeTheme(Application.Current, ThemeManager.GetTheme("F2.Standard"));
 
             base.OnStartup(e);
         }
