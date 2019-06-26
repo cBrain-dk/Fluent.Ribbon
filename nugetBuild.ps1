@@ -73,4 +73,4 @@ if($LASTEXITCODE -NE 0)
 
 Set-Location -Path "..\..\.."
 
-Write-Host -ForegroundColor GREEN "Fluent version $version has been packaged on installed at $nugetRepository"
+Write-Host -ForegroundColor GREEN "Fluent version $version has been packaged and installed at $nugetRepository"

@@ -36,7 +36,11 @@
     <None Remove="Themes\Office2016\Controls\RadioButton.xaml" />
   </ItemGroup>
   <ItemGroup>
+    <Page Remove="Themes\Office2016\Controls\WindowCommands.xaml" />
+  </ItemGroup>
+  <ItemGroup>
     <UpToDateCheckInput Remove="Themes\Office2016\Controls\RadioButton.xaml" />
+    <UpToDateCheckInput Remove="Themes\Office2016\Controls\WindowCommands.xaml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\License.txt" Pack="true" PackagePath="licenses/License.txt" />
@@ -62,6 +66,9 @@
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Themes\Office2013\Controls\Ribbon.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Themes\Office2016\Controls\WindowCommands.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>

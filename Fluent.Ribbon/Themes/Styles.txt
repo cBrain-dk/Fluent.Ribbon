@@ -1,5 +1,5 @@
 Office2016\Controls\Button.xaml
-Controls\WindowCommands.xaml
+Office2016\Controls\WindowCommands.xaml
 Controls\EmptyFocusStyle.xaml
 Controls\ApplicationMenuItem.xaml
 Controls\ApplicationMenu.xaml
