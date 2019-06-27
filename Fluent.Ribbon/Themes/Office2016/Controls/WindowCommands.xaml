@@ -54,11 +54,11 @@
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center">
                                 <Path Data="F1M0,6L0,9 9,9 9,6 0,6z"
+                                      Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}"
                                       HorizontalAlignment="Center"
                                       VerticalAlignment="Center"
                                       SnapsToDevicePixels="True"
                                       UseLayoutRounding="True"
-                                      Fill="{DynamicResource Fluent.Ribbon.Brushes.WindowCommands.Button.Stroke}"
                                       StrokeThickness="1.5" />
                             </Canvas>
                         </Button>
@@ -75,7 +75,7 @@
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center">
                                 <Path Data="F1M0,0L0,9 9,9 9,0 0,0 0,3 8,3 8,8 1,8 1,3z"
-                                      Fill="{DynamicResource Fluent.Ribbon.Brushes.WindowCommands.Button.Stroke}"
+                                      Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}"
                                       RenderOptions.EdgeMode="Aliased"
                                       SnapsToDevicePixels="True"
                                       Stretch="Uniform" />
@@ -94,7 +94,7 @@
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center">
                                 <Path Data="F1M0,10L0,3 3,3 3,0 10,0 10,2 4,2 4,3 7,3 7,6 6,6 6,5 1,5 1,10z M1,10L7,10 7,7 10,7 10,2 9,2 9,6 6,6 6,9 1,9z"
-                                      Fill="{DynamicResource Fluent.Ribbon.Brushes.WindowCommands.Button.Stroke}"
+                                      Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}"
                                       RenderOptions.EdgeMode="Aliased"
                                       SnapsToDevicePixels="True"
                                       Stretch="Uniform" />
@@ -112,10 +112,10 @@
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center">
                                 <Path Data="F1M0,0L2,0 5,3 8,0 10,0 6,4 10,8 8,8 5,5 2,8 0,8 4,4 0,0z"
+                                      Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:WindowCommands}}}"
                                       HorizontalAlignment="Center"
                                       VerticalAlignment="Center"
-                                      SnapsToDevicePixels="True"
-                                      Fill="{DynamicResource Fluent.Ribbon.Brushes.WindowCommands.Button.Stroke}" />
+                                      SnapsToDevicePixels="True" />
                             </Canvas>
                         </Button>
                     </StackPanel>
