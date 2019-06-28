@@ -414,7 +414,7 @@ namespace Fluent
                 control.IsContextMenuOpened = true;
                 Debug.WriteLine("Context menu opening");
 
-                if (control is FrameworkElement element)
+                if (control is FrameworkElement element && element.ContextMenu != null)
                 {
                     element.ContextMenu.PlacementTarget = e.Source as UIElement;
                 }

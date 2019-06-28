@@ -37,11 +37,19 @@
                                     <Storyboard>
                                         <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="hover" />
                                         <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="hoverBackground" />
+
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Checked1" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.MouseOver.Stroke}" />
+                                        </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
                                         <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="pressed" />
+
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Checked1" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.Pressed.Stroke}" />
+                                        </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Disabled">
@@ -65,42 +73,51 @@
                                 <VisualState x:Name="Indeterminate" />
                             </VisualStateGroup>
                             <VisualStateGroup x:Name="FocusStates">
-                                <VisualState x:Name="Focused">
-                                    <Storyboard>
-                                        <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="focused" />
-                                    </Storyboard>
-                                </VisualState>
+                                <VisualState x:Name="Focused" />
                                 <VisualState x:Name="Unfocused" />
                             </VisualStateGroup>
                             <VisualStateGroup x:Name="ValidationStates">
                                 <VisualState x:Name="Valid" />
-                                <VisualState x:Name="InvalidUnfocused">
-                                    <Storyboard>
-                                        <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="invalidUnfocused" />
-                                    </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="InvalidFocused">
-                                    <Storyboard>
-                                        <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="invalidFocused" />
-                                    </Storyboard>
-                                </VisualState>
+                                <VisualState x:Name="InvalidUnfocused" />
+                                <VisualState x:Name="InvalidFocused" />
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <Rectangle x:Name="hoverBackground" Opacity="0" Fill="{StaticResource RadioButtonHoverBackgroundBrush}" />
+                        <Rectangle x:Name="hoverBackground" Opacity="0" Fill="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.MouseOver.Background}" />
                         <Grid Margin="4 1 4 1">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="18" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Rectangle Fill="{StaticResource TransparentBrush}" Margin="-6,0" />
-                            <Ellipse x:Name="normal" Opacity="1" Stroke="{StaticResource RadioButtonOuterBorderBrush}" StrokeThickness="1" Fill="{StaticResource RadioButtonOuterBackgroundBrush}" Width="18" Height="18" />
-                            <Ellipse x:Name="hover" Stroke="{StaticResource RadioButtonHoverOuterBorderBrush}" StrokeThickness="1" Fill="{StaticResource RadioButtonHoverOuterBackgroundBrush}" Opacity="0" Width="18" Height="18" />
-                            <Ellipse x:Name="pressed" Opacity="0" Stroke="{StaticResource RadioButtonPressedOuterBorderBrush}" StrokeThickness="1" Fill="{StaticResource RadioButtonPressedOuterBackgroundBrush}" Width="18" Height="18" />
-                            <Ellipse x:Name="focused" Opacity="0" Stroke="{StaticResource RadioButtonFocusedOuterBorderBrush}" StrokeThickness="1" Fill="{StaticResource RadioButtonFocusedOuterBackgroundBrush}" Width="18" Height="18" />
-                            <Ellipse x:Name="invalidUnfocused" Opacity="0" Stroke="{StaticResource RadioButtonValidationUnFocusedOuterBorderBrush}" StrokeThickness="1" Fill="{StaticResource RadioButtonValidationUnFocusedOuterBackgroundBrush}" Width="18" Height="18" />
-                            <Ellipse x:Name="invalidFocused" Opacity="0" Stroke="{StaticResource RadioButtonValidationFocusedOuterBorderBrush}" StrokeThickness="1" Fill="{StaticResource RadioButtonValidationFocusedOuterBackgroundBrush}" Width="18" Height="18" />
-                            <Ellipse x:Name="Checked1" Fill="#FF808080" Opacity="0" Width="10" Height="10" />
-                            <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="1" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" RecognizesAccessKey="True" />
+                            <Rectangle Fill="Transparent" Margin="-6,0" />
+                            <Ellipse x:Name="normal" 
+                                     Opacity="1" 
+                                     Stroke="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.BorderBrush}" 
+                                     StrokeThickness="1" 
+                                     Fill="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.Background}" 
+                                     Width="18" Height="18" />
+                            <Ellipse x:Name="hover" 
+                                     Stroke="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.MouseOver.BorderBrush}" 
+                                     StrokeThickness="1" 
+                                     Fill="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.MouseOver.Background}" 
+                                     Opacity="0" 
+                                     Width="18" Height="18" />
+                            <Ellipse x:Name="pressed" 
+                                     Opacity="0" 
+                                     Stroke="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.Pressed.BorderBrush}" 
+                                     StrokeThickness="1" 
+                                     Fill="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.Pressed.Background}" 
+                                     Width="18" Height="18" />
+                            <Ellipse x:Name="Checked1" 
+                                     Fill="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.Stroke}" 
+                                     Opacity="0" 
+                                     Width="10" Height="10" />
+                            <ContentPresenter x:Name="contentPresenter" 
+                                              ContentTemplate="{TemplateBinding ContentTemplate}" 
+                                              Content="{TemplateBinding Content}" Grid.Column="1" 
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                              Margin="{TemplateBinding Padding}" 
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                                              RecognizesAccessKey="True" />
                         </Grid>
                     </Grid>
                 </ControlTemplate>
