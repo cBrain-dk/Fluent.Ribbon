@@ -71,6 +71,7 @@ if($LASTEXITCODE -NE 0)
 	Throw "nuget add command (installing the package) failed"
 }
 
+Remove-Item -Path ".\root\cFluent.$version.nupkg"
 Set-Location -Path "..\..\.."
 
 Write-Host -ForegroundColor GREEN "Fluent version $version has been packaged and installed at $nugetRepository"
