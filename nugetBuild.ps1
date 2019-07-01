@@ -20,7 +20,7 @@ if([string]::IsNullOrEmpty($nugetRepository))
 	Throw "Missing path in nugetBuild.config ($nugetRepository) specifying where to place the package"
 }
 
-Set-Location -Path ".\bin\Fluent.Ribbon\Debug\"
+Set-Location -Path ".\bin\Fluent.Ribbon\Release\"
 
 if(!(Test-Path -Path ".\root"))
 {
@@ -35,6 +35,7 @@ if(!(Test-Path -Path ".\root\lib\$dotNetVersion"))
 	New-Item -Path ".\root\lib\$dotNetVersion" -ItemType Directory
 }
 
+Write-Host -ForegroundColor YELLOW "ATT: Fluent will be packed from the Release build!"
 $releaseNote = (Read-Host "Provide a reason/relasenote for the new package")
 $nuspecData = @"
 <?xml version=`"1.0`"?> 
@@ -57,6 +58,14 @@ $nuspecData = @"
 Out-File -FilePath ".\root\Fluent.dll.nuspec" -InputObject $nuspecData
 
 Copy-Item -Path ".\$dotNetVersion" -Destination ".\root\lib" -Recurse -Force
+
+#The following should probably be controlled through the packagereference shenanigans in our own solution, but we havent reached that point yet
+# Remove the Annotations dll as we do not have a need for it in our projects moving forward (currently only used in Fluent for code-writing purposes)
+Remove-Item -Path ".\root\lib\$dotNetVersion\JetBrains.Annotations.dll"
+# Remove the Scheme generator as it is only used when Fluent is built. We just want the package
+Remove-Item -Path ".\root\lib\$dotNetVersion\XamlColorSchemeGenerator.exe"
+# Also remove the JSON parser as that is only used by the Scheme generator
+Remove-Item -Path ".\root\lib\$dotNetVersion\Newtonsoft.Json.dll"
 
 $nugetExe = "nuget.exe"
 &$nugetExe pack .\root\Fluent.dll.nuspec -OutputDirectory .\root\
