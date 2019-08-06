@@ -33,9 +33,6 @@
     <UpToDateCheckInput Include="**/*.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Themes\Office2016\Controls\RadioButton.xaml" />
-  </ItemGroup>
-  <ItemGroup>
     <Page Remove="Themes\Office2016\Controls\WindowCommands.xaml" />
   </ItemGroup>
   <ItemGroup>
@@ -66,6 +63,9 @@
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Themes\Office2013\Controls\Ribbon.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Themes\Office2016\Controls\RadioButton.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Themes\Office2016\Controls\WindowCommands.xaml">

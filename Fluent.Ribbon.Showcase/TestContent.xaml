@@ -408,7 +408,7 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                 <Fluent:QuickAccessMenuItem IsChecked="True"
                                             Target="{Binding ElementName=UndoButton}" />
             </Fluent:Ribbon.QuickAccessItems>
-
+            
             <Fluent:RibbonTabItem Header="Toolbars"
                                   KeyTip="TO"
                                   ReduceOrder="Font, Font, Font, Font,B,A,A,A,(A),(A),(A),Clipboard,Font,B,B,(A),C,(A),(A)">
@@ -1616,6 +1616,105 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                             <Fluent:MenuItem Header="Undo another thing" />
                         </Fluent:SplitButton>
                     </StackPanel>
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
+
+            <Fluent:RibbonTabItem Header="TestDisabledText">
+                <Fluent:RibbonGroupBox Header="TestButtons">
+                    <Fluent:TextBox x:Name="disabledTextControl1234" 
+                                    Text="{Binding DisabledText}" />
+                    <Fluent:CheckBox x:Name="readOnlyControl1234" 
+                                     IsChecked="{Binding DisableButtons}" 
+                                     Header="Toggle readonly status" />
+
+                    <Fluent:Button Header="Test Button"
+                                   IsReadOnly="{Binding DisableButtons}">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Button test" 
+                                              Text="Testing screentip for button"
+                                              DisableReason="{Binding DisableReason, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+
+                    <Fluent:ToggleButton Header="Test Toggle Button"
+                                         IsReadOnly="{Binding DisableButtons}">
+                        <Fluent:ToggleButton.ToolTip>
+                            <Fluent:ScreenTip Title="Toggle Button test" 
+                                              Text="Testing screentip for toggle button"
+                                              DisableReason="{Binding DisableReason, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
+                        </Fluent:ToggleButton.ToolTip>
+                    </Fluent:ToggleButton>
+
+                    <Fluent:SplitButton Header="Test Split Button" 
+                                        IsReadOnly="{Binding DisableButtons}">
+                        <Fluent:SplitButton.ToolTip>
+                            <Fluent:ScreenTip Title="Toggle Button test" 
+                                              Text="Testing screentip for split button"
+                                              DisableReason="{Binding DisableReason, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
+                        </Fluent:SplitButton.ToolTip>
+                    </Fluent:SplitButton>
+
+                    <Fluent:DropDownButton Header="Test DropDown Button"
+                                           IsReadOnly="{Binding DisableButtons}">
+                        <Fluent:DropDownButton.ToolTip>
+                            <Fluent:ScreenTip Title="DropDown Button test" 
+                                              Text="Testing screentip for dropdown button"
+                                              DisableReason="{Binding DisableReason, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
+                        </Fluent:DropDownButton.ToolTip>
+                    </Fluent:DropDownButton>
+
+                    <Fluent:CheckBox Header="Test Checkbox"
+                                     IsReadOnly="{Binding DisableButtons}">
+                        <Fluent:CheckBox.ToolTip>
+                            <Fluent:ScreenTip Title="Checkbox test" 
+                                              Text="Testing screentip for checkbox"
+                                              DisableReason="{Binding DisableReason, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
+                        </Fluent:CheckBox.ToolTip>
+                    </Fluent:CheckBox>
+                </Fluent:RibbonGroupBox>
+
+                <Fluent:RibbonGroupBox>
+                    <Fluent:Button Header="ScreenTip with only header">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Only header" />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+
+                    <Fluent:Button Header="ScreenTip with only text">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Text="Only text" />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+
+                    <Fluent:Button Header="ScreenTip with only disabled text">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip DisableReason="Only disabled text" />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+
+                    <Fluent:Button Header="ScreenTip with header and description">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="The header" Text="and the text" />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+
+                    <Fluent:Button Header="ScreenTip with header and disabled text">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="The header" DisableReason="and the text" />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+
+                    <Fluent:Button Header="Text and disabled text">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Text="Some text" DisableReason="and some more text" />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+
+                    <Fluent:Button Header="ScreenTip with everything">
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="The header" Text="and the text" DisableReason="and the disabled text" />
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
 

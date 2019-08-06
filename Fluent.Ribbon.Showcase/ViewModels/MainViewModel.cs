@@ -122,6 +122,76 @@
             }
         }
 
+        private string disabledText = "Disabled text";
+
+        public string DisabledText
+        {
+            get { return this.disabledText; }
+
+            set
+            {
+                if (this.disabledText == value)
+                {
+                    return;
+                }
+
+                this.disabledText = value;
+
+                if (this.DisableButtons)
+                {
+                    this.DisableReason = this.disabledText;
+                }
+
+                this.OnPropertyChanged();
+            }
+        }
+
+        private string disableReason = null;
+
+        public string DisableReason
+        {
+            get { return this.disableReason; }
+
+            set
+            {
+                if (this.disableReason == value)
+                {
+                    return;
+                }
+
+                this.disableReason = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        private bool disableButtons;
+
+        public bool DisableButtons
+        {
+            get { return this.disableButtons; }
+
+            set
+            {
+                if (this.disableButtons == value)
+                {
+                    return;
+                }
+
+                this.disableButtons = value;
+
+                if (this.disableButtons)
+                {
+                    this.DisableReason = this.DisabledText;
+                }
+                else
+                {
+                    this.DisableReason = null;
+                }
+
+                this.OnPropertyChanged();
+            }
+        }
+
         public IssueReprosViewModel IssueReprosViewModel { get; }
 
         /// <summary>

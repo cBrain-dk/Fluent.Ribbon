@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:Fluent="clr-namespace:Fluent"
+                    xmlns:converters="clr-namespace:Fluent.Converters"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     mc:Ignorable="d">
@@ -70,7 +71,8 @@
                                    Stretch="Uniform"
                                    Source="{TemplateBinding Property=Image}"
                                    MaxHeight="48" />
-                            <TextBlock Text="{TemplateBinding Property=Text}"
+                            <TextBlock x:Name="text" 
+                                       Text="{TemplateBinding Property=Text}"
                                        TextWrapping="Wrap"
                                        Margin="8,0,8,6"
                                        Grid.Column="1" />
@@ -181,13 +183,18 @@
                         TargetName="separator"
                         Value="Collapsed" />
             </MultiTrigger>
-            <Trigger Property="Text"
-                     SourceName="disableReasonText"
-                     Value="">
+            <DataTrigger Binding="{Binding Path=Text, ElementName=disableReasonText, Converter={x:Static converters:IsNullOrEmptyStringConverter.Instance}}"
+                         Value="False">
+                <Setter Property="Visibility"
+                        TargetName="disableReasonSection"
+                        Value="Visible" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Path=Text, ElementName=disableReasonText, Converter={x:Static converters:IsNullOrEmptyStringConverter.Instance}}"
+                         Value="True">
                 <Setter Property="Visibility"
                         TargetName="disableReasonSection"
                         Value="Collapsed" />
-            </Trigger>
+            </DataTrigger>
             <Trigger Property="Content"
                      SourceName="helpTopic"
                      Value="{x:Null}">
@@ -201,13 +208,20 @@
                         TargetName="separator2"
                         Value="Collapsed" />
             </Trigger>
-            <Trigger Property="Visibility"
-                     SourceName="disableReasonSection"
-                     Value="Visible">
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding ElementName=title, Path=Text, Converter={x:Static converters:IsNullOrEmptyStringConverter.Instance}}"
+                               Value="True" />
+                    <Condition Binding="{Binding ElementName=text, Path=Text, Converter={x:Static converters:IsNullOrEmptyStringConverter.Instance}}"
+                               Value="False" />
+                </MultiDataTrigger.Conditions>
                 <Setter Property="Visibility"
-                        TargetName="helpText"
+                        TargetName="title"
                         Value="Collapsed" />
-            </Trigger>
+                <Setter Property="Margin"
+                        TargetName="imageAndTextSection"
+                        Value="0 8 0 0" />
+            </MultiDataTrigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="Text"
@@ -223,6 +237,10 @@
                 <MultiTrigger.Conditions>
                     <Condition Property="Title"
                                Value="" />
+                    <Condition Property="Text"
+                               Value="" />
+                    <Condition Property="Image"
+                               Value="{x:Null}" />
                 </MultiTrigger.Conditions>
                 <Setter Property="Visibility"
                         TargetName="imageAndTextSection"
@@ -233,6 +251,9 @@
                 <Setter Property="Visibility"
                         TargetName="separator"
                         Value="Collapsed" />
+                <Setter Property="Margin"
+                        TargetName="disableReasonSection"
+                        Value="5 8 0 0" />
             </MultiTrigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
