@@ -8,6 +8,7 @@
                      x:Name="window"
                      x:Class="FluentTest.TestWindow"
                      Title="{Binding WindowTitle, ElementName=TestContent}"
+                     TitleBarHeight="37"
                      FlowDirection="LeftToRight"
                      Height="768"
                      Width="1024"

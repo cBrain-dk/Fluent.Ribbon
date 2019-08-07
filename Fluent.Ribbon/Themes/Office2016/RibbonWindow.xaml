@@ -72,7 +72,7 @@
 
             <Border x:Name="PART_Border"
                     Background="{x:Null}"
-                    BorderBrush="{TemplateBinding GlowBrush}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}"
                     UseLayoutRounding="True"
                     HorizontalAlignment="Stretch"
@@ -91,22 +91,8 @@
                 <Setter Property="Opacity"
                         TargetName="PART_WindowCommands"
                         Value="0.5" />
-                <Setter TargetName="PART_Border" Property="BorderBrush" Value="{Binding Path=NonActiveGlowBrush, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
-            </Trigger>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsActive" Value="False" />
-                    <Condition Property="NonActiveGlowBrush" Value="{x:Null}" />
-                </MultiTrigger.Conditions>
                 <Setter TargetName="PART_Border" Property="BorderBrush" Value="{Binding Path=NonActiveBorderBrush, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
-            </MultiTrigger>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsActive" Value="True" />
-                    <Condition Property="GlowBrush" Value="{x:Null}" />
-                </MultiTrigger.Conditions>
-                <Setter TargetName="PART_Border" Property="BorderBrush" Value="{Binding Path=BorderBrush, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
-            </MultiTrigger>
+            </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="ResizeMode"

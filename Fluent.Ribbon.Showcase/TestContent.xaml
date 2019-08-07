@@ -104,6 +104,19 @@
 
         <Fluent:Ribbon x:Name="ribbon"
                        AutomaticStateManagement="True">
+
+            <Fluent:Ribbon.Resources>
+                <Style TargetType="Fluent:RibbonTabItem" BasedOn="{StaticResource {x:Type Fluent:RibbonTabItem}}">
+                    <Setter Property="Height" Value="29" />
+                </Style>
+                <Style TargetType="Fluent:RibbonGroupBox" BasedOn="{StaticResource {x:Type Fluent:RibbonGroupBox}}">
+                    <Setter Property="Margin" Value="2 4 2 0" />
+                </Style>
+                <Style TargetType="Fluent:ScreenTip" BasedOn="{StaticResource {x:Type Fluent:ScreenTip}}">
+                    <Setter Property="Width" Value="190" />
+                </Style>
+            </Fluent:Ribbon.Resources>
+            
             <Fluent:Ribbon.ContextualGroups>
                 <Fluent:RibbonContextualTabGroup x:Name="tabGroup1"
                                                  BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.AccentBaseColorBrush}"
