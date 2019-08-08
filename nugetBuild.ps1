@@ -4,7 +4,7 @@ Param (
 
 if([string]::IsNullOrEmpty($version))
 {
-	Throw "No version-number defined"
+	Throw "No version-number defined, need something like X.Y.Z-A.BC where XYZ is the current Fluent version and ABC is our own version"
 }
 
 if(!(Test-Path -Path ".\nugetBuild.config"))

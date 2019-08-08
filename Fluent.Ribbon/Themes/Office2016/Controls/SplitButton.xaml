@@ -108,7 +108,8 @@
                                          GroupName="{Binding GroupName, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                          IsChecked="{Binding IsChecked, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                          IsDefinitive="{TemplateBinding IsDefinitive}"
-                                         CanAddToQuickAccessToolBar="{TemplateBinding CanAddButtonToQuickAccessToolBar}" />
+                                         CanAddToQuickAccessToolBar="{TemplateBinding CanAddButtonToQuickAccessToolBar}"
+                                         Fluent:RibbonControl.IsQuickAccessItem="{TemplateBinding Fluent:RibbonControl.IsQuickAccessItem}"/>
                     <Border BorderThickness="0,0,0,0"
                             Name="downBorder"
                             BorderBrush="Transparent"
@@ -312,15 +313,34 @@
                         TargetName="controlLabel"
                         Value="0.5" />
             </Trigger>
-            <Trigger Property="IsDropDownOpen"
-                     Value="True">
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsDropDownOpen"
+                               Value="True" />
+                    <Condition Property="Fluent:RibbonControl.IsQuickAccessItem" 
+                               Value="False" />
+                </MultiTrigger.Conditions>
                 <Setter Property="BorderBrush"
                         TargetName="PART_ButtonBorder"
                         Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.BorderBrush}" />
                 <Setter Property="Background"
                         TargetName="PART_ButtonBorder"
                         Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.Background}" />
-            </Trigger>
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsDropDownOpen"
+                               Value="True" />
+                    <Condition Property="Fluent:RibbonControl.IsQuickAccessItem" 
+                               Value="True" />
+                </MultiTrigger.Conditions>
+                <Setter Property="BorderBrush"
+                        TargetName="PART_ButtonBorder"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.QuickAccess.Pressed.BorderBrush}" />
+                <Setter Property="Background"
+                        TargetName="PART_ButtonBorder"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.QuickAccess.Pressed.Background}" />
+            </MultiTrigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="IsMouseOver"
@@ -330,9 +350,49 @@
                                Value="False" />
                     <Condition Property="IsReadOnly"
                                Value="False" />
+                    <Condition Property="Fluent:RibbonControl.IsQuickAccessItem" 
+                               Value="False" />
                 </MultiTrigger.Conditions>
                 <Setter Property="BorderBrush"
                         TargetName="PART_ButtonBorder"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver"
+                               Value="True"
+                               SourceName="PART_Button" />
+                    <Condition Property="IsDropDownOpen"
+                               Value="False" />
+                    <Condition Property="IsReadOnly"
+                               Value="False" />
+                    <Condition Property="Fluent:RibbonControl.IsQuickAccessItem" 
+                               Value="True" />
+                </MultiTrigger.Conditions>
+                <Setter Property="BorderBrush"
+                        TargetName="PART_ButtonBorder"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.QuickAccess.MouseOver.BorderBrush}" />
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver"
+                               Value="True"
+                               SourceName="downBorder" />
+                    <Condition Property="IsDropDownOpen"
+                               Value="False" />
+                    <Condition Property="IsReadOnly"
+                               Value="False" />
+                    <Condition Property="Fluent:RibbonControl.IsQuickAccessItem" 
+                               Value="False" />
+                </MultiTrigger.Conditions>
+                <Setter Property="BorderBrush"
+                        TargetName="PART_ButtonBorder"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
+                <Setter Property="Background"
+                        TargetName="downBorder"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
+                <Setter Property="BorderBrush"
+                        TargetName="downBorder"
                         Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
             </MultiTrigger>
             <MultiTrigger>
@@ -344,16 +404,18 @@
                                Value="False" />
                     <Condition Property="IsReadOnly"
                                Value="False" />
+                    <Condition Property="Fluent:RibbonControl.IsQuickAccessItem" 
+                               Value="True" />
                 </MultiTrigger.Conditions>
                 <Setter Property="BorderBrush"
                         TargetName="PART_ButtonBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.QuickAccess.MouseOver.BorderBrush}" />
                 <Setter Property="Background"
                         TargetName="downBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.QuickAccess.MouseOver.BorderBrush}" />
                 <Setter Property="BorderBrush"
                         TargetName="downBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.QuickAccess.MouseOver.BorderBrush}" />
             </MultiTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
@@ -436,15 +498,39 @@
             </Grid>
         </Border>
         <ControlTemplate.Triggers>
-            <Trigger Property="IsPressed"
-                     Value="True">
+
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsPressed" 
+                               Value="True"/>
+                    <Condition Property="IsReadOnly" 
+                               Value="False"/>
+                    <Condition Property="Fluent:RibbonControl.IsQuickAccessItem" 
+                               Value="False" />
+                </MultiTrigger.Conditions>
                 <Setter Property="BorderBrush"
                         TargetName="border"
                         Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.BorderBrush}" />
                 <Setter Property="Background"
                         TargetName="border"
                         Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.Background}" />
-            </Trigger>
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsPressed" 
+                               Value="True"/>
+                    <Condition Property="IsReadOnly" 
+                               Value="False"/>
+                    <Condition Property="Fluent:RibbonControl.IsQuickAccessItem" 
+                               Value="True" />
+                </MultiTrigger.Conditions>
+                <Setter Property="BorderBrush"
+                        TargetName="border"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.QuickAccess.Pressed.BorderBrush}" />
+                <Setter Property="Background"
+                        TargetName="border"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.QuickAccess.Pressed.Background}" />
+            </MultiTrigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="IsMouseOver"
@@ -453,6 +539,10 @@
                                Value="False" />
                     <Condition Property="IsEnabled"
                                Value="True" />
+                    <Condition Property="IsReadOnly"
+                               Value="False" />
+                    <Condition Property="Fluent:RibbonControl.IsQuickAccessItem" 
+                               Value="False" />
                 </MultiTrigger.Conditions>
                 <Setter Property="Background"
                         TargetName="border"
@@ -460,6 +550,26 @@
                 <Setter Property="BorderBrush"
                         TargetName="border"
                         Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver"
+                               Value="True" />
+                    <Condition Property="IsPressed"
+                               Value="False" />
+                    <Condition Property="IsEnabled"
+                               Value="True" />
+                    <Condition Property="IsReadOnly"
+                               Value="False" />
+                    <Condition Property="Fluent:RibbonControl.IsQuickAccessItem" 
+                               Value="True" />
+                </MultiTrigger.Conditions>
+                <Setter Property="Background"
+                        TargetName="border"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.QuickAccess.MouseOver.Background}" />
+                <Setter Property="BorderBrush"
+                        TargetName="border"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.QuickAccess.MouseOver.BorderBrush}" />
             </MultiTrigger>
             <Trigger Property="IsEnabled"
                      Value="False">

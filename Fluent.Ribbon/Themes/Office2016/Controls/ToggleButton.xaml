@@ -70,6 +70,8 @@
             <StackPanel x:Name="stackPanel"
                         Width="Auto"
                         Margin="{TemplateBinding Padding}"
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                         Orientation="Vertical">
                 <ContentPresenter x:Name="iconImage"
                                   Width="32"
@@ -150,15 +152,34 @@
                         TargetName="iconImage"
                         Value="{converters:ObjectToImageConverter {Binding Icon, RelativeSource={RelativeSource TemplatedParent}}, '16,16', {Binding RelativeSource={RelativeSource TemplatedParent}}}" />
             </Trigger>
-            <Trigger Property="IsChecked"
-                     Value="True">
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsChecked" 
+                               Value="True" />
+                    <Condition Property="Fluent:RibbonControl.IsQuickAccessItem" 
+                               Value="False" />
+                </MultiTrigger.Conditions>
                 <Setter Property="Background"
                         TargetName="border"
                         Value="{DynamicResource Fluent.Ribbon.Brushes.ToggleButton.Checked.Background}" />
                 <Setter Property="BorderBrush"
                         TargetName="border"
                         Value="{DynamicResource Fluent.Ribbon.Brushes.ToggleButton.Checked.BorderBrush}" />
-            </Trigger>
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsChecked" 
+                               Value="True" />
+                    <Condition Property="Fluent:RibbonControl.IsQuickAccessItem" 
+                               Value="True" />
+                </MultiTrigger.Conditions>
+                <Setter Property="Background"
+                        TargetName="border"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.ToggleButton.QuickAccess.Checked.Background}" />
+                <Setter Property="BorderBrush"
+                        TargetName="border"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.ToggleButton.QuickAccess.Checked.BorderBrush}" />
+            </MultiTrigger>
             <Trigger Property="IsEnabled"
                      Value="False">
                 <Setter Property="Opacity"
@@ -199,6 +220,8 @@
                                Value="False" />
                     <Condition Property="IsReadOnly" 
                                Value="False"/>
+                    <Condition Property="Fluent:RibbonControl.IsQuickAccessItem" 
+                               Value="False" />
                 </MultiTrigger.Conditions>
                 <Setter Property="Background"
                         TargetName="border"
@@ -217,6 +240,8 @@
                                Value="True" />
                     <Condition Property="IsReadOnly" 
                                Value="False"/>
+                    <Condition Property="Fluent:RibbonControl.IsQuickAccessItem" 
+                               Value="False" />
                 </MultiTrigger.Conditions>
                 <Setter Property="Background"
                         TargetName="border"
@@ -227,10 +252,52 @@
             </MultiTrigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver"
+                               Value="True" />
+                    <Condition Property="IsPressed"
+                               Value="False" />
+                    <Condition Property="IsChecked"
+                               Value="False" />
+                    <Condition Property="IsReadOnly" 
+                               Value="False"/>
+                    <Condition Property="Fluent:RibbonControl.IsQuickAccessItem" 
+                               Value="True" />
+                </MultiTrigger.Conditions>
+                <Setter Property="Background"
+                        TargetName="border"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.QuickAccess.MouseOver.Background}" />
+                <Setter Property="BorderBrush"
+                        TargetName="border"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.QuickAccess.MouseOver.BorderBrush}" />
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver"
+                               Value="True" />
+                    <Condition Property="IsPressed"
+                               Value="False" />
+                    <Condition Property="IsChecked"
+                               Value="True" />
+                    <Condition Property="IsReadOnly" 
+                               Value="False"/>
+                    <Condition Property="Fluent:RibbonControl.IsQuickAccessItem" 
+                               Value="True" />
+                </MultiTrigger.Conditions>
+                <Setter Property="Background"
+                        TargetName="border"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.ToggleButton.QuickAccess.CheckedMouseOver.Background}" />
+                <Setter Property="BorderBrush"
+                        TargetName="border"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.ToggleButton.QuickAccess.CheckedMouseOver.BorderBrush}" />
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
                     <Condition Property="IsPressed" 
                                Value="True"/>
                     <Condition Property="IsReadOnly" 
                                Value="False"/>
+                    <Condition Property="Fluent:RibbonControl.IsQuickAccessItem" 
+                               Value="False" />
                 </MultiTrigger.Conditions>
                 <Setter Property="BorderBrush"
                         TargetName="border"
@@ -238,6 +305,22 @@
                 <Setter Property="Background"
                         TargetName="border"
                         Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.Background}" />
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsPressed" 
+                               Value="True"/>
+                    <Condition Property="IsReadOnly" 
+                               Value="False"/>
+                    <Condition Property="Fluent:RibbonControl.IsQuickAccessItem" 
+                               Value="True" />
+                </MultiTrigger.Conditions>
+                <Setter Property="BorderBrush"
+                        TargetName="border"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.QuickAccess.Pressed.BorderBrush}" />
+                <Setter Property="Background"
+                        TargetName="border"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.QuickAccess.Pressed.Background}" />
             </MultiTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>

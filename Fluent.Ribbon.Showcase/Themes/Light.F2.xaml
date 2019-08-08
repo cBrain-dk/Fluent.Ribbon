@@ -62,6 +62,11 @@
     <Color x:Key="GrayHoverColor">#C5C5C5</Color>
     <Color x:Key="GrayPressedColor">#AEAEAE</Color>
     <Color x:Key="LineBrushColor">#E1E1E1</Color>
+    
+    <!-- Quick access colors -->
+    <Color x:Key="Fluent.Ribbon.Colors.QuickAccess.MouseOver">#FF60B1F8</Color>
+    <Color x:Key="Fluent.Ribbon.Colors.QuickAccess.Pressed">#FF2D7EC5</Color>
+    <Color x:Key="Fluent.Ribbon.Colors.QuickAccess.Checked">#FF2D7EC5</Color>
 
     <!-- END COLORS -->
 
@@ -123,14 +128,22 @@
     <!-- Button -->
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush" Color="{StaticResource Fluent.Ribbon.Colors.AccentColor20}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Button.MouseOver.Background" Color="{StaticResource Fluent.Ribbon.Colors.AccentColor20}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Button.QuickAccess.MouseOver.BorderBrush" Color="{StaticResource Fluent.Ribbon.Colors.QuickAccess.MouseOver}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Button.QuickAccess.MouseOver.Background" Color="{StaticResource Fluent.Ribbon.Colors.QuickAccess.MouseOver}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Button.Pressed.BorderBrush" Color="{StaticResource Fluent.Ribbon.Colors.AccentColor40}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Button.Pressed.Background" Color="{StaticResource Fluent.Ribbon.Colors.AccentColor40}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Button.QuickAccess.Pressed.BorderBrush" Color="{StaticResource Fluent.Ribbon.Colors.QuickAccess.Pressed}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Button.QuickAccess.Pressed.Background" Color="{StaticResource Fluent.Ribbon.Colors.QuickAccess.Pressed}" options:Freeze="True" />
 
     <!-- ToggleButton -->
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ToggleButton.Checked.Background" Color="{StaticResource Fluent.Ribbon.Colors.AccentColor20}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ToggleButton.Checked.BorderBrush" Color="{StaticResource Fluent.Ribbon.Colors.AccentColor20}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ToggleButton.QuickAccess.Checked.Background" Color="{StaticResource Fluent.Ribbon.Colors.QuickAccess.Checked}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ToggleButton.QuickAccess.Checked.BorderBrush" Color="{StaticResource Fluent.Ribbon.Colors.QuickAccess.Checked}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ToggleButton.CheckedMouseOver.Background" Color="{StaticResource Fluent.Ribbon.Colors.AccentColor40}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ToggleButton.CheckedMouseOver.BorderBrush" Color="{StaticResource Fluent.Ribbon.Colors.AccentColor40}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ToggleButton.QuickAccess.CheckedMouseOver.Background" Color="{StaticResource Fluent.Ribbon.Colors.QuickAccess.MouseOver}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ToggleButton.QuickAccess.CheckedMouseOver.BorderBrush" Color="{StaticResource Fluent.Ribbon.Colors.QuickAccess.MouseOver}" options:Freeze="True" />
 
     <!-- CheckBox -->
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.BorderBrush" Color="{StaticResource Fluent.Ribbon.Colors.AccentColor40}" options:Freeze="True" />
@@ -165,7 +178,7 @@
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.GalleryItem.Pressed" Color="{StaticResource Fluent.Ribbon.Colors.AccentColor40}" options:Freeze="True" />
 
     <!-- Images -->
-    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Images.QuickAccessToolbarDropDown" Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Images.QuickAccessToolbarDropDown" Color="{StaticResource WhiteColor}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Images.QuickAccessToolbarExtender" Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Images.RibbonCollapse" Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Images.RibbonExpand" Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" options:Freeze="True" />

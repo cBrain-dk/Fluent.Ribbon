@@ -276,7 +276,11 @@ namespace Fluent
         {
             var button = new ToggleButton();
 
-            RibbonControl.Bind(this, button, nameof(this.IsChecked), IsCheckedProperty, this.GetBindingExpression(IsCheckedProperty).ParentBinding.Mode);
+            if (this.GetBindingExpression(IsCheckedProperty) is BindingExpression isCheckedBinding)
+            {
+                RibbonControl.Bind(this, button, nameof(this.IsChecked), IsCheckedProperty, isCheckedBinding.ParentBinding.Mode);
+            }
+
             button.Click += (sender, e) => this.RaiseEvent(e);
             RibbonControl.BindQuickAccessItem(this, button);
 
