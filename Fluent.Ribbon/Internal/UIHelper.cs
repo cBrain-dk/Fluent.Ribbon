@@ -298,5 +298,78 @@
 
             return null;
         }
+
+        public static T FindLogicalChildByName<T>(DependencyObject parent, string name)
+            where T : DependencyObject
+        {
+            if (parent == null)
+            {
+                return null;
+            }
+
+            foreach (DependencyObject child in GetLogicalChildObjects(parent))
+            {
+                if (child == null)
+                {
+                    continue;
+                }
+
+                if (child.GetValue(Control.NameProperty) is string childName
+                    && childName == name)
+                {
+                    return child as T;
+                }
+                else
+                {
+                    T result = FindLogicalChildByName<T>(child, name);
+                    if (result != null)
+                    {
+                        return result;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private static List<DependencyObject> GetLogicalChildObjects(this DependencyObject parent)
+        {
+            var result = new List<DependencyObject>();
+
+            if (parent == null)
+            {
+                return result;
+            }
+
+            result.AddRange(LogicalTreeHelper.GetChildren(parent).OfType<DependencyObject>());
+            if (result.Count > 0)
+            {
+                return result;
+            }
+
+            if (parent is ItemsControl itemsControl)
+            {
+                result.AddRange(ElementsFromItemsControl(itemsControl));
+            }
+
+            return result;
+        }
+
+        private static List<DependencyObject> ElementsFromItemsControl(ItemsControl itemsControl)
+        {
+            var children = new List<DependencyObject>();
+
+            if (itemsControl == null || !itemsControl.HasItems)
+            {
+                return children;
+            }
+
+            for (int i = 0; i < itemsControl.Items.Count; i++)
+            {
+                children.Add(itemsControl.ItemContainerGenerator.ContainerFromIndex(i));
+            }
+
+            return children;
+        }
     }
 }

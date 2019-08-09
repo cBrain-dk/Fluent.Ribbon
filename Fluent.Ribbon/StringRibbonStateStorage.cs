@@ -394,11 +394,6 @@
             // Sync QAT menu items
             foreach (var menuItem in this.ribbon.QuickAccessItems)
             {
-                if (menuItem.Target == null && menuItem.TargetName != null)
-                {
-                    menuItem.Target = Internal.UIHelper.FindVisualChildByName<Control>(this.ribbon, menuItem.TargetName);
-                }
-
                 menuItem.IsChecked = this.ribbon.IsInQuickAccessToolBar(menuItem.Target);
             }
         }

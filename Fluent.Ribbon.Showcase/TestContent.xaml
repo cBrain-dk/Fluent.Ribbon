@@ -420,6 +420,9 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                 <!-- todo: netcore => was using x:Reference before -->
                 <Fluent:QuickAccessMenuItem IsChecked="True"
                                             Target="{Binding ElementName=UndoButton}" />
+
+                <Fluent:QuickAccessMenuItem IsChecked="True"
+                                            TargetName="TestSplitItem2" />
             </Fluent:Ribbon.QuickAccessItems>
             
             <Fluent:RibbonTabItem Header="Toolbars"
@@ -1632,8 +1635,10 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
 
-            <Fluent:RibbonTabItem Header="TestDisabledText">
-                <Fluent:RibbonGroupBox Header="TestButtons">
+            <Fluent:RibbonTabItem x:Name="disabledTextRibbonTab" 
+                                  Header="TestDisabledText">
+                <Fluent:RibbonGroupBox x:Name="disabledTextRibbonGroupGox" 
+                                       Header="TestButtons">
                     <Fluent:TextBox x:Name="disabledTextControl1234" 
                                     Text="{Binding DisabledText}" />
                     <Fluent:CheckBox x:Name="readOnlyControl1234" 
@@ -1658,13 +1663,21 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
 
-                    <Fluent:SplitButton Header="Test Split Button" 
+                    <Fluent:SplitButton x:Name="TestSplitter"
+                                        Header="Test Split Button" 
+                                        Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Yellow.png"
                                         IsReadOnly="{Binding DisableButtons}">
                         <Fluent:SplitButton.ToolTip>
                             <Fluent:ScreenTip Title="Toggle Button test" 
                                               Text="Testing screentip for split button"
                                               DisableReason="{Binding DisableReason, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
                         </Fluent:SplitButton.ToolTip>
+                        <Fluent:MenuItem x:Name="TestSplitItem1" 
+                                         Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Green.png"
+                                         Header="SplitItem1" />
+                        <Fluent:MenuItem x:Name="TestSplitItem2"
+                                         Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Blue.png"
+                                         Header="SplitItem2" />
                     </Fluent:SplitButton>
 
                     <Fluent:DropDownButton Header="Test DropDown Button"

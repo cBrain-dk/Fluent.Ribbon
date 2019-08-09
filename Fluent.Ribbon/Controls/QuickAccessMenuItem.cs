@@ -126,7 +126,40 @@ namespace Fluent
         }
 
         /// <summary>Identifies the <see cref="TargetName"/> dependency property.</summary>
-        public static readonly DependencyProperty TargetNameProperty = DependencyProperty.Register("TargetName", typeof(string), typeof(QuickAccessMenuItem));
+        public static readonly DependencyProperty TargetNameProperty = DependencyProperty.Register("TargetName", typeof(string), typeof(QuickAccessMenuItem), new PropertyMetadata(OnTargetNameChanged));
+
+        private static void OnTargetNameChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var quickAccessMenuItem = (QuickAccessMenuItem)d;
+            var newTargetName = e.NewValue as string;
+
+            if (quickAccessMenuItem.Ribbon.IsLoaded)
+            {
+                quickAccessMenuItem.SetTargetFromTargetName(newTargetName);
+            }
+            else
+            {
+                WeakEventManager<Fluent.Ribbon, RoutedEventArgs>.AddHandler(quickAccessMenuItem.Ribbon, nameof(Fluent.Ribbon.Loaded), quickAccessMenuItem.Ribbon_Loaded);
+            }
+        }
+
+        private void Ribbon_Loaded(object sender, RoutedEventArgs e)
+        {
+            WeakEventManager<Fluent.Ribbon, RoutedEventArgs>.RemoveHandler(this.Ribbon, nameof(Fluent.Ribbon.Loaded), this.Ribbon_Loaded);
+            this.SetTargetFromTargetName(this.TargetName);
+        }
+
+        private void SetTargetFromTargetName(string targetName)
+        {
+            if (string.IsNullOrEmpty(targetName))
+            {
+                this.Target = null;
+            }
+            else
+            {
+                this.Target = Internal.UIHelper.FindLogicalChildByName<Control>(this.Ribbon, targetName);
+            }
+        }
 
         #endregion
 
