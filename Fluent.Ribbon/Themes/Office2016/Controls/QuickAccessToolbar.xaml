@@ -151,10 +151,10 @@
                      Value="True">
                 <Setter Property="BorderBrush"
                         TargetName="PART_ButtonBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.BorderBrush}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.QuickAccess.Pressed.BorderBrush}" />
                 <Setter Property="Background"
                         TargetName="PART_ButtonBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.Pressed.Background}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.QuickAccess.Pressed.Background}" />
             </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
@@ -165,10 +165,10 @@
                 </MultiTrigger.Conditions>
                 <Setter Property="Background"
                         TargetName="PART_ButtonBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.Background}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.QuickAccess.MouseOver.Background}" />
                 <Setter Property="BorderBrush"
                         TargetName="PART_ButtonBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Button.QuickAccess.MouseOver.BorderBrush}" />
             </MultiTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
