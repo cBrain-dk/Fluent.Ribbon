@@ -131,10 +131,11 @@ namespace Fluent
         private static void OnTargetNameChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var quickAccessMenuItem = (QuickAccessMenuItem)d;
+            var newTargetName = e.NewValue as string;
 
             if (quickAccessMenuItem.Ribbon.IsLoaded)
             {
-                quickAccessMenuItem.SetTargetFromTargetName();
+                quickAccessMenuItem.SetTargetFromTargetName(newTargetName);
             }
             else
             {
@@ -145,21 +146,18 @@ namespace Fluent
         private void Ribbon_Loaded(object sender, RoutedEventArgs e)
         {
             WeakEventManager<Fluent.Ribbon, RoutedEventArgs>.RemoveHandler(this.Ribbon, nameof(Fluent.Ribbon.Loaded), this.Ribbon_Loaded);
-            this.SetTargetFromTargetName();
+            this.SetTargetFromTargetName(this.TargetName);
         }
 
-        /// <summary>
-        /// Recalculate the target control for this menu item after the TargetName might have changed (or the target control might have become available for targetting)
-        /// </summary>
-        public void SetTargetFromTargetName()
+        private void SetTargetFromTargetName(string targetName)
         {
-            if (string.IsNullOrEmpty(this.TargetName))
+            if (string.IsNullOrEmpty(targetName))
             {
                 this.Target = null;
             }
             else
             {
-                this.Target = Internal.UIHelper.FindLogicalChildByName<Control>(this.Ribbon, this.TargetName);
+                this.Target = Internal.UIHelper.FindLogicalChildByName<Control>(this.Ribbon, targetName);
             }
         }
 
