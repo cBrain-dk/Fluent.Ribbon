@@ -421,6 +421,12 @@ namespace Fluent
                 }
             }
 
+            var attachedProperties = DependencyObjectHelper.GetAttachedProperties(source);
+            foreach (var attachedProperty in attachedProperties)
+            {
+                Bind(source, element, new PropertyPath(attachedProperty), attachedProperty, BindingMode.OneWay);
+            }
+
             var iconControl = source as IIconedControl;
             if (iconControl?.Icon != null)
             {
@@ -434,20 +440,14 @@ namespace Fluent
                     };
                     ((IRibbonControl)element).Icon = rect;
                 }
-                else if (RibbonControl.GetWhiteIcon(source) != null)
+                else if (GetWhiteIcon(source) != null)
                 {
-                    Bind(element, element, new PropertyPath(RibbonControl.WhiteIconProperty), IconProperty, BindingMode.OneWay);
+                    Bind(source, element, new PropertyPath(WhiteIconProperty), IconProperty, BindingMode.OneWay);
                 }
                 else
                 {
                     Bind(source, element, nameof(IIconedControl.Icon), IconProperty, BindingMode.OneWay);
                 }
-            }
-
-            var attachedProperties = DependencyObjectHelper.GetAttachedProperties(source);
-            foreach (var attachedProperty in attachedProperties)
-            {
-                RibbonControl.Bind(source, element, new PropertyPath(attachedProperty), attachedProperty, BindingMode.OneWay);
             }
 
             RibbonProperties.SetSize(element, RibbonControlSize.Small);

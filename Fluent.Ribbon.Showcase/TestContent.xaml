@@ -1671,6 +1671,8 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                     <Fluent:SplitButton x:Name="TestSplitter"
                                         Header="Test Split Button" 
                                         Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Yellow.png"
+                                        LargeIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/YellowLarge.png"
+                                        Fluent:RibbonControl.WhiteIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Pink.png"
                                         IsReadOnly="{Binding DisableButtons}">
                         <Fluent:SplitButton.ToolTip>
                             <Fluent:ScreenTip Title="Toggle Button test" 
@@ -1679,9 +1681,11 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                         </Fluent:SplitButton.ToolTip>
                         <Fluent:MenuItem x:Name="TestSplitItem1" 
                                          Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Green.png"
+                                         Fluent:RibbonControl.WhiteIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Pink.png"
                                          Header="SplitItem1" />
                         <Fluent:MenuItem x:Name="TestSplitItem2"
                                          Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Blue.png"
+                                         Fluent:RibbonControl.WhiteIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Pink.png"
                                          Header="SplitItem2" />
                     </Fluent:SplitButton>
 
