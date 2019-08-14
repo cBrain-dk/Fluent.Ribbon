@@ -421,10 +421,10 @@ namespace Fluent
                 }
             }
 
-            var ribbonControl = source as IRibbonControl;
-            if (ribbonControl?.Icon != null)
+            var iconControl = source as IIconedControl;
+            if (iconControl?.Icon != null)
             {
-                if (ribbonControl.Icon is Visual iconVisual)
+                if (iconControl.Icon is Visual iconVisual)
                 {
                     var rect = new Rectangle
                     {
@@ -434,13 +434,15 @@ namespace Fluent
                     };
                     ((IRibbonControl)element).Icon = rect;
                 }
+                else if (RibbonControl.GetWhiteIcon(source) != null)
+                {
+                    Bind(element, element, new PropertyPath(RibbonControl.WhiteIconProperty), IconProperty, BindingMode.OneWay);
+                }
                 else
                 {
-                    Bind(source, element, nameof(IRibbonControl.Icon), IconProperty, BindingMode.OneWay);
+                    Bind(source, element, nameof(IIconedControl.Icon), IconProperty, BindingMode.OneWay);
                 }
             }
-
-            Bind(source, element, new PropertyPath(RibbonControl.WhiteIconProperty), RibbonControl.WhiteIconProperty, BindingMode.OneWay);
 
             var attachedProperties = DependencyObjectHelper.GetAttachedProperties(source);
             foreach (var attachedProperty in attachedProperties)

@@ -26,7 +26,7 @@ namespace Fluent
     [TemplatePart(Name = "PART_UpPanel", Type = typeof(Panel))]
     [TemplatePart(Name = "PART_ParentPanel", Type = typeof(Panel))]
     [TemplatePart(Name = "PART_SnappedImage", Type = typeof(Image))]
-    public class RibbonGroupBox : HeaderedItemsControl, IQuickAccessItemProvider, IDropDownControl, IKeyTipedControl, IHeaderedControl, ILogicalChildSupport
+    public class RibbonGroupBox : HeaderedItemsControl, IQuickAccessItemProvider, IDropDownControl, IKeyTipedControl, IHeaderedControl, ILogicalChildSupport, IIconedControl
     {
         #region Fields
 
@@ -1035,24 +1035,6 @@ namespace Fluent
             RibbonControl.Bind(this, groupBox, nameof(this.IsLauncherVisible), IsLauncherVisibleProperty, BindingMode.OneWay);
             RibbonControl.Bind(this, groupBox, nameof(this.LauncherKeys), LauncherKeysProperty, BindingMode.OneWay);
             groupBox.LauncherClick += this.LauncherClick;
-
-            if (this.Icon != null)
-            {
-                if (this.Icon is Visual iconVisual)
-                {
-                    var rect = new Rectangle
-                    {
-                        Width = 16,
-                        Height = 16,
-                        Fill = new VisualBrush(iconVisual)
-                    };
-                    groupBox.Icon = rect;
-                }
-                else
-                {
-                    RibbonControl.Bind(this, groupBox, nameof(this.Icon), IconProperty, BindingMode.OneWay);
-                }
-            }
 
             return groupBox;
         }

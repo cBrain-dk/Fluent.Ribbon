@@ -1637,8 +1637,10 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
 
             <Fluent:RibbonTabItem x:Name="disabledTextRibbonTab" 
                                   Header="TestDisabledText">
-                <Fluent:RibbonGroupBox x:Name="disabledTextRibbonGroupGox" 
-                                       Header="TestButtons">
+                <Fluent:RibbonGroupBox x:Name="disabledTextRibbonGroupBox" 
+                                       Header="TestButtons"
+                                       Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Red.png"
+                                       Fluent:RibbonControl.WhiteIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Pink.png">
                     <Fluent:TextBox x:Name="disabledTextControl1234" 
                                     Text="{Binding DisabledText}" />
                     <Fluent:CheckBox x:Name="readOnlyControl1234" 
@@ -1646,7 +1648,10 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                                      Header="Toggle readonly status" />
 
                     <Fluent:Button Header="Test Button"
-                                   IsReadOnly="{Binding DisableButtons}">
+                                   IsReadOnly="{Binding DisableButtons}"
+                                   Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Red.png"
+                                   LargeIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/RedLarge.png"
+                                   Fluent:RibbonControl.WhiteIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Pink.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Button test" 
                                               Text="Testing screentip for button"
