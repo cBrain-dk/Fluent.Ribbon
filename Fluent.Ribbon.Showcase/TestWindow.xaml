@@ -15,6 +15,9 @@
                      MinWidth="80"
                      MinHeight="60"                     
                      WindowState="Normal">
+    <Fluent:RibbonWindow.TitleBarHeader>
+        <Fluent:RibbonTitleBar HeaderAlignment="Center" />
+    </Fluent:RibbonWindow.TitleBarHeader>
     <Fluent:RibbonWindow.LayoutTransform>
         <!-- todo: netcore => was using x:Reference before -->
         <ScaleTransform ScaleX="{Binding DataContext.Zoom, ElementName=TestContent}"

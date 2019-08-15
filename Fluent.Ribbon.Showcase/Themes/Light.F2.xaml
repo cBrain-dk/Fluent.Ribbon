@@ -62,7 +62,7 @@
     <Color x:Key="GrayHoverColor">#C5C5C5</Color>
     <Color x:Key="GrayPressedColor">#AEAEAE</Color>
     <Color x:Key="LineBrushColor">#E1E1E1</Color>
-    
+
     <!-- Quick access colors -->
     <Color x:Key="Fluent.Ribbon.Colors.QuickAccess.MouseOver">#FF60B1F8</Color>
     <Color x:Key="Fluent.Ribbon.Colors.QuickAccess.Pressed">#FF2D7EC5</Color>
@@ -115,7 +115,14 @@
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Control.BorderBrush" Color="{StaticResource Gray6}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Control.Disabled.BorderBrush" Color="{StaticResource Gray5}" options:Freeze="True" />
 
-    <!-- From here on everything is initially taken from Colorful.Blue -->
+    <!-- OBSOBSOBS From here on everything is initially taken from Colorful.Blue OBSOBSOBS -->
+
+    <!-- Backstage -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Backstage.Background" Color="Transparent" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Backstage.Foreground" Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Backstage.BackButton.Background" Color="Transparent" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Backstage.BackButton.Foreground" Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" options:Freeze="True" />
+
     <!-- BackstageTabControl -->
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.BackstageTabControl.Button.MouseOver.Background" Color="{StaticResource BlackColor20}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.BackstageTabControl.ItemsPanelBackground" Color="{StaticResource Fluent.Ribbon.Colors.AccentBaseColor}" options:Freeze="True" />
@@ -278,7 +285,7 @@
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.MouseOver.Background" Color="{StaticResource Fluent.Ribbon.Colors.AccentColor20}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.Pressed.Background" Color="{StaticResource Fluent.Ribbon.Colors.AccentColor40}" options:Freeze="True" />
 
-    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.WindowCommands.Button.Stroke" Color="{StaticResource WhiteColorPopup}" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.WindowCommands.Button.Stroke" Color="{StaticResource WhiteColorPopup}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.WindowCommands.Button.MouseOver.Background" Color="#FF60B1F8" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.WindowCommands.Button.Pressed.Background" Color="#FF2D7EC5" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.WindowCommands.CloseButton.MouseOver.Background" Color="#FFE81123" options:Freeze="True" />

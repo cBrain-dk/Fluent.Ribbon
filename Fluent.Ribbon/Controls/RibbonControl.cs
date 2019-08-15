@@ -44,11 +44,7 @@ namespace Fluent
         /// Using a DependencyProperty as the backing store for WhiteIcon.
         /// This enables animation, styling, binding, etc...
         /// </summary>
-        public static readonly DependencyProperty WhiteIconProperty = DependencyProperty.RegisterAttached("WhiteIcon", typeof(object), typeof(RibbonControl), new FrameworkPropertyMetadata(null, OnWhiteIconChanged));
-
-        private static void OnWhiteIconChanged(DependencyObject targetObject, DependencyPropertyChangedEventArgs e)
-        {
-        }
+        public static readonly DependencyProperty WhiteIconProperty = DependencyProperty.RegisterAttached("WhiteIcon", typeof(object), typeof(RibbonControl), new FrameworkPropertyMetadata(null));
 
         /// <summary>Helper for setting <see cref="WhiteIconProperty"/> on <paramref name="element"/>.</summary>
         /// <param name="element"><see cref="UIElement"/> to set <see cref="WhiteIconProperty"/> on.</param>

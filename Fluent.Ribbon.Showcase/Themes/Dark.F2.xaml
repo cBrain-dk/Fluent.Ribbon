@@ -111,7 +111,14 @@
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Control.BorderBrush" Color="{StaticResource WhiteColor}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Control.Disabled.BorderBrush" Color="{StaticResource WhiteColor20}" options:Freeze="True" />
 
-    <!-- From here on everything is initially taken from Colorful.Blue -->
+    <!-- OBSOBSOBS From here on everything is initially taken from Colorful.Blue OBSOBSOBS -->
+
+    <!-- Backstage -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Backstage.Background" Color="Transparent" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Backstage.Foreground" Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Backstage.BackButton.Background" Color="Transparent" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Backstage.BackButton.Foreground" Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" options:Freeze="True" />
+
     <!-- BackstageTabControl -->
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.BackstageTabControl.Button.MouseOver.Background" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.BackstageTabControl.ItemsPanelBackground" Color="{StaticResource BlackColor}" options:Freeze="True" />
@@ -274,7 +281,7 @@
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.MouseOver.Background" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.WindowCommands.CaptionButton.Pressed.Background" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
 
-    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.WindowCommands.Button.Stroke" Color="{StaticResource WhiteColor}" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.WindowCommands.Button.Stroke" Color="{StaticResource WhiteColor}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.WindowCommands.Button.MouseOver.Background" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.WindowCommands.Button.Pressed.Background" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.WindowCommands.CloseButton.MouseOver.Background" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
