@@ -1066,22 +1066,28 @@ namespace Fluent
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
+                    var addItems = new List<QuickAccessMenuItem>();
                     for (var i = 0; i < e.NewItems.Count; i++)
                     {
                         var menuItem = (QuickAccessMenuItem)e.NewItems[i];
-                        this.QuickAccessToolBar?.QuickAccessItems.Insert(e.NewStartingIndex + i, menuItem);
+                        addItems.Add(menuItem);
                         menuItem.Ribbon = this;
                     }
+
+                    this.QuickAccessToolBar?.QuickAccessItems.InsertRange(e.NewStartingIndex, addItems);
 
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
+                    var removeItems = new List<QuickAccessMenuItem>();
                     foreach (var item in e.OldItems.OfType<QuickAccessMenuItem>())
                     {
                         var menuItem = item;
-                        this.QuickAccessToolBar?.QuickAccessItems.Remove(menuItem);
+                        removeItems.Add(menuItem);
                         menuItem.Ribbon = null;
                     }
+
+                    this.QuickAccessToolBar?.QuickAccessItems.RemoveRange(removeItems);
 
                     break;
 
@@ -1089,16 +1095,18 @@ namespace Fluent
                     foreach (var item in e.OldItems.OfType<QuickAccessMenuItem>())
                     {
                         var menuItem = item;
-                        this.QuickAccessToolBar?.QuickAccessItems.Remove(menuItem);
                         menuItem.Ribbon = null;
                     }
 
+                    var replaceItems = new List<QuickAccessMenuItem>();
                     foreach (var item in e.NewItems.OfType<QuickAccessMenuItem>())
                     {
                         var menuItem = item;
-                        this.QuickAccessToolBar?.QuickAccessItems.Add(menuItem);
+                        replaceItems.Add(menuItem);
                         menuItem.Ribbon = this;
                     }
+
+                    this.QuickAccessToolBar?.QuickAccessItems.ReplaceRange(replaceItems);
 
                     break;
             }
@@ -1726,20 +1734,14 @@ namespace Fluent
 
                 this.QuickAccessToolBar.ItemsChanged -= this.OnQuickAccessItemsChanged;
 
-                foreach (var quickAccessMenuItem in this.QuickAccessItems)
-                {
-                    this.QuickAccessToolBar.QuickAccessItems.Remove(quickAccessMenuItem);
-                }
+                this.QuickAccessToolBar.QuickAccessItems.RemoveRange(this.QuickAccessItems);
             }
 
             this.QuickAccessToolBar = this.GetTemplateChild("PART_QuickAccessToolBar") as QuickAccessToolBar;
 
             if (this.QuickAccessToolBar != null)
             {
-                foreach (var quickAccessMenuItem in this.QuickAccessItems)
-                {
-                    this.QuickAccessToolBar.QuickAccessItems.Add(quickAccessMenuItem);
-                }
+                this.QuickAccessToolBar.QuickAccessItems.AddRange(this.QuickAccessItems);
 
                 this.QuickAccessToolBar.ItemsChanged += this.OnQuickAccessItemsChanged;
 
@@ -1863,42 +1865,85 @@ namespace Fluent
         /// <param name="element">Element</param>
         public void AddToQuickAccessToolBar(UIElement element)
         {
-            if (element == null)
+            this.AddToQuickAccessToolBar(new List<UIElement> { element });
+        }
+
+        /// <summary>
+        /// Adds the given elements to quick access toolbar
+        /// </summary>
+        /// <param name="elements">Elements</param>
+        public void AddToQuickAccessToolBar(List<UIElement> elements)
+        {
+            if (this.QuickAccessToolBar == null)
             {
                 return;
             }
 
-            if (element is Gallery)
+            elements = this.CoerceAndValidateQuickAccessElements(elements);
+            elements = this.BuildAndAddQuickAccessElements(elements);
+
+            this.QuickAccessToolBar.Items.AddRange(elements);
+        }
+
+        private List<UIElement> CoerceAndValidateQuickAccessElements(List<UIElement> elements)
+        {
+            var validatedElements = new List<UIElement>();
+
+            for (int i = 0; i < elements.Count; i++)
             {
-                element = FindParentRibbonControl(element) as UIElement;
+                UIElement element = elements[i];
+
+                if (element == null)
+                {
+                    continue;
+                }
+
+                if (element is Gallery)
+                {
+                    element = FindParentRibbonControl(element) as UIElement;
+                }
+
+                // Do not add menu items without icon.
+                if (element is System.Windows.Controls.MenuItem menuItem && menuItem.Icon == null)
+                {
+                    element = FindParentRibbonControl(element) as UIElement;
+                }
+
+                if (element == null)
+                {
+                    continue;
+                }
+
+                if (QuickAccessItemsProvider.IsSupported(element) == false)
+                {
+                    continue;
+                }
+
+                validatedElements.Add(element);
             }
 
-            // Do not add menu items without icon.
-            if (element is System.Windows.Controls.MenuItem menuItem && menuItem.Icon == null)
+            return validatedElements;
+        }
+
+        private List<UIElement> BuildAndAddQuickAccessElements(List<UIElement> elements)
+        {
+            var createdElements = new List<UIElement>();
+
+            foreach (UIElement element in elements)
             {
-                element = FindParentRibbonControl(element) as UIElement;
+                if (this.IsInQuickAccessToolBar(element) == false)
+                {
+                    Debug.WriteLine($"Adding \"{element}\" to QuickAccessToolBar.");
+
+                    var quickAccessElement = QuickAccessItemsProvider.GetQuickAccessItem(element);
+                    quickAccessElement.IsVisibleChanged += this.QuickAccessItem_IsVisibleChanged;
+
+                    this.QuickAccessElements.Add(element, quickAccessElement);
+                    createdElements.Add(quickAccessElement);
+                }
             }
 
-            if (element == null)
-            {
-                return;
-            }
-
-            if (QuickAccessItemsProvider.IsSupported(element) == false)
-            {
-                return;
-            }
-
-            if (this.IsInQuickAccessToolBar(element) == false)
-            {
-                Debug.WriteLine($"Adding \"{element}\" to QuickAccessToolBar.");
-
-                var control = QuickAccessItemsProvider.GetQuickAccessItem(element);
-                control.IsVisibleChanged += this.QuickAccessItem_IsVisibleChanged;
-
-                this.QuickAccessElements.Add(element, control);
-                this.QuickAccessToolBar.Items.Add(control);
-            }
+            return createdElements;
         }
 
         private void QuickAccessItem_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)

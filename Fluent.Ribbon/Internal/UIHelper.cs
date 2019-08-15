@@ -300,36 +300,55 @@
         }
 
         public static T FindLogicalChildByName<T>(DependencyObject parent, string name)
-            where T : DependencyObject
+                    where T : DependencyObject
+        {
+            var result = new List<T>();
+            FindLogicalChildrenByName(parent, new List<string> { name }, result);
+            return result.FirstOrDefault();
+        }
+
+        public static (List<T> result, List<string> missing) FindLogicalChildrenByName<T>(DependencyObject parent, IEnumerable<string> names)
+           where T : DependencyObject
+        {
+            var result = new List<T>();
+            List<string> namesList = names.ToList();
+            FindLogicalChildrenByName(parent, namesList, result);
+            return (result, missing: namesList);
+        }
+
+        private static void FindLogicalChildrenByName<T>(DependencyObject parent, List<string> names, List<T> results)
+           where T : DependencyObject
         {
             if (parent == null)
             {
-                return null;
+                return;
             }
 
             foreach (DependencyObject child in GetLogicalChildObjects(parent))
             {
+                if (names.Any() == false)
+                {
+                    break;
+                }
+
                 if (child == null)
                 {
                     continue;
                 }
 
-                if (child.GetValue(Control.NameProperty) is string childName
-                    && childName == name)
+                string childName = child.GetValue(Control.NameProperty) as string;
+                int nameIndex = names.IndexOf(childName);
+                if (nameIndex != -1
+                    && child is T result)
                 {
-                    return child as T;
+                    names.RemoveAt(nameIndex);
+                    results.Add(result);
                 }
                 else
                 {
-                    T result = FindLogicalChildByName<T>(child, name);
-                    if (result != null)
-                    {
-                        return result;
-                    }
+                    FindLogicalChildrenByName<T>(child, names, results);
                 }
             }
-
-            return null;
         }
 
         private static List<DependencyObject> GetLogicalChildObjects(this DependencyObject parent)

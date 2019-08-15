@@ -56,7 +56,7 @@ namespace Fluent
         private MenuItem showCustimizeQuickAcess;
 
         // Items of quick access menu
-        private ObservableCollection<QuickAccessMenuItem> quickAccessItems;
+        private ObservableVisualRangeCollection<QuickAccessMenuItem> quickAccessItems;
 
         // Root panel
         private Panel rootPanel;
@@ -68,7 +68,7 @@ namespace Fluent
         private Panel toolBarOverflowPanel;
 
         // Items of quick access menu
-        private ObservableCollection<UIElement> items;
+        private ObservableVisualRangeCollection<UIElement> items;
 
         private Size cachedConstraint;
         private int cachedNonOverflowItemsCount = -1;
@@ -89,13 +89,13 @@ namespace Fluent
         /// Gets items collection
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public ObservableCollection<UIElement> Items
+        public ObservableVisualRangeCollection<UIElement> Items
         {
             get
             {
                 if (this.items == null)
                 {
-                    this.items = new ObservableCollection<UIElement>();
+                    this.items = new ObservableVisualRangeCollection<UIElement>();
                     this.items.CollectionChanged += this.OnItemsCollectionChanged;
                 }
 
@@ -182,13 +182,13 @@ namespace Fluent
         /// <summary>
         /// Gets quick access menu items
         /// </summary>
-        public ObservableCollection<QuickAccessMenuItem> QuickAccessItems
+        public ObservableVisualRangeCollection<QuickAccessMenuItem> QuickAccessItems
         {
             get
             {
                 if (this.quickAccessItems == null)
                 {
-                    this.quickAccessItems = new ObservableCollection<QuickAccessMenuItem>();
+                    this.quickAccessItems = new ObservableVisualRangeCollection<QuickAccessMenuItem>();
                     this.quickAccessItems.CollectionChanged += this.OnQuickAccessItemsCollectionChanged;
                 }
 

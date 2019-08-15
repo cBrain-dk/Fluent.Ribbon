@@ -7,6 +7,7 @@
     using System.Globalization;
     using System.IO;
     using System.IO.IsolatedStorage;
+    using System.Linq;
     using System.Text;
     using System.Windows;
     using System.Windows.Controls;
@@ -349,7 +350,7 @@
 
             if (splitted.Length != 2)
             {
-              splitted = new string[] { "False,True", string.Empty };
+                splitted = new string[] { "False,True", string.Empty };
             }
 
             // Load Ribbon State
@@ -375,15 +376,8 @@
 
             this.ribbon.ClearQuickAccessToolBar();
 
-            foreach (var item in items)
-            {
-                var quickAccessItem = this.CreateQuickAccessItem(item);
-
-                if (quickAccessItem != null)
-                {
-                    this.ribbon.AddToQuickAccessToolBar(quickAccessItem);
-                }
-            }
+            IEnumerable<UIElement> itemsForQuickAccess = this.CreateQuickAccessItem(items);
+            this.ribbon.AddToQuickAccessToolBar(itemsForQuickAccess.ToList());
 
             // Since application might not fully loaded we have to delay the refresh
             if (this.ribbon.QuickAccessToolBar != null)
@@ -403,19 +397,26 @@
         /// </summary>
         /// <param name="data">Serialized data for one quick access item.</param>
         /// <returns>The created quick access item or <c>null</c> of the creation failed.</returns>
-        protected virtual UIElement CreateQuickAccessItem(string data)
+        private IEnumerable<Control> CreateQuickAccessItem(string[] data)
         {
-            var result = Internal.UIHelper.FindVisualChildByName<Control>(this.ribbon, data);
+            (List<Control> results, List<string> missing) = Internal.UIHelper.FindLogicalChildrenByName<Control>(this.ribbon, data);
 
-            if (result == null
-                || QuickAccessItemsProvider.IsSupported(result) == false)
+            foreach (string name in missing)
             {
-                // Item is invalid
-                Debug.WriteLine($"Error while QAT items loading. Could not add \"{data}\" to QAT.");
-                return null;
+                Debug.WriteLine($"Error while QAT items loading. Could not add \"{name}\" to QAT as it could not be found in the visual tree.");
             }
 
-            return result;
+            foreach (Control control in results)
+            {
+                if (QuickAccessItemsProvider.IsSupported(control))
+                {
+                    yield return control;
+                }
+                else
+                {
+                    Debug.WriteLine($"Error while QAT items loading. Could not add \"{control.Name}\" to QAT as it is either not a {nameof(QuickAccessItemsProvider)} or does not have {nameof(IQuickAccessItemProvider.CanAddToQuickAccessToolBar)} set to true.");
+                }
+            }
         }
 
         /// <summary>
