@@ -2543,7 +2543,8 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
 
             <Fluent:RibbonTabItem Header="KeyTips"
                                   KeyTip="K"
-                                  Group="{Binding ElementName=tabGroup1, Mode=OneWay}">
+                                  Group="{Binding ElementName=tabGroup1, Mode=OneWay}"
+                                  Visibility="{Binding Path=IsChecked, ElementName=ShowContextualRibbonsCheckBox1, Converter={StaticResource boolToVisibilityConverter}}">
                 <Fluent:RibbonGroupBox Header="LongLongGroup"
                                        IsLauncherVisible="False">
                     <Fluent:DropDownButton Fluent:KeyTip.Keys="C"
@@ -2718,7 +2719,8 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
 
             <Fluent:RibbonTabItem Header="Binding"
                                   KeyTip="B"
-                                  Group="{Binding ElementName=tabGroup2, Mode=OneWay}">
+                                  Group="{Binding ElementName=tabGroup2, Mode=OneWay}"
+                                  Visibility="{Binding Path=IsChecked, ElementName=ShowContextualRibbonsCheckBox2, Converter={StaticResource boolToVisibilityConverter}}">
                 <Fluent:RibbonGroupBox Header="Bound ItemsSource"
                                        ItemsSource="{Binding DataItems}"
                                        ItemTemplate="{DynamicResource GallerySampleDataItemCommandTemplate}" />
@@ -2727,7 +2729,8 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
             <Fluent:RibbonTabItem Header="LAYOUT"
                                   KeyTip="L"
                                   ActiveTabBackground="#FF9D00"
-                                  Group="{Binding ElementName=tabGroup2, Mode=OneWay}">
+                                  Group="{Binding ElementName=tabGroup2, Mode=OneWay}"
+                                  Visibility="{Binding Path=IsChecked, ElementName=ShowContextualRibbonsCheckBox2, Converter={StaticResource boolToVisibilityConverter}}">
                 <Fluent:RibbonGroupBox Header="LongLongGroup"
                                        IsLauncherVisible="False">
                     <DatePicker />
@@ -3175,6 +3178,14 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                                     </Fluent:CheckBox>
                                     <Fluent:CheckBox IsChecked="{Binding IsDefaultContextMenuEnabled, ElementName=ribbon}">
                                         IsDefaultContextMenuEnabled
+                                    </Fluent:CheckBox>
+                                    <Fluent:CheckBox x:Name="ShowContextualRibbonsCheckBox1"
+                                                     IsChecked="True">
+                                        ShowContextualRibbon1
+                                    </Fluent:CheckBox>
+                                    <Fluent:CheckBox x:Name="ShowContextualRibbonsCheckBox2"
+                                                     IsChecked="True">
+                                        ShowContextualRibbon2
                                     </Fluent:CheckBox>
                                 </WrapPanel>
                             </GroupBox>
