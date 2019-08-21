@@ -7,6 +7,7 @@ namespace Fluent
     using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Media;
+    using System.Windows.Threading;
     using Fluent.Extensions;
     using Fluent.Helpers;
     using Fluent.Internal;
@@ -26,9 +27,8 @@ namespace Fluent
 
         private int maxUpdateCount = 10;
         private int updateCount = 0;
-        private int updateDelay = 3;
-        private DateTime startUpdateDataTime = DateTime.Now;
-        private bool firstTimeInvalidate = true;
+        private DispatcherTimer measureOverrideTimer;
+
         // Quick access toolbar holder
         private FrameworkElement quickAccessToolbarHolder;
         // Header holder
@@ -135,6 +135,8 @@ namespace Fluent
         /// </summary>
         public RibbonTitleBar()
         {
+            this.measureOverrideTimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(10) };
+            this.measureOverrideTimer.Tick += new EventHandler(this.MeasureOverrideTimerTick);
             WindowChrome.SetIsHitTestVisibleInChrome(this, true);
             var windowCommands = UIHelper.FindVisualChildByName<FrameworkElement>(Window.GetWindow(this), "PART_WindowCommands");
             if (windowCommands == null || windowCommands.ActualWidth == 0)
@@ -229,6 +231,11 @@ namespace Fluent
             }
         }
 
+        private void MeasureOverrideTimerTick(object sender, EventArgs args)
+        {
+            this.InvalidateMeasure();
+        }
+
         /// <inheritdoc />
         protected override Size MeasureOverride(Size constraint)
         {
@@ -238,31 +245,22 @@ namespace Fluent
                 return constraint;
             }
 
-            this.updateCount++;
-            if (DateTime.Now > this.startUpdateDataTime.AddSeconds(this.updateDelay))
+            if (this.measureOverrideTimer.IsEnabled && this.updateCount < this.maxUpdateCount)
             {
-                this.updateCount = 0;
-                this.startUpdateDataTime = DateTime.Now;
-            }
-
-            if (this.updateCount >= this.maxUpdateCount && quickAccessToolBar != null && quickAccessToolBar.Items.Count > 0)
-            {
-                if (this.updateCount == this.maxUpdateCount)
-                {
-                    if (this.firstTimeInvalidate)
-                    {
-                        this.updateCount = 0;
-                        this.firstTimeInvalidate = false;
-                        this.Dispatcher.BeginInvoke(new Action(() => this.InvalidateMeasure()));
-                    }
-
-                    var ignore = System.Threading.Tasks.Task.Delay(new TimeSpan(0, 0, 0, this.updateDelay, 10)).ContinueWith((t) =>
-                      {
-                          this.Dispatcher.BeginInvoke(new Action(() => this.InvalidateMeasure()));
-                      });
-                }
+                this.measureOverrideTimer.Stop();
+                this.measureOverrideTimer.Start();
+                this.updateCount += 1;
 
                 return constraint;
+            }
+            else if (this.maxUpdateCount <= this.updateCount)
+            {
+                this.measureOverrideTimer.Stop();
+                this.updateCount = 0;
+            }
+            else
+            {
+                this.measureOverrideTimer.Start();
             }
 
             if (this.isAtLeastOneRequiredControlPresent == false)
