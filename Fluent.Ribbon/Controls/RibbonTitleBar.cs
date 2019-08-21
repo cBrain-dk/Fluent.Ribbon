@@ -3,6 +3,7 @@ namespace Fluent
 {
     using System;
     using System.Linq;
+    using System.Timers;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
@@ -27,7 +28,7 @@ namespace Fluent
 
         private int maxUpdateCount = 10;
         private int updateCount = 0;
-        private DispatcherTimer measureOverrideTimer;
+        private Timer measureOverrideTimer;
 
         // Quick access toolbar holder
         private FrameworkElement quickAccessToolbarHolder;
@@ -135,8 +136,8 @@ namespace Fluent
         /// </summary>
         public RibbonTitleBar()
         {
-            this.measureOverrideTimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(5) };
-            this.measureOverrideTimer.Tick += new EventHandler(this.MeasureOverrideTimerTick);
+            this.measureOverrideTimer = new Timer() { Interval = 10, AutoReset = false };
+            this.measureOverrideTimer.Elapsed += new ElapsedEventHandler(this.MeasureOverrideTimerTick);
             WindowChrome.SetIsHitTestVisibleInChrome(this, true);
             var windowCommands = UIHelper.FindVisualChildByName<FrameworkElement>(Window.GetWindow(this), "PART_WindowCommands");
             if (windowCommands == null || windowCommands.ActualWidth == 0)
@@ -245,7 +246,7 @@ namespace Fluent
                 return constraint;
             }
 
-            if (this.measureOverrideTimer.IsEnabled && this.updateCount < this.maxUpdateCount)
+            if (this.measureOverrideTimer.Enabled && this.updateCount < this.maxUpdateCount)
             {
                 this.measureOverrideTimer.Stop();
                 this.measureOverrideTimer.Start();
