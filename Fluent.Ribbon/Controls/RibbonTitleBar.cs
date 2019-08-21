@@ -135,7 +135,7 @@ namespace Fluent
         /// </summary>
         public RibbonTitleBar()
         {
-            this.measureOverrideTimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(10) };
+            this.measureOverrideTimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(5) };
             this.measureOverrideTimer.Tick += new EventHandler(this.MeasureOverrideTimerTick);
             WindowChrome.SetIsHitTestVisibleInChrome(this, true);
             var windowCommands = UIHelper.FindVisualChildByName<FrameworkElement>(Window.GetWindow(this), "PART_WindowCommands");
