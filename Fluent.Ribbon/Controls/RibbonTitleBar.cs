@@ -327,7 +327,6 @@ namespace Fluent
 
             var canRibbonTabControlScroll = false;
             var quickAccessItemsConstraint = new Size(constraint.Width * 0.25, constraint.Height);
-            Size quickAccessToolbarSize = this.quickAccessToolbarHolder.DesiredSize;
 
             // Defensively try to find out if the RibbonTabControl can scroll
             if (visibleGroups.Count > 0)
@@ -357,6 +356,7 @@ namespace Fluent
                 // Set quick launch toolbar and header position and size
                 measureQuickAccess(quickAccessItemsConstraint);
 
+                Size quickAccessToolbarSize = this.quickAccessToolbarHolder.DesiredSize;
                 if (constraint.Width > quickAccessToolbarSize.Width + 50)
                 {
                     this.quickAccessToolbarRect = new Rect(0, 0, quickAccessToolbarSize.Width, quickAccessToolbarSize.Height);
@@ -443,7 +443,7 @@ namespace Fluent
                 // Set quick launch toolbar position and size
                 measureQuickAccess(quickAccessItemsConstraint);
 
-                quickAccessToolbarSize = this.quickAccessToolbarHolder.DesiredSize;
+                Size quickAccessToolbarSize = this.quickAccessToolbarHolder.DesiredSize;
                 this.quickAccessToolbarRect = new Rect(0, 0, Math.Min(quickAccessToolbarSize.Width, startX), quickAccessToolbarSize.Height);
 
                 if (quickAccessToolbarSize.Width > startX)
