@@ -58,11 +58,9 @@
 
                         <Fluent:RibbonTitleBar x:Name="PART_RibbonTitleBar"
                                                IsCollapsed="{TemplateBinding IsCollapsed}"
-                                               Foreground="{TemplateBinding TitleForeground}">
-                            <Fluent:RibbonTitleBar.Header>
-                                <ContentPresenter ContentTemplate="{StaticResource TitleHeaderTextTemplate}"/>
-                            </Fluent:RibbonTitleBar.Header>
-                        </Fluent:RibbonTitleBar>
+                                               Foreground="{TemplateBinding TitleForeground}"
+                                               Header="{TemplateBinding DataContext}"
+                                               HeaderTemplate="{StaticResource TitleHeaderTextTemplate}" />
                     </DockPanel>
 
                     <ContentPresenter x:Name="PART_ContentPresenter" 

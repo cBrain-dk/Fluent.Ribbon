@@ -15,13 +15,43 @@
                      MinWidth="80"
                      MinHeight="60"                     
                      WindowState="Normal">
-    <Fluent:RibbonWindow.TitleBarHeader>
-        <Fluent:RibbonTitleBar HeaderAlignment="Center" />
-    </Fluent:RibbonWindow.TitleBarHeader>
+
+    <Fluent:RibbonWindow.Resources>
+        <DataTemplate x:Key="RibbonWindowHeaderTemplate">
+            <Grid x:Name="Header"
+                  Margin="10 10 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Image x:Name="HeaderIcon"
+                       Grid.Column="0"
+                       Margin="0 0 15 4"
+                       Height="24"
+                       Width="24"
+                       Stretch="Fill"
+                       StretchDirection="Both"
+                       Source="{Binding HeaderIconSource}" />
+                <TextBlock x:Name="TitleText"
+                           Margin="0"
+                           TextTrimming="CharacterEllipsis"
+                           TextWrapping="WrapWithOverflow"
+                           Grid.Column="1"
+                           Text="{Binding WindowTitle, ElementName=TestContent}" />
+            </Grid>
+        </DataTemplate>
+
+        <Style TargetType="Fluent:RibbonTitleBar">
+            <Setter Property="HeaderAlignment" Value="Center" />
+            <Setter Property="HeaderTemplate" Value="{StaticResource RibbonWindowHeaderTemplate}" />
+        </Style>
+    </Fluent:RibbonWindow.Resources>
+
     <Fluent:RibbonWindow.LayoutTransform>
         <!-- todo: netcore => was using x:Reference before -->
         <ScaleTransform ScaleX="{Binding DataContext.Zoom, ElementName=TestContent}"
                         ScaleY="{Binding DataContext.Zoom, ElementName=TestContent}" />
     </Fluent:RibbonWindow.LayoutTransform>
+    
     <FluentTest:TestContent x:Name="TestContent" />
 </Fluent:RibbonWindow>
