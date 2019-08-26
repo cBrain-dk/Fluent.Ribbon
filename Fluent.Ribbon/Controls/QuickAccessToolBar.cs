@@ -78,6 +78,7 @@ namespace Fluent
 
         private double cachedMenuDownButtonWidth;
         private double cachedOverflowDownButtonWidth;
+        private bool skipUpdatingConstraintCacheOnMeasure;
 
         #endregion
 
@@ -543,9 +544,13 @@ namespace Fluent
                 return base.MeasureOverride(constraint);
             }
 
+            if (this.skipUpdatingConstraintCacheOnMeasure == false)
+            {
+                this.cachedConstraint = constraint;
+            }
+
             this.cachedNonOverflowItemsCount = nonOverflowItemsCount;
             this.UpdateHasOverflowItems();
-            this.cachedConstraint = constraint;
 
             // Clear overflow panel to prevent items from having a visual/logical parent
             this.toolBarOverflowPanel.Children.Clear();
@@ -605,6 +610,21 @@ namespace Fluent
             {
                 // todo: code runs very often on startup
                 this.HasOverflowItems = newValue;
+            }
+        }
+
+        /// <summary>
+        /// Calculates the amount of space the toolbar needs to display its items (discounting overflow) without triggering a call to change on the internal cache.
+        /// Avoids potential problems where touching the cache too often would lead to infinite calculations.
+        /// </summary>
+        /// <param name="constraint">The space constraint the toolbar measures under</param>
+        internal void PreMeasure(Size constraint)
+        {
+            if (UIHelper.GetParent<ContentPresenter>(this) is ContentPresenter quickAccessHolder)
+            {
+                this.skipUpdatingConstraintCacheOnMeasure = true;
+                quickAccessHolder.Measure(constraint);
+                this.skipUpdatingConstraintCacheOnMeasure = false;
             }
         }
 
