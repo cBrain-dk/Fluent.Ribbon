@@ -3180,11 +3180,11 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                                         IsDefaultContextMenuEnabled
                                     </Fluent:CheckBox>
                                     <Fluent:CheckBox x:Name="ShowContextualRibbonsCheckBox1"
-                                                     IsChecked="True">
+                                                     IsChecked="False">
                                         ShowContextualRibbon1
                                     </Fluent:CheckBox>
                                     <Fluent:CheckBox x:Name="ShowContextualRibbonsCheckBox2"
-                                                     IsChecked="True">
+                                                     IsChecked="False">
                                         ShowContextualRibbon2
                                     </Fluent:CheckBox>
                                 </WrapPanel>

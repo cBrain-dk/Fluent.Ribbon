@@ -10,6 +10,7 @@
                      Title="{Binding WindowTitle, ElementName=TestContent}"
                      TitleBarHeight="37"
                      FlowDirection="LeftToRight"
+                     IsIconVisible="False"
                      Height="768"
                      Width="1024"
                      MinWidth="80"
@@ -31,7 +32,7 @@
                        Width="24"
                        Stretch="Fill"
                        StretchDirection="Both"
-                       Source="{Binding HeaderIconSource}" />
+                       Source="{Fluent:IconConverter {Binding HeaderIconSource, ElementName=TestContent}}" />
                 <TextBlock x:Name="TitleText"
                            Margin="0"
                            TextTrimming="CharacterEllipsis"

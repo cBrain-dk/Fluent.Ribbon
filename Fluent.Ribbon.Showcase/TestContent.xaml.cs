@@ -27,6 +27,7 @@ namespace FluentTest
     {
         private readonly MainViewModel viewModel;
         private string windowTitle;
+        private Uri headerIconSource;
 
         public TestContent()
         {
@@ -45,6 +46,8 @@ namespace FluentTest
         }
 
         public string WindowTitle => this.windowTitle ?? (this.windowTitle = GetVersionText(Window.GetWindow(this).GetType().BaseType));
+
+        public Uri HeaderIconSource => this.headerIconSource ?? (this.headerIconSource = new Uri("pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Pink.png"));
 
         public static readonly DependencyProperty BrushesProperty = DependencyProperty.Register(nameof(Brushes), typeof(List<KeyValuePair<string, Brush>>), typeof(TestContent), new PropertyMetadata(default(List<KeyValuePair<string, Brush>>)));
         

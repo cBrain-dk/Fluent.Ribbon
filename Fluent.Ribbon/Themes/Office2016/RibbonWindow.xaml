@@ -2,24 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                    xmlns:Fluent="clr-namespace:Fluent"                    
-                    xmlns:converters="clr-namespace:Fluent.Converters"
+                    xmlns:Fluent="clr-namespace:Fluent"
                     mc:Ignorable="d">
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-
-    <DataTemplate x:Key="TitleHeaderTextTemplate">
-        <TextBlock x:Name="PART_Title"
-                           Margin="-2,0"
-                           VerticalAlignment="Center"
-                           d:LayoutOverrides="Width"
-                           HorizontalAlignment="Center"
-                           Text="{Binding Path=Title, RelativeSource={RelativeSource AncestorType={x:Type Fluent:RibbonWindow}}}"
-                           FontSize="14"
-                           Foreground="{Binding Path=TitleForeground, RelativeSource={RelativeSource AncestorType={x:Type Fluent:RibbonWindow}}}"
-                           TextWrapping="NoWrap"
-                           TextTrimming="CharacterEllipsis" />
-    </DataTemplate>
 
     <ControlTemplate x:Key="RibbonWindowControlTemplate"
                      TargetType="{x:Type Fluent:RibbonWindow}">
@@ -46,7 +32,7 @@
                                VerticalAlignment="Top"
                                Stretch="Uniform"
                                Visibility="{TemplateBinding IsIconVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                               Source="{Fluent:IconConverter {Binding Icon, RelativeSource={RelativeSource TemplatedParent}}, {Binding RelativeSource={RelativeSource TemplatedParent}}}"
+                               Source="{Fluent:IconConverter {Binding Icon, RelativeSource={RelativeSource TemplatedParent}}, {Binding RelativeSource={RelativeSource Self}}}"
                                SnapsToDevicePixels="True" />
 
                         <ContentPresenter x:Name="PART_WindowCommands"
@@ -57,10 +43,9 @@
                                           HorizontalAlignment="Right" />
 
                         <Fluent:RibbonTitleBar x:Name="PART_RibbonTitleBar"
-                                               IsCollapsed="{TemplateBinding IsCollapsed}"
-                                               Foreground="{TemplateBinding TitleForeground}"
                                                Header="{TemplateBinding DataContext}"
-                                               HeaderTemplate="{StaticResource TitleHeaderTextTemplate}" />
+                                               IsCollapsed="{TemplateBinding IsCollapsed}"
+                                               Foreground="{TemplateBinding TitleForeground}" />
                     </DockPanel>
 
                     <ContentPresenter x:Name="PART_ContentPresenter" 
@@ -70,7 +55,7 @@
 
             <Border x:Name="PART_Border"
                     Background="{x:Null}"
-                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderBrush="{TemplateBinding GlowBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}"
                     UseLayoutRounding="True"
                     HorizontalAlignment="Stretch"
@@ -89,8 +74,22 @@
                 <Setter Property="Opacity"
                         TargetName="PART_WindowCommands"
                         Value="0.5" />
-                <Setter TargetName="PART_Border" Property="BorderBrush" Value="{Binding Path=NonActiveBorderBrush, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
+                <Setter TargetName="PART_Border" Property="BorderBrush" Value="{Binding Path=NonActiveGlowBrush, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
             </Trigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsActive" Value="False" />
+                    <Condition Property="NonActiveGlowBrush" Value="{x:Null}" />
+                </MultiTrigger.Conditions>
+                <Setter TargetName="PART_Border" Property="BorderBrush" Value="{Binding Path=NonActiveBorderBrush, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsActive" Value="True" />
+                    <Condition Property="GlowBrush" Value="{x:Null}" />
+                </MultiTrigger.Conditions>
+                <Setter TargetName="PART_Border" Property="BorderBrush" Value="{Binding Path=BorderBrush, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
+            </MultiTrigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="ResizeMode"
@@ -148,4 +147,5 @@
         <Setter Property="TitleBarHeight"
                 Value="{DynamicResource {x:Static SystemParameters.WindowCaptionHeightKey}}" />
     </Style>
+    
 </ResourceDictionary>
