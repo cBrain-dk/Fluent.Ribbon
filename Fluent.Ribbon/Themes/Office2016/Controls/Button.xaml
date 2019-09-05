@@ -15,6 +15,7 @@
                 BorderBrush="{TemplateBinding BorderBrush}"
                 HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
                 VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                Padding="{TemplateBinding Padding}"
                 Height="Auto">
             <StackPanel x:Name="stackPanel"
                         Width="Auto"
@@ -202,6 +203,26 @@
                 <Setter Property="BorderBrush"
                         TargetName="border"
                         Value="{DynamicResource Fluent.Ribbon.Brushes.Button.QuickAccess.MouseOver.BorderBrush}" />
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver"
+                               Value="True" />
+                    <Condition Property="IsPressed"
+                               Value="False" />
+                    <Condition Property="IsEnabled"
+                               Value="True" />
+                    <Condition Property="IsReadOnly"
+                               Value="False" />
+                    <Condition Property="Fluent:RibbonProperties.IsBackstageItem" 
+                               Value="True" />
+                </MultiTrigger.Conditions>
+                <Setter Property="Background"
+                        TargetName="border"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.BackstageTabItem.MouseOver.Background}" />
+                <Setter Property="BorderBrush"
+                        TargetName="border"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.BackstageTabItem.MouseOver.BorderBrush}" />
             </MultiTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>

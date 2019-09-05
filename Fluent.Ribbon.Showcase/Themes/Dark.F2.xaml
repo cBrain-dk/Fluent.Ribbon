@@ -126,6 +126,7 @@
     <!-- BackstageTabItem -->
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.BackstageTabItem.Header.Foreground" Color="{StaticResource Fluent.Ribbon.Colors.IdealForegroundColor}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.BackstageTabItem.MouseOver.Background" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.BackstageTabItem.MouseOver.BorderBrush" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.BackstageTabItem.Selected.Background" Color="{StaticResource HighContrastHover}" options:Freeze="True" />
 
     <!-- Button -->

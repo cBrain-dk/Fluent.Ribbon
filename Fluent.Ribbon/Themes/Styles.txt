@@ -30,7 +30,7 @@ Controls\ComboBoxItem.xaml
 Controls\InRibbonGallery.xaml
 Controls\BackstageTabItem.xaml
 Controls\BackstageControls.xaml
-Controls\BackstageTabControl.xaml
+Office2016\Controls\BackstageTabControl.xaml
 Controls\StartScreen.xaml
 Controls\StartScreenTabControl.xaml
 Controls\RibbonSeparator.xaml

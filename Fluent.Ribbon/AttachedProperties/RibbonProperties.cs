@@ -12,7 +12,7 @@ namespace Fluent
     /// </summary>
     public static class RibbonProperties
     {
-        #region internal class
+        #region Internal class
 
         internal class CommandCanExecuteChanged
         {
@@ -49,6 +49,7 @@ namespace Fluent
         }
 
         #endregion
+
         #region CommandCanExectue Property
 
         /// <summary>
@@ -223,7 +224,7 @@ namespace Fluent
         #region IsReadOnly
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for Size.  
+        /// Using a DependencyProperty as the backing store for IsReadOnly.  
         /// This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty IsReadOnlyProperty = DependencyProperty.RegisterAttached("IsReadOnly", typeof(bool), typeof(RibbonProperties), new FrameworkPropertyMetadata(false, OnIsReadOnlyChanged));
@@ -336,6 +337,32 @@ namespace Fluent
         public static Brush GetIsSelectedBackground(DependencyObject element)
         {
             return (Brush)element.GetValue(IsSelectedBackgroundProperty);
+        }
+
+        #endregion
+
+        #region IsBackstageItem
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for IsBackstageItem.  
+        /// This enables animation, styling, binding, etc...
+        /// </summary>
+        public static readonly DependencyProperty IsBackstageItemProperty = DependencyProperty.RegisterAttached("IsBackstageItem", typeof(bool), typeof(RibbonProperties), new PropertyMetadata(false));
+
+        /// <summary>
+        /// Sets IsBackstageItem for element
+        /// </summary>
+        public static void SetIsBackstageItem(DependencyObject element, bool value)
+        {
+            element.SetValue(IsBackstageItemProperty, value);
+        }
+
+        /// <summary>
+        /// Gets IsBackstageItem for element
+        /// </summary>
+        public static bool GetIsBackstageItem(DependencyObject element)
+        {
+            return (bool)element.GetValue(IsBackstageItemProperty);
         }
 
         #endregion
