@@ -385,9 +385,6 @@ namespace Fluent
                 this.CollapseWindowsFormsHosts(this.ownerWindow);
             }
 
-            var content = this.Content as IInputElement;
-            content?.Focus();
-
             return true;
         }
 
@@ -450,6 +447,9 @@ namespace Fluent
             void HandleStoryboardOnCompleted(object sender, EventArgs args)
             {
                 this.AdornerLayer?.Update();
+
+                var content = this.Content as IInputElement;
+                content?.Focus();
 
                 storyboard.Completed -= HandleStoryboardOnCompleted;
             }
