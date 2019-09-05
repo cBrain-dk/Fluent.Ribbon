@@ -211,20 +211,25 @@
                   VerticalAlignment="Stretch"
                   Background="{DynamicResource WhiteBrush}">
                 <Grid Background="{TemplateBinding ItemsPanelBackground}">
-                    <Fluent:WindowSteeringHelperControl Height="{Binding SelectedContentMargin.Top, RelativeSource={RelativeSource TemplatedParent}}"
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Fluent:WindowSteeringHelperControl Grid.Row="0"
+                                                        Height="{Binding SelectedContentMargin.Top, RelativeSource={RelativeSource TemplatedParent}}"
                                                         VerticalAlignment="Top"
                                                         IsEnabled="{TemplateBinding IsWindowSteeringHelperEnabled}" />
 
                     <Button x:Name="backbutton"
+                            Grid.Row="1"
                             Style="{DynamicResource BackstageBackButtonStyle}"
                             Command="{x:Static Fluent:RibbonCommands.OpenBackstage}"
                             Visibility="{Binding Path=IsBackButtonVisible, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource boolToVisibilityConverter}}"
-                            Margin="0,16,0,0"
                             Padding="22,7,0,7"
-                            VerticalAlignment="Top">
-                    </Button>
+                            VerticalAlignment="Top" />
 
-                    <ItemsPresenter Margin="0,77,0,0"
+                    <ItemsPresenter Grid.Row="2"
                                     Height="Auto" />
                 </Grid>
             </Grid>
