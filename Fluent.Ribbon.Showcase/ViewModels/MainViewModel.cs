@@ -46,6 +46,7 @@
 
             this.PreviewCommand = new RelayCommand<GalleryItem>(Preview);
             this.CancelPreviewCommand = new RelayCommand<GalleryItem>(CancelPreview);
+            this.CloseBackstageCommand = new RelayCommand<Button>((obj) => this.CloseBackstage());
 
             this.GroupByAdvancedSample = x => ((GallerySampleDataItemViewModel)x).Text.Substring(0, 1);
 
@@ -192,6 +193,25 @@
             }
         }
 
+        private bool isBackstageOpen;
+
+        public bool IsBackstageOpen
+        {
+            get { return this.isBackstageOpen; }
+
+            set
+            {
+                if (this.isBackstageOpen == value)
+                {
+                    return;
+                }
+
+                this.isBackstageOpen = value;
+
+                this.OnPropertyChanged();
+            }
+        }
+
         public IssueReprosViewModel IssueReprosViewModel { get; }
 
         /// <summary>
@@ -247,6 +267,8 @@
 
         public ICommand CancelPreviewCommand { get; private set; }
 
+        public ICommand CloseBackstageCommand { get; private set; }
+
         public int BoundSpinnerValue
         {
             get { return this.boundSpinnerValue; }
@@ -298,6 +320,11 @@
         private static void CancelPreview(GalleryItem galleryItem)
         {
             Trace.WriteLine($"CancelPreview: {galleryItem}");
+        }
+
+        private void CloseBackstage()
+        {
+            this.IsBackstageOpen = false;
         }
 
         private static IList<string> GenerateStrings(int count)

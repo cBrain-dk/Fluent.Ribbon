@@ -170,6 +170,7 @@
                 <Grid>
                     <!--Backstage items can be keytipped-->
                     <Fluent:Backstage x:Name="Backstage"
+                                      IsOpen="{Binding IsBackstageOpen}"
                                       Visibility="Collapsed">
                         
                         <!--<Fluent:Backstage.Style>
@@ -251,6 +252,11 @@ Curabitur mollis ex orci, sed auctor augue convallis sit amet. Sed in sodales qu
 
 Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetra ipsum, sed pretium dolor. Praesent rhoncus facilisis felis, non imperdiet nunc efficitur id. Proin dignissim rutrum nibh eget finibus. Etiam eu ullamcorper enim. Pellentesque consectetur sapien nec tristique aliquet. Proin interdum nibh ac urna consequat, id facilisis dui pulvinar. In hendrerit nisi id ex egestas molestie. Praesent nec malesuada nisl, non vestibulum sem. Mauris vitae erat sodales, sodales ligula sit amet, fermentum arcu. Suspendisse aliquet urna quis tellus tincidunt, non posuere metus commodo. Integer ac consectetur massa. Donec nibh ligula, fermentum et erat ac, pretium gravida massa.
                                     </TextBlock>
+
+                                    <Fluent:Button x:Name="CloseBackstageButton"
+                                                   Command="{Binding CloseBackstageCommand}">
+                                        Close backstage via binding to ViewModel
+                                    </Fluent:Button>
                                 </StackPanel>
                             </Fluent:BackstageTabItem>
 
