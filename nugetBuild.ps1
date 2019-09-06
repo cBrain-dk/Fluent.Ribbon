@@ -1,11 +1,35 @@
+<#
+.SYNOPSIS
+Script for packing changes to a local version of Fluent and distributing it on the internal Fluent network
+
+.DESCRIPTION
+This script will take the latest build from the Release folder of Fluent and pack it into a nugetpackage, 
+    which will then be installed into the path specified in the nugetBuild.config file.
+    Try to avoid packing too much into a single release, rather perform several incremental packings - its easier to debug.
+
+.PARAMETER version
+The name that this version will be known under - currently we employ a double versioning which starts with the latest version of Fluent f.ex. (6.1.0)
+    and then it increments the current cBrain version by 1 on the least significant digit f.ex. (1.04 => 1.05)
+    finally we combine these into a single with a dash between so the final result is f.ex. 6.1.0-1.05
+
+.PARAMETER releaseNote
+A text used to identity why this package was made - it is not supposed to describe every change made, but rather the overall reason for its existince compared to the last version
+
+.EXAMPLE
+.\nugetBuild 7.0.0-0.33 "Made the backstage accessible for keyboard users."
+#>
+
 Param (
-	[string]$version
+  [Parameter(Mandatory)]
+  [ValidateNotNullOrEmpty()]
+	[string]$version,
+
+  [Parameter(Mandatory)]
+  [ValidateNotNullOrEmpty()]
+  [string]$releaseNote
 )
 
-if([string]::IsNullOrEmpty($version))
-{
-	Throw "No version-number defined, need something like X.Y.Z-A.BC where XYZ is the current Fluent version and ABC is our own version"
-}
+$ErrorActionPreference = 'Stop'
 
 if(!(Test-Path -Path ".\nugetBuild.config"))
 {
@@ -36,7 +60,6 @@ if(!(Test-Path -Path ".\root\lib\$dotNetVersion"))
 }
 
 Write-Host -ForegroundColor YELLOW "ATT: Fluent will be packed from the Release build!"
-$releaseNote = (Read-Host "Provide a reason/relasenote for the new package")
 $nuspecData = @"
 <?xml version=`"1.0`"?> 
 <package xmlns=`"http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd`">
