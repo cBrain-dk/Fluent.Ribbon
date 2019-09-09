@@ -28,7 +28,7 @@ Controls\Gallery.xaml
 Controls\GalleryItem.xaml
 Controls\ComboBoxItem.xaml
 Controls\InRibbonGallery.xaml
-Controls\BackstageTabItem.xaml
+Office2016\Controls\BackstageTabItem.xaml
 Controls\BackstageControls.xaml
 Office2016\Controls\BackstageTabControl.xaml
 Controls\StartScreen.xaml
