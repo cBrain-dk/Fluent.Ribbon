@@ -34,6 +34,7 @@ namespace Fluent
             : base(adornedElement)
         {
             KeyboardNavigation.SetTabNavigation(this, KeyboardNavigationMode.Cycle);
+            KeyboardNavigation.SetDirectionalNavigation(this, KeyboardNavigationMode.Cycle);
 
             this.Backstage = backstage;
             this.backstageContent = this.Backstage.Content;

@@ -28,7 +28,8 @@
               Background="Transparent"
               Fluent:FrameworkHelper.UseLayoutRounding="False">
             <ContentControl Margin="{TemplateBinding Padding}"
-                            HorizontalAlignment="Left">
+                            HorizontalAlignment="Left"
+                            IsTabStop="False">
                 <Grid>
                     <Path x:Name="arrowpath"
                           Width="16"
@@ -198,8 +199,8 @@
                 Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
         <Setter Property="Template"
                 Value="{DynamicResource BackstageControlTemplate}" />
-        <Setter Property="FocusVisualStyle"
-                Value="{DynamicResource ControlStyleEmptyFocus}" />
+        <Setter Property="IsTabStop"
+                Value="False" />
         <Setter Property="Background"
                 Value="{DynamicResource WhiteBrush}" />
         <Setter Property="ItemsPanelBackground"
