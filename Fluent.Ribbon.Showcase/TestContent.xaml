@@ -197,7 +197,7 @@
                             <Fluent:BackstageTabItem Header="Invisible"
                                                      Visibility="Collapsed" />
                             <Fluent:BackstageTabItem Header="Disabled"
-                                                     IsEnabled="False" />
+                                                     IsReadOnly="True" />
                             <Fluent:BackstageTabItem Header="Introduction"
                                                      Icon="{DynamicResource Fluent.Ribbon.Images.DefaultPlaceholder}"
                                                      KeyTip="T">

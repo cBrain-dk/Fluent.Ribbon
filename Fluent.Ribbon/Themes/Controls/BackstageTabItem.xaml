@@ -29,6 +29,7 @@
                               SnapsToDevicePixels="True" />
 
                 <ContentControl x:Name="PART_Header"
+                                IsTabStop="False"
                                 Foreground="{DynamicResource Fluent.Ribbon.Brushes.BackstageTabItem.Header.Foreground}"
                                 Content="{TemplateBinding Header}">
                     <ContentControl.Resources>
@@ -61,19 +62,42 @@
                     </Setter.Value>
                 </Setter>
             </Trigger>
-            <Trigger Property="Selector.IsSelected"
+            <Trigger Property="IsReadOnly"
+                     Value="True">
+                <Setter TargetName="hoverBorder"
+                        Property="Visibility"
+                        Value="Hidden" />
+                <Setter TargetName="PART_Header"
+                        Property="Opacity"
+                        Value="0.5" />
+                <Setter Property="Opacity"
+                        TargetName="iconImage"
+                        Value="0.5" />
+                <Setter Property="Effect"
+                        TargetName="iconImage">
+                    <Setter.Value>
+                        <Fluent:GrayscaleEffect />
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="Selector.IsSelected" 
                      Value="True">
                 <Setter TargetName="selectedBorder"
                         Property="Visibility"
                         Value="Visible" />
             </Trigger>
-            <Trigger Property="IsMouseOver"
-                     SourceName="rootGrid"
-                     Value="True">
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver"
+                               SourceName="rootGrid"
+                               Value="True" />
+                    <Condition Property="IsReadOnly"
+                               Value="False" />
+                </MultiTrigger.Conditions>
                 <Setter TargetName="hoverBorder"
                         Property="Visibility"
                         Value="Visible" />
-            </Trigger>
+            </MultiTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
@@ -81,8 +105,6 @@
            TargetType="{x:Type Fluent:BackstageTabItem}">
         <Setter Property="Template"
                 Value="{DynamicResource BackstageTabItemControlTemplate}" />
-        <Setter Property="FocusVisualStyle"
-                Value="{DynamicResource ControlStyleEmptyFocus}" />
         <Setter Property="Height"
                 Value="38" />
         <Setter Property="Background"

@@ -31,6 +31,8 @@ namespace Fluent
 
         #endregion
 
+        #region KeyTip
+
         /// <inheritdoc />
         public string KeyTip
         {
@@ -43,6 +45,10 @@ namespace Fluent
         /// </summary>
         public static readonly DependencyProperty KeyTipProperty = Fluent.KeyTip.KeysProperty.AddOwner(typeof(BackstageTabItem));
 
+        #endregion
+
+        #region CanAddToQuickAccessToolBar
+
         /// <summary>
         /// Gets or sets whether button can be added to quick access toolbar
         /// </summary>
@@ -54,6 +60,10 @@ namespace Fluent
 
         /// <summary>Identifies the <see cref="CanAddButtonToQuickAccessToolBar"/> dependency property.</summary>
         public static readonly DependencyProperty CanAddButtonToQuickAccessToolBarProperty = DependencyProperty.Register(nameof(CanAddButtonToQuickAccessToolBar), typeof(bool), typeof(BackstageTabItem), new PropertyMetadata(false, RibbonControl.OnCanAddToQuickAccessToolBarChanged));
+
+        #endregion
+
+        #region IsSelected
 
         /// <summary>
         /// Gets or sets a value indicating whether the tab is selected
@@ -75,7 +85,28 @@ namespace Fluent
                 FrameworkPropertyMetadataOptions.Journal |
                 FrameworkPropertyMetadataOptions.BindsTwoWayByDefault |
                 FrameworkPropertyMetadataOptions.AffectsParentMeasure,
-                OnIsSelectedChanged));
+                OnIsSelectedChanged,
+                CoerceIsSelectedChanged));
+
+        #endregion
+
+        #region IsReadOnly
+
+        /// <summary>
+        /// Gets or sets IsReadOnly for the element.
+        /// </summary>
+        public bool IsReadOnly
+        {
+            get { return (bool)this.GetValue(IsReadOnlyProperty); }
+            set { this.SetValue(IsReadOnlyProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for IsReadOnly.  
+        /// </summary>
+        public static readonly DependencyProperty IsReadOnlyProperty = RibbonProperties.IsReadOnlyProperty.AddOwner(typeof(BackstageTabItem));
+
+        #endregion
 
         /// <summary>
         /// Gets parent tab control
@@ -136,6 +167,18 @@ namespace Fluent
             }
         }
 
+        /// <inheritdoc />
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if (e.Key == Key.Space
+                || e.Key == Key.Enter)
+            {
+                this.SetCurrentValue(IsSelectedProperty, true);
+            }
+
+            base.OnKeyDown(e);
+        }
+
         #endregion
 
         #region Private methods
@@ -162,6 +205,29 @@ namespace Fluent
             {
                 container.OnUnselected(new RoutedEventArgs(Selector.UnselectedEvent, container));
             }
+        }
+
+        private static object CoerceIsSelectedChanged(DependencyObject d, object baseValue)
+        {
+            if (d is BackstageTabItem tabItem
+                && tabItem.IsReadOnly)
+            {
+                return BooleanBoxes.FalseBox;
+            }
+
+            if (baseValue is bool isSelected)
+            {
+                if (isSelected)
+                {
+                    return BooleanBoxes.TrueBox;
+                }
+                else
+                {
+                    return BooleanBoxes.FalseBox;
+                }
+            }
+
+            return BooleanBoxes.FalseBox;
         }
 
         private static void UnselectSelectedItem(BackstageTabControl backstageTabControl)
@@ -216,8 +282,9 @@ namespace Fluent
             UnselectSelectedItem(this.TabControlParent);
 
             this.IsSelected = true;
+            this.Focus();
 
-            return KeyTipPressedResult.Empty;
+            return new KeyTipPressedResult(this.IsFocused, false);
         }
 
         /// <inheritdoc />
