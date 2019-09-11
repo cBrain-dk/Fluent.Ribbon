@@ -171,6 +171,8 @@
                     <!--Backstage items can be keytipped-->
                     <Fluent:Backstage x:Name="Backstage"
                                       IsOpen="{Binding IsBackstageOpen}"
+                                      OpenAnimationDuration="0:0:0.4"
+                                      CloseAnimationDuration="0:0:0.2"
                                       Visibility="Collapsed">
                         
                         <!--<Fluent:Backstage.Style>
