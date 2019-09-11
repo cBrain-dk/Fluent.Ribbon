@@ -5,6 +5,7 @@ namespace Fluent
     using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Linq;
     using System.Windows;
     using System.Windows.Data;
     using System.Windows.Documents;
@@ -41,6 +42,8 @@ namespace Fluent
         /// <remarks>This is exposed to make it possible to show content on the same <see cref="AdornerLayer"/> as the backstage is shown on.</remarks>
         public AdornerLayer AdornerLayer { get; private set; }
 
+        #region IsOpen
+
         /// <summary>
         /// Gets or sets whether backstage is shown
         /// </summary>
@@ -57,6 +60,10 @@ namespace Fluent
         public static readonly DependencyProperty IsOpenProperty =
             DependencyProperty.Register(nameof(IsOpen), typeof(bool), typeof(Backstage), new PropertyMetadata(BooleanBoxes.FalseBox, OnIsOpenChanged, CoerceIsOpen));
 
+        #endregion
+
+        #region CanChangeIsOpen
+
         /// <summary>
         /// Gets or sets whether backstage can be openend or closed.
         /// </summary>
@@ -71,6 +78,10 @@ namespace Fluent
         /// </summary>
         public static readonly DependencyProperty CanChangeIsOpenProperty =
             DependencyProperty.Register(nameof(CanChangeIsOpen), typeof(bool), typeof(Backstage), new PropertyMetadata(BooleanBoxes.TrueBox));
+
+        #endregion
+
+        #region HideContextTabsOnOpen
 
         /// <summary>
         /// Gets or sets whether context tabs on the titlebar should be hidden when backstage is open
@@ -88,6 +99,10 @@ namespace Fluent
         public static readonly DependencyProperty HideContextTabsOnOpenProperty =
             DependencyProperty.Register(nameof(HideContextTabsOnOpen), typeof(bool), typeof(Backstage), new PropertyMetadata(BooleanBoxes.TrueBox));
 
+        #endregion
+
+        #region AreAnimationsEnabled
+
         /// <summary>
         /// Gets or sets whether opening or closing should be animated.
         /// </summary>
@@ -102,6 +117,48 @@ namespace Fluent
         /// </summary>
         public static readonly DependencyProperty AreAnimationsEnabledProperty =
             DependencyProperty.Register(nameof(AreAnimationsEnabled), typeof(bool), typeof(Backstage), new PropertyMetadata(BooleanBoxes.TrueBox));
+
+        #endregion
+
+        #region OpenAnimationDuration
+
+        /// <summary>
+        /// Gets or sets whether opening or closing should be animated.
+        /// </summary>
+        public KeyTime OpenAnimationDuration
+        {
+            get { return (KeyTime)this.GetValue(OpenAnimationDurationProperty); }
+            set { this.SetValue(OpenAnimationDurationProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for IsOpenAnimationEnabled.  This enables animation, styling, binding, etc...
+        /// </summary>
+        public static readonly DependencyProperty OpenAnimationDurationProperty =
+            DependencyProperty.Register(nameof(OpenAnimationDuration), typeof(KeyTime), typeof(Backstage), new PropertyMetadata(default(KeyTime)));
+
+        #endregion
+
+        #region CloseAnimationDuration
+
+        /// <summary>
+        /// Gets or sets whether opening or closing should be animated.
+        /// </summary>
+        public KeyTime CloseAnimationDuration
+        {
+            get { return (KeyTime)this.GetValue(CloseAnimationDurationProperty); }
+            set { this.SetValue(CloseAnimationDurationProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for IsOpenAnimationEnabled.  This enables animation, styling, binding, etc...
+        /// </summary>
+        public static readonly DependencyProperty CloseAnimationDurationProperty =
+            DependencyProperty.Register(nameof(CloseAnimationDuration), typeof(KeyTime), typeof(Backstage), new PropertyMetadata(default(KeyTime)));
+
+        #endregion
+
+        #region CloseOnEsc
 
         /// <summary>
         /// Gets or sets whether to close the backstage when Esc is pressed
@@ -151,6 +208,10 @@ namespace Fluent
             }
         }
 
+        #endregion
+
+        #region UseHighestAvailableAdornerLayer
+
         /// <summary>
         /// <see cref="DependencyProperty"/> for <see cref="UseHighestAvailableAdornerLayer"/>.
         /// </summary>
@@ -165,6 +226,8 @@ namespace Fluent
             get { return (bool)this.GetValue(UseHighestAvailableAdornerLayerProperty); }
             set { this.SetValue(UseHighestAvailableAdornerLayerProperty, value); }
         }
+
+        #endregion
 
         #region Content
 
@@ -428,6 +491,14 @@ namespace Fluent
             {
                 storyboard = storyboard.Clone();
 
+                if (this.OpenAnimationDuration != default
+                    && storyboard.Children.FirstOrDefault() is ThicknessAnimationUsingKeyFrames thicknessAnimation
+                    && thicknessAnimation.KeyFrames.Count == 2
+                    && thicknessAnimation.KeyFrames[1] is EasingThicknessKeyFrame endFrame)
+                {
+                    endFrame.KeyTime = this.OpenAnimationDuration;
+                }
+
                 storyboard.CurrentStateInvalidated += HanldeStoryboardCurrentStateInvalidated;
                 storyboard.Completed += HandleStoryboardOnCompleted;
 
@@ -471,6 +542,14 @@ namespace Fluent
                 }
 
                 storyboard = storyboard.Clone();
+
+                if (this.CloseAnimationDuration != default
+                    && storyboard.Children.FirstOrDefault() is ThicknessAnimationUsingKeyFrames thicknessAnimation
+                    && thicknessAnimation.KeyFrames.Count == 2
+                    && thicknessAnimation.KeyFrames[1] is EasingThicknessKeyFrame endFrame)
+                {
+                    endFrame.KeyTime = this.CloseAnimationDuration;
+                }
 
                 storyboard.Completed += HandleStoryboardOnCompleted;
 
