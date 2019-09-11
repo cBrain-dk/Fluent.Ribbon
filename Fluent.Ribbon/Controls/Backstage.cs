@@ -180,7 +180,8 @@ namespace Fluent
         {
             var backstage = (Backstage)d;
 
-            if (backstage.CanChangeIsOpen == false)
+            if (backstage.CanChangeIsOpen == false
+                && backstage.IsAnimating == false)
             {
                 return backstage.IsOpen;
             }
@@ -479,9 +480,11 @@ namespace Fluent
             this.HideAdornerAndRestoreParentProperties();
         }
 
+        private bool IsAnimating { get; set; }
+
         private void ShowAdorner()
         {
-            if (this.adorner == null)
+            if (this.adorner == null || this.IsAnimating)
             {
                 return;
             }
@@ -502,6 +505,7 @@ namespace Fluent
                 storyboard.CurrentStateInvalidated += HanldeStoryboardCurrentStateInvalidated;
                 storyboard.Completed += HandleStoryboardOnCompleted;
 
+                this.IsAnimating = true;
                 storyboard.Begin(this.adorner);
             }
             else
@@ -518,6 +522,7 @@ namespace Fluent
             void HandleStoryboardOnCompleted(object sender, EventArgs args)
             {
                 this.AdornerLayer?.Update();
+                this.IsAnimating = false;
 
                 var focusableElement = UIHelper.FindFirstFocusableElement(this.Content);
                 focusableElement?.Focus();
@@ -528,7 +533,7 @@ namespace Fluent
 
         private void HideAdornerAndRestoreParentProperties()
         {
-            if (this.adorner == null)
+            if (this.adorner == null || this.IsAnimating)
             {
                 return;
             }
@@ -553,6 +558,7 @@ namespace Fluent
 
                 storyboard.Completed += HandleStoryboardOnCompleted;
 
+                this.IsAnimating = true;
                 storyboard.Begin(this.adorner);
             }
             else
@@ -574,6 +580,7 @@ namespace Fluent
                 }
 
                 this.RestoreParentProperties();
+                this.IsAnimating = false;
 
                 storyboard.Completed -= HandleStoryboardOnCompleted;
             }
