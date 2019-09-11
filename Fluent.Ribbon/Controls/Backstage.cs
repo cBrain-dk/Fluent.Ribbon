@@ -123,7 +123,7 @@ namespace Fluent
         #region OpenAnimationDuration
 
         /// <summary>
-        /// Gets or sets whether opening or closing should be animated.
+        /// Gets or sets whether the speed at which the backstage animates on opening
         /// </summary>
         public KeyTime OpenAnimationDuration
         {
@@ -132,7 +132,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for IsOpenAnimationEnabled.  This enables animation, styling, binding, etc...
+        /// Using a DependencyProperty as the backing store for OpenAnimationDuration.  This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty OpenAnimationDurationProperty =
             DependencyProperty.Register(nameof(OpenAnimationDuration), typeof(KeyTime), typeof(Backstage), new PropertyMetadata(default(KeyTime)));
@@ -142,7 +142,7 @@ namespace Fluent
         #region CloseAnimationDuration
 
         /// <summary>
-        /// Gets or sets whether opening or closing should be animated.
+        /// Gets or sets whether the speed at which the backstage animates on closing
         /// </summary>
         public KeyTime CloseAnimationDuration
         {
@@ -151,7 +151,7 @@ namespace Fluent
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for IsOpenAnimationEnabled.  This enables animation, styling, binding, etc...
+        /// Using a DependencyProperty as the backing store for CloseAnimationDuration.  This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty CloseAnimationDurationProperty =
             DependencyProperty.Register(nameof(CloseAnimationDuration), typeof(KeyTime), typeof(Backstage), new PropertyMetadata(default(KeyTime)));
@@ -226,6 +226,63 @@ namespace Fluent
         {
             get { return (bool)this.GetValue(UseHighestAvailableAdornerLayerProperty); }
             set { this.SetValue(UseHighestAvailableAdornerLayerProperty, value); }
+        }
+
+        #endregion
+
+        #region SelectedBackstageTabItemName
+
+        /// <summary>
+        /// Gets or sets the name of a BackstageTabItem that will be invoked when opening the Backstage
+        /// </summary>
+        public string SelectedBackstageTabItemName
+        {
+            get { return (string)this.GetValue(SelectedBackstageTabItemNameProperty); }
+            set { this.SetValue(SelectedBackstageTabItemNameProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for SelectedBackstageTabItemName.  This enables animation, styling, binding, etc...
+        /// </summary>
+        public static readonly DependencyProperty SelectedBackstageTabItemNameProperty =
+            DependencyProperty.Register(nameof(SelectedBackstageTabItemName), typeof(string), typeof(Backstage), new PropertyMetadata(default(string), OnSelectedBackstageTabItemNameChanged));
+
+        private static void OnSelectedBackstageTabItemNameChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is Backstage backstage)
+            {
+                if (backstage.IsLoaded == false)
+                {
+                    backstage.Loaded += Backstage_Loaded;
+                }
+                else
+                {
+                    backstage.ChangeSeletedBackstageTabItem(e.NewValue as string);
+                }
+            }
+
+            void Backstage_Loaded(object sender, RoutedEventArgs args)
+            {
+                backstage.ChangeSeletedBackstageTabItem(e.NewValue as string);
+                backstage.Loaded -= Backstage_Loaded;
+            }
+        }
+
+        private void ChangeSeletedBackstageTabItem(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                this.InitialBackstageItem = null;
+            }
+            else
+            {
+                var backstageTabItem = UIHelper.FindLogicalChildByName<BackstageTabItem>(this.Content, name);
+
+                if (backstageTabItem != null)
+                {
+                    this.InitialBackstageItem = backstageTabItem;
+                }
+            }
         }
 
         #endregion
@@ -482,6 +539,8 @@ namespace Fluent
 
         private bool IsAnimating { get; set; }
 
+        private BackstageTabItem InitialBackstageItem { get; set; }
+
         private void ShowAdorner()
         {
             if (this.adorner == null || this.IsAnimating)
@@ -502,8 +561,13 @@ namespace Fluent
                     endFrame.KeyTime = this.OpenAnimationDuration;
                 }
 
-                storyboard.CurrentStateInvalidated += HanldeStoryboardCurrentStateInvalidated;
+                storyboard.CurrentStateInvalidated += HandleStoryboardCurrentStateInvalidated;
                 storyboard.Completed += HandleStoryboardOnCompleted;
+
+                if (this.InitialBackstageItem != null)
+                {
+                    this.InitialBackstageItem.IsSelected = true;
+                }
 
                 this.IsAnimating = true;
                 storyboard.Begin(this.adorner);
@@ -513,10 +577,10 @@ namespace Fluent
                 this.adorner.Visibility = Visibility.Visible;
             }
 
-            void HanldeStoryboardCurrentStateInvalidated(object sender, EventArgs e)
+            void HandleStoryboardCurrentStateInvalidated(object sender, EventArgs e)
             {
                 this.adorner.Visibility = Visibility.Visible;
-                storyboard.CurrentStateInvalidated -= HanldeStoryboardCurrentStateInvalidated;
+                storyboard.CurrentStateInvalidated -= HandleStoryboardCurrentStateInvalidated;
             }
 
             void HandleStoryboardOnCompleted(object sender, EventArgs args)
@@ -524,8 +588,17 @@ namespace Fluent
                 this.AdornerLayer?.Update();
                 this.IsAnimating = false;
 
-                var focusableElement = UIHelper.FindFirstFocusableElement(this.Content);
-                focusableElement?.Focus();
+                bool focusPlaced = false;
+                if (this.InitialBackstageItem != default)
+                {
+                    focusPlaced = this.InitialBackstageItem.Focus();
+                }
+
+                if (focusPlaced == false)
+                {
+                    var focusableElement = UIHelper.FindFirstFocusableElement(this.Content);
+                    focusableElement?.Focus();
+                }
 
                 storyboard.Completed -= HandleStoryboardOnCompleted;
             }

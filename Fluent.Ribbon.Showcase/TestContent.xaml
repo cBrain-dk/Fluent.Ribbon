@@ -173,6 +173,7 @@
                                       IsOpen="{Binding IsBackstageOpen}"
                                       OpenAnimationDuration="0:0:0.4"
                                       CloseAnimationDuration="0:0:0.2"
+                                      SelectedBackstageTabItemName="IntroductionItem"
                                       Visibility="Collapsed">
                         
                         <!--<Fluent:Backstage.Style>
@@ -200,7 +201,8 @@
                                                      Visibility="Collapsed" />
                             <Fluent:BackstageTabItem Header="Disabled"
                                                      IsReadOnly="True" />
-                            <Fluent:BackstageTabItem Header="Introduction"
+                            <Fluent:BackstageTabItem x:Name="IntroductionItem"
+                                                     Header="Introduction"
                                                      Icon="{DynamicResource Fluent.Ribbon.Images.DefaultPlaceholder}"
                                                      KeyTip="T">
                                 <StackPanel Orientation="Vertical">
