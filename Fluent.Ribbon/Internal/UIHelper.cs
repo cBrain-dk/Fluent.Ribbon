@@ -351,6 +351,40 @@
             }
         }
 
+        public static FrameworkElement FindFirstFocusableElement(DependencyObject parent)
+        {
+            if (parent == null)
+            {
+                return null;
+            }
+
+            HashSet<UIElement> childElements = new HashSet<UIElement>();
+            childElements.UnionWith(GetLogicalChildObjects(parent).OfType<UIElement>());
+            childElements.UnionWith(GetVisualChildObjects(parent).OfType<UIElement>());
+
+            bool CanFocus(FrameworkElement frameworkElement) => frameworkElement.Focusable
+                && frameworkElement.IsVisible
+                && (frameworkElement is IReadOnlyControl readOnly) ? readOnly.IsReadOnly == false : frameworkElement.IsEnabled;
+
+            foreach (var item in childElements)
+            {
+                if (item is FrameworkElement element && CanFocus(element))
+                {
+                    return element;
+                }
+                else
+                {
+                    var focusableElement = FindFirstFocusableElement(item);
+                    if (focusableElement != null)
+                    {
+                        return focusableElement;
+                    }
+                }
+            }
+
+            return null;
+        }
+
         private static List<DependencyObject> GetLogicalChildObjects(this DependencyObject parent)
         {
             var result = new List<DependencyObject>();
@@ -389,6 +423,20 @@
             }
 
             return children;
+        }
+
+        private static IEnumerable<DependencyObject> GetVisualChildObjects(this DependencyObject parent)
+        {
+            if (parent == null || !(parent is Visual))
+            {
+                yield break;
+            }
+
+            int count = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < count; i++)
+            {
+                yield return VisualTreeHelper.GetChild(parent, i);
+            }
         }
     }
 }

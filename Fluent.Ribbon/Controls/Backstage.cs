@@ -448,8 +448,8 @@ namespace Fluent
             {
                 this.AdornerLayer?.Update();
 
-                var content = this.Content as IInputElement;
-                content?.Focus();
+                var focusableElement = UIHelper.FindFirstFocusableElement(this.Content);
+                focusableElement?.Focus();
 
                 storyboard.Completed -= HandleStoryboardOnCompleted;
             }
