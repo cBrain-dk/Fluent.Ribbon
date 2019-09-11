@@ -224,6 +224,12 @@
                         TargetName="border"
                         Value="{DynamicResource Fluent.Ribbon.Brushes.BackstageTabItem.MouseOver.BorderBrush}" />
             </MultiTrigger>
+            <Trigger Property="Fluent:RibbonProperties.IsBackstageItem"
+                     Value="True">
+                <Setter Property="Visibility"
+                        TargetName="iconImage"
+                        Value="Collapsed" />
+            </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
