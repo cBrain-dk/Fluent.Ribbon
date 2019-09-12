@@ -33,6 +33,7 @@
                                 Content="{TemplateBinding Header}"
                                 ContentTemplate="{TemplateBinding HeaderTemplate}"
                                 Margin="5,1,5,4"
+                                IsTabStop="False"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Height="Auto" />
@@ -213,8 +214,6 @@
 
     <Style x:Key="RibbonTabItemStyle"
            TargetType="{x:Type Fluent:RibbonTabItem}">
-        <Setter Property="FocusVisualStyle"
-                Value="{DynamicResource ControlStyleEmptyFocus}" />        
         <Setter Property="HorizontalAlignment"
                 Value="Left" />
         <Setter Property="VerticalAlignment"
