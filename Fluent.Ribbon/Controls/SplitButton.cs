@@ -505,7 +505,7 @@ namespace Fluent
 
         internal void AutomationButtonClick()
         {
-            if (!this.IsReadOnly)
+            if (!this.IsReadOnly && this.button != null)
             {
                 this.button.InvokeClick();
             }
@@ -589,7 +589,7 @@ namespace Fluent
         /// <inheritdoc />
         public IEnumerable<KeyTipInformation> GetKeyTipInformations(bool hide)
         {
-            if (string.IsNullOrEmpty(this.KeyTip) == false)
+            if (string.IsNullOrEmpty(this.KeyTip) == false && this.button != null)
             {
                 if (string.IsNullOrEmpty(this.SecondaryKeyTip))
                 {
