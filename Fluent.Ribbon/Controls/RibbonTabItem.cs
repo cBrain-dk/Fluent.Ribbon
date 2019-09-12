@@ -173,6 +173,8 @@ namespace Fluent
 
         #endregion
 
+        #region IsSelected
+
         /// <summary>
         /// Gets or sets whether tab item is selected
         /// </summary>
@@ -195,7 +197,64 @@ namespace Fluent
         /// Using a DependencyProperty as the backing store for IsSelected.
         /// This enables animation, styling, binding, etc...
         /// </summary>
-        public static readonly DependencyProperty IsSelectedProperty = Selector.IsSelectedProperty.AddOwner(typeof(RibbonTabItem), new FrameworkPropertyMetadata(BooleanBoxes.FalseBox, FrameworkPropertyMetadataOptions.Journal | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.AffectsParentMeasure, OnIsSelectedChanged));
+        public static readonly DependencyProperty IsSelectedProperty = Selector.IsSelectedProperty.AddOwner(typeof(RibbonTabItem), new FrameworkPropertyMetadata(
+            defaultValue: BooleanBoxes.FalseBox,
+            flags: FrameworkPropertyMetadataOptions.Journal | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.AffectsParentMeasure,
+            propertyChangedCallback: OnIsSelectedChanged,
+            coerceValueCallback: CoerceIsSelected));
+
+        private static void OnIsSelectedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.OldValue == e.NewValue)
+            {
+                return;
+            }
+
+            var container = (RibbonTabItem)d;
+
+            if (container.TabControlParent != null)
+            {
+                var newItem = container.TabControlParent.ItemContainerGenerator.ItemFromContainer(container);
+
+                if (ReferenceEquals(container.TabControlParent.SelectedItem, newItem))
+                {
+                    container.TabControlParent.IsDropDownOpen = !container.TabControlParent.IsDropDownOpen;
+                }
+                else
+                {
+                    container.TabControlParent.SelectedItem = newItem;
+                }
+
+                container.TabControlParent.RaiseRequestBackstageClose();
+            }
+
+            var newValue = (bool)e.NewValue;
+            if (newValue)
+            {
+                container.OnSelected(new RoutedEventArgs(Selector.SelectedEvent, container));
+            }
+            else
+            {
+                container.OnUnselected(new RoutedEventArgs(Selector.UnselectedEvent, container));
+            }
+
+            container.SetFocus();
+        }
+
+        private static object CoerceIsSelected(DependencyObject d, object basevalue)
+        {
+            if (d is RibbonTabItem ribbonTabItem
+                && ribbonTabItem.Visibility == Visibility.Visible)
+            {
+                return basevalue;
+            }
+            else
+            {
+                return BooleanBoxes.FalseBox;
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Gets ribbon tab control parent
@@ -729,34 +788,13 @@ namespace Fluent
             else if (ReferenceEquals(e.Source, this)
                 || this.IsSelected == false)
             {
-                e.Handled = this.SelectTab();
+                e.Handled = this.IsSelected = true;
             }
         }
 
         #endregion
 
         #region Private methods
-
-        // Handles IsSelected property changes
-        private static void OnIsSelectedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var container = (RibbonTabItem)d;
-            var newValue = (bool)e.NewValue;
-            if (newValue)
-            {
-                if (container.TabControlParent?.SelectedTabItem != null
-                    && ReferenceEquals(container.TabControlParent.SelectedTabItem, container) == false)
-                {
-                    container.TabControlParent.SelectedTabItem.IsSelected = false;
-                }
-
-                container.OnSelected(new RoutedEventArgs(Selector.SelectedEvent, container));
-            }
-            else
-            {
-                container.OnUnselected(new RoutedEventArgs(Selector.UnselectedEvent, container));
-            }
-        }
 
         /// <summary>
         /// Handles selected
@@ -774,38 +812,6 @@ namespace Fluent
         protected virtual void OnUnselected(RoutedEventArgs e)
         {
             this.HandleIsSelectedChanged(e);
-        }
-
-        private bool SelectTab()
-        {
-            if (this.Visibility == Visibility.Visible)
-            {
-                if (this.TabControlParent != null)
-                {
-                    var newItem = this.TabControlParent.ItemContainerGenerator.ItemFromContainer(this);
-
-                    if (ReferenceEquals(this.TabControlParent.SelectedItem, newItem))
-                    {
-                        this.TabControlParent.IsDropDownOpen = !this.TabControlParent.IsDropDownOpen;
-                    }
-                    else
-                    {
-                        this.TabControlParent.SelectedItem = newItem;
-                    }
-
-                    this.TabControlParent.RaiseRequestBackstageClose();
-                }
-                else
-                {
-                    this.IsSelected = true;
-                }
-
-                this.SetFocus();
-
-                return true;
-            }
-
-            return false;
         }
 
         #endregion
@@ -852,10 +858,7 @@ namespace Fluent
         /// <inheritdoc />
         public KeyTipPressedResult OnKeyTipPressed()
         {
-            if (this.IsSelected == false)
-            {
-                this.SelectTab();
-            }
+            this.IsSelected = true;
 
             return KeyTipPressedResult.Empty;
         }
