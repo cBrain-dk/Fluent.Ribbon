@@ -232,6 +232,12 @@ namespace Fluent
             if (newValue)
             {
                 container.OnSelected(new RoutedEventArgs(Selector.SelectedEvent, container));
+
+                if (container.TabControlParent?.SelectedTabItem != null
+                    && ReferenceEquals(container.TabControlParent.SelectedTabItem, container) == false)
+                {
+                    container.TabControlParent.SelectedTabItem.IsSelected = false;
+                }
             }
             else
             {
