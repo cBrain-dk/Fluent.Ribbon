@@ -211,40 +211,34 @@ namespace Fluent
             }
 
             var container = (RibbonTabItem)d;
-
-            if (container.TabControlParent != null)
-            {
-                var newItem = container.TabControlParent.ItemContainerGenerator.ItemFromContainer(container);
-
-                if (ReferenceEquals(container.TabControlParent.SelectedItem, newItem))
-                {
-                    container.TabControlParent.IsDropDownOpen = !container.TabControlParent.IsDropDownOpen;
-                }
-                else
-                {
-                    container.TabControlParent.SelectedItem = newItem;
-                }
-
-                container.TabControlParent.RaiseRequestBackstageClose();
-            }
-
             var newValue = (bool)e.NewValue;
+
             if (newValue)
             {
+                if (container.TabControlParent != null)
+                {
+                    var newItem = container.TabControlParent.ItemContainerGenerator.ItemFromContainer(container);
+
+                    if (ReferenceEquals(container.TabControlParent.SelectedItem, newItem))
+                    {
+                        container.TabControlParent.IsDropDownOpen = !container.TabControlParent.IsDropDownOpen;
+                    }
+                    else
+                    {
+                        container.TabControlParent.SelectedItem = newItem;
+                    }
+
+                    container.TabControlParent.RaiseRequestBackstageClose();
+                }
+
                 container.OnSelected(new RoutedEventArgs(Selector.SelectedEvent, container));
 
-                if (container.TabControlParent?.SelectedTabItem != null
-                    && ReferenceEquals(container.TabControlParent.SelectedTabItem, container) == false)
-                {
-                    container.TabControlParent.SelectedTabItem.IsSelected = false;
-                }
+                container.SetFocus();
             }
             else
             {
                 container.OnUnselected(new RoutedEventArgs(Selector.UnselectedEvent, container));
             }
-
-            container.SetFocus();
         }
 
         private static object CoerceIsSelected(DependencyObject d, object basevalue)
