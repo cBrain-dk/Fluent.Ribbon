@@ -729,32 +729,7 @@ namespace Fluent
             else if (ReferenceEquals(e.Source, this)
                 || this.IsSelected == false)
             {
-                if (this.Visibility == Visibility.Visible)
-                {
-                    if (this.TabControlParent != null)
-                    {
-                        var newItem = this.TabControlParent.ItemContainerGenerator.ItemFromContainer(this);
-
-                        if (ReferenceEquals(this.TabControlParent.SelectedItem, newItem))
-                        {
-                            this.TabControlParent.IsDropDownOpen = !this.TabControlParent.IsDropDownOpen;
-                        }
-                        else
-                        {
-                            this.TabControlParent.SelectedItem = newItem;
-                        }
-
-                        this.TabControlParent.RaiseRequestBackstageClose();
-                    }
-                    else
-                    {
-                        this.IsSelected = true;
-                    }
-
-                    this.SetFocus();
-
-                    e.Handled = true;
-                }
+                e.Handled = this.SelectTab();
             }
         }
 
@@ -801,6 +776,38 @@ namespace Fluent
             this.HandleIsSelectedChanged(e);
         }
 
+        private bool SelectTab()
+        {
+            if (this.Visibility == Visibility.Visible)
+            {
+                if (this.TabControlParent != null)
+                {
+                    var newItem = this.TabControlParent.ItemContainerGenerator.ItemFromContainer(this);
+
+                    if (ReferenceEquals(this.TabControlParent.SelectedItem, newItem))
+                    {
+                        this.TabControlParent.IsDropDownOpen = !this.TabControlParent.IsDropDownOpen;
+                    }
+                    else
+                    {
+                        this.TabControlParent.SelectedItem = newItem;
+                    }
+
+                    this.TabControlParent.RaiseRequestBackstageClose();
+                }
+                else
+                {
+                    this.IsSelected = true;
+                }
+
+                this.SetFocus();
+
+                return true;
+            }
+
+            return false;
+        }
+
         #endregion
 
         #region Event handling
@@ -845,15 +852,10 @@ namespace Fluent
         /// <inheritdoc />
         public KeyTipPressedResult OnKeyTipPressed()
         {
-            if (this.TabControlParent?.SelectedItem is RibbonTabItem currentSelectedItem)
+            if (this.IsSelected == false)
             {
-                currentSelectedItem.IsSelected = false;
+                this.SelectTab();
             }
-
-            this.IsSelected = true;
-
-            // This way keytips for delay loaded elements work correctly. Partially fixes #244.
-            this.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() => { }));
 
             return KeyTipPressedResult.Empty;
         }
