@@ -239,8 +239,6 @@
                                Value="True" />
                     <Condition Property="IsEnabled"
                                Value="True" />
-                    <Condition Property="Fluent:MenuItem.IsReadOnly"
-                               Value="False" />
                 </MultiTrigger.Conditions>
                 <Setter Property="Visibility"
                         TargetName="border"
@@ -248,6 +246,33 @@
             </MultiTrigger>
             <Trigger Property="IsEnabled"
                      Value="False">
+                <Setter Property="Opacity"
+                        TargetName="iconImage"
+                        Value="0.5" />
+                <Setter Property="Opacity"
+                        TargetName="checkedImage"
+                        Value="0.5" />
+                <Setter Property="Opacity"
+                        TargetName="textBlock"
+                        Value="0.5" />
+                <Setter Property="Opacity"
+                        TargetName="gestureTextBlock"
+                        Value="0.5" />
+                <Setter Property="Effect"
+                        TargetName="iconImage">
+                    <Setter.Value>
+                        <Fluent:GrayscaleEffect />
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Effect"
+                        TargetName="checkedImage">
+                    <Setter.Value>
+                        <Fluent:GrayscaleEffect />
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="Fluent:MenuItem.IsReadOnly"
+                     Value="True">
                 <Setter Property="Opacity"
                         TargetName="iconImage"
                         Value="0.5" />
@@ -301,33 +326,6 @@
                         TargetName="iconImage"
                         Value="Collapsed" />
             </MultiTrigger>
-            <Trigger Property="Fluent:MenuItem.IsReadOnly"
-                     Value="True">
-                <Setter Property="Opacity"
-                        TargetName="iconImage"
-                        Value="0.5" />
-                <Setter Property="Opacity"
-                        TargetName="checkedImage"
-                        Value="0.5" />
-                <Setter Property="Opacity"
-                        TargetName="textBlock"
-                        Value="0.5" />
-                <Setter Property="Opacity"
-                        TargetName="gestureTextBlock"
-                        Value="0.5" />
-                <Setter Property="Effect"
-                        TargetName="iconImage">
-                    <Setter.Value>
-                        <Fluent:GrayscaleEffect />
-                    </Setter.Value>
-                </Setter>
-                <Setter Property="Effect"
-                        TargetName="checkedImage">
-                    <Setter.Value>
-                        <Fluent:GrayscaleEffect />
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
@@ -537,14 +535,36 @@
                                Value="True" />
                     <Condition Property="IsEnabled"
                                Value="True" />
-                    <Condition Property="Fluent:MenuItem.IsReadOnly"
-                               Value="False" />
                 </MultiTrigger.Conditions>
                 <Setter Property="Visibility"
                         TargetName="border"
                         Value="Visible" />
             </MultiTrigger>
             <Trigger Property="IsEnabled"
+                     Value="False">
+                <Setter Property="Opacity"
+                        TargetName="iconImage"
+                        Value="0.5" />
+                <Setter Property="Opacity"
+                        TargetName="checkedImage"
+                        Value="0.5" />
+                <Setter Property="Opacity"
+                        TargetName="textBlock"
+                        Value="0.5" />
+                <Setter Property="Effect"
+                        TargetName="iconImage">
+                    <Setter.Value>
+                        <Fluent:GrayscaleEffect />
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Effect"
+                        TargetName="checkedImage">
+                    <Setter.Value>
+                        <Fluent:GrayscaleEffect />
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="Fluent:MenuItem.IsReadOnly"
                      Value="False">
                 <Setter Property="Opacity"
                         TargetName="iconImage"
@@ -837,6 +857,30 @@
                     </Setter.Value>
                 </Setter>
             </Trigger>
+            <Trigger Property="Fluent:MenuItem.IsReadOnly"
+                     Value="False">
+                <Setter Property="Opacity"
+                        TargetName="iconImage"
+                        Value="0.5" />
+                <Setter Property="Opacity"
+                        TargetName="checkedImage"
+                        Value="0.5" />
+                <Setter Property="Opacity"
+                        TargetName="textBlock"
+                        Value="0.5" />
+                <Setter Property="Effect"
+                        TargetName="iconImage">
+                    <Setter.Value>
+                        <Fluent:GrayscaleEffect />
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Effect"
+                        TargetName="checkedImage">
+                    <Setter.Value>
+                        <Fluent:GrayscaleEffect />
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="Fluent:MenuItem.IsReadOnly"
@@ -965,14 +1009,36 @@
                                Value="True" />
                     <Condition Property="IsEnabled"
                                Value="True" />
-                    <Condition Property="IsReadOnly"
-                               Value="False" />
                 </MultiTrigger.Conditions>
                 <Setter Property="Visibility"
                         TargetName="border"
                         Value="Visible" />
             </MultiTrigger>
             <Trigger Property="IsEnabled"
+                     Value="False">
+                <Setter Property="Opacity"
+                        TargetName="iconImage"
+                        Value="0.5" />
+                <Setter Property="Opacity"
+                        TargetName="checkedImage"
+                        Value="0.5" />
+                <Setter Property="Opacity"
+                        TargetName="textBlock"
+                        Value="0.5" />
+                <Setter Property="Effect"
+                        TargetName="iconImage">
+                    <Setter.Value>
+                        <Fluent:GrayscaleEffect />
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Effect"
+                        TargetName="checkedImage">
+                    <Setter.Value>
+                        <Fluent:GrayscaleEffect />
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="Fluent:MenuItem.IsReadOnly"
                      Value="False">
                 <Setter Property="Opacity"
                         TargetName="iconImage"
