@@ -213,15 +213,6 @@
                         TargetName="gestureTextBlock"
                         Value="Collapsed" />
             </Trigger>
-            <Trigger Property="IsChecked"
-                     Value="True">
-                <Setter Property="Background"
-                        TargetName="iconImageBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.ToggleButton.Checked.Background}" />
-                <Setter Property="BorderBrush"
-                        TargetName="iconImageBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.ToggleButton.Checked.BorderBrush}" />
-            </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="Icon"
@@ -509,15 +500,6 @@
                         TargetName="resizeBorder"
                         Value="Visible" />
             </Trigger>
-            <Trigger Property="IsChecked"
-                     Value="True">
-                <Setter Property="Background"
-                        TargetName="iconImageBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.ToggleButton.Checked.Background}" />
-                <Setter Property="BorderBrush"
-                        TargetName="iconImageBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.ToggleButton.Checked.BorderBrush}" />
-            </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="Icon"
@@ -793,15 +775,6 @@
                         TargetName="resizeBorder"
                         Value="Visible" />
             </Trigger>
-            <Trigger Property="IsChecked"
-                     Value="True">
-                <Setter Property="Background"
-                        TargetName="iconImageBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.ToggleButton.Checked.Background}" />
-                <Setter Property="BorderBrush"
-                        TargetName="iconImageBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.ToggleButton.Checked.BorderBrush}" />
-            </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="Icon"
@@ -982,15 +955,6 @@
                 <Setter Property="Visibility"
                         TargetName="gestureTextBlock"
                         Value="Collapsed" />
-            </Trigger>
-            <Trigger Property="IsChecked"
-                     Value="True">
-                <Setter Property="Background"
-                        TargetName="iconImageBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.ToggleButton.Checked.Background}" />
-                <Setter Property="BorderBrush"
-                        TargetName="iconImageBorder"
-                        Value="{DynamicResource Fluent.Ribbon.Brushes.ToggleButton.Checked.BorderBrush}" />
             </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>

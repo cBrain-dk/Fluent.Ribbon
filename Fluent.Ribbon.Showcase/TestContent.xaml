@@ -1700,6 +1700,12 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                                          Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Blue.png"
                                          Fluent:RibbonControl.WhiteIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Pink.png"
                                          Header="SplitItem2" />
+                        <Fluent:MenuItem x:Name="TestSplitItem3"
+                                         Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Blue.png"
+                                         Fluent:RibbonControl.WhiteIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Pink.png"
+                                         Header="SplitItem3"
+                                         IsCheckable="True"
+                                         IsChecked="True" />
                     </Fluent:SplitButton>
 
                     <Fluent:SplitButton x:Name="TestSplitItems"
@@ -1707,10 +1713,10 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                                         Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Yellow.png"
                                         LargeIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/YellowLarge.png"
                                         Fluent:RibbonControl.WhiteIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Pink.png">
-                        <Fluent:MenuItem x:Name="TestSplitItem3" 
+                        <Fluent:MenuItem x:Name="TestSplitItem4" 
                                          Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Green.png"
                                          Fluent:RibbonControl.WhiteIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Pink.png"
-                                         Header="SplitItem3"
+                                         Header="SplitItem4"
                                          IsReadOnly="{Binding DisableButtons}">
                             <Fluent:MenuItem.ToolTip>
                                 <Fluent:ScreenTip Title="Toggle Button test" 
@@ -1718,10 +1724,23 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                                                   DisableReason="{Binding DisableReason, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
                             </Fluent:MenuItem.ToolTip>
                         </Fluent:MenuItem>
-                        <Fluent:MenuItem x:Name="TestSplitItem4"
+                        <Fluent:MenuItem x:Name="TestSplitItem5"
                                          Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Blue.png"
                                          Fluent:RibbonControl.WhiteIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Pink.png"
-                                         Header="SplitItem4" />
+                                         Header="SplitItem5" />
+                        <Fluent:MenuItem x:Name="TestSplitItem6" 
+                                         Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Yellow.png"
+                                         Fluent:RibbonControl.WhiteIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Pink.png"
+                                         Header="SplitItem6"
+                                         IsCheckable="True"
+                                         IsChecked="True"
+                                         IsReadOnly="{Binding DisableButtons}">
+                            <Fluent:MenuItem.ToolTip>
+                                <Fluent:ScreenTip Title="Toggle Button test" 
+                                                  Text="Testing screentip for split button"
+                                                  DisableReason="{Binding DisableReason, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
+                            </Fluent:MenuItem.ToolTip>
+                        </Fluent:MenuItem>
                     </Fluent:SplitButton>
 
                     <Fluent:DropDownButton Header="Test DropDown Button"
@@ -1742,15 +1761,21 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                                          Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Blue.png"
                                          Fluent:RibbonControl.WhiteIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Pink.png"
                                          Header="DropItem2" />
+                        <Fluent:MenuItem x:Name="TestDropItem3"
+                                         Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Yellow.png"
+                                         Fluent:RibbonControl.WhiteIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Pink.png"
+                                         Header="DropItem3"
+                                         IsCheckable="True"
+                                         IsChecked="True" />
                     </Fluent:DropDownButton>
 
                     <Fluent:DropDownButton Header="Test DropDown Button Items"
                                            Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Blue.png"
                                            LargeIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/BlueLarge.png">
-                        <Fluent:MenuItem x:Name="TestDropItem3" 
+                        <Fluent:MenuItem x:Name="TestDropItem4" 
                                          Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Green.png"
                                          Fluent:RibbonControl.WhiteIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Pink.png"
-                                         Header="DropItem3"
+                                         Header="DropItem4"
                                          IsReadOnly="{Binding DisableButtons}">
                             <Fluent:MenuItem.ToolTip>
                                 <Fluent:ScreenTip Title="DropDown Button test" 
@@ -1758,10 +1783,23 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                                               DisableReason="{Binding DisableReason, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
                             </Fluent:MenuItem.ToolTip>
                         </Fluent:MenuItem>
-                        <Fluent:MenuItem x:Name="TestDropItem4"
+                        <Fluent:MenuItem x:Name="TestDropItem5"
                                          Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Blue.png"
                                          Fluent:RibbonControl.WhiteIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Pink.png"
-                                         Header="DropItem4" />
+                                         Header="DropItem5" />
+                        <Fluent:MenuItem x:Name="TestDropItem6" 
+                                         Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Yellow.png"
+                                         Fluent:RibbonControl.WhiteIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Pink.png"
+                                         Header="DropItem6"
+                                         IsCheckable="True"
+                                         IsChecked="True"
+                                         IsReadOnly="{Binding DisableButtons}">
+                            <Fluent:MenuItem.ToolTip>
+                                <Fluent:ScreenTip Title="DropDown Button test" 
+                                              Text="Testing screentip for dropdown button"
+                                              DisableReason="{Binding DisableReason, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
+                            </Fluent:MenuItem.ToolTip>
+                        </Fluent:MenuItem>
                     </Fluent:DropDownButton>
 
                     <Fluent:CheckBox Header="Test Checkbox"
