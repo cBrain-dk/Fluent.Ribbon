@@ -565,7 +565,7 @@
                 </Setter>
             </Trigger>
             <Trigger Property="Fluent:MenuItem.IsReadOnly"
-                     Value="False">
+                     Value="True">
                 <Setter Property="Opacity"
                         TargetName="iconImage"
                         Value="0.5" />
@@ -858,7 +858,7 @@
                 </Setter>
             </Trigger>
             <Trigger Property="Fluent:MenuItem.IsReadOnly"
-                     Value="False">
+                     Value="True">
                 <Setter Property="Opacity"
                         TargetName="iconImage"
                         Value="0.5" />
@@ -1039,7 +1039,7 @@
                 </Setter>
             </Trigger>
             <Trigger Property="Fluent:MenuItem.IsReadOnly"
-                     Value="False">
+                     Value="True">
                 <Setter Property="Opacity"
                         TargetName="iconImage"
                         Value="0.5" />
