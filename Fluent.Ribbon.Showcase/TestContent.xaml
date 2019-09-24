@@ -1671,6 +1671,8 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                     </Fluent:Button>
 
                     <Fluent:ToggleButton Header="Test Toggle Button"
+                                         Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Green.png"
+                                         LargeIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/GreenLarge.png"
                                          IsReadOnly="{Binding DisableButtons}">
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="Toggle Button test" 
@@ -1723,6 +1725,8 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                     </Fluent:SplitButton>
 
                     <Fluent:DropDownButton Header="Test DropDown Button"
+                                           Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Blue.png"
+                                           LargeIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/BlueLarge.png"
                                            IsReadOnly="{Binding DisableButtons}">
                         <Fluent:DropDownButton.ToolTip>
                             <Fluent:ScreenTip Title="DropDown Button test" 
@@ -1740,7 +1744,9 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                                          Header="DropItem2" />
                     </Fluent:DropDownButton>
 
-                    <Fluent:DropDownButton Header="Test DropDown Button Items">
+                    <Fluent:DropDownButton Header="Test DropDown Button Items"
+                                           Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Blue.png"
+                                           LargeIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/BlueLarge.png">
                         <Fluent:MenuItem x:Name="TestDropItem3" 
                                          Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Green.png"
                                          Fluent:RibbonControl.WhiteIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Pink.png"
