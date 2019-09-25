@@ -7,6 +7,9 @@ namespace Fluent
     using System.ComponentModel;
     using System.Linq;
     using System.Windows;
+    using System.Windows.Automation;
+    using System.Windows.Automation.Peers;
+    using System.Windows.Automation.Provider;
     using System.Windows.Data;
     using System.Windows.Documents;
     using System.Windows.Input;
@@ -15,6 +18,7 @@ namespace Fluent
     using System.Windows.Media;
     using System.Windows.Media.Animation;
     using System.Windows.Threading;
+    using Fluent.Automation.Peers;
     using Fluent.Extensions;
     using Fluent.Internal;
     using Fluent.Internal.KnownBoxes;
@@ -23,7 +27,7 @@ namespace Fluent
     /// Represents backstage button
     /// </summary>
     [ContentProperty(nameof(Content))]
-    public class Backstage : RibbonControl
+    public class Backstage : RibbonControl, IRawElementProviderSimple
     {
         private static readonly object syncIsOpen = new object();
 
@@ -207,6 +211,11 @@ namespace Fluent
                 // Invoke the event
                 backstage.IsOpenChanged?.Invoke(backstage, e);
             }
+        }
+
+        private void RaiseOpenChangedEvent(System.Windows.Automation.AutomationEvent eventId)
+        {
+            AutomationInteropProvider.RaiseAutomationEvent(eventId, this, new System.Windows.Automation.AutomationEventArgs(eventId));
         }
 
         #endregion
@@ -600,6 +609,7 @@ namespace Fluent
                     focusableElement?.Focus();
                 }
 
+                this.RaiseOpenChangedEvent(AutomationElement.MenuOpenedEvent);
                 storyboard.Completed -= HandleStoryboardOnCompleted;
             }
         }
@@ -649,6 +659,7 @@ namespace Fluent
 
                 this.RestoreParentProperties();
                 this.IsAnimating = false;
+                this.RaiseOpenChangedEvent(AutomationElement.MenuClosedEvent);
 
                 storyboard.Completed -= HandleStoryboardOnCompleted;
             }
@@ -708,10 +719,10 @@ namespace Fluent
             this.adorner = new BackstageAdorner(elementToAdorn, this);
 
             BindingOperations.SetBinding(this.adorner, DataContextProperty, new Binding
-                                                                            {
-                                                                                Path = new PropertyPath(DataContextProperty),
-                                                                                Source = this
-                                                                            });
+            {
+                Path = new PropertyPath(DataContextProperty),
+                Source = this
+            });
 
             this.AdornerLayer.Add(this.adorner);
 
@@ -782,7 +793,7 @@ namespace Fluent
 
                 this.savedWindowWidth = double.NaN;
                 this.savedWindowHeight = double.NaN;
-                
+
                 this.ownerWindow = null;
             }
 
@@ -974,6 +985,71 @@ namespace Fluent
         {
             throw new NotImplementedException();
         }
+
+        #endregion
+
+        #region ISimpleElementProvider
+
+        /// <inheritdoc />
+        protected override AutomationPeer OnCreateAutomationPeer()
+        {
+            return new BackstageAutomationPeer(this);
+        }
+
+        private BackstageAutomationPeer internalPeer = null;
+
+        private BackstageAutomationPeer InternalPeer
+        {
+            get { return this.internalPeer ?? (this.internalPeer = (BackstageAutomationPeer)this.OnCreateAutomationPeer()); }
+        }
+
+        object IRawElementProviderSimple.GetPatternProvider(int patternId)
+        {
+            if (patternId == InvokePatternIdentifiers.Pattern.Id
+                || patternId == TogglePatternIdentifiers.Pattern.Id
+                || patternId == ExpandCollapsePatternIdentifiers.Pattern.Id)
+            {
+                return this.OnCreateAutomationPeer();
+            }
+
+            return null;
+        }
+
+        object IRawElementProviderSimple.GetPropertyValue(int propertyId)
+        {
+            if (propertyId == AutomationElementIdentifiers.NameProperty.Id)
+            {
+                return this.InternalPeer.GetName();
+            }
+            else if (propertyId == AutomationElementIdentifiers.ClassNameProperty.Id)
+            {
+                return this.InternalPeer.GetClassName();
+            }
+            else if (propertyId == AutomationElementIdentifiers.ControlTypeProperty.Id)
+            {
+                return this.InternalPeer.GetAutomationControlType();
+            }
+            else if (propertyId == AutomationElementIdentifiers.IsContentElementProperty.Id)
+            {
+                return this.InternalPeer.IsContentElement();
+            }
+            else if (propertyId == AutomationElementIdentifiers.IsControlElementProperty.Id)
+            {
+                return this.InternalPeer.IsControlElement();
+            }
+            else if (propertyId == AutomationElementIdentifiers.IsControlElementProperty.Id)
+            {
+                return this.InternalPeer.GetLabeledBy();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        ProviderOptions IRawElementProviderSimple.ProviderOptions => ProviderOptions.ClientSideProvider;
+
+        IRawElementProviderSimple IRawElementProviderSimple.HostRawElementProvider => AutomationInteropProvider.HostProviderFromHandle(new WindowInteropHelper(this.ownerWindow).Handle);
 
         #endregion
     }
