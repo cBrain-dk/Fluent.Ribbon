@@ -44,8 +44,27 @@
         /// <param name="automationPeer">The peer to extract from</param>
         public static string GetAccessKeyAndAcceleratorKey(FrameworkElementAutomationPeer automationPeer)
         {
-            string accessKey = GetAccessKey(automationPeer);
-            string acceleratorKey = GetAcceleratorKey(automationPeer);
+            return GetAccessKeyAndAcceleratorKey(automationPeer.Owner);
+        }
+
+        /// <summary>
+        /// Get access key and accelerator key combined into a readable string
+        /// </summary>
+        /// <param name="automationPeer">The peer to extract from</param>
+        public static string GetAccessKeyAndAcceleratorKey(ItemAutomationPeer automationPeer)
+        {
+            if (automationPeer.Item is UIElement owner)
+            {
+                return GetAccessKeyAndAcceleratorKey(owner);
+            }
+
+            return string.Empty;
+        }
+
+        private static string GetAccessKeyAndAcceleratorKey(UIElement automationPeerOwner)
+        {
+            string accessKey = GetAccessKey(automationPeerOwner);
+            string acceleratorKey = GetAcceleratorKey(automationPeerOwner);
 
             if (string.IsNullOrEmpty(accessKey))
             {
@@ -67,14 +86,33 @@
         /// Get the enabled state from an automation peer
         /// </summary>
         /// <param name="automationPeer">The peer to extract from</param>
-        public static bool IsEnabledCore(FrameworkElementAutomationPeer automationPeer)
+        public static bool IsEnabledCore(UIElementAutomationPeer automationPeer)
         {
-            if (automationPeer.Owner is IReadOnlyControl readOnlyControl)
+            return IsEnabledCore(automationPeer.Owner);
+        }
+
+        /// <summary>
+        /// Get the enabled state from an automation peer
+        /// </summary>
+        /// <param name="automationPeer">The peer to extract from</param>
+        public static bool IsEnabledCore(ItemAutomationPeer automationPeer)
+        {
+            if (automationPeer.Item is UIElement owner)
             {
-                return !readOnlyControl.IsReadOnly && automationPeer.Owner.IsEnabled;
+                return IsEnabledCore(owner);
             }
 
-            return automationPeer.Owner.IsEnabled;
+            return false;
+        }
+
+        private static bool IsEnabledCore(UIElement automationPeerOwner)
+        { 
+            if (automationPeerOwner is IReadOnlyControl readOnlyControl)
+            {
+                return !readOnlyControl.IsReadOnly && automationPeerOwner.IsEnabled;
+            }
+
+            return automationPeerOwner.IsEnabled;
         }
 
         /// <summary>
@@ -83,13 +121,32 @@
         /// <param name="automationPeer">The peer to extract from</param>
         public static string GetAcceleratorKey(FrameworkElementAutomationPeer automationPeer)
         {
-            string acceleratorKey = AutomationProperties.GetAcceleratorKey(automationPeer.Owner);
+            return GetAcceleratorKey(automationPeer.Owner);
+        }
+
+        /// <summary>
+        /// Get the accelerator from an automation peer
+        /// </summary>
+        /// <param name="automationPeer">The peer to extract from</param>
+        public static string GetAcceleratorKey(ItemAutomationPeer automationPeer)
+        {
+            if (automationPeer.Item is UIElement owner)
+            {
+                return GetAcceleratorKey(owner);
+            }
+
+            return string.Empty;
+        }
+
+        private static string GetAcceleratorKey(UIElement automationPeerOwner)
+        {
+            string acceleratorKey = AutomationProperties.GetAcceleratorKey(automationPeerOwner);
             if (!string.IsNullOrEmpty(acceleratorKey))
             {
                 return acceleratorKey;
             }
 
-            if (automationPeer.Owner is ICommandSource commandSource
+            if (automationPeerOwner is ICommandSource commandSource
                 && commandSource.Command is IToolTipCommand toolTipCommand)
             {
                 return toolTipCommand.KeyboardShortCutHumanText;
@@ -104,16 +161,35 @@
         /// <param name="automationPeer">The peer to extract from</param>
         public static string GetAccessKey(FrameworkElementAutomationPeer automationPeer)
         {
-            string accessKey = AutomationProperties.GetAccessKey(automationPeer.Owner);
+            return GetAccessKey(automationPeer.Owner);
+        }
+
+        /// <summary>
+        /// Get the access key from an automation peer
+        /// </summary>
+        /// <param name="automationPeer">The peer to extract from</param>
+        public static string GetAccessKey(ItemAutomationPeer automationPeer)
+        {
+            if (automationPeer.Item is UIElement owner)
+            {
+                return GetAccessKey(owner);
+            }
+
+            return string.Empty;
+        }
+
+        private static string GetAccessKey(UIElement automationPeerOwner)
+        {
+            string accessKey = AutomationProperties.GetAccessKey(automationPeerOwner);
             if (!string.IsNullOrEmpty(accessKey))
             {
                 return accessKey;
             }
 
-            if (automationPeer.Owner is IKeyTipedControl keyTipedControl
+            if (automationPeerOwner is IKeyTipedControl keyTipedControl
                 && !string.IsNullOrEmpty(keyTipedControl.KeyTip))
             {
-                var parents = UIHelper.GetParents<IKeyTipedControl>(automationPeer.Owner);
+                var parents = UIHelper.GetParents<IKeyTipedControl>(automationPeerOwner);
                 return GetKeyTip(parents, keyTipedControl);
             }
 
@@ -126,20 +202,39 @@
         /// <param name="automationPeer">The peer to extract from</param>
         public static string GetName(FrameworkElementAutomationPeer automationPeer)
         {
-            string name = AutomationProperties.GetName(automationPeer.Owner);
+            return GetName(automationPeer.Owner);
+        }
+
+        /// <summary>
+        /// Get the name from an automation peer
+        /// </summary>
+        /// <param name="automationPeer">The peer to extract from</param>
+        public static string GetName(ItemAutomationPeer automationPeer)
+        {
+            if (automationPeer.Item is UIElement owner)
+            {
+                return GetName(owner);
+            }
+
+            return string.Empty;
+        }
+
+        private static string GetName(UIElement automationPeerOwner)
+        {
+            string name = AutomationProperties.GetName(automationPeerOwner);
             if (!string.IsNullOrEmpty(name))
             {
                 return name;
             }
 
-            if (automationPeer.Owner is IHeaderedControl headeredControl
+            if (automationPeerOwner is IHeaderedControl headeredControl
                     && headeredControl.Header is string header
                     && !string.IsNullOrEmpty(header))
             {
                 return header;
             }
 
-            if (automationPeer.Owner is FrameworkElement fe
+            if (automationPeerOwner is FrameworkElement fe
                 && fe.ToolTip is ScreenTip screenTip
                 && !string.IsNullOrEmpty(screenTip.Title))
             {
@@ -155,13 +250,32 @@
         /// <param name="automationPeer">The peer to extract from</param>
         public static string GetHelpText(FrameworkElementAutomationPeer automationPeer)
         {
-            string helpText = AutomationProperties.GetHelpText(automationPeer.Owner);
+            return GetHelpText(automationPeer.Owner);
+        }
+
+        /// <summary>
+        /// Get the help text from an automation peer
+        /// </summary>
+        /// <param name="automationPeer">The peer to extract from</param>
+        public static string GetHelpText(ItemAutomationPeer automationPeer)
+        {
+            if (automationPeer.Item is UIElement owner)
+            {
+                return GetHelpText(owner);
+            }
+
+            return string.Empty;
+        }
+
+        private static string GetHelpText(UIElement automationPeerOwner)
+        {
+            string helpText = AutomationProperties.GetHelpText(automationPeerOwner);
             if (!string.IsNullOrEmpty(helpText))
             {
                 return helpText;
             }
 
-            FrameworkElement fe = automationPeer.Owner as FrameworkElement;
+            FrameworkElement fe = automationPeerOwner as FrameworkElement;
             if (fe == null)
             {
                 return string.Empty;
@@ -176,7 +290,7 @@
             {
                 string screenTipHelpText = screenTip.Text;
 
-                if (!IsEnabledCore(automationPeer) &&
+                if (!IsEnabledCore(automationPeerOwner) &&
                     !string.IsNullOrEmpty(screenTip.DisableReason))
                 {
                     string disableReason = RibbonLocalization.Current.Localization.ScreenTipDisableReasonHeader
@@ -194,6 +308,7 @@
         #endregion
 
         #region Helper methods
+
         private static string GetKeyTip(List<IKeyTipedControl> keyTipedControls, IKeyTipedControl ribbonControl)
         {
             if (string.IsNullOrEmpty(ribbonControl.KeyTip))
