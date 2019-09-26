@@ -994,14 +994,14 @@ namespace Fluent
 
         ProviderOptions IRawElementProviderSimple.ProviderOptions => ProviderOptions.ClientSideProvider;
 
-        IRawElementProviderSimple IRawElementProviderSimple.HostRawElementProvider => AutomationInteropProvider.HostProviderFromHandle(new WindowInteropHelper(this.ownerWindow).Handle);
+        IRawElementProviderSimple IRawElementProviderSimple.HostRawElementProvider => this.ownerWindow != null
+            ? AutomationInteropProvider.HostProviderFromHandle(new WindowInteropHelper(this.ownerWindow).Handle)
+            : null;
 
         private BackstageAutomationPeer internalPeer = null;
 
-        private BackstageAutomationPeer InternalPeer
-        {
-            get { return this.internalPeer ?? (this.internalPeer = (BackstageAutomationPeer)this.OnCreateAutomationPeer()); }
-        }
+        private BackstageAutomationPeer InternalPeer => this.internalPeer 
+            ?? (this.internalPeer = (BackstageAutomationPeer)this.OnCreateAutomationPeer());
 
         object IRawElementProviderSimple.GetPatternProvider(int patternId)
         {

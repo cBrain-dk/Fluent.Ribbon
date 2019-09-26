@@ -1,17 +1,23 @@
 // ReSharper disable once CheckNamespace
 namespace Fluent
 {
+    using System;
     using System.ComponentModel;
     using System.Windows;
+    using System.Windows.Automation;
+    using System.Windows.Automation.Provider;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
     using System.Windows.Input;
+    using System.Windows.Interop;
+    using Fluent.Automation;
+    using Fluent.Automation.Peers;
     using Fluent.Internal.KnownBoxes;
 
     /// <summary>
     /// Represents backstage tab item
     /// </summary>
-    public class BackstageTabItem : ContentControl, IKeyTipedControl, IHeaderedControl, ILogicalChildSupport
+    public class BackstageTabItem : ContentControl, IKeyTipedControl, IHeaderedControl, ILogicalChildSupport, IRawElementProviderSimple
     {
         #region Icon
 
@@ -104,7 +110,15 @@ namespace Fluent
         /// <summary>
         /// Using a DependencyProperty as the backing store for IsReadOnly.  
         /// </summary>
-        public static readonly DependencyProperty IsReadOnlyProperty = RibbonProperties.IsReadOnlyProperty.AddOwner(typeof(BackstageTabItem));
+        public static readonly DependencyProperty IsReadOnlyProperty = RibbonProperties.IsReadOnlyProperty.AddOwner(typeof(BackstageTabItem), new FrameworkPropertyMetadata(false, OnIsReadOnlyChanged));
+
+        private static void OnIsReadOnlyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is BackstageTabItem backstageTabItem)
+            {
+                AutomationPeerHelper.RaiseAutomationPropertyChangedEvent(backstageTabItem, AutomationElement.IsEnabledProperty, e.OldValue, e.NewValue);
+            }
+        }
 
         #endregion
 
@@ -186,24 +200,25 @@ namespace Fluent
         // Handles IsSelected changed
         private static void OnIsSelectedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var container = (BackstageTabItem)d;
+            var backstageTabItem = (BackstageTabItem)d;
             var newValue = (bool)e.NewValue;
 
             if (newValue)
             {
-                if (container.TabControlParent != null
-                    && ReferenceEquals(container.TabControlParent.ItemContainerGenerator.ContainerFromItem(container.TabControlParent.SelectedItem), container) == false)
+                if (backstageTabItem.TabControlParent != null
+                    && ReferenceEquals(backstageTabItem.TabControlParent.ItemContainerGenerator.ContainerFromItem(backstageTabItem.TabControlParent.SelectedItem), backstageTabItem) == false)
                 {
-                    UnselectSelectedItem(container.TabControlParent);
+                    UnselectSelectedItem(backstageTabItem.TabControlParent);
 
-                    container.TabControlParent.SelectedItem = container.TabControlParent.ItemContainerGenerator.ItemFromContainer(container);
+                    backstageTabItem.TabControlParent.SelectedItem = backstageTabItem.TabControlParent.ItemContainerGenerator.ItemFromContainer(backstageTabItem);
                 }
 
-                container.OnSelected(new RoutedEventArgs(Selector.SelectedEvent, container));
+                backstageTabItem.OnSelected(new RoutedEventArgs(Selector.SelectedEvent, backstageTabItem));
+                AutomationPeerHelper.RaiseAutomationEvent(SelectionItemPattern.ElementSelectedEvent, backstageTabItem);
             }
             else
             {
-                container.OnUnselected(new RoutedEventArgs(Selector.UnselectedEvent, container));
+                backstageTabItem.OnUnselected(new RoutedEventArgs(Selector.UnselectedEvent, backstageTabItem));
             }
         }
 
@@ -303,5 +318,66 @@ namespace Fluent
         {
             this.RemoveLogicalChild(child);
         }
+
+        #region IRawElementProviderSimple
+
+        ProviderOptions IRawElementProviderSimple.ProviderOptions => ProviderOptions.ClientSideProvider;
+
+        IRawElementProviderSimple IRawElementProviderSimple.HostRawElementProvider => Window.GetWindow(this) is Window window
+            ? AutomationInteropProvider.HostProviderFromHandle(new WindowInteropHelper(window).Handle)
+            : null;
+
+        private BackstageTabItemAutomationPeer internalPeer = null;
+
+        private BackstageTabItemAutomationPeer InternalPeer => this.internalPeer 
+            ?? (this.internalPeer = (BackstageTabItemAutomationPeer)this.OnCreateAutomationPeer());
+
+        object IRawElementProviderSimple.GetPatternProvider(int patternId)
+        {
+            if (patternId == SelectionItemPattern.Pattern.Id)
+            {
+                return this.OnCreateAutomationPeer();
+            }
+
+            return null;
+        }
+
+        object IRawElementProviderSimple.GetPropertyValue(int propertyId)
+        {
+            if (propertyId == AutomationElementIdentifiers.NameProperty.Id)
+            {
+                return this.InternalPeer.GetName();
+            }
+            else if (propertyId == AutomationElementIdentifiers.ClassNameProperty.Id)
+            {
+                return this.InternalPeer.GetClassName();
+            }
+            else if (propertyId == AutomationElementIdentifiers.ControlTypeProperty.Id)
+            {
+                return this.InternalPeer.GetAutomationControlType();
+            }
+            else if (propertyId == AutomationElementIdentifiers.IsContentElementProperty.Id)
+            {
+                return this.InternalPeer.IsContentElement();
+            }
+            else if (propertyId == AutomationElementIdentifiers.IsControlElementProperty.Id)
+            {
+                return this.InternalPeer.IsControlElement();
+            }
+            else if (propertyId == AutomationElementIdentifiers.LabeledByProperty.Id)
+            {
+                return this.InternalPeer.GetLabeledBy();
+            }
+            else if (propertyId == AutomationElementIdentifiers.IsKeyboardFocusableProperty.Id)
+            {
+                return this.InternalPeer.IsKeyboardFocusable();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
     }
 }
