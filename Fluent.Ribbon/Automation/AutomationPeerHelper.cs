@@ -5,6 +5,7 @@
     using System.Windows;
     using System.Windows.Automation;
     using System.Windows.Automation.Peers;
+    using System.Windows.Automation.Provider;
     using System.Windows.Input;
     using Fluent.Internal;
 
@@ -213,6 +214,28 @@
 
             sKeyTip += ribbonControl.KeyTip;
             return sKeyTip;
+        }
+
+        /// <summary>
+        /// Helper method for raising Automation related events
+        /// </summary>
+        /// <param name="eventId">The AutomationElement specific string that identifies the event being sent</param>
+        /// <param name="sender">The control calling this method</param>
+        public static void RaiseAutomationEvent(System.Windows.Automation.AutomationEvent eventId, IRawElementProviderSimple sender)
+        {
+            AutomationInteropProvider.RaiseAutomationEvent(eventId, sender, new System.Windows.Automation.AutomationEventArgs(eventId));
+        }
+
+        /// <summary>
+        /// Simple wrap around the automation property changed event publishing
+        /// </summary>
+        /// <param name="sender">The calling control</param>
+        /// <param name="property">The property that was changed</param>
+        /// <param name="oldValue">The old value of the property</param>
+        /// <param name="newValue">The new value of the property</param>
+        public static void RaiseAutomationPropertyChangedEvent(IRawElementProviderSimple sender, AutomationProperty property, object oldValue, object newValue)
+        {
+            AutomationInteropProvider.RaiseAutomationPropertyChangedEvent(sender, new AutomationPropertyChangedEventArgs(property, oldValue, newValue));
         }
         #endregion
     }

@@ -18,6 +18,7 @@ namespace Fluent
     using System.Windows.Media;
     using System.Windows.Media.Animation;
     using System.Windows.Threading;
+    using Fluent.Automation;
     using Fluent.Automation.Peers;
     using Fluent.Extensions;
     using Fluent.Internal;
@@ -211,11 +212,6 @@ namespace Fluent
                 // Invoke the event
                 backstage.IsOpenChanged?.Invoke(backstage, e);
             }
-        }
-
-        private void RaiseOpenChangedEvent(System.Windows.Automation.AutomationEvent eventId)
-        {
-            AutomationInteropProvider.RaiseAutomationEvent(eventId, this, new System.Windows.Automation.AutomationEventArgs(eventId));
         }
 
         #endregion
@@ -609,7 +605,7 @@ namespace Fluent
                     focusableElement?.Focus();
                 }
 
-                this.RaiseOpenChangedEvent(AutomationElement.MenuOpenedEvent);
+                AutomationPeerHelper.RaiseAutomationEvent(AutomationElement.MenuOpenedEvent, this);
                 storyboard.Completed -= HandleStoryboardOnCompleted;
             }
         }
@@ -659,7 +655,7 @@ namespace Fluent
 
                 this.RestoreParentProperties();
                 this.IsAnimating = false;
-                this.RaiseOpenChangedEvent(AutomationElement.MenuClosedEvent);
+                AutomationPeerHelper.RaiseAutomationEvent(AutomationElement.MenuClosedEvent, this);
 
                 storyboard.Completed -= HandleStoryboardOnCompleted;
             }
@@ -976,6 +972,12 @@ namespace Fluent
             }
         }
 
+        /// <inheritdoc />
+        protected override AutomationPeer OnCreateAutomationPeer()
+        {
+            return new BackstageAutomationPeer(this);
+        }
+
         #endregion
 
         #region Quick Access Toolbar
@@ -988,13 +990,11 @@ namespace Fluent
 
         #endregion
 
-        #region ISimpleElementProvider
+        #region IRawElementProviderSimple
 
-        /// <inheritdoc />
-        protected override AutomationPeer OnCreateAutomationPeer()
-        {
-            return new BackstageAutomationPeer(this);
-        }
+        ProviderOptions IRawElementProviderSimple.ProviderOptions => ProviderOptions.ClientSideProvider;
+
+        IRawElementProviderSimple IRawElementProviderSimple.HostRawElementProvider => AutomationInteropProvider.HostProviderFromHandle(new WindowInteropHelper(this.ownerWindow).Handle);
 
         private BackstageAutomationPeer internalPeer = null;
 
@@ -1037,7 +1037,7 @@ namespace Fluent
             {
                 return this.InternalPeer.IsControlElement();
             }
-            else if (propertyId == AutomationElementIdentifiers.IsControlElementProperty.Id)
+            else if (propertyId == AutomationElementIdentifiers.LabeledByProperty.Id)
             {
                 return this.InternalPeer.GetLabeledBy();
             }
@@ -1046,10 +1046,6 @@ namespace Fluent
                 return null;
             }
         }
-
-        ProviderOptions IRawElementProviderSimple.ProviderOptions => ProviderOptions.ClientSideProvider;
-
-        IRawElementProviderSimple IRawElementProviderSimple.HostRawElementProvider => AutomationInteropProvider.HostProviderFromHandle(new WindowInteropHelper(this.ownerWindow).Handle);
 
         #endregion
     }

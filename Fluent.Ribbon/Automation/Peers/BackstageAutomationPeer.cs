@@ -52,6 +52,21 @@
         }
 
         /// <inheritdoc />
+        public override object GetPattern(PatternInterface patternInterface)
+        {
+            if (patternInterface == PatternInterface.Invoke
+                || patternInterface == PatternInterface.ExpandCollapse
+                || patternInterface == PatternInterface.Toggle)
+            {
+                return this;
+            }
+
+            return base.GetPattern(patternInterface);
+        }
+
+        #region Standard automation fields
+
+        /// <inheritdoc />
         protected override string GetNameCore()
         {
             return AutomationPeerHelper.GetName(this);
@@ -80,6 +95,8 @@
         {
             return AutomationPeerHelper.GetHelpText(this);
         }
+
+        #endregion
 
         #region IInvoke
 
