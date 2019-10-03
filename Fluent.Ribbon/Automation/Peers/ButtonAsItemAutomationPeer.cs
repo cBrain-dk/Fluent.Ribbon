@@ -5,32 +5,33 @@
     using System.Windows.Automation;
     using System.Windows.Automation.Peers;
     using System.Windows.Automation.Provider;
-    using JetBrains.Annotations;
+    using Fluent.Extensions;
 
     /// <summary>
-    /// Based on https://docs.microsoft.com/en-us/dotnet/framework/ui-automation/ui-automation-support-for-the-tabitem-control-type
+    /// Based on https://docs.microsoft.com/en-us/dotnet/framework/ui-automation/ui-automation-support-for-the-button-control-type
     /// </summary>
-    public class BackstageTabItemAutomationPeer : System.Windows.Automation.Peers.SelectorItemAutomationPeer, ISelectionItemProvider
+    public class ButtonAsItemAutomationPeer : System.Windows.Automation.Peers.ItemAutomationPeer, IInvokeProvider
     {
-        private BackstageTabItem BackstageTabItem => (BackstageTabItem)this.Item;
+        private Button Button => (Button)this.Item;
 
         /// <summary>
         /// Creates a new instance.
         /// </summary>
-        public BackstageTabItemAutomationPeer([NotNull] BackstageTabItem owner, [NotNull] BackstageTabControlAutomationPeer container)
-            : base(owner, container)
+        public ButtonAsItemAutomationPeer(Button button, BackstageTabControlAutomationPeer backstageTabControlAutomationPeer)
+            : base(button, backstageTabControlAutomationPeer)
         {
         }
 
         #region Necessary implementations (from TabItemAutomationPeer)
 
         // The need can be seen from https://referencesource.microsoft.com/#PresentationFramework/src/Framework/System/Windows/Automation/Peers/TabItemAutomationPeer.cs,6e5d1f459704abbe
-        
+
         /// <inheritdoc />
         protected override List<AutomationPeer> GetChildrenCore()
         {
-            if (this.BackstageTabItem.IsSelected 
-                && this.BackstageTabItem.TabControlParent.SelectedContent is FrameworkElement element)
+            BackstageTabControl backstageTabControl = System.Windows.Controls.ItemsControl.ItemsControlFromItemContainer(this.Button) as BackstageTabControl;
+            //If a button is asked for children, we show the children related to the currently selected tabItem
+            if (backstageTabControl.SelectedContent is FrameworkElement element)
             {
                 List<AutomationPeer> childPeers = new FrameworkElementAutomationPeer(element).GetChildren();
                 if (childPeers != null)
@@ -49,13 +50,24 @@
         /// <inheritdoc />
         protected override string GetClassNameCore()
         {
-            return "BackstageTabItem";
+            return "Button";
         }
 
         /// <inheritdoc />
         protected override AutomationControlType GetAutomationControlTypeCore()
         {
-            return AutomationControlType.TabItem;
+            return AutomationControlType.Button;
+        }
+
+        /// <inheritdoc />
+        public override object GetPattern(PatternInterface patternInterface)
+        {
+            if (patternInterface == PatternInterface.Invoke)
+            {
+                return this;
+            }
+
+            return base.GetPattern(patternInterface);
         }
 
         /// <inheritdoc />
@@ -79,7 +91,7 @@
         /// <inheritdoc />
         protected override bool IsKeyboardFocusableCore()
         {
-            return AutomationPeerHelper.IsEnabledCore(this);
+            return this.IsEnabled();
         }
 
         #endregion
@@ -118,39 +130,16 @@
 
         #endregion
 
-        #region ISelectionItemProvider
+        #region IInvokeProvider
 
-        bool ISelectionItemProvider.IsSelected => this.BackstageTabItem.IsSelected;
-
-        void ISelectionItemProvider.Select()
+        void IInvokeProvider.Invoke()
         {
-            if (this.IsEnabled() == false)
+            if (!this.IsEnabled())
             {
                 throw new ElementNotEnabledException();
             }
 
-            this.BackstageTabItem.IsSelected = true;
-        }
-
-        void ISelectionItemProvider.AddToSelection()
-        {
-            if (this.IsEnabled() == false)
-            {
-                throw new ElementNotEnabledException();
-            }
-
-            //We do not support multiple selections in the backstage, so overwrite the current selected item
-            this.BackstageTabItem.IsSelected = true;
-        }
-
-        void ISelectionItemProvider.RemoveFromSelection()
-        {
-            if (this.IsEnabled() == false)
-            {
-                throw new ElementNotEnabledException();
-            }
-
-            // Do nothing, we always require something to be selected
+            this.RunInDispatcherAsync(() => ((Button)this.Item).AutomationButtonClick());
         }
 
         #endregion

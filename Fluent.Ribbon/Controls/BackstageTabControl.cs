@@ -6,6 +6,7 @@ namespace Fluent
     using System.ComponentModel;
     using System.Windows;
     using System.Windows.Automation;
+    using System.Windows.Automation.Peers;
     using System.Windows.Automation.Provider;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
@@ -491,6 +492,16 @@ namespace Fluent
 
         #endregion
 
+        #region Overrides
+
+        /// <inheritdoc />
+        protected override AutomationPeer OnCreateAutomationPeer()
+        {
+            return new BackstageTabControlAutomationPeer(this);
+        }
+
+        #endregion
+
         #region IRawElementProviderSimple
 
         ProviderOptions IRawElementProviderSimple.ProviderOptions => ProviderOptions.ClientSideProvider;
@@ -501,7 +512,7 @@ namespace Fluent
 
         private BackstageTabControlAutomationPeer internalPeer = null;
 
-        private BackstageTabControlAutomationPeer InternalPeer => this.internalPeer 
+        internal BackstageTabControlAutomationPeer InternalPeer => this.internalPeer 
             ?? (this.internalPeer = (BackstageTabControlAutomationPeer)this.OnCreateAutomationPeer());
 
         object IRawElementProviderSimple.GetPatternProvider(int patternId)

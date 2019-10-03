@@ -276,5 +276,10 @@ namespace Fluent
 
         /// <inheritdoc />
         protected override AutomationPeer OnCreateAutomationPeer() => new Fluent.Automation.Peers.ButtonAutomationPeer(this);
+
+        internal void AutomationButtonClick()
+        {
+            this.OnClick();
+        }
     }
 }

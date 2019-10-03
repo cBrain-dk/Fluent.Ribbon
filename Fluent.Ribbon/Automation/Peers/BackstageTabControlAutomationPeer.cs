@@ -22,13 +22,23 @@
         /// <inheritdoc />
         protected override ItemAutomationPeer CreateItemAutomationPeer(object item)
         {
-            if (item is BackstageTabItem backstageTabItem)
+            switch (item)
             {
-                return new BackstageTabItemAutomationPeer(backstageTabItem, this);
-            }
+                case BackstageTabItem backstageTabItem:
+                    return new BackstageTabItemAutomationPeer(backstageTabItem, this);
 
-            return null;
+                case Fluent.Button button:
+                    return new ButtonAsItemAutomationPeer(button, this);
+
+                case Fluent.SeparatorTabItem separator:
+                    return new SeparatorTabItemAutomationPeer(separator, this);
+
+                default:
+                    throw new NotImplementedException($"The control of type: {item.GetType()} was not expected in the backstage, we need an automationpeer for it");
+            }
         }
+
+        #region UIAutomation Support
 
         /// <inheritdoc />
         protected override AutomationControlType GetAutomationControlTypeCore()
@@ -53,6 +63,8 @@
         {
             return AutomationOrientation.Vertical;
         }
+
+        #endregion
 
         #region Standard automation fields
 

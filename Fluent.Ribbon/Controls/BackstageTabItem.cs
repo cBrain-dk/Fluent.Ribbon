@@ -5,6 +5,7 @@ namespace Fluent
     using System.ComponentModel;
     using System.Windows;
     using System.Windows.Automation;
+    using System.Windows.Automation.Peers;
     using System.Windows.Automation.Provider;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
@@ -307,6 +308,18 @@ namespace Fluent
         {
         }
 
+        #region Overrides
+
+        /// <inheritdoc />
+        protected override AutomationPeer OnCreateAutomationPeer()
+        {
+            return new BackstageTabItemWrapperAutomationPeer(this);
+        }
+
+        #endregion
+
+        #region ILogicalChildSupport
+
         /// <inheritdoc />
         void ILogicalChildSupport.AddLogicalChild(object child)
         {
@@ -318,6 +331,8 @@ namespace Fluent
         {
             this.RemoveLogicalChild(child);
         }
+
+        #endregion
 
         #region IRawElementProviderSimple
 

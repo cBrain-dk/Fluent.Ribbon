@@ -2,7 +2,9 @@
 namespace Fluent
 {
     using System.Windows;
+    using System.Windows.Automation.Peers;
     using System.Windows.Controls;
+    using Fluent.Automation.Peers;
     using Fluent.Internal;
     using Fluent.Internal.KnownBoxes;
 
@@ -50,6 +52,12 @@ namespace Fluent
         private static object CoerceIsEnabledAndTabStop(DependencyObject d, object basevalue)
         {
             return false;
+        }
+
+        /// <inheritdoc />
+        protected override AutomationPeer OnCreateAutomationPeer()
+        {
+            return new SeparatorTabItemWrapperAutomationPeer(this);
         }
 
         #endregion

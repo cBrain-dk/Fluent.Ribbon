@@ -2,35 +2,33 @@
 {
     using System.Collections.Generic;
     using System.Windows;
-    using System.Windows.Automation;
     using System.Windows.Automation.Peers;
-    using System.Windows.Automation.Provider;
-    using JetBrains.Annotations;
 
     /// <summary>
-    /// Based on https://docs.microsoft.com/en-us/dotnet/framework/ui-automation/ui-automation-support-for-the-tabitem-control-type
+    /// Based on https://docs.microsoft.com/en-us/dotnet/framework/ui-automation/ui-automation-support-for-the-separator-control-type
     /// </summary>
-    public class BackstageTabItemAutomationPeer : System.Windows.Automation.Peers.SelectorItemAutomationPeer, ISelectionItemProvider
+    public class SeparatorTabItemAutomationPeer : System.Windows.Automation.Peers.ItemAutomationPeer
     {
-        private BackstageTabItem BackstageTabItem => (BackstageTabItem)this.Item;
+        private SeparatorTabItem SeparatorTabItem => (SeparatorTabItem)this.Item;
 
         /// <summary>
         /// Creates a new instance.
         /// </summary>
-        public BackstageTabItemAutomationPeer([NotNull] BackstageTabItem owner, [NotNull] BackstageTabControlAutomationPeer container)
-            : base(owner, container)
+        public SeparatorTabItemAutomationPeer(SeparatorTabItem separatorTabItem, BackstageTabControlAutomationPeer backstageTabControlAutomationPeer)
+            : base(separatorTabItem, backstageTabControlAutomationPeer)
         {
         }
 
         #region Necessary implementations (from TabItemAutomationPeer)
 
         // The need can be seen from https://referencesource.microsoft.com/#PresentationFramework/src/Framework/System/Windows/Automation/Peers/TabItemAutomationPeer.cs,6e5d1f459704abbe
-        
+
         /// <inheritdoc />
         protected override List<AutomationPeer> GetChildrenCore()
         {
-            if (this.BackstageTabItem.IsSelected 
-                && this.BackstageTabItem.TabControlParent.SelectedContent is FrameworkElement element)
+            BackstageTabControl backstageTabControl = System.Windows.Controls.ItemsControl.ItemsControlFromItemContainer(this.SeparatorTabItem) as BackstageTabControl;
+            //If a separator tab item is asked for children, we show the children related to the currently selected tabItem
+            if (backstageTabControl.SelectedContent is FrameworkElement element)
             {
                 List<AutomationPeer> childPeers = new FrameworkElementAutomationPeer(element).GetChildren();
                 if (childPeers != null)
@@ -49,13 +47,24 @@
         /// <inheritdoc />
         protected override string GetClassNameCore()
         {
-            return "BackstageTabItem";
+            return "SeparatorTabItem";
         }
 
         /// <inheritdoc />
         protected override AutomationControlType GetAutomationControlTypeCore()
         {
-            return AutomationControlType.TabItem;
+            return AutomationControlType.Separator;
+        }
+
+        /// <inheritdoc />
+        public override object GetPattern(PatternInterface patternInterface)
+        {
+            if (patternInterface == PatternInterface.SelectionItem)
+            {
+                return this;
+            }
+
+            return base.GetPattern(patternInterface);
         }
 
         /// <inheritdoc />
@@ -67,7 +76,7 @@
         /// <inheritdoc />
         protected override bool IsContentElementCore()
         {
-            return true;
+            return false;
         }
 
         /// <inheritdoc />
@@ -79,7 +88,7 @@
         /// <inheritdoc />
         protected override bool IsKeyboardFocusableCore()
         {
-            return AutomationPeerHelper.IsEnabledCore(this);
+            return false;
         }
 
         #endregion
@@ -89,7 +98,7 @@
         /// <inheritdoc />
         protected override string GetNameCore()
         {
-            return AutomationPeerHelper.GetName(this);
+            return string.Empty;
         }
 
         /// <inheritdoc />
@@ -101,56 +110,19 @@
         /// <inheritdoc />
         protected override string GetAcceleratorKeyCore()
         {
-            return AutomationPeerHelper.GetAcceleratorKey(this);
+            return string.Empty;
         }
 
         /// <inheritdoc />
         protected override string GetAccessKeyCore()
         {
-            return AutomationPeerHelper.GetAccessKeyAndAcceleratorKey(this);
+            return string.Empty;
         }
 
         /// <inheritdoc />
         protected override string GetHelpTextCore()
         {
-            return AutomationPeerHelper.GetHelpText(this);
-        }
-
-        #endregion
-
-        #region ISelectionItemProvider
-
-        bool ISelectionItemProvider.IsSelected => this.BackstageTabItem.IsSelected;
-
-        void ISelectionItemProvider.Select()
-        {
-            if (this.IsEnabled() == false)
-            {
-                throw new ElementNotEnabledException();
-            }
-
-            this.BackstageTabItem.IsSelected = true;
-        }
-
-        void ISelectionItemProvider.AddToSelection()
-        {
-            if (this.IsEnabled() == false)
-            {
-                throw new ElementNotEnabledException();
-            }
-
-            //We do not support multiple selections in the backstage, so overwrite the current selected item
-            this.BackstageTabItem.IsSelected = true;
-        }
-
-        void ISelectionItemProvider.RemoveFromSelection()
-        {
-            if (this.IsEnabled() == false)
-            {
-                throw new ElementNotEnabledException();
-            }
-
-            // Do nothing, we always require something to be selected
+            return string.Empty;
         }
 
         #endregion
