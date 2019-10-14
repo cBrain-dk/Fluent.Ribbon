@@ -307,15 +307,6 @@
             return result.FirstOrDefault();
         }
 
-        public static (List<T> result, List<string> missing) FindLogicalChildrenByName<T>(DependencyObject parent, IEnumerable<string> names)
-           where T : DependencyObject
-        {
-            var result = new List<T>();
-            List<string> namesList = names.ToList();
-            FindLogicalChildrenByName(parent, namesList, result);
-            return (result, missing: namesList);
-        }
-
         private static void FindLogicalChildrenByName<T>(DependencyObject parent, List<string> names, List<T> results)
            where T : DependencyObject
         {
