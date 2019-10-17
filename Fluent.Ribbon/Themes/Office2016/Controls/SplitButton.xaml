@@ -313,6 +313,12 @@
                         TargetName="controlLabel"
                         Value="0.5" />
             </Trigger>
+            <Trigger Property="Fluent:RibbonControl.IsQuickAccessItem"
+                     Value="True">
+                <Setter TargetName="controlLabel"
+                        Property="Foreground"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.Dropdown.QuickAccess.Foreground}" />
+            </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="IsDropDownOpen"

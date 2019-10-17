@@ -11,11 +11,9 @@
                      TitleBarHeight="37"
                      FlowDirection="LeftToRight"
                      IsIconVisible="False"
-                     Height="768"
-                     Width="1024"
                      MinWidth="80"
                      MinHeight="60"                     
-                     WindowState="Normal">
+                     WindowState="Maximized">
 
     <Fluent:RibbonWindow.Resources>
         <DataTemplate x:Key="RibbonWindowHeaderTemplate">
