@@ -175,6 +175,9 @@
                                       CloseAnimationDuration="0:0:0.2"
                                       SelectedBackstageTabItemName="IntroductionItem"
                                       Visibility="Collapsed">
+                        <Fluent:Backstage.ToolTip>
+                            <Fluent:ScreenTip Title="Backstage" />
+                        </Fluent:Backstage.ToolTip>
                         
                         <!--<Fluent:Backstage.Style>
                             <Style TargetType="Fluent:Backstage">
@@ -205,6 +208,11 @@
                                                      Header="Introduction"
                                                      Icon="{DynamicResource Fluent.Ribbon.Images.DefaultPlaceholder}"
                                                      KeyTip="T">
+                                <Fluent:BackstageTabItem.ToolTip>
+                                    <Fluent:ScreenTip Title="Introduction"
+                                                      Text="Some text about the introduction that can go on for a very long time." />
+                                </Fluent:BackstageTabItem.ToolTip>
+                                
                                 <StackPanel Orientation="Vertical">
                                     <TextBlock>This is a BackstageTabItem with some sample content.</TextBlock>
 
@@ -284,6 +292,10 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                             <Fluent:BackstageTabItem Header="Extra wide content"
                                                      KeyTip="W"
                                                      Content="The template used to display this is extremely wide. Width = 6000">
+                                <Fluent:BackstageTabItem.ToolTip>
+                                    <Fluent:ScreenTip Title="Extra wide content"
+                                                      Text="Some text about the introduction that can go on for a very long time. Some text about the introduction that can go on for a very long time. Some text about the introduction that can go on for a very long time. #ExtraWideForYourPleasure" />
+                                </Fluent:BackstageTabItem.ToolTip>
                                 <Fluent:BackstageTabItem.ContentTemplate>
                                     <DataTemplate>
                                         <Grid>
