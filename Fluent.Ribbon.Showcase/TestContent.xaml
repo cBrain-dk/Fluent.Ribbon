@@ -191,6 +191,10 @@
                             </Style>
                         </Fluent:Backstage.Style>-->
                         <Fluent:BackstageTabControl>
+                            <Fluent:BackstageTabControl.BackButtonToolTip>
+                                <Fluent:ScreenTip Title="Close backstage" />
+                            </Fluent:BackstageTabControl.BackButtonToolTip>
+                            
                             <Fluent:Button Header="Save"
                                            Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Save.png"
                                            KeyTip="S" />

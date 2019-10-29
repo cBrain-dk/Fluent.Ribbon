@@ -226,6 +226,8 @@ namespace Fluent
 
         #endregion
 
+        #region ParentBackstage
+
         /// <summary>
         /// Gets or sets the <see cref="ParentBackstage"/>
         /// </summary>
@@ -243,6 +245,10 @@ namespace Fluent
         public static readonly DependencyProperty ParentBackstageProperty =
             DependencyProperty.Register(nameof(ParentBackstage), typeof(Backstage), typeof(BackstageTabControl), new PropertyMetadata());
 
+        #endregion
+
+        #region IsWindowSteeringHelperEnabled
+
         /// <summary>
         /// Defines if the <see cref="WindowSteeringHelperControl"/> is enabled in this control
         /// </summary>
@@ -258,6 +264,10 @@ namespace Fluent
         public static readonly DependencyProperty IsWindowSteeringHelperEnabledProperty =
             DependencyProperty.Register(nameof(IsWindowSteeringHelperEnabled), typeof(bool), typeof(BackstageTabControl), new PropertyMetadata(BooleanBoxes.TrueBox));
 
+        #endregion
+
+        #region IsBackButtonVisible
+
         /// <summary>
         /// Defines if the back button is visible or not.
         /// </summary>
@@ -271,6 +281,26 @@ namespace Fluent
         /// <see cref="DependencyProperty"/> for <see cref="IsBackButtonVisible"/>.
         /// </summary>
         public static readonly DependencyProperty IsBackButtonVisibleProperty = DependencyProperty.Register(nameof(IsBackButtonVisible), typeof(bool), typeof(BackstageTabControl), new PropertyMetadata(BooleanBoxes.TrueBox));
+
+        #endregion
+
+        #region BackButtonToolTip
+
+        /// <summary>
+        /// Defines the tooltip shown for the backbutton
+        /// </summary>
+        public ToolTip BackButtonToolTip
+        {
+            get { return (ToolTip)this.GetValue(BackButtonToolTipProperty); }
+            set { this.SetValue(BackButtonToolTipProperty, value); }
+        }
+
+        /// <summary>
+        /// <see cref="DependencyProperty"/> for <see cref="BackButtonToolTip"/>.
+        /// </summary>
+        public static readonly DependencyProperty BackButtonToolTipProperty = DependencyProperty.Register(nameof(BackButtonToolTip), typeof(ToolTip), typeof(BackstageTabControl), new PropertyMetadata(default(ToolTip)));
+
+        #endregion
 
         #endregion
 
