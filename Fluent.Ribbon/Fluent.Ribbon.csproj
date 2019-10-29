@@ -33,11 +33,15 @@
     <UpToDateCheckInput Include="**/*.xaml" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Themes\Office2016\Controls\Backstage.xaml" />
+  </ItemGroup>
+  <ItemGroup>
     <Page Remove="Themes\Office2016\Controls\BackstageTabControl.xaml" />
     <Page Remove="Themes\Office2016\Controls\BackstageTabItem.xaml" />
     <Page Remove="Themes\Office2016\Controls\WindowCommands.xaml" />
   </ItemGroup>
   <ItemGroup>
+    <UpToDateCheckInput Remove="Themes\Office2016\Controls\Backstage.xaml" />
     <UpToDateCheckInput Remove="Themes\Office2016\Controls\BackstageTabControl.xaml" />
     <UpToDateCheckInput Remove="Themes\Office2016\Controls\BackstageTabItem.xaml" />
     <UpToDateCheckInput Remove="Themes\Office2016\Controls\RadioButton.xaml" />
@@ -54,6 +58,12 @@
 
   <ItemGroup>
     <PackageReference Include="ControlzEx" version="[4.0-alpha*, 5.0)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="Themes\Office2016\Controls\Backstage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

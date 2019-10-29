@@ -74,6 +74,12 @@
                         TargetName="rectangle"
                         Value="Collapsed" />
             </Trigger>
+            <Trigger SourceName="border2"
+                     Property="IsMouseOver"
+                     Value="True">
+                <Setter Property="ToolTipService.IsEnabled"
+                        Value="True" />
+            </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="IsMouseOver"
@@ -99,5 +105,6 @@
         <Setter Property="AreAnimationsEnabled" Value="{DynamicResource {x:Static SystemParameters.ClientAreaAnimationKey}}" />
         <Setter Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.Backstage.Background}" />
         <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.Backstage.Foreground}" />
+        <Setter Property="ToolTipService.IsEnabled" Value="False" />
     </Style>
 </ResourceDictionary>

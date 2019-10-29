@@ -3,7 +3,7 @@ Office2016\Controls\WindowCommands.xaml
 Controls\EmptyFocusStyle.xaml
 Controls\ApplicationMenuItem.xaml
 Controls\ApplicationMenu.xaml
-Controls\Backstage.xaml
+Office2016\Controls\Backstage.xaml
 Controls\RibbonTabItem.xaml
 Office2016\Controls\RibbonTabControl.xaml
 Controls\RibbonGroupBox.xaml
