@@ -28,7 +28,7 @@
                     return new BackstageTabItemAutomationPeer(backstageTabItem, this);
 
                 case Fluent.Button button:
-                    return new ButtonAsItemAutomationPeer(button, this);
+                    return new BackstageButtonAsItemAutomationPeer(button, this);
 
                 case Fluent.SeparatorTabItem separator:
                     return new SeparatorTabItemAutomationPeer(separator, this);

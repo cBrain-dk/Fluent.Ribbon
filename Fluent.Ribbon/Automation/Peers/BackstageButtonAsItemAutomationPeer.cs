@@ -10,14 +10,14 @@
     /// <summary>
     /// Based on https://docs.microsoft.com/en-us/dotnet/framework/ui-automation/ui-automation-support-for-the-button-control-type
     /// </summary>
-    public class ButtonAsItemAutomationPeer : System.Windows.Automation.Peers.ItemAutomationPeer, IInvokeProvider
+    public class BackstageButtonAsItemAutomationPeer : System.Windows.Automation.Peers.ItemAutomationPeer, IInvokeProvider
     {
         private Button Button => (Button)this.Item;
 
         /// <summary>
         /// Creates a new instance.
         /// </summary>
-        public ButtonAsItemAutomationPeer(Button button, BackstageTabControlAutomationPeer backstageTabControlAutomationPeer)
+        public BackstageButtonAsItemAutomationPeer(Button button, BackstageTabControlAutomationPeer backstageTabControlAutomationPeer)
             : base(button, backstageTabControlAutomationPeer)
         {
         }
@@ -91,7 +91,7 @@
         /// <inheritdoc />
         protected override bool IsKeyboardFocusableCore()
         {
-            return this.IsEnabled();
+            return this.IsEnabledCore();
         }
 
         #endregion

@@ -33,9 +33,6 @@
     <UpToDateCheckInput Include="**/*.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Themes\Office2016\Controls\Backstage.xaml" />
-  </ItemGroup>
-  <ItemGroup>
     <Page Remove="Themes\Office2016\Controls\BackstageTabControl.xaml" />
     <Page Remove="Themes\Office2016\Controls\BackstageTabItem.xaml" />
     <Page Remove="Themes\Office2016\Controls\WindowCommands.xaml" />
@@ -61,12 +58,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Include="Themes\Office2016\Controls\Backstage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="Themes\Generic\Controls\RadioButton.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
@@ -77,6 +68,9 @@
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Themes\Office2013\Controls\Ribbon.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Themes\Office2016\Controls\Backstage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Themes\Office2016\Controls\BackstageTabItem.xaml">
