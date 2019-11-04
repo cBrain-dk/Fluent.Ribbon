@@ -190,11 +190,13 @@
                                 </Style.Triggers>
                             </Style>
                         </Fluent:Backstage.Style>-->
-                        <Fluent:BackstageTabControl>
+                        <Fluent:BackstageTabControl x:Name="BackstageTabControl"
+                                                    AutomationProperties.Name="Press escape to close Backstage">
                             <Fluent:BackstageTabControl.BackButtonToolTip>
-                                <Fluent:ScreenTip Title="Close backstage" />
+                                <Fluent:ScreenTip Title="Close backstage"
+                                                  Text="Click here to close the backstage" />
                             </Fluent:BackstageTabControl.BackButtonToolTip>
-                            
+
                             <Fluent:Button Header="Save"
                                            Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Save.png"
                                            KeyTip="S" />

@@ -23,7 +23,7 @@
     </Style>
 
     <ControlTemplate x:Key="BackstageBackButtonTemplate"
-                     TargetType="Button">
+                     TargetType="{x:Type Fluent:Button}">
         <Grid x:Name="ContentGrid"
               Background="Transparent"
               Fluent:FrameworkHelper.UseLayoutRounding="False">
@@ -71,7 +71,7 @@
     </ControlTemplate>
 
     <Style x:Key="BackstageBackButtonStyle"
-           TargetType="{x:Type Button}">
+           TargetType="{x:Type Fluent:Button}">
         <Setter Property="Height"
                 Value="48" />
         <Setter Property="HorizontalAlignment"
@@ -150,14 +150,14 @@
                                                         VerticalAlignment="Top"
                                                         IsEnabled="{TemplateBinding IsWindowSteeringHelperEnabled}" />
 
-                    <Button x:Name="backbutton"
-                            Grid.Row="1"
-                            Style="{DynamicResource BackstageBackButtonStyle}"
-                            Command="{x:Static Fluent:RibbonCommands.OpenBackstage}"
-                            Visibility="{Binding Path=IsBackButtonVisible, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource boolToVisibilityConverter}}"
-                            Padding="22,7,0,7"
-                            VerticalAlignment="Top"
-                            ToolTip="{TemplateBinding BackButtonToolTip}" />
+                    <Fluent:Button x:Name="backbutton"
+                                   Grid.Row="1"
+                                   Style="{DynamicResource BackstageBackButtonStyle}"
+                                   Command="{x:Static Fluent:RibbonCommands.OpenBackstage}"
+                                   Visibility="{Binding Path=IsBackButtonVisible, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource boolToVisibilityConverter}}"
+                                   Padding="22,7,0,7"
+                                   VerticalAlignment="Top"
+                                   ToolTip="{TemplateBinding BackButtonToolTip}" />
 
                     <ItemsPresenter Grid.Row="2"
                                     Height="Auto"
