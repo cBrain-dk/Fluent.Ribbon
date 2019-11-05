@@ -19,7 +19,7 @@ namespace Fluent
     /// <summary>
     /// Represents Backstage tab control.
     /// </summary>
-    public class BackstageTabControl : Selector, IRawElementProviderSimple
+    public class BackstageTabControl : Selector, ITabContainer, IRawElementProviderSimple
     {
         #region Properties
 
@@ -529,6 +529,12 @@ namespace Fluent
         {
             return new BackstageTabControlAutomationPeer(this);
         }
+
+        #endregion
+
+        #region ITabContainer
+
+        object ITabContainer.SelectedContent => this.SelectedContent;
 
         #endregion
 

@@ -12,12 +12,12 @@
     /// </summary>
     public abstract class FluentTabItemAutomationPeer : System.Windows.Automation.Peers.SelectorItemAutomationPeer, ISelectionItemProvider
     {
-        private ISelectableItem SelectableItem => (ISelectableItem)this.Item;
+        private ITabItem TabItem => (ITabItem)this.Item;
 
         /// <summary>
         /// Creates a new instance.
         /// </summary>
-        public FluentTabItemAutomationPeer([NotNull] ISelectableItem owner, [NotNull] FluentTabControlAutomationPeer container)
+        public FluentTabItemAutomationPeer([NotNull] ITabItem owner, [NotNull] FluentTabControlAutomationPeer container)
             : base(owner, container)
         {
         }
@@ -27,7 +27,20 @@
         // The need can be seen from https://referencesource.microsoft.com/#PresentationFramework/src/Framework/System/Windows/Automation/Peers/TabItemAutomationPeer.cs,6e5d1f459704abbe
 
         /// <inheritdoc />
-        protected override abstract List<AutomationPeer> GetChildrenCore();
+        protected override List<AutomationPeer> GetChildrenCore()
+        {
+            if (this.TabItem.IsSelected
+                && this.TabItem.TabControlParent.SelectedContent is FrameworkElement element)
+            {
+                List<AutomationPeer> childPeers = new FrameworkElementAutomationPeer(element).GetChildren();
+                if (childPeers != null)
+                {
+                    return childPeers;
+                }
+            }
+
+            return new List<AutomationPeer>(0);
+        }
 
         #endregion
 
@@ -104,7 +117,7 @@
 
         #region ISelectionItemProvider
 
-        bool ISelectionItemProvider.IsSelected => this.SelectableItem.IsSelected;
+        bool ISelectionItemProvider.IsSelected => this.TabItem.IsSelected;
 
         void ISelectionItemProvider.Select()
         {
@@ -113,7 +126,7 @@
                 throw new ElementNotEnabledException();
             }
 
-            this.SelectableItem.IsSelected = true;
+            this.TabItem.IsSelected = true;
         }
 
         void ISelectionItemProvider.AddToSelection()
@@ -124,7 +137,7 @@
             }
 
             //We do not support multiple selections in the backstage, so overwrite the current selected item
-            this.SelectableItem.IsSelected = true;
+            this.TabItem.IsSelected = true;
         }
 
         void ISelectionItemProvider.RemoveFromSelection()

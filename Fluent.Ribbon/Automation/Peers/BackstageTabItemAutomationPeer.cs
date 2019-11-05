@@ -12,8 +12,6 @@
     /// </summary>
     public class BackstageTabItemAutomationPeer : FluentTabItemAutomationPeer, ISelectionItemProvider
     {
-        private BackstageTabItem BackstageTabItem => (BackstageTabItem)this.Item;
-
         /// <summary>
         /// Creates a new instance.
         /// </summary>
@@ -22,34 +20,12 @@
         {
         }
 
-        #region Necessary implementations (from TabItemAutomationPeer)
-
-        // The need can be seen from https://referencesource.microsoft.com/#PresentationFramework/src/Framework/System/Windows/Automation/Peers/TabItemAutomationPeer.cs,6e5d1f459704abbe
-        
-        /// <inheritdoc />
-        protected override List<AutomationPeer> GetChildrenCore()
-        {
-            if (this.BackstageTabItem.IsSelected 
-                && this.BackstageTabItem.TabControlParent.SelectedContent is FrameworkElement element)
-            {
-                List<AutomationPeer> childPeers = new FrameworkElementAutomationPeer(element).GetChildren();
-                if (childPeers != null)
-                {
-                    return childPeers;
-                }
-            }
-
-            return new List<AutomationPeer>(0);
-        }
-
-        #endregion
-
         #region UIAutomation Support
 
         /// <inheritdoc />
         protected override string GetClassNameCore()
         {
-            return nameof(this.BackstageTabItem);
+            return nameof(BackstageTabItem);
         }
 
         #endregion

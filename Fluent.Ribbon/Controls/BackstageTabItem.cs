@@ -18,7 +18,7 @@ namespace Fluent
     /// <summary>
     /// Represents backstage tab item
     /// </summary>
-    public class BackstageTabItem : ContentControl, IKeyTipedControl, IHeaderedControl, ILogicalChildSupport, ISelectableItem, IRawElementProviderSimple
+    public class BackstageTabItem : ContentControl, IKeyTipedControl, IHeaderedControl, ILogicalChildSupport, ITabItem, IRawElementProviderSimple
     {
         #region Icon
 
@@ -392,6 +392,12 @@ namespace Fluent
                 return null;
             }
         }
+
+        #endregion
+
+        #region ITabItem
+
+        ITabContainer ITabItem.TabControlParent => this.TabControlParent;
 
         #endregion
     }
