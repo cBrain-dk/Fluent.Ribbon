@@ -23,7 +23,7 @@
         /// <inheritdoc />
         protected override string GetClassNameCore()
         {
-            return nameof(RibbonTabItem);
+            return "RibbonTabItem";
         }
 
         #endregion

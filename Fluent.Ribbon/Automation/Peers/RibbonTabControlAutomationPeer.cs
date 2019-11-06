@@ -29,5 +29,11 @@
                     throw new NotImplementedException($"The control of type: {item.GetType()} was not expected in the backstage, we need an automationpeer for it");
             }
         }
+
+        /// <inheritdoc />
+        protected override string GetClassNameCore()
+        {
+            return "RibbonTabControlAutomationPeer";
+        }
     }
 }

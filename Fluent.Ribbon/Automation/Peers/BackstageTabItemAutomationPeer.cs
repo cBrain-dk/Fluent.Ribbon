@@ -25,7 +25,7 @@
         /// <inheritdoc />
         protected override string GetClassNameCore()
         {
-            return nameof(BackstageTabItem);
+            return "BackstageTabItem";
         }
 
         #endregion

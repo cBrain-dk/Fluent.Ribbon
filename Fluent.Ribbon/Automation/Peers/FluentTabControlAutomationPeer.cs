@@ -23,6 +23,9 @@
         #region UIAutomation Support
 
         /// <inheritdoc />
+        protected abstract override string GetClassNameCore();
+
+        /// <inheritdoc />
         protected override AutomationControlType GetAutomationControlTypeCore()
         {
             return AutomationControlType.Tab;
