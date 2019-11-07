@@ -94,12 +94,14 @@ $nugetExe = "nuget.exe"
 &$nugetExe pack .\root\Fluent.dll.nuspec -OutputDirectory .\root\
 if($LASTEXITCODE -NE 0)
 {
+  Set-Location -Path "..\..\.."
 	Throw "nuget pack command failed"
 }
 
 &$nugetExe add .\root\cFluent.$version.nupkg -Source $nugetRepository
 if($LASTEXITCODE -NE 0)
 {
+  Set-Location -Path "..\..\.."
 	Throw "nuget add command (installing the package) failed"
 }
 
