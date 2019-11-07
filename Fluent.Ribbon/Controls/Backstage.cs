@@ -65,6 +65,38 @@ namespace Fluent
         public static readonly DependencyProperty IsOpenProperty =
             DependencyProperty.Register(nameof(IsOpen), typeof(bool), typeof(Backstage), new PropertyMetadata(BooleanBoxes.FalseBox, OnIsOpenChanged, CoerceIsOpen));
 
+        private static object CoerceIsOpen(DependencyObject d, object baseValue)
+        {
+            var backstage = (Backstage)d;
+
+            if (backstage.CanChangeIsOpen == false)
+            {
+                return backstage.IsOpen;
+            }
+
+            return baseValue;
+        }
+
+        private static void OnIsOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var backstage = (Backstage)d;
+
+            lock (syncIsOpen)
+            {
+                if ((bool)e.NewValue)
+                {
+                    backstage.Show();
+                }
+                else
+                {
+                    backstage.Hide();
+                }
+
+                // Invoke the event
+                backstage.IsOpenChanged?.Invoke(backstage, e);
+            }
+        }
+
         #endregion
 
         #region CanChangeIsOpen
@@ -180,39 +212,6 @@ namespace Fluent
         /// </summary>
         public static readonly DependencyProperty CloseOnEscProperty =
             DependencyProperty.Register(nameof(CloseOnEsc), typeof(bool), typeof(Backstage), new PropertyMetadata(BooleanBoxes.TrueBox));
-
-        private static object CoerceIsOpen(DependencyObject d, object baseValue)
-        {
-            var backstage = (Backstage)d;
-
-            if (backstage.CanChangeIsOpen == false
-                && backstage.IsAnimating == false)
-            {
-                return backstage.IsOpen;
-            }
-
-            return baseValue;
-        }
-
-        private static void OnIsOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var backstage = (Backstage)d;
-
-            lock (syncIsOpen)
-            {
-                if ((bool)e.NewValue)
-                {
-                    backstage.Show();
-                }
-                else
-                {
-                    backstage.Hide();
-                }
-
-                // Invoke the event
-                backstage.IsOpenChanged?.Invoke(backstage, e);
-            }
-        }
 
         #endregion
 
@@ -544,19 +543,27 @@ namespace Fluent
 
         private bool IsAnimating { get; set; }
 
+        private Storyboard AnimatingStoryboard { get; set; }
+
         private BackstageTabItem InitialBackstageItem { get; set; }
 
         private void ShowAdorner()
         {
-            if (this.adorner == null || this.IsAnimating)
+            if (this.adorner == null)
             {
                 return;
+            }
+            
+            if (this.IsAnimating)
+            {
+                this.AnimatingStoryboard.Stop(this.adorner);
             }
 
             if (this.AreAnimationsEnabled
                 && this.TryFindResource("Fluent.Ribbon.Storyboards.Backstage.IsOpenTrueStoryboard") is Storyboard storyboard)
             {
                 storyboard = storyboard.Clone();
+                this.AnimatingStoryboard = storyboard;
 
                 if (this.OpenAnimationDuration != default
                     && storyboard.Children.FirstOrDefault() is ThicknessAnimationUsingKeyFrames thicknessAnimation
@@ -575,11 +582,12 @@ namespace Fluent
                 }
 
                 this.IsAnimating = true;
-                storyboard.Begin(this.adorner);
+                storyboard.Begin(this.adorner, isControllable: true);
             }
             else
             {
                 this.adorner.Visibility = Visibility.Visible;
+                PlaceFocusOnShown();
             }
 
             void HandleStoryboardCurrentStateInvalidated(object sender, EventArgs e)
@@ -593,34 +601,48 @@ namespace Fluent
                 this.AdornerLayer?.Update();
                 this.IsAnimating = false;
 
-                bool focusPlaced = false;
-                if (this.InitialBackstageItem != default)
-                {
-                    focusPlaced = this.InitialBackstageItem.Focus();
-                }
-
-                if (focusPlaced == false)
-                {
-                    var focusableElement = UIHelper.FindFirstFocusableElement(this.Content);
-                    focusableElement?.Focus();
-                }
+                PlaceFocusOnShown();
 
                 AutomationPeerHelper.RaiseAutomationEvent(AutomationElement.MenuOpenedEvent, this);
                 storyboard.Completed -= HandleStoryboardOnCompleted;
+            }
+
+            void PlaceFocusOnShown()
+            {
+                this.RunInDispatcherAsync(() =>
+                {
+                    bool focusPlaced = false;
+                    if (this.InitialBackstageItem != default)
+                    {
+                        focusPlaced = this.InitialBackstageItem.Focus();
+                    }
+
+                    if (focusPlaced == false)
+                    {
+                        var focusableElement = UIHelper.FindFirstFocusableElement(this.Content);
+                        focusableElement?.Focus();
+                    }
+                }, DispatcherPriority.Normal);
             }
         }
 
         private void HideAdornerAndRestoreParentProperties()
         {
-            if (this.adorner == null || this.IsAnimating)
+            if (this.adorner == null)
             {
                 return;
+            }
+
+            if (this.IsAnimating)
+            {
+                this.AnimatingStoryboard.Stop(this.adorner);
             }
 
             if (this.AreAnimationsEnabled
                 && this.TryFindResource("Fluent.Ribbon.Storyboards.Backstage.IsOpenFalseStoryboard") is Storyboard storyboard)
             {
                 storyboard = storyboard.Clone();
+                this.AnimatingStoryboard = storyboard;
 
                 if (this.CloseAnimationDuration != default
                     && storyboard.Children.FirstOrDefault() is ThicknessAnimationUsingKeyFrames thicknessAnimation
@@ -633,7 +655,7 @@ namespace Fluent
                 storyboard.Completed += HandleStoryboardOnCompleted;
 
                 this.IsAnimating = true;
-                storyboard.Begin(this.adorner);
+                storyboard.Begin(this.adorner, isControllable: true);
             }
             else
             {
@@ -904,7 +926,7 @@ namespace Fluent
             // only handle ESC when the backstage is open
             e.Handled = this.IsOpen;
 
-            this.IsOpen = false;
+            this.SetValue(IsOpenProperty, false);
         }
 
         private void OnBackstageLoaded(object sender, RoutedEventArgs e)

@@ -179,17 +179,6 @@
                             <Fluent:ScreenTip Title="Backstage" />
                         </Fluent:Backstage.ToolTip>
                         
-                        <!--<Fluent:Backstage.Style>
-                            <Style TargetType="Fluent:Backstage">
-                                <Style.Triggers>
-                                    <Trigger Property="Fluent:Backstage.IsOpen"
-                                             Value="True">
-                                        <Setter Property="Fluent:Backstage.CanChangeIsOpen"
-                                                Value="False" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Fluent:Backstage.Style>-->
                         <Fluent:BackstageTabControl x:Name="BackstageTabControl"
                                                     AutomationProperties.Name="Press escape to close Backstage">
                             <Fluent:BackstageTabControl.BackButtonToolTip>
