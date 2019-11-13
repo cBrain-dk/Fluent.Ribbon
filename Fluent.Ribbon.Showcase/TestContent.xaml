@@ -171,8 +171,7 @@
                                       IsOpen="{Binding IsBackstageOpen}"
                                       OpenAnimationDuration="0:0:0.4"
                                       CloseAnimationDuration="0:0:0.2"
-                                      SelectedBackstageTabItemName="IntroductionItem"
-                                      Visibility="Collapsed">
+                                      SelectedBackstageTabItemName="IntroductionItem">
                         <Fluent:Backstage.ToolTip>
                             <Fluent:ScreenTip Title="Backstage" />
                         </Fluent:Backstage.ToolTip>
