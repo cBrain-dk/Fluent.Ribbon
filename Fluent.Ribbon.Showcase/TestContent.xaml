@@ -167,9 +167,7 @@
             </Fluent:Ribbon.StartScreen>
 
             <Fluent:Ribbon.Menu>
-                <Grid>
-                    <!--Backstage items can be keytipped-->
-                    <Fluent:Backstage x:Name="Backstage"
+                <Fluent:Backstage x:Name="Backstage"
                                       IsOpen="{Binding IsBackstageOpen}"
                                       OpenAnimationDuration="0:0:0.4"
                                       CloseAnimationDuration="0:0:0.2"
@@ -178,7 +176,7 @@
                         <Fluent:Backstage.ToolTip>
                             <Fluent:ScreenTip Title="Backstage" />
                         </Fluent:Backstage.ToolTip>
-                        
+
                         <Fluent:BackstageTabControl x:Name="BackstageTabControl"
                                                     AutomationProperties.Name="Press escape to close Backstage">
                             <Fluent:BackstageTabControl.BackButtonToolTip>
@@ -207,7 +205,7 @@
                                     <Fluent:ScreenTip Title="Introduction"
                                                       Text="Some text about the introduction that can go on for a very long time." />
                                 </Fluent:BackstageTabItem.ToolTip>
-                                
+
                                 <StackPanel Orientation="Vertical">
                                     <TextBlock>This is a BackstageTabItem with some sample content.</TextBlock>
 
@@ -215,17 +213,17 @@
                                         <Fluent:Button Header="Button with bound command"
                                                        Width="120"
                                                        Command="{Binding TestCommand}" />
-                                    
+
                                         <Fluent:Button Header="Button"
                                                        IsDefinitive="False"
                                                        Click="HandleShowMetroMessage"
                                                        Icon="{DynamicResource Fluent.Ribbon.Images.Paste}"
                                                        LargeIcon="{DynamicResource Fluent.Ribbon.Images.Paste}" />
-                                    
+
                                         <Fluent:ToggleButton Header="Toggle"
                                                              Icon="{DynamicResource Fluent.Ribbon.Images.Paste}"
                                                              LargeIcon="{DynamicResource Fluent.Ribbon.Images.Paste}" />
-                                    
+
                                         <Fluent:DropDownButton Header="DropDownButton"
                                                                Icon="{DynamicResource Fluent.Ribbon.Images.Paste}"
                                                                LargeIcon="{DynamicResource Fluent.Ribbon.Images.Paste}"
@@ -240,14 +238,14 @@
                                             <TextBlock Text="4" />
                                             <TextBlock Text="5" />
                                         </Fluent:ComboBox>
-                                    
+
                                         <Fluent:Spinner Value="1"
                                                         Format="0"
                                                         InputWidth="50"
                                                         Header="Spinner"
                                                         ValueChanged="OnSpinnerValueChanged" />
                                     </WrapPanel>
-                                    
+
                                     <TextBlock TextWrapping="Wrap">
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer mi elit, efficitur a sapien sit amet, euismod tempus quam. Aenean porta nisl id erat eleifend, vehicula convallis orci posuere. Maecenas id eleifend magna. Aenean quis nunc id odio tristique scelerisque et eu felis. Donec vestibulum augue sit amet dignissim feugiat. Pellentesque dignissim maximus lacinia. Maecenas dictum velit ut dui tempor imperdiet.
 
@@ -307,91 +305,6 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                                            Command="{Binding ExitCommand}" />
                         </Fluent:BackstageTabControl>
                     </Fluent:Backstage>
-
-                    <Fluent:ApplicationMenu x:Name="ApplicationMenu"
-                                            Visibility="Collapsed">
-                        <Fluent:ApplicationMenu.RightPaneContent>
-                            <StackPanel HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Stretch"
-                                        Orientation="Vertical">
-
-                                <Border HorizontalAlignment="Stretch"
-                                        BorderBrush="#64647F"
-                                        BorderThickness="0,0,0,0">
-
-                                    <TextBlock Text="Recent files"
-                                               Background="#F6F7F8"
-                                               TextAlignment="Left"
-                                               Padding="12,4,4,4"
-                                               Foreground="#64647F"
-                                               FontWeight="SemiBold"
-                                               FontSize="12" />
-                                </Border>
-
-                                <StackPanel HorizontalAlignment="Stretch"
-                                            Height="2">
-
-                                    <Border Height="1"
-                                            BorderThickness="1"
-                                            HorizontalAlignment="Stretch"
-                                            BorderBrush="#DCDDDE" />
-
-                                    <Border Height="1"
-                                            BorderThickness="1"
-                                            HorizontalAlignment="Stretch"
-                                            BorderBrush="#FEFEFF" />
-
-                                </StackPanel>
-
-                                <ItemsControl ItemsSource="{Binding GalleryViewModel.Items}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Fluent:MenuItem Header="{Binding Text}"
-                                                             ToolTip="{Binding Text}"
-                                                             Description="{Binding Group}"
-                                                             IsDefinitive="True"
-                                                             Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/BlueLarge.png" />
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </StackPanel>
-                        </Fluent:ApplicationMenu.RightPaneContent>
-
-                        <Fluent:MenuItem Header="New"
-                                         Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/GreenLarge.png">
-                            <Fluent:MenuItem Header="Text document"
-                                             Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/GreenLarge.png" />
-
-                            <Fluent:MenuItem Header="Spreadsheet"
-                                             Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/GreenLarge.png" />
-                        </Fluent:MenuItem>
-
-                        <Fluent:MenuItem Header="Save As"
-                                         IsSplited="True"
-                                         Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/BlueLarge.png">
-                            <Fluent:MenuItem Header="Standard format"
-                                             Description="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna."
-                                             ToolTip="Save something in standard format"
-                                             Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/BlueLarge.png" />
-
-                            <Fluent:MenuItem Header="Export"
-                                             ToolTip="Export something"
-                                             Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/BlueLarge.png" />
-                        </Fluent:MenuItem>
-
-                        <Fluent:MenuItem Header="Open"
-                                         Description="CTRL + O"
-                                         ToolTip="Open object"
-                                         Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/YellowLarge.png" />
-
-                        <Separator />
-
-                        <Fluent:MenuItem Header="Exit"
-                                         Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/RedLarge.png"
-                                         KeyTip="X"
-                                         Command="{Binding ExitCommand}" />
-                    </Fluent:ApplicationMenu>
-                </Grid>
             </Fluent:Ribbon.Menu>
 
             <Fluent:Ribbon.ToolBarItems>
@@ -3198,15 +3111,6 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
 
                             <GroupBox Header="Menu">
                                 <WrapPanel>
-                                    <Fluent:ComboBox Header="Menu" 
-                                                     IsEditable="False"
-                                                     SizeDefinition="Middle" 
-                                                     SelectedItem="{Binding SelectedMenu, ElementName=TestContentControl}">
-                                        <System:String>ApplicationMenu</System:String>
-                                        <System:String>Backstage</System:String>
-                                        <System:String>Empty menu</System:String>
-                                    </Fluent:ComboBox>
-
                                     <Fluent:Button Name="ShowStartScreen"
                                                    Size="Middle"
                                                    Click="ShowStartScreen_OnClick">

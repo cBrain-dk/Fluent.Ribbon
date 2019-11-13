@@ -86,35 +86,6 @@ namespace FluentTest
             return $"{assemblyProductAttribute.Product} {version} ({assemblyInformationalVersionAttribute.InformationalVersion})";
         }
 
-        private string selectedMenu = "Backstage";
-
-        public string SelectedMenu
-        {
-            get => this.selectedMenu;
-            set
-            {
-                this.selectedMenu = value;
-
-                switch (this.selectedMenu)
-                {
-                    case "ApplicationMenu":
-                        this.ApplicationMenu.Visibility = Visibility.Visible;
-                        this.Backstage.Visibility = Visibility.Collapsed;
-                        break;
-
-                    case "Backstage":
-                        this.ApplicationMenu.Visibility = Visibility.Collapsed;
-                        this.Backstage.Visibility = Visibility.Visible;
-                        break;
-
-                    case "Empty menu":
-                        this.ApplicationMenu.Visibility = Visibility.Collapsed;
-                        this.Backstage.Visibility = Visibility.Collapsed;
-                        break;
-                }
-            }
-        }
-
         private void HookEvents()
         {
             this.Loaded += this.HandleTestContentLoaded;
