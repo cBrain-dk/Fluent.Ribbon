@@ -800,7 +800,7 @@ namespace Fluent
         /// <inheritdoc />
         protected override AutomationPeer OnCreateAutomationPeer()
         {
-            return new RibbonTabItemWrapperAutomationPeer(this);
+            return new RibbonTabItemAutomationPeer(this);
         }
 
         #endregion

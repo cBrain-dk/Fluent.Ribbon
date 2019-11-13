@@ -28,7 +28,7 @@ namespace Fluent
     /// Represents backstage button
     /// </summary>
     [ContentProperty(nameof(Content))]
-    public class Backstage : RibbonControl, IRawElementProviderSimple
+    public class Backstage : RibbonControl
     {
         private static readonly object syncIsOpen = new object();
 
@@ -603,7 +603,6 @@ namespace Fluent
 
                 PlaceFocusOnShown();
 
-                AutomationPeerHelper.RaiseAutomationEvent(AutomationElement.MenuOpenedEvent, this);
                 storyboard.Completed -= HandleStoryboardOnCompleted;
             }
 
@@ -677,7 +676,6 @@ namespace Fluent
 
                 this.RestoreParentProperties();
                 this.IsAnimating = false;
-                AutomationPeerHelper.RaiseAutomationEvent(AutomationElement.MenuClosedEvent, this);
 
                 storyboard.Completed -= HandleStoryboardOnCompleted;
             }
@@ -1008,65 +1006,6 @@ namespace Fluent
         public override FrameworkElement CreateQuickAccessItem()
         {
             throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IRawElementProviderSimple
-
-        ProviderOptions IRawElementProviderSimple.ProviderOptions => ProviderOptions.ClientSideProvider;
-
-        IRawElementProviderSimple IRawElementProviderSimple.HostRawElementProvider => this.ownerWindow != null
-            ? AutomationInteropProvider.HostProviderFromHandle(new WindowInteropHelper(this.ownerWindow).Handle)
-            : null;
-
-        private BackstageAutomationPeer internalPeer = null;
-
-        private BackstageAutomationPeer InternalPeer => this.internalPeer 
-            ?? (this.internalPeer = (BackstageAutomationPeer)this.OnCreateAutomationPeer());
-
-        object IRawElementProviderSimple.GetPatternProvider(int patternId)
-        {
-            if (patternId == InvokePatternIdentifiers.Pattern.Id
-                || patternId == TogglePatternIdentifiers.Pattern.Id
-                || patternId == ExpandCollapsePatternIdentifiers.Pattern.Id)
-            {
-                return this.OnCreateAutomationPeer();
-            }
-
-            return null;
-        }
-
-        object IRawElementProviderSimple.GetPropertyValue(int propertyId)
-        {
-            if (propertyId == AutomationElementIdentifiers.NameProperty.Id)
-            {
-                return this.InternalPeer.GetName();
-            }
-            else if (propertyId == AutomationElementIdentifiers.ClassNameProperty.Id)
-            {
-                return this.InternalPeer.GetClassName();
-            }
-            else if (propertyId == AutomationElementIdentifiers.ControlTypeProperty.Id)
-            {
-                return this.InternalPeer.GetAutomationControlType();
-            }
-            else if (propertyId == AutomationElementIdentifiers.IsContentElementProperty.Id)
-            {
-                return this.InternalPeer.IsContentElement();
-            }
-            else if (propertyId == AutomationElementIdentifiers.IsControlElementProperty.Id)
-            {
-                return this.InternalPeer.IsControlElement();
-            }
-            else if (propertyId == AutomationElementIdentifiers.LabeledByProperty.Id)
-            {
-                return this.InternalPeer.GetLabeledBy();
-            }
-            else
-            {
-                return null;
-            }
         }
 
         #endregion

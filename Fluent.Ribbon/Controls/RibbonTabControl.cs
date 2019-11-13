@@ -602,7 +602,7 @@ namespace Fluent
         /// <inheritdoc />
         protected override AutomationPeer OnCreateAutomationPeer()
         {
-            return new RibbonTabControlAutomationPeer(this);
+            return new FrameworkElementAutomationPeer(this);
         }
 
         #endregion

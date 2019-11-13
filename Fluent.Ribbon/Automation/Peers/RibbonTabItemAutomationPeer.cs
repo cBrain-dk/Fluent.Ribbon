@@ -1,20 +1,18 @@
 ﻿namespace Fluent.Automation.Peers
 {
-    using System.Collections.Generic;
-    using System.Windows;
     using System.Windows.Automation.Peers;
     using JetBrains.Annotations;
 
     /// <summary>
     /// Base automation peer for <see cref="RibbonTabItemAutomationPeer"/>.
     /// </summary>
-    public class RibbonTabItemAutomationPeer : FluentTabItemAutomationPeer
+    public class RibbonTabItemAutomationPeer : HeaderedControlAutomationPeer
     {
         /// <summary>
         /// Creates a new instance.
         /// </summary>
-        public RibbonTabItemAutomationPeer([NotNull] RibbonTabItem owner, RibbonTabControlAutomationPeer ribbonTabControlAutomationPeer)
-            : base(owner, ribbonTabControlAutomationPeer)
+        public RibbonTabItemAutomationPeer([NotNull] RibbonTabItem owner)
+            : base(owner)
         {
         }
 
@@ -24,6 +22,12 @@
         protected override string GetClassNameCore()
         {
             return "RibbonTabItem";
+        }
+
+        /// <inheritdoc />
+        protected override AutomationControlType GetAutomationControlTypeCore()
+        {
+            return AutomationControlType.Tab;
         }
 
         #endregion
