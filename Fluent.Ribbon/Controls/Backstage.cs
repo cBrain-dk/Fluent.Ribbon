@@ -431,6 +431,7 @@ namespace Fluent
         private double savedWindowHeight = double.NaN;
         private Window ownerWindow;
         private Ribbon parentRibbon;
+        private IInputElement parentFocusElement;
 
         /// <summary>
         /// Shows the <see cref="Backstage"/>
@@ -509,6 +510,8 @@ namespace Fluent
                 // We have to collapse WindowsFormsHost while Backstage is open
                 this.CollapseWindowsFormsHosts(this.ownerWindow);
             }
+
+            this.parentFocusElement = Keyboard.FocusedElement;
 
             return true;
         }
@@ -820,6 +823,13 @@ namespace Fluent
             }
 
             this.collapsedElements.Clear();
+
+            if (this.parentFocusElement != null)
+            {
+                this.parentFocusElement.Focus();
+                
+                this.parentFocusElement = null;
+            }
         }
 
         private void OnDelayedShow(object sender, EventArgs args)
