@@ -18,7 +18,7 @@ namespace Fluent
     /// <summary>
     /// Represents backstage tab item
     /// </summary>
-    public class BackstageTabItem : ContentControl, IKeyTipedControl, IHeaderedControl, ILogicalChildSupport, ITabItem, IRawElementProviderSimple
+    public class BackstageTabItem : ContentControl, IKeyTipedControl, IHeaderedControl, ILogicalChildSupport
     {
         #region Icon
 
@@ -111,15 +111,7 @@ namespace Fluent
         /// <summary>
         /// Using a DependencyProperty as the backing store for IsReadOnly.  
         /// </summary>
-        public static readonly DependencyProperty IsReadOnlyProperty = RibbonProperties.IsReadOnlyProperty.AddOwner(typeof(BackstageTabItem), new FrameworkPropertyMetadata(false, OnIsReadOnlyChanged));
-
-        private static void OnIsReadOnlyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is BackstageTabItem backstageTabItem)
-            {
-                AutomationPeerHelper.RaiseAutomationPropertyChangedEvent(backstageTabItem, AutomationElement.IsEnabledProperty, e.OldValue, e.NewValue);
-            }
-        }
+        public static readonly DependencyProperty IsReadOnlyProperty = RibbonProperties.IsReadOnlyProperty.AddOwner(typeof(BackstageTabItem), new FrameworkPropertyMetadata(false));
 
         #endregion
 
@@ -215,7 +207,6 @@ namespace Fluent
                 }
 
                 backstageTabItem.OnSelected(new RoutedEventArgs(Selector.SelectedEvent, backstageTabItem));
-                AutomationPeerHelper.RaiseAutomationEvent(SelectionItemPattern.ElementSelectedEvent, backstageTabItem);
             }
             else
             {
@@ -313,7 +304,7 @@ namespace Fluent
         /// <inheritdoc />
         protected override AutomationPeer OnCreateAutomationPeer()
         {
-            return new BackstageTabItemWrapperAutomationPeer(this);
+            return new BackstageTabItemAutomationPeer(this);
         }
 
         #endregion
@@ -331,73 +322,6 @@ namespace Fluent
         {
             this.RemoveLogicalChild(child);
         }
-
-        #endregion
-
-        #region IRawElementProviderSimple
-
-        ProviderOptions IRawElementProviderSimple.ProviderOptions => ProviderOptions.ClientSideProvider;
-
-        IRawElementProviderSimple IRawElementProviderSimple.HostRawElementProvider => Window.GetWindow(this) is Window window
-            ? AutomationInteropProvider.HostProviderFromHandle(new WindowInteropHelper(window).Handle)
-            : null;
-
-        private BackstageTabItemAutomationPeer internalPeer = null;
-
-        private BackstageTabItemAutomationPeer InternalPeer => this.internalPeer 
-            ?? (this.internalPeer = (BackstageTabItemAutomationPeer)this.OnCreateAutomationPeer());
-
-        object IRawElementProviderSimple.GetPatternProvider(int patternId)
-        {
-            if (patternId == SelectionItemPattern.Pattern.Id)
-            {
-                return this.OnCreateAutomationPeer();
-            }
-
-            return null;
-        }
-
-        object IRawElementProviderSimple.GetPropertyValue(int propertyId)
-        {
-            if (propertyId == AutomationElementIdentifiers.NameProperty.Id)
-            {
-                return this.InternalPeer.GetName();
-            }
-            else if (propertyId == AutomationElementIdentifiers.ClassNameProperty.Id)
-            {
-                return this.InternalPeer.GetClassName();
-            }
-            else if (propertyId == AutomationElementIdentifiers.ControlTypeProperty.Id)
-            {
-                return this.InternalPeer.GetAutomationControlType();
-            }
-            else if (propertyId == AutomationElementIdentifiers.IsContentElementProperty.Id)
-            {
-                return this.InternalPeer.IsContentElement();
-            }
-            else if (propertyId == AutomationElementIdentifiers.IsControlElementProperty.Id)
-            {
-                return this.InternalPeer.IsControlElement();
-            }
-            else if (propertyId == AutomationElementIdentifiers.LabeledByProperty.Id)
-            {
-                return this.InternalPeer.GetLabeledBy();
-            }
-            else if (propertyId == AutomationElementIdentifiers.IsKeyboardFocusableProperty.Id)
-            {
-                return this.InternalPeer.IsKeyboardFocusable();
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        #endregion
-
-        #region ITabItem
-
-        ITabContainer ITabItem.TabControlParent => this.TabControlParent;
 
         #endregion
     }

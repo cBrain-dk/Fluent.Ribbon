@@ -57,7 +57,7 @@ namespace Fluent
         /// <inheritdoc />
         protected override AutomationPeer OnCreateAutomationPeer()
         {
-            return new SeparatorTabItemWrapperAutomationPeer(this);
+            return new SeparatorTabItemAutomationPeer(this);
         }
 
         #endregion

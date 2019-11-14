@@ -19,7 +19,7 @@ namespace Fluent
     /// <summary>
     /// Represents Backstage tab control.
     /// </summary>
-    public class BackstageTabControl : Selector, ITabContainer, IRawElementProviderSimple
+    public class BackstageTabControl : Selector
     {
         #region Properties
 
@@ -527,74 +527,7 @@ namespace Fluent
         /// <inheritdoc />
         protected override AutomationPeer OnCreateAutomationPeer()
         {
-            return new BackstageTabControlAutomationPeer(this);
-        }
-
-        #endregion
-
-        #region ITabContainer
-
-        object ITabContainer.SelectedContent => this.SelectedContent;
-
-        #endregion
-
-        #region IRawElementProviderSimple
-
-        ProviderOptions IRawElementProviderSimple.ProviderOptions => ProviderOptions.ClientSideProvider;
-
-        IRawElementProviderSimple IRawElementProviderSimple.HostRawElementProvider => Window.GetWindow(this) is Window window
-            ? AutomationInteropProvider.HostProviderFromHandle(new WindowInteropHelper(window).Handle)
-            : null;
-
-        private BackstageTabControlAutomationPeer internalPeer = null;
-
-        internal BackstageTabControlAutomationPeer InternalPeer => this.internalPeer 
-            ?? (this.internalPeer = (BackstageTabControlAutomationPeer)this.OnCreateAutomationPeer());
-
-        object IRawElementProviderSimple.GetPatternProvider(int patternId)
-        {
-            if (patternId == SelectionPatternIdentifiers.Pattern.Id)
-            {
-                return this.OnCreateAutomationPeer();
-            }
-
-            return null;
-        }
-
-        object IRawElementProviderSimple.GetPropertyValue(int propertyId)
-        {
-            if (propertyId == AutomationElementIdentifiers.NameProperty.Id)
-            {
-                return this.InternalPeer.GetName();
-            }
-            else if (propertyId == AutomationElementIdentifiers.ClassNameProperty.Id)
-            {
-                return this.InternalPeer.GetClassName();
-            }
-            else if (propertyId == AutomationElementIdentifiers.ControlTypeProperty.Id)
-            {
-                return this.InternalPeer.GetAutomationControlType();
-            }
-            else if (propertyId == AutomationElementIdentifiers.IsContentElementProperty.Id)
-            {
-                return this.InternalPeer.IsContentElement();
-            }
-            else if (propertyId == AutomationElementIdentifiers.IsControlElementProperty.Id)
-            {
-                return this.InternalPeer.IsControlElement();
-            }
-            else if (propertyId == AutomationElementIdentifiers.LabeledByProperty.Id)
-            {
-                return this.InternalPeer.GetLabeledBy();
-            }
-            else if (propertyId == AutomationElementIdentifiers.OrientationProperty.Id)
-            {
-                return this.InternalPeer.GetOrientation();
-            }
-            else
-            {
-                return null;
-            }
+            return new FrameworkElementAutomationPeer(this);
         }
 
         #endregion

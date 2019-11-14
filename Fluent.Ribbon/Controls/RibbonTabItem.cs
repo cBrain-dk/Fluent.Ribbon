@@ -29,7 +29,7 @@ namespace Fluent
     [TemplatePart(Name = "PART_ContentContainer", Type = typeof(Border))]
     [ContentProperty(nameof(Groups))]
     [DefaultProperty(nameof(Groups))]
-    public class RibbonTabItem : Control, IKeyTipedControl, IHeaderedControl, ITabItem, IRawElementProviderSimple
+    public class RibbonTabItem : Control, IKeyTipedControl, IHeaderedControl
     {
         #region Fields
 
@@ -883,72 +883,5 @@ namespace Fluent
                 this.TabControlParent.IsDropDownOpen = false;
             }
         }
-
-        #region ITabItem
-
-        ITabContainer ITabItem.TabControlParent => this.TabControlParent;
-
-        #endregion
-
-        #region IRawElementProviderSimple
-
-        ProviderOptions IRawElementProviderSimple.ProviderOptions => ProviderOptions.ClientSideProvider;
-
-        IRawElementProviderSimple IRawElementProviderSimple.HostRawElementProvider => Window.GetWindow(this) is Window window
-            ? AutomationInteropProvider.HostProviderFromHandle(new WindowInteropHelper(window).Handle)
-            : null;
-
-        private BackstageTabItemAutomationPeer internalPeer = null;
-
-        private BackstageTabItemAutomationPeer InternalPeer => this.internalPeer
-            ?? (this.internalPeer = (BackstageTabItemAutomationPeer)this.OnCreateAutomationPeer());
-
-        object IRawElementProviderSimple.GetPatternProvider(int patternId)
-        {
-            if (patternId == SelectionItemPattern.Pattern.Id)
-            {
-                return this.OnCreateAutomationPeer();
-            }
-
-            return null;
-        }
-
-        object IRawElementProviderSimple.GetPropertyValue(int propertyId)
-        {
-            if (propertyId == AutomationElementIdentifiers.NameProperty.Id)
-            {
-                return this.InternalPeer.GetName();
-            }
-            else if (propertyId == AutomationElementIdentifiers.ClassNameProperty.Id)
-            {
-                return this.InternalPeer.GetClassName();
-            }
-            else if (propertyId == AutomationElementIdentifiers.ControlTypeProperty.Id)
-            {
-                return this.InternalPeer.GetAutomationControlType();
-            }
-            else if (propertyId == AutomationElementIdentifiers.IsContentElementProperty.Id)
-            {
-                return this.InternalPeer.IsContentElement();
-            }
-            else if (propertyId == AutomationElementIdentifiers.IsControlElementProperty.Id)
-            {
-                return this.InternalPeer.IsControlElement();
-            }
-            else if (propertyId == AutomationElementIdentifiers.LabeledByProperty.Id)
-            {
-                return this.InternalPeer.GetLabeledBy();
-            }
-            else if (propertyId == AutomationElementIdentifiers.IsKeyboardFocusableProperty.Id)
-            {
-                return this.InternalPeer.IsKeyboardFocusable();
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        #endregion
     }
 }

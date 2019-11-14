@@ -8,15 +8,11 @@ namespace Fluent
     using System.ComponentModel;
     using System.Linq;
     using System.Windows;
-    using System.Windows.Automation;
     using System.Windows.Automation.Peers;
-    using System.Windows.Automation.Provider;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
     using System.Windows.Input;
-    using System.Windows.Interop;
     using ControlzEx.Standard;
-    using Fluent.Automation.Peers;
     using Fluent.Internal;
     using Fluent.Internal.KnownBoxes;
 
@@ -28,7 +24,7 @@ namespace Fluent
     [TemplatePart(Name = "PART_TabsContainer", Type = typeof(IScrollInfo))]
     [TemplatePart(Name = "PART_ToolbarPanel", Type = typeof(Panel))]
     [TemplatePart(Name = "PART_SelectedContentPresenter", Type = typeof(ContentPresenter))]
-    public class RibbonTabControl : Selector, IDropDownControl, ITabContainer, IRawElementProviderSimple
+    public class RibbonTabControl : Selector, IDropDownControl
     {
         /// <summary>
         /// Default value for <see cref="ContentGapHeight"/>.
@@ -957,72 +953,5 @@ namespace Fluent
 
             return null;
         }
-
-        #region ITabContainer
-
-        object ITabContainer.SelectedContent => this.SelectedContent;
-
-        #endregion
-
-        #region IRawElementProviderSimple
-
-        ProviderOptions IRawElementProviderSimple.ProviderOptions => ProviderOptions.ClientSideProvider;
-
-        IRawElementProviderSimple IRawElementProviderSimple.HostRawElementProvider => Window.GetWindow(this) is Window window
-            ? AutomationInteropProvider.HostProviderFromHandle(new WindowInteropHelper(window).Handle)
-            : null;
-
-        private BackstageTabControlAutomationPeer internalPeer = null;
-
-        internal BackstageTabControlAutomationPeer InternalPeer => this.internalPeer
-            ?? (this.internalPeer = (BackstageTabControlAutomationPeer)this.OnCreateAutomationPeer());
-
-        object IRawElementProviderSimple.GetPatternProvider(int patternId)
-        {
-            if (patternId == SelectionPatternIdentifiers.Pattern.Id)
-            {
-                return this.OnCreateAutomationPeer();
-            }
-
-            return null;
-        }
-
-        object IRawElementProviderSimple.GetPropertyValue(int propertyId)
-        {
-            if (propertyId == AutomationElementIdentifiers.NameProperty.Id)
-            {
-                return this.InternalPeer.GetName();
-            }
-            else if (propertyId == AutomationElementIdentifiers.ClassNameProperty.Id)
-            {
-                return this.InternalPeer.GetClassName();
-            }
-            else if (propertyId == AutomationElementIdentifiers.ControlTypeProperty.Id)
-            {
-                return this.InternalPeer.GetAutomationControlType();
-            }
-            else if (propertyId == AutomationElementIdentifiers.IsContentElementProperty.Id)
-            {
-                return this.InternalPeer.IsContentElement();
-            }
-            else if (propertyId == AutomationElementIdentifiers.IsControlElementProperty.Id)
-            {
-                return this.InternalPeer.IsControlElement();
-            }
-            else if (propertyId == AutomationElementIdentifiers.LabeledByProperty.Id)
-            {
-                return this.InternalPeer.GetLabeledBy();
-            }
-            else if (propertyId == AutomationElementIdentifiers.OrientationProperty.Id)
-            {
-                return this.InternalPeer.GetOrientation();
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        #endregion
     }
 }

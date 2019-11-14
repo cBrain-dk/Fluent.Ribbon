@@ -5,17 +5,17 @@
     using System.Windows.Automation.Peers;
 
     /// <summary>
-    /// Based on https://docs.microsoft.com/en-us/dotnet/framework/ui-automation/ui-automation-support-for-the-separator-control-type
+    /// Automation Peer for a separator in the backstage
     /// </summary>
-    public class SeparatorTabItemAutomationPeer : System.Windows.Automation.Peers.ItemAutomationPeer
+    public class SeparatorTabItemAutomationPeer : HeaderedControlAutomationPeer
     {
-        private SeparatorTabItem SeparatorTabItem => (SeparatorTabItem)this.Item;
+        private SeparatorTabItem SeparatorTabItem => (SeparatorTabItem)this.Owner;
 
         /// <summary>
         /// Creates a new instance.
         /// </summary>
-        public SeparatorTabItemAutomationPeer(SeparatorTabItem separatorTabItem, BackstageTabControlAutomationPeer backstageTabControlAutomationPeer)
-            : base(separatorTabItem, backstageTabControlAutomationPeer)
+        public SeparatorTabItemAutomationPeer(SeparatorTabItem separatorTabItem)
+            : base(separatorTabItem)
         {
         }
 
@@ -28,7 +28,7 @@
         {
             BackstageTabControl backstageTabControl = System.Windows.Controls.ItemsControl.ItemsControlFromItemContainer(this.SeparatorTabItem) as BackstageTabControl;
             //If a separator tab item is asked for children, we show the children related to the currently selected tabItem
-            if (backstageTabControl.SelectedContent is FrameworkElement element)
+            if (backstageTabControl?.SelectedContent is FrameworkElement element)
             {
                 List<AutomationPeer> childPeers = new FrameworkElementAutomationPeer(element).GetChildren();
                 if (childPeers != null)
@@ -54,75 +54,6 @@
         protected override AutomationControlType GetAutomationControlTypeCore()
         {
             return AutomationControlType.Separator;
-        }
-
-        /// <inheritdoc />
-        public override object GetPattern(PatternInterface patternInterface)
-        {
-            if (patternInterface == PatternInterface.SelectionItem)
-            {
-                return this;
-            }
-
-            return base.GetPattern(patternInterface);
-        }
-
-        /// <inheritdoc />
-        protected override AutomationPeer GetLabeledByCore()
-        {
-            return null;
-        }
-
-        /// <inheritdoc />
-        protected override bool IsContentElementCore()
-        {
-            return false;
-        }
-
-        /// <inheritdoc />
-        protected override bool IsControlElementCore()
-        {
-            return true;
-        }
-
-        /// <inheritdoc />
-        protected override bool IsKeyboardFocusableCore()
-        {
-            return false;
-        }
-
-        #endregion
-
-        #region Standard automation fields
-
-        /// <inheritdoc />
-        protected override string GetNameCore()
-        {
-            return string.Empty;
-        }
-
-        /// <inheritdoc />
-        protected override bool IsEnabledCore()
-        {
-            return AutomationPeerHelper.IsEnabledCore(this);
-        }
-
-        /// <inheritdoc />
-        protected override string GetAcceleratorKeyCore()
-        {
-            return string.Empty;
-        }
-
-        /// <inheritdoc />
-        protected override string GetAccessKeyCore()
-        {
-            return string.Empty;
-        }
-
-        /// <inheritdoc />
-        protected override string GetHelpTextCore()
-        {
-            return string.Empty;
         }
 
         #endregion

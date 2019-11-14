@@ -82,6 +82,8 @@
                 Value="{DynamicResource Fluent.Ribbon.Brushes.Backstage.BackButton.Background}" />
         <Setter Property="Foreground"
                 Value="{DynamicResource Fluent.Ribbon.Brushes.Backstage.BackButton.Foreground}" />
+        <Setter Property="Fluent:RibbonProperties.IsBackstageItem"
+                Value="True" />
     </Style>
 
     <Style TargetType="{x:Type Fluent:SeparatorTabItem}"
