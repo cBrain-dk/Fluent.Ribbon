@@ -224,7 +224,7 @@
                     <Button x:Name="backbutton"
                             Grid.Row="1"
                             Style="{DynamicResource BackstageBackButtonStyle}"
-                            Command="{x:Static Fluent:RibbonCommands.OpenBackstage}"
+                            Command="{x:Static Fluent:RibbonCommands.CloseBackstage}"
                             Visibility="{Binding Path=IsBackButtonVisible, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource boolToVisibilityConverter}}"
                             Padding="22,7,0,7"
                             VerticalAlignment="Top" />

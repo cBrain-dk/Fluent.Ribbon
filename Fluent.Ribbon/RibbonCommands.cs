@@ -10,6 +10,6 @@
         /// <summary>
         /// Gets the value that represents the Open Backstage command
         /// </summary>
-        public static readonly RoutedCommand OpenBackstage = new RoutedUICommand("Open backstage", nameof(OpenBackstage), typeof(RibbonCommands));
+        public static readonly RoutedCommand CloseBackstage = new RoutedUICommand("Close backstage", nameof(CloseBackstage), typeof(RibbonCommands));
     }
 }

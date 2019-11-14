@@ -681,16 +681,16 @@ namespace Fluent
             }
         }
 
-        private static void HandleOpenBackstageCommandCanExecute(object sender, CanExecuteRoutedEventArgs args)
+        private static void HandleCloseBackstageCommandCanExecute(object sender, CanExecuteRoutedEventArgs args)
         {
             var target = ((BackstageAdorner)args.Source).Backstage;
             args.CanExecute = target.CanChangeIsOpen;
         }
 
-        private static void HandleOpenBackstageCommandExecuted(object sender, ExecutedRoutedEventArgs args)
+        private static void HandleCloseBackstageCommandExecuted(object sender, ExecutedRoutedEventArgs args)
         {
             var target = ((BackstageAdorner)args.Source).Backstage;
-            target.IsOpen = !target.IsOpen;
+            target.SetCurrentValue(IsOpenProperty, false);
         }
 
         private void CreateAndAttachBackstageAdorner()
@@ -742,7 +742,7 @@ namespace Fluent
 
             this.AdornerLayer.Add(this.adorner);
 
-            this.AdornerLayer.CommandBindings.Add(new CommandBinding(RibbonCommands.OpenBackstage, HandleOpenBackstageCommandExecuted, HandleOpenBackstageCommandCanExecute));
+            this.AdornerLayer.CommandBindings.Add(new CommandBinding(RibbonCommands.CloseBackstage, HandleCloseBackstageCommandExecuted, HandleCloseBackstageCommandCanExecute));
         }
 
         private void DestroyAdorner()
