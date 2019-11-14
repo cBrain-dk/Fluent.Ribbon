@@ -28,7 +28,7 @@ namespace Fluent
 
             internal void RegisterCommand()
             {
-                this.RibbonControl.IsReadOnly = !this.Command.CanExecute(null);
+                this.SetIsReadOnlyFromCommand(this.Command);
                 this.Command.CanExecuteChanged += this.CanExecuteChanged;
             }
 
@@ -40,10 +40,21 @@ namespace Fluent
 
             private void CanExecuteChanged(object sender, EventArgs e)
             {
-                ICommand command = sender as ICommand;
-                if (command != null)
+                if (sender is ICommand command)
                 {
-                    this.RibbonControl.IsReadOnly = !command.CanExecute(null);
+                    this.SetIsReadOnlyFromCommand(command);
+                }
+            }
+
+            private void SetIsReadOnlyFromCommand(ICommand command)
+            {
+                if (command is RoutedCommand routedCommand)
+                {
+                    this.RibbonControl.IsReadOnly = routedCommand.CanExecute(null, this.RibbonControl as UIElement) == false;
+                }
+                else
+                {
+                    this.RibbonControl.IsReadOnly = command.CanExecute(null) == false;
                 }
             }
         }
