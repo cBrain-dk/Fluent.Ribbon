@@ -3,12 +3,13 @@
     using System.Collections.Generic;
     using System.Windows;
     using System.Windows.Automation.Peers;
+    using System.Windows.Automation.Provider;
     using JetBrains.Annotations;
 
     /// <summary>
     /// Based on https://docs.microsoft.com/en-us/dotnet/framework/ui-automation/ui-automation-support-for-the-tabitem-control-type
     /// </summary>
-    public class BackstageTabItemAutomationPeer : HeaderedControlAutomationPeer
+    public class BackstageTabItemAutomationPeer : HeaderedControlAutomationPeer, ISelectionItemProvider
     {
         private BackstageTabItem BackstageTabItem => (BackstageTabItem)this.Owner;
 
@@ -56,6 +57,40 @@
         {
             return AutomationControlType.Tab;
         }
+
+        /// <inheritdoc/>
+        public override object GetPattern(PatternInterface patternInterface)
+        {
+            if (patternInterface == PatternInterface.SelectionItem)
+            {
+                return this;
+            }
+
+            return base.GetPattern(patternInterface);
+        }
+
+        #region Implement ISelectionItemProvider
+
+        bool ISelectionItemProvider.IsSelected => this.BackstageTabItem.IsSelected;
+
+        IRawElementProviderSimple ISelectionItemProvider.SelectionContainer => null;
+
+        void ISelectionItemProvider.Select()
+        {
+            this.BackstageTabItem.IsSelected = true;
+        }
+
+        void ISelectionItemProvider.AddToSelection()
+        {
+            this.BackstageTabItem.IsSelected = true;
+        }
+
+        void ISelectionItemProvider.RemoveFromSelection()
+        {
+            this.BackstageTabItem.IsSelected = false;
+        }
+
+        #endregion
 
         #endregion
     }
