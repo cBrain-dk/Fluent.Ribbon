@@ -261,13 +261,13 @@
                 Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.BorderBrush}" />
         <Setter Property="Margin"
                 Value="6,2,4,2" />
-    <Style.Triggers>
-      <Trigger Property="Fluent:RibbonControl.IsQuickAccessItem" Value="True">
-        <Setter Property="Foreground" Value="{DynamicResource CheckBoxQuickAccessFontBrush}" />
-        <Setter Property="Height" Value="18"/>
-      </Trigger>
-    </Style.Triggers>
-  </Style>
+        <Style.Triggers>
+            <Trigger Property="Fluent:RibbonControl.IsQuickAccessItem" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.Foreground.QuickAccess}" />
+                <Setter Property="Height" Value="18"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 
     <Style BasedOn="{StaticResource RibbonCheckBoxStyle}"
            TargetType="{x:Type Fluent:CheckBox}" />

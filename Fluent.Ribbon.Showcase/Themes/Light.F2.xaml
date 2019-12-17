@@ -67,6 +67,7 @@
     <Color x:Key="Fluent.Ribbon.Colors.QuickAccess.MouseOver">#FF60B1F8</Color>
     <Color x:Key="Fluent.Ribbon.Colors.QuickAccess.Pressed">#FF2D7EC5</Color>
     <Color x:Key="Fluent.Ribbon.Colors.QuickAccess.Checked">#FF2D7EC5</Color>
+    <Color x:Key="Fluent.Ribbon.Colors.QuickAccess.Foreground">#FFFFFFFF</Color>
 
     <!-- END COLORS -->
 
@@ -163,6 +164,7 @@
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.Pressed.Stroke" Color="{StaticResource BlackColor}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.Pressed.BorderBrush" Color="{StaticResource BlackColor}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.Pressed.Background" Color="{StaticResource Fluent.Ribbon.Colors.AccentColor40}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.Foreground.QuickAccess" Color="{StaticResource Fluent.Ribbon.Colors.QuickAccess.Foreground}" options:Freeze="True" />
 
     <!-- ColorGallery -->
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ColorGallery.Background" Color="{StaticResource WhiteColor}" options:Freeze="True" />
@@ -173,7 +175,7 @@
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.DropDown.BorderBrush" Color="{StaticResource Gray5}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.DropDown.Resize.BorderBrush" Color="{StaticResource Gray7}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.DropDown.Resize.BackgroundBrush" Color="{StaticResource Gray8}" options:Freeze="True" />
-    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Dropdown.QuickAccess.Foreground" Color="{StaticResource WhiteColor}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Dropdown.QuickAccess.Foreground" Color="{StaticResource Fluent.Ribbon.Colors.QuickAccess.Foreground}" options:Freeze="True" />
 
     <!-- Gallery -->
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Gallery.Header.Background" Color="{StaticResource Gray3}" options:Freeze="True" />
