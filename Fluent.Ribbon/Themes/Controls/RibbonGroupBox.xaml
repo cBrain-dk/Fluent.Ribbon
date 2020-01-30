@@ -71,6 +71,8 @@
                 Value="0,15,0,0" />
         <Setter Property="HeaderTemplateSelector"
                 Value="{Binding Source={x:Static templateSelectors:RibbonGroupBoxHeaderTemplateSelector.Instance}}" />
+        <Setter Property="Focusable"
+                Value="False" />
         <Style.Triggers>
             <Trigger Property="State"
                      Value="QuickAccess">
@@ -92,6 +94,11 @@
                         Value="Center" />
                 <Setter Property="VerticalContentAlignment"
                         Value="Center" />
+            </Trigger>
+            <Trigger Property="State"
+                     Value="Collapsed">
+                <Setter Property="Focusable"
+                        Value="True" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -399,7 +406,7 @@
                                 BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.RibbonTabItem.BorderBrush}"
                                 BorderThickness="1"
                                 d:LayoutOverrides="Width">
-                            <ContentControl x:Name="popupContent" />
+                            <ContentControl x:Name="popupContent" Focusable="False" />
                         </Border>
                     </Popup>
                 </Grid>

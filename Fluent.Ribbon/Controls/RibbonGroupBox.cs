@@ -7,6 +7,7 @@ namespace Fluent
     using System.ComponentModel;
     using System.Linq;
     using System.Windows;
+    using System.Windows.Automation.Peers;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
     using System.Windows.Data;
@@ -14,6 +15,7 @@ namespace Fluent
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using System.Windows.Shapes;
+    using Fluent.Automation.Peers;
     using Fluent.Internal;
     using Fluent.Internal.KnownBoxes;
 
@@ -615,10 +617,10 @@ namespace Fluent
             this.ToolTip = new ToolTip();
             ((ToolTip)this.ToolTip).Template = null;
             this.CoerceValue(ContextMenuProperty);
-            this.Focusable = false;
 
             this.Loaded += this.OnLoaded;
             this.Unloaded += this.OnUnloaded;
+            this.KeyDown += this.RibbonGroupBox_KeyDown;
 
             this.updateChildSizesItemContainerGeneratorAction = new ItemContainerGeneratorAction(this.ItemContainerGenerator, this.UpdateChildSizes);
         }
@@ -950,6 +952,12 @@ namespace Fluent
             return stateScale;
         }
 
+        /// <inheritdoc/>
+        protected override AutomationPeer OnCreateAutomationPeer()
+        {
+            return new RibbonGroupBoxAutomationPeer(this);
+        }
+
         #endregion
 
         #region Event Handling
@@ -1003,6 +1011,58 @@ namespace Fluent
         {
             //IsHitTestVisible = false;
             Mouse.Capture(this, CaptureMode.SubTree);
+        }
+
+        private void RibbonGroupBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (this.State == RibbonGroupBoxState.Collapsed && !this.DropDownPopup.IsOpen && (e.Key == Key.Space || e.Key == Key.Down))
+            {
+                this.IsDropDownOpen = true;
+                var item = FindFirstFocusableElement(this.DropDownPopup.Child);
+                if (item != null)
+                {
+                    Keyboard.Focus(item);
+                }
+
+                e.Handled = true;
+            }
+
+            if (this.State == RibbonGroupBoxState.Collapsed && this.DropDownPopup.IsOpen && (e.Key == Key.Escape))
+            {
+                this.IsDropDownOpen = false;
+                Keyboard.Focus(this);
+                e.Handled = true;
+            }
+        }
+
+        private static UIElement FindFirstFocusableElement(UIElement element)
+        {
+            if (element == null)
+            {
+                return null;
+            }
+
+            for (var i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
+            {
+                UIElement child = VisualTreeHelper.GetChild(element, i) as UIElement;
+                if (child == null)
+                {
+                    continue;
+                }
+
+                if (child.Focusable)
+                {
+                    return child;
+                }
+
+                UIElement item = FindFirstFocusableElement(child);
+                if (item != null)
+                {
+                    return item;
+                }
+            }
+
+            return null;
         }
 
         #endregion
