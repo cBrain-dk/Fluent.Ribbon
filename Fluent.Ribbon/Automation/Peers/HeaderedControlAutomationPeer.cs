@@ -20,7 +20,7 @@
         /// <inheritdoc />
         protected override string GetNameCore()
         {
-            return AutomationPeerHelper.GetName(this);
+            return AutomationPeerHelper.GetNameAndHelpText(this);
         }
 
         /// <inheritdoc />
