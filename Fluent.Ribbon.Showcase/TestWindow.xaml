@@ -13,9 +13,26 @@
                      IsIconVisible="False"
                      MinWidth="80"
                      MinHeight="60"                     
-                     WindowState="Maximized">
+                     WindowState="Maximized"
+                     Background="{DynamicResource RibbonWindowBackgroundBrush}"
+                     BorderBrush="{DynamicResource RibbonWindowBorderBrush}"
+                     NonActiveBorderBrush="{DynamicResource RibbonWindowNonActiveBorderBrush}"
+                     GlowBrush="{DynamicResource RibbonWindowGlowBrush}"
+                     NonActiveGlowBrush="{DynamicResource RibbonWindowNonActiveGlowBrush}">
 
     <Fluent:RibbonWindow.Resources>
+        <Color x:Key="White">#FFFFFFFF</Color>
+        <Color x:Key="Black">#FF000000</Color>
+        <Color x:Key="CBrainBlueColor">#FF4697DE</Color>
+        <Color x:Key="CBrainLightBlueColor">#FF60B1F8</Color>
+
+        <SolidColorBrush x:Key="RibbonWindowBackgroundBrush" Color="{DynamicResource White}" />
+        <SolidColorBrush x:Key="RibbonWindowBorderBrush" Color="{DynamicResource CBrainBlueColor}" />
+        <SolidColorBrush x:Key="RibbonWindowNonActiveBorderBrush" Color="{DynamicResource CBrainLightBlueColor}" />
+        <SolidColorBrush x:Key="RibbonWindowGlowBrush" Color="{DynamicResource Black}" />
+        <SolidColorBrush x:Key="RibbonWindowNonActiveGlowBrush" Color="{DynamicResource Black}" />
+        <SolidColorBrush x:Key="RibbonInteractionWindowCommandStrokeBrush" Color="{DynamicResource White}" />
+
         <DataTemplate x:Key="RibbonWindowHeaderTemplate">
             <Grid x:Name="Header"
                   Margin="10 10 0 0">
@@ -43,6 +60,10 @@
         <Style TargetType="Fluent:RibbonTitleBar">
             <Setter Property="HeaderAlignment" Value="Center" />
             <Setter Property="HeaderTemplate" Value="{StaticResource RibbonWindowHeaderTemplate}" />
+        </Style>
+
+        <Style TargetType="{x:Type Fluent:WindowCommands}" BasedOn="{StaticResource {x:Type Fluent:WindowCommands}}">
+            <Setter Property="Foreground" Value="{DynamicResource RibbonInteractionWindowCommandStrokeBrush}" />
         </Style>
     </Fluent:RibbonWindow.Resources>
 
