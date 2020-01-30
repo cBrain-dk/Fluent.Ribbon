@@ -33,10 +33,7 @@
         /// <inheritdoc />
         public override object GetPattern(PatternInterface patternInterface)
         {
-            if (patternInterface == PatternInterface.ExpandCollapse
-                || patternInterface == PatternInterface.Invoke
-                || patternInterface == PatternInterface.Toggle)
-
+            if (patternInterface == PatternInterface.ExpandCollapse)
             {
                 return this;
             }
