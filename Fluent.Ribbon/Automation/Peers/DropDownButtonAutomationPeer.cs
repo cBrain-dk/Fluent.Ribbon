@@ -12,7 +12,7 @@
     /// <summary>
     /// Automation peer for <see cref="DropDownButton"/>.
     /// </summary>
-    public class DropDownButtonAutomationPeer : HeaderedControlAutomationPeer, IExpandCollapseProvider, IToggleProvider, IInvokeProvider
+    public class DropDownButtonAutomationPeer : HeaderedControlAutomationPeer, IExpandCollapseProvider
     {
         private DropDownButton DropDownButton => (DropDownButton)this.Owner;
 
@@ -33,10 +33,7 @@
         /// <inheritdoc />
         public override object GetPattern(PatternInterface patternInterface)
         {
-            if (patternInterface == PatternInterface.ExpandCollapse
-                || patternInterface == PatternInterface.Invoke
-                || patternInterface == PatternInterface.Toggle)
-
+            if (patternInterface == PatternInterface.ExpandCollapse)
             {
                 return this;
             }
@@ -61,13 +58,12 @@
                     children = new List<AutomationPeer>();
                     for (int i = 0; i < items.Count; i++)
                     {
-                        UIElement element = this.DropDownButton.ItemContainerGenerator.ContainerFromIndex(i) as UIElement;
-                        if (element != null)
+                        if (this.DropDownButton.ItemContainerGenerator.ContainerFromIndex(i) is UIElement element)
                         {
-                            AutomationPeer peer = UIElementAutomationPeer.FromElement(element);
+                            AutomationPeer peer = FromElement(element);
                             if (peer == null)
                             {
-                                peer = UIElementAutomationPeer.CreatePeerForElement(element);
+                                peer = CreatePeerForElement(element);
                             }
 
                             if (peer != null)
@@ -108,53 +104,13 @@
             this.DropDownButton.IsDropDownOpen = false;
         }
 
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+        [System.Runtime.CompilerServices.MethodImpl(MethodImplOptions.NoInlining)]
         internal void RaiseExpandCollapseAutomationEvent(bool oldValue, bool newValue)
         {
             this.RaisePropertyChangedEvent(
                 ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty,
                 oldValue ? ExpandCollapseState.Expanded : ExpandCollapseState.Collapsed,
                 newValue ? ExpandCollapseState.Expanded : ExpandCollapseState.Collapsed);
-        }
-
-        #endregion
-
-        #region IInvoke
-
-        void IInvokeProvider.Invoke()
-        {
-            if (!this.IsEnabled())
-            {
-                throw new ElementNotEnabledException();
-            }
-
-            this.DropDownButton.IsDropDownOpen = !this.DropDownButton.IsDropDownOpen;
-        }
-
-        #endregion
-
-        #region IToggle
-
-        /// <inheritdoc />
-        public void Toggle()
-        {
-            ((DropDownButton)this.Owner).IsDropDownOpen = !((DropDownButton)this.Owner).IsDropDownOpen;
-        }
-
-        /// <inheritdoc />
-        public ToggleState ToggleState => ConvertToToggleState(((DropDownButton)this.Owner).IsDropDownOpen);
-
-        private static ToggleState ConvertToToggleState(bool value)
-        {
-            return value
-                       ? ToggleState.On
-                       : ToggleState.Off;
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        internal virtual void RaiseToggleStatePropertyChangedEvent(bool oldValue, bool newValue)
-        {
-            this.RaisePropertyChangedEvent(TogglePatternIdentifiers.ToggleStateProperty, ConvertToToggleState(oldValue), ConvertToToggleState(newValue));
         }
 
         #endregion
