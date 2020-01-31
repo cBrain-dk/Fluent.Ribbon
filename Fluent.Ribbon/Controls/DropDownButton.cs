@@ -697,9 +697,12 @@ namespace Fluent
             var oldValue = (bool)e.OldValue;
             var newValue = (bool)e.NewValue;
 
-            (UIElementAutomationPeer.FromElement(control) as DropDownButtonAutomationPeer)?.RaiseExpandCollapseAutomationEvent(oldValue, newValue);
-
             control.OnIsDropDownOpenChanged(newValue);
+
+            if (UIElementAutomationPeer.FromElement(control) is DropDownButtonAutomationPeer dropDownButtonAP)
+            {
+                dropDownButtonAP.RaiseExpandCollapseAutomationEvent(oldValue, newValue);
+            }
         }
 
         private void OnIsDropDownOpenChanged(bool newValue)
