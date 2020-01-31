@@ -979,9 +979,14 @@ namespace Fluent
         /// <param name="e">The event data</param>
         private static void OnIsDropDownOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var ribbon = (RibbonGroupBox)d;
+            var ribbonGroupBox = (RibbonGroupBox)d;
 
-            ribbon.OnIsDropDownOpenChanged();
+            ribbonGroupBox.OnIsDropDownOpenChanged();
+
+            if (UIElementAutomationPeer.FromElement(ribbonGroupBox) is RibbonGroupBoxAutomationPeer ribbonGroupBoxAP)
+            {
+                ribbonGroupBoxAP.RaiseExpandCollapseAutomationEvent((bool)e.OldValue, (bool)e.NewValue);
+            }
         }
 
         private void OnIsDropDownOpenChanged()
