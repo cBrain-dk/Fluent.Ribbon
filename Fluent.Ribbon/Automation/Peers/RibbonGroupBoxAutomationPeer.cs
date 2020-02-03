@@ -25,7 +25,10 @@
         }
 
         /// <inheritdoc />
-        protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.Button;
+        protected override AutomationControlType GetAutomationControlTypeCore()
+        {
+            return this.RibbonGroupBox.IsButton ? AutomationControlType.Button : AutomationControlType.Group;
+        }
 
         /// <inheritdoc />
         protected override string GetClassNameCore() => this.Owner.GetType().Name;
@@ -45,7 +48,7 @@
         protected override List<AutomationPeer> GetChildrenCore()
         {
             List<AutomationPeer> children = base.GetChildrenCore();
-            if (!this.IsEnabledCore())
+            if (!this.IsEnabledCore() || !this.RibbonGroupBox.IsButton)
             {
                 return children;
             }
@@ -80,7 +83,7 @@
 
         #region IExpandCollapse
 
-        ExpandCollapseState IExpandCollapseProvider.ExpandCollapseState => this.RibbonGroupBox.IsDropDownOpen
+        ExpandCollapseState IExpandCollapseProvider.ExpandCollapseState => !this.RibbonGroupBox.IsButton || this.RibbonGroupBox.IsDropDownOpen
             ? ExpandCollapseState.Expanded
             : ExpandCollapseState.Collapsed;
 
@@ -91,7 +94,10 @@
                 throw new ElementNotEnabledException();
             }
 
-            this.RibbonGroupBox.IsDropDownOpen = true;
+            if (this.RibbonGroupBox.IsButton)
+            {
+                this.RibbonGroupBox.IsDropDownOpen = true;
+            }
         }
 
         void IExpandCollapseProvider.Collapse()
@@ -101,7 +107,10 @@
                 throw new ElementNotEnabledException();
             }
 
-            this.RibbonGroupBox.IsDropDownOpen = false;
+            if (this.RibbonGroupBox.IsButton)
+            {
+                this.RibbonGroupBox.IsDropDownOpen = false;
+            }
         }
 
         [System.Runtime.CompilerServices.MethodImpl(MethodImplOptions.NoInlining)]

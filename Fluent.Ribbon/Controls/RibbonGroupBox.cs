@@ -127,6 +127,11 @@ namespace Fluent
             ribbonGroupBox.updateChildSizesItemContainerGeneratorAction.QueueAction();
         }
 
+        /// <summary>
+        /// Specifies if the group is in a collapsed button state
+        /// </summary>
+        public bool IsButton => this.State == RibbonGroupBoxState.Collapsed || this.State == RibbonGroupBoxState.QuickAccess;
+
         private void UpdateChildSizes()
         {
             var groupBoxState = this.State == RibbonGroupBoxState.QuickAccess
@@ -1020,7 +1025,7 @@ namespace Fluent
 
         private void RibbonGroupBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (this.State == RibbonGroupBoxState.Collapsed && !this.DropDownPopup.IsOpen && (e.Key == Key.Space || e.Key == Key.Down))
+            if (this.IsButton && !this.DropDownPopup.IsOpen && (e.Key == Key.Space || e.Key == Key.Down))
             {
                 this.IsDropDownOpen = true;
                 var item = FindFirstFocusableElement(this.DropDownPopup.Child);
@@ -1032,7 +1037,7 @@ namespace Fluent
                 e.Handled = true;
             }
 
-            if (this.State == RibbonGroupBoxState.Collapsed && this.DropDownPopup.IsOpen && (e.Key == Key.Escape))
+            if (this.IsButton && this.DropDownPopup.IsOpen && (e.Key == Key.Escape))
             {
                 this.IsDropDownOpen = false;
                 Keyboard.Focus(this);

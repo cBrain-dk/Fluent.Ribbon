@@ -83,7 +83,7 @@
                 <Setter Property="Width"
                         Value="30" />
                 <Setter Property="Focusable"
-                        Value="False" />
+                        Value="True" />
                 <Setter Property="SnapsToDevicePixels"
                         Value="False" />
                 <Setter Property="Margin"
