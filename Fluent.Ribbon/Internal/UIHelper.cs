@@ -353,9 +353,9 @@
             childElements.UnionWith(GetLogicalChildObjects(parent).OfType<UIElement>());
             childElements.UnionWith(GetVisualChildObjects(parent).OfType<UIElement>());
 
-            bool CanFocus(FrameworkElement frameworkElement) => frameworkElement.Focusable
+            static bool CanFocus(FrameworkElement frameworkElement) => frameworkElement.Focusable
                 && frameworkElement.IsVisible
-                && (frameworkElement is IReadOnlyControl readOnly) ? readOnly.IsReadOnly == false : frameworkElement.IsEnabled;
+                && ((frameworkElement is IReadOnlyControl readOnly) ? readOnly.IsReadOnly == false : frameworkElement.IsEnabled);
 
             foreach (var item in childElements)
             {

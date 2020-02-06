@@ -16,6 +16,7 @@ namespace Fluent
     using System.Windows.Media.Imaging;
     using System.Windows.Shapes;
     using Fluent.Automation.Peers;
+    using Fluent.Extensions;
     using Fluent.Internal;
     using Fluent.Internal.KnownBoxes;
 
@@ -625,7 +626,6 @@ namespace Fluent
 
             this.Loaded += this.OnLoaded;
             this.Unloaded += this.OnUnloaded;
-            this.KeyDown += this.RibbonGroupBox_KeyDown;
 
             this.updateChildSizesItemContainerGeneratorAction = new ItemContainerGeneratorAction(this.ItemContainerGenerator, this.UpdateChildSizes);
         }
@@ -1023,56 +1023,55 @@ namespace Fluent
             Mouse.Capture(this, CaptureMode.SubTree);
         }
 
-        private void RibbonGroupBox_KeyDown(object sender, KeyEventArgs e)
+        /// <inheritdoc />
+        protected override void OnKeyDown(KeyEventArgs e)
         {
-            if (this.IsButton && !this.DropDownPopup.IsOpen && (e.Key == Key.Space || e.Key == Key.Down))
+            if (e.Handled)
             {
-                this.IsDropDownOpen = true;
-                var item = FindFirstFocusableElement(this.DropDownPopup.Child);
-                if (item != null)
-                {
-                    Keyboard.Focus(item);
-                }
-
-                e.Handled = true;
+                return;
             }
 
-            if (this.IsButton && this.DropDownPopup.IsOpen && (e.Key == Key.Escape))
+            void OpenPopup()
             {
-                this.IsDropDownOpen = false;
-                Keyboard.Focus(this);
-                e.Handled = true;
-            }
-        }
-
-        private static UIElement FindFirstFocusableElement(UIElement element)
-        {
-            if (element == null)
-            {
-                return null;
-            }
-
-            for (var i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
-            {
-                UIElement child = VisualTreeHelper.GetChild(element, i) as UIElement;
-                if (child == null)
+                if (this.IsButton && this.IsDropDownOpen == false)
                 {
-                    continue;
-                }
+                    this.IsDropDownOpen = true;
+                    var item = UIHelper.FindFirstFocusableElement(this.DropDownPopup.Child);
+                    if (item != null)
+                    {
+                        Keyboard.Focus(item);
+                    }
 
-                if (child.Focusable)
-                {
-                    return child;
-                }
-
-                UIElement item = FindFirstFocusableElement(child);
-                if (item != null)
-                {
-                    return item;
+                    e.Handled = true;
                 }
             }
 
-            return null;
+            switch (e.Key)
+            {
+                case Key.Space:
+                    OpenPopup();
+                    break;
+
+                case Key.System:
+                    if (e.SystemKey == Key.Down && e.KeyboardDevice.Modifiers == ModifierKeys.Alt)
+                    {
+                        OpenPopup();
+                    }
+
+                    break;
+
+                case Key.Escape:
+                    if (this.IsDropDownOpen)
+                    {
+                        this.IsDropDownOpen = false;
+                        Keyboard.Focus(this);
+                        e.Handled = true;
+                    }
+
+                    break;
+            }
+
+            base.OnKeyDown(e);
         }
 
         #endregion
