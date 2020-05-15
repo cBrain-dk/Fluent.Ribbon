@@ -65,6 +65,10 @@
         <Style TargetType="{x:Type Fluent:WindowCommands}" BasedOn="{StaticResource {x:Type Fluent:WindowCommands}}">
             <Setter Property="Foreground" Value="{DynamicResource RibbonInteractionWindowCommandStrokeBrush}" />
         </Style>
+
+        <Style TargetType="{x:Type Fluent:ScreenTip}" BasedOn="{StaticResource {x:Type Fluent:ScreenTip}}">
+            <Setter Property="Width" Value="190" />
+        </Style>
     </Fluent:RibbonWindow.Resources>
 
     <Fluent:RibbonWindow.LayoutTransform>

@@ -1609,6 +1609,7 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                         <Fluent:SplitButton.ToolTip>
                             <Fluent:ScreenTip Title="Toggle Button test" 
                                               Text="Testing screentip for split button"
+                                              HelpTopic="http://www.google.com"
                                               DisableReason="{Binding DisableReason, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
                         </Fluent:SplitButton.ToolTip>
                         <Fluent:MenuItem x:Name="TestSplitItem1" 
@@ -1640,6 +1641,7 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                             <Fluent:MenuItem.ToolTip>
                                 <Fluent:ScreenTip Title="Toggle Button test" 
                                                   Text="Testing screentip for split button"
+                                                  HelpTopic="http://f2manuals.d.cbrain.dk/"
                                                   DisableReason="{Binding DisableReason, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
                             </Fluent:MenuItem.ToolTip>
                         </Fluent:MenuItem>
