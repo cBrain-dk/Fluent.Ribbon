@@ -34,6 +34,7 @@
     <Style TargetType="{x:Type Fluent:RibbonToolBarControlGroup}" BasedOn="{StaticResource RibbonToolBarControlGroupStyle}" />
     <Style TargetType="{x:Type Fluent:Ribbon}" BasedOn="{StaticResource RibbonStyle}" />
     <Style TargetType="{x:Type Fluent:RibbonWindow}" BasedOn="{StaticResource RibbonWindowStyle}" />
+    <Style TargetType="{x:Type Fluent:CommandBar}" BasedOn="{StaticResource CommandBarStyle}" />
 
     <Style TargetType="{x:Type Fluent:ContextMenu}" BasedOn="{StaticResource Fluent.Ribbon.Styles.ContextMenu}" />
     <Style TargetType="{x:Type Fluent:MenuItem}" BasedOn="{StaticResource Fluent.Ribbon.Styles.MenuItem}" />

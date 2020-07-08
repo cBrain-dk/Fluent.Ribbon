@@ -29,7 +29,7 @@
             <Trigger Property="Size"
                      Value="Large">
                 <Setter Property="Height"
-                        Value="68" />
+                        Value="{DynamicResource Fluent.Ribbon.Values.Button.Large.Height}" />
                 <Setter Property="Fluent:KeyTip.HorizontalAlignment"
                         Value="Center" />
                 <Setter Property="Fluent:KeyTip.VerticalAlignment"
@@ -38,7 +38,7 @@
             <Trigger Property="Size"
                      Value="Middle">
                 <Setter Property="Height"
-                        Value="22" />
+                        Value="{DynamicResource Fluent.Ribbon.Values.Button.Middle.Height}" />
                 <Setter Property="Fluent:KeyTip.HorizontalAlignment"
                         Value="Right" />
                 <Setter Property="Fluent:KeyTip.VerticalAlignment"
@@ -49,9 +49,9 @@
             <Trigger Property="Size"
                      Value="Small">
                 <Setter Property="Height"
-                        Value="22" />
+                        Value="{DynamicResource Fluent.Ribbon.Values.Button.Small.Height}" />
                 <Setter Property="Width"
-                        Value="32" />
+                        Value="{DynamicResource Fluent.Ribbon.Values.DropDownButton.Small.Width}" />
                 <Setter Property="Fluent:KeyTip.HorizontalAlignment"
                         Value="Right" />
                 <Setter Property="Fluent:KeyTip.VerticalAlignment"
@@ -90,7 +90,9 @@
                     Background="Transparent"
                     VerticalAlignment="Stretch">
                 <StackPanel Orientation="Vertical"
-                            Name="stackPanel"
+                            x:Name="stackPanel"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                             KeyboardNavigation.TabNavigation="Local">
                     <Fluent:ToggleButton x:Name="PART_Button"
                                          Command="{TemplateBinding Command}"
@@ -111,10 +113,9 @@
                                          CanAddToQuickAccessToolBar="{TemplateBinding CanAddButtonToQuickAccessToolBar}"
                                          Fluent:RibbonControl.IsQuickAccessItem="{TemplateBinding Fluent:RibbonControl.IsQuickAccessItem}"/>
                     <Border BorderThickness="0,0,0,0"
-                            Name="downBorder"
+                            x:Name="PART_DownBorder"
                             BorderBrush="Transparent"
-                            Background="Transparent"
-                            Margin="0,0,0,0">
+                            Background="Transparent">
                         <Grid>
                             <Fluent:TwoLineLabel x:Name="controlLabel"
                                                  Text="{TemplateBinding Header}"
@@ -267,7 +268,7 @@
                         TargetName="controlLabel"
                         Value="" />
                 <Setter Property="Padding"
-                        TargetName="downBorder"
+                        TargetName="PART_DownBorder"
                         Value="1,0,0,0" />
             </Trigger>
             <Trigger Property="Size"
@@ -383,7 +384,7 @@
                 <MultiTrigger.Conditions>
                     <Condition Property="IsMouseOver"
                                Value="True"
-                               SourceName="downBorder" />
+                               SourceName="PART_DownBorder" />
                     <Condition Property="IsDropDownOpen"
                                Value="False" />
                     <Condition Property="IsReadOnly"
@@ -395,17 +396,17 @@
                         TargetName="PART_ButtonBorder"
                         Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
                 <Setter Property="Background"
-                        TargetName="downBorder"
+                        TargetName="PART_DownBorder"
                         Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
                 <Setter Property="BorderBrush"
-                        TargetName="downBorder"
+                        TargetName="PART_DownBorder"
                         Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
             </MultiTrigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="IsMouseOver"
                                Value="True"
-                               SourceName="downBorder" />
+                               SourceName="PART_DownBorder" />
                     <Condition Property="IsDropDownOpen"
                                Value="False" />
                     <Condition Property="IsReadOnly"
@@ -417,10 +418,10 @@
                         TargetName="PART_ButtonBorder"
                         Value="{DynamicResource Fluent.Ribbon.Brushes.Button.QuickAccess.MouseOver.BorderBrush}" />
                 <Setter Property="Background"
-                        TargetName="downBorder"
+                        TargetName="PART_DownBorder"
                         Value="{DynamicResource Fluent.Ribbon.Brushes.Button.QuickAccess.MouseOver.BorderBrush}" />
                 <Setter Property="BorderBrush"
-                        TargetName="downBorder"
+                        TargetName="PART_DownBorder"
                         Value="{DynamicResource Fluent.Ribbon.Brushes.Button.QuickAccess.MouseOver.BorderBrush}" />
             </MultiTrigger>
         </ControlTemplate.Triggers>
@@ -483,6 +484,7 @@
                 </Rectangle>
                 <StackPanel x:Name="stackPanel"
                             Width="Auto"
+                            Margin="{TemplateBinding Padding}"
                             Orientation="Vertical"
                             HorizontalAlignment="Stretch"
                             SnapsToDevicePixels="True">

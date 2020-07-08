@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:s="clr-namespace:System;assembly=mscorlib">
+    <!-- Set default values -->
+    <s:Double x:Key="Fluent.Ribbon.Values.Button.Small.Height">22</s:Double>
+    <s:Double x:Key="Fluent.Ribbon.Values.Button.Middle.Height">22</s:Double>
+    <s:Double x:Key="Fluent.Ribbon.Values.Button.Large.Height">68</s:Double>
+    
+    <s:Double x:Key="Fluent.Ribbon.Values.Button.Small.Width">22</s:Double>
+    <s:Double x:Key="Fluent.Ribbon.Values.DropDownButton.Small.Width">32</s:Double>
+
+</ResourceDictionary>

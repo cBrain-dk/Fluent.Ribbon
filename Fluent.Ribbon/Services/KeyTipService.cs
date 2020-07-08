@@ -23,7 +23,7 @@ namespace Fluent
         private ScopeGuard windowPreviewKeyDownScopeGuard;
 
         // Host element, usually this is Ribbon
-        private readonly Ribbon ribbon;
+        private readonly IKeyTipServiceHost host;
 
         // Timer to show KeyTips with delay
         private readonly DispatcherTimer timer;
@@ -93,10 +93,10 @@ namespace Fluent
         /// <summary>
         /// Default constrctor
         /// </summary>
-        /// <param name="ribbon">Host element</param>
-        public KeyTipService(Ribbon ribbon)
+        /// <param name="host">Host element</param>
+        public KeyTipService(IKeyTipServiceHost host)
         {
-            this.ribbon = ribbon ?? throw new ArgumentNullException(nameof(ribbon));
+            this.host = host ?? throw new ArgumentNullException(nameof(host));
 
             // Initialize timer
             this.timer = new DispatcherTimer(TimeSpan.FromSeconds(0.7), DispatcherPriority.SystemIdle, this.OnDelayedShow, Dispatcher.CurrentDispatcher);
@@ -111,7 +111,7 @@ namespace Fluent
         public void Attach()
         {
             if (this.attached
-                || this.ribbon.IsKeyTipHandlingEnabled == false)
+                || this.host.IsKeyTipHandlingEnabled == false)
             {
                 return;
             }
@@ -119,12 +119,12 @@ namespace Fluent
             this.attached = true;
 
             // KeyTip service must not work in design mode
-            if (DesignerProperties.GetIsInDesignMode(this.ribbon))
+            if (DesignerProperties.GetIsInDesignMode(this.host.AsControl()))
             {
                 return;
             }
 
-            this.window = Window.GetWindow(this.ribbon);
+            this.window = Window.GetWindow(this.host.AsControl());
             if (this.window == null)
             {
                 return;
@@ -188,7 +188,7 @@ namespace Fluent
             if (message == WM.ACTIVATE
                 && wParam == IntPtr.Zero) // the window is deactivated
             {
-                PopupService.RaiseDismissPopupEvent(this.ribbon, DismissPopupMode.Always, DismissPopupReason.ApplicationLostFocus);
+                PopupService.RaiseDismissPopupEvent(this.host.AsControl(), DismissPopupMode.Always, DismissPopupReason.ApplicationLostFocus);
                 PopupService.RaiseDismissPopupEvent(Mouse.Captured, DismissPopupMode.Always, DismissPopupReason.ApplicationLostFocus);
                 PopupService.RaiseDismissPopupEvent(Keyboard.FocusedElement, DismissPopupMode.Always, DismissPopupReason.ApplicationLostFocus);
             }
@@ -214,8 +214,8 @@ namespace Fluent
                 return;
             }
 
-            if (this.ribbon.IsCollapsed
-                || this.ribbon.IsEnabled == false
+            if (this.host.IsCollapsed
+                || this.host.IsEnabled == false
                 || this.window.IsActive == false)
             {
                 return;
@@ -329,8 +329,8 @@ namespace Fluent
 
         private void OnWindowKeyUp(object sender, KeyEventArgs e)
         {
-            if (this.ribbon.IsCollapsed
-                || this.ribbon.IsEnabled == false
+            if (this.host.IsCollapsed
+                || this.host.IsEnabled == false
                 || this.window.IsActive == false)
             {
                 this.Terminate();
@@ -463,10 +463,7 @@ namespace Fluent
 
             // Special behavior for backstage, application menu and start screen.
             // If one of those is open we have to forward key tips directly to them.
-            var keyTipsTarget = this.GetStartScreen()
-                ?? this.GetBackstage()
-                ?? this.GetApplicationMenu()
-                ?? this.ribbon;
+            var keyTipsTarget = this.host.GetKeyTipServiceTarget();
 
             if (keyTipsTarget == null)
             {
@@ -477,19 +474,16 @@ namespace Fluent
 
             this.backUpFocusedControl = null;
 
-            // If focus is inside the Ribbon already we don't want to jump around after finishing with KeyTips
-            if (UIHelper.GetParent<Ribbon>(Keyboard.FocusedElement as DependencyObject) == null)
+            // If focus is inside the host already we don't want to jump around after finishing with KeyTips
+            if (this.host.IsKeyboardFocusWithin)
             {
                 this.backUpFocusedControl = FocusWrapper.GetWrapperForCurrentFocus();
             }
 
-            if (keyTipsTarget is Ribbon targetRibbon
-                && targetRibbon.IsMinimized == false
-                && targetRibbon.SelectedTabIndex >= 0
-                && targetRibbon.TabControl != null)
+            if (this.host.CanSetFocusFromKeyTipService(keyTipsTarget))
             {
-                // Focus ribbon
-                (this.ribbon.TabControl.ItemContainerGenerator.ContainerFromIndex(this.ribbon.TabControl.SelectedIndex) as UIElement)?.Focus();
+                // Focus host
+                this.host.SetFocusFromKeyTipService();
             }
 
             this.ClearUserInput();
@@ -502,63 +496,6 @@ namespace Fluent
             this.activeAdornerChain = new KeyTipAdorner(keyTipsTarget, keyTipsTarget, null);
             this.activeAdornerChain.Terminated += this.OnAdornerChainTerminated;
             this.activeAdornerChain.Attach();
-        }
-
-        private FrameworkElement GetBackstage()
-        {
-            if (this.ribbon.Menu == null)
-            {
-                return null;
-            }
-
-            var control = this.ribbon.Menu as Backstage ?? UIHelper.FindImmediateVisualChild<Backstage>(this.ribbon.Menu, IsVisible);
-
-            if (control == null)
-            {
-                return null;
-            }
-
-            return control.IsOpen
-                ? control
-                : null;
-        }
-
-        private FrameworkElement GetApplicationMenu()
-        {
-            if (this.ribbon.Menu == null)
-            {
-                return null;
-            }
-
-            var control = this.ribbon.Menu as ApplicationMenu ?? UIHelper.FindImmediateVisualChild<ApplicationMenu>(this.ribbon.Menu, IsVisible);
-
-            if (control == null)
-            {
-                return null;
-            }
-
-            return control.IsDropDownOpen
-                ? control
-                : null;
-        }
-
-        private FrameworkElement GetStartScreen()
-        {
-            var control = this.ribbon.StartScreen;
-
-            if (control == null)
-            {
-                return null;
-            }
-
-            return control.IsOpen
-                ? control
-                : null;
-        }
-
-        private static bool IsVisible(FrameworkElement obj)
-        {
-            return obj.Visibility == Visibility.Visible;
         }
     }
 }

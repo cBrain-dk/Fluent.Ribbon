@@ -263,40 +263,40 @@
             <Trigger Property="Size"
                      Value="Large">
                 <Setter Property="Height"
-                        Value="68" />
+                        Value="{DynamicResource Fluent.Ribbon.Values.Button.Large.Height}" />
             </Trigger>
             <Trigger Property="Size"
                      Value="Middle">
                 <Setter Property="Height"
-                        Value="22" />
+                        Value="{DynamicResource Fluent.Ribbon.Values.Button.Middle.Height}" />
                 <Setter Property="HorizontalAlignment"
                         Value="Left" />
             </Trigger>
             <Trigger Property="Size"
                      Value="Small">
                 <Setter Property="Height"
-                        Value="22" />
+                        Value="{DynamicResource Fluent.Ribbon.Values.Button.Small.Height}" />
                 <Setter Property="Width"
-                        Value="22" />
+                        Value="{DynamicResource Fluent.Ribbon.Values.Button.Small.Width}" />
                 <Setter Property="HorizontalAlignment"
                         Value="Left" />
             </Trigger>
-      <Trigger Property="Fluent:RibbonControl.IsQuickAccessItem"
+            <Trigger Property="Fluent:RibbonControl.IsQuickAccessItem"
                Value="True">
-        <Setter Property="Height"
+                <Setter Property="Height"
                 Value="30" />
-        <Setter Property="Width"
+                <Setter Property="Width"
                 Value="30" />
-        <Setter Property="HorizontalAlignment"
+                <Setter Property="HorizontalAlignment"
                 Value="Stretch" />
-        <Setter Property="HorizontalContentAlignment"
+                <Setter Property="HorizontalContentAlignment"
                 Value="Center" />
-        <Setter Property="VerticalAlignment"
+                <Setter Property="VerticalAlignment"
                 Value="Stretch" />
-        <Setter Property="VerticalContentAlignment"
+                <Setter Property="VerticalContentAlignment"
                 Value="Center" />
-      </Trigger>
-    </Style.Triggers>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
 

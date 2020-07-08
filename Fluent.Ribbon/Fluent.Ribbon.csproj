@@ -33,11 +33,16 @@
     <UpToDateCheckInput Include="**/*.xaml" />
   </ItemGroup>
   <ItemGroup>
+    <Page Remove="Themes\Controls\CommandBar.xaml" />
+    <Page Remove="Themes\Office2016\Common.xaml" />
     <Page Remove="Themes\Office2016\Controls\BackstageTabControl.xaml" />
     <Page Remove="Themes\Office2016\Controls\BackstageTabItem.xaml" />
     <Page Remove="Themes\Office2016\Controls\WindowCommands.xaml" />
+    <Page Remove="Themes\Office2016\RibbonWindow.xaml" />
   </ItemGroup>
   <ItemGroup>
+    <UpToDateCheckInput Remove="Themes\Controls\CommandBar.xaml" />
+    <UpToDateCheckInput Remove="Themes\Office2016\Common.xaml" />
     <UpToDateCheckInput Remove="Themes\Office2016\Controls\Backstage.xaml" />
     <UpToDateCheckInput Remove="Themes\Office2016\Controls\BackstageTabControl.xaml" />
     <UpToDateCheckInput Remove="Themes\Office2016\Controls\BackstageTabItem.xaml" />
@@ -46,6 +51,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\License.txt" Pack="true" PackagePath="licenses/License.txt" />
+    <None Include="Themes\Office2016\Common.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Include="Themes\Office2016\RibbonWindow.xaml" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp3.0'">
     <Reference Include="UIAutomationProvider" />

@@ -76,6 +76,11 @@
         <ScaleTransform ScaleX="{Binding DataContext.Zoom, ElementName=TestContent}"
                         ScaleY="{Binding DataContext.Zoom, ElementName=TestContent}" />
     </Fluent:RibbonWindow.LayoutTransform>
-    
-    <FluentTest:TestContent x:Name="TestContent" />
+
+    <Grid>
+        <FluentTest:TestContent x:Name="TestContent"
+                                Visibility="Collapsed" />
+
+        <FluentTest:TestCommandBar x:Name="TestBar" />
+    </Grid>
 </Fluent:RibbonWindow>

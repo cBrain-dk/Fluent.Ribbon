@@ -42,9 +42,11 @@ Controls\RibbonTextBox.xaml
 Controls\Spinner.xaml
 Controls\ComboBox.xaml
 Controls\Ribbon.xaml
+Controls\CommandBar.xaml
 Controls\ColorGallery.xaml
 Controls\SeparatorTabItem.xaml
 Controls\Slider.xaml
 Office2016\RibbonWindow.xaml
 Images.xaml
 Common.xaml
+Office2016\Common.xaml

@@ -16,6 +16,7 @@ namespace Fluent
     using System.Windows.Data;
     using System.Windows.Input;
     using System.Windows.Markup;
+    using Fluent.Internal;
     using Fluent.Internal.KnownBoxes;
     using Fluent.Localization;
     using WindowChrome = ControlzEx.Windows.Shell.WindowChrome;
@@ -32,7 +33,7 @@ namespace Fluent
     [TemplatePart(Name = "PART_LayoutRoot", Type = typeof(Panel))]
     [TemplatePart(Name = "PART_RibbonTabControl", Type = typeof(RibbonTabControl))]
     [TemplatePart(Name = "PART_QuickAccessToolBar", Type = typeof(QuickAccessToolBar))]
-    public class Ribbon : Control
+    public class Ribbon : Control, IKeyTipServiceHost
     {
         private IRibbonStateStorage ribbonStateStorage;
 
@@ -2234,6 +2235,99 @@ namespace Fluent
             {
                 ribbon.LoadInitialState();
             }
+        }
+
+        #endregion
+
+        #region IKeyTipServiceHost
+
+        bool IKeyTipServiceHost.IsEnabled => this.IsEnabled;
+
+        bool IKeyTipServiceHost.IsKeyboardFocusWithin => this.IsKeyboardFocusWithin;
+
+        bool IKeyTipServiceHost.IsCollapsed => this.IsCollapsed;
+
+        bool IKeyTipServiceHost.IsKeyTipHandlingEnabled => this.IsKeyTipHandlingEnabled;
+
+        bool IKeyTipServiceHost.CanSetFocusFromKeyTipService(FrameworkElement keyTipsTarget)
+        {
+            return keyTipsTarget is Ribbon targetRibbon
+                && targetRibbon.IsMinimized == false
+                && targetRibbon.SelectedTabIndex >= 0
+                && targetRibbon.TabControl != null;
+        }
+
+        void IKeyTipServiceHost.SetFocusFromKeyTipService()
+        {
+            (this.TabControl.ItemContainerGenerator.ContainerFromIndex(this.TabControl.SelectedIndex) as UIElement)?.Focus();
+        }
+
+        FrameworkElement IKeyTipServiceHost.GetKeyTipServiceTarget()
+        {
+            return this.GetStartScreen()
+                ?? this.GetBackstage()
+                ?? this.GetApplicationMenu()
+                ?? this;
+        }
+
+        Control IKeyTipServiceHost.AsControl() 
+            => this;
+
+        private FrameworkElement GetBackstage()
+        {
+            if (this.Menu == null)
+            {
+                return null;
+            }
+
+            var control = this.Menu as Backstage ?? UIHelper.FindImmediateVisualChild<Backstage>(this.Menu, CheckElementVisible);
+
+            if (control == null)
+            {
+                return null;
+            }
+
+            return control.IsOpen
+                ? control
+                : null;
+        }
+
+        private FrameworkElement GetApplicationMenu()
+        {
+            if (this.Menu == null)
+            {
+                return null;
+            }
+
+            var control = this.Menu as ApplicationMenu ?? UIHelper.FindImmediateVisualChild<ApplicationMenu>(this.Menu, CheckElementVisible);
+
+            if (control == null)
+            {
+                return null;
+            }
+
+            return control.IsDropDownOpen
+                ? control
+                : null;
+        }
+
+        private FrameworkElement GetStartScreen()
+        {
+            var control = this.StartScreen;
+
+            if (control == null)
+            {
+                return null;
+            }
+
+            return control.IsOpen
+                ? control
+                : null;
+        }
+
+        private static bool CheckElementVisible(FrameworkElement obj)
+        {
+            return obj.Visibility == Visibility.Visible;
         }
 
         #endregion

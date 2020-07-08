@@ -18,25 +18,27 @@
                 Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
         <Setter Property="BorderThickness"
                 Value="1" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Center" />
         <Style.Triggers>
             <Trigger Property="Size"
                      Value="Large">
                 <Setter Property="Height"
-                        Value="68" />
+                        Value="{DynamicResource Fluent.Ribbon.Values.Button.Large.Height}" />
             </Trigger>
             <Trigger Property="Size"
                      Value="Middle">
                 <Setter Property="Height"
-                        Value="22" />
+                        Value="{DynamicResource Fluent.Ribbon.Values.Button.Middle.Height}" />
                 <Setter Property="HorizontalAlignment"
                         Value="Left" />
             </Trigger>
             <Trigger Property="Size"
                      Value="Small">
                 <Setter Property="Height"
-                        Value="22" />
+                        Value="{DynamicResource Fluent.Ribbon.Values.Button.Small.Height}" />
                 <Setter Property="Width"
-                        Value="22" />
+                        Value="{DynamicResource Fluent.Ribbon.Values.Button.Small.Width}" />
                 <Setter Property="HorizontalAlignment"
                         Value="Left" />
             </Trigger>
@@ -112,9 +114,6 @@
                 <Setter Property="Content"
                         TargetName="iconImage"
                         Value="{converters:ObjectToImageConverter {Binding Icon, RelativeSource={RelativeSource TemplatedParent}}, '16,16', {Binding RelativeSource={RelativeSource TemplatedParent}}}" />
-                <Setter Property="Margin"
-                        TargetName="controlLabel"
-                        Value="2,-2,2,2" />
             </Trigger>
             <Trigger Property="Size"
                      Value="Middle">
@@ -130,9 +129,6 @@
                 <Setter Property="HasTwoLines"
                         TargetName="controlLabel"
                         Value="False" />
-                <Setter Property="Margin"
-                        TargetName="controlLabel"
-                        Value="2,2,2,2" />
                 <Setter Property="VerticalAlignment"
                         TargetName="border"
                         Value="Stretch" />

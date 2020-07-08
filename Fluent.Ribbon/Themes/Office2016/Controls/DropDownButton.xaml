@@ -19,6 +19,8 @@
                 Value="False" />
         <Setter Property="Margin"
                 Value="2 0 2 0" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Center" />
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
@@ -30,21 +32,21 @@
             <Trigger Property="Size"
                      Value="Large">
                 <Setter Property="Height"
-                        Value="68" />
+                        Value="{DynamicResource Fluent.Ribbon.Values.Button.Large.Height}" />
             </Trigger>
             <Trigger Property="Size"
                      Value="Middle">
                 <Setter Property="Height"
-                        Value="22" />
+                        Value="{DynamicResource Fluent.Ribbon.Values.Button.Middle.Height}" />
                 <Setter Property="HorizontalAlignment"
                         Value="Left" />
             </Trigger>
             <Trigger Property="Size"
                      Value="Small">
                 <Setter Property="Height"
-                        Value="22" />
+                        Value="{DynamicResource Fluent.Ribbon.Values.Button.Small.Height}" />
                 <Setter Property="Width"
-                        Value="32" />
+                        Value="{DynamicResource Fluent.Ribbon.Values.DropDownButton.Small.Width}" />
                 <Setter Property="HorizontalAlignment"
                         Value="Left" />
             </Trigger>
@@ -82,9 +84,12 @@
                     VerticalAlignment="{TemplateBinding VerticalAlignment}"
                     d:LayoutOverrides="Width, Height">
                 <StackPanel x:Name="stackPanel"
-                                Width="Auto"
-                                Orientation="Vertical"
-                                d:LayoutOverrides="Width, Height">
+                            Margin="{TemplateBinding Padding}"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Width="Auto"
+                            Orientation="Vertical"
+                            d:LayoutOverrides="Width, Height">
                     <ContentPresenter x:Name="iconImage"
                                       HorizontalAlignment="Center"
                                       Height="32"

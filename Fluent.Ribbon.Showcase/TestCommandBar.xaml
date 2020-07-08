@@ -1,0 +1,152 @@
+﻿<UserControl x:Class="FluentTest.TestCommandBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
+             xmlns:Fluent="urn:fluent-ribbon"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <s:Double x:Key="Fluent.Ribbon.Values.Button.Small.Height">40</s:Double>
+        <s:Double x:Key="Fluent.Ribbon.Values.Button.Middle.Height">40</s:Double>
+        
+        <s:Double x:Key="Fluent.Ribbon.Values.Button.Small.Width">NaN</s:Double>
+        <s:Double x:Key="Fluent.Ribbon.Values.DropDownButton.Small.Width">NaN</s:Double>
+
+        <Thickness x:Key="Fluent.CommandBar.Button.Margin">0 0 0 0</Thickness>
+        <Thickness x:Key="Fluent.CommandBar.Button.Padding">12 12 12 12</Thickness>
+        
+        <Style TargetType="{x:Type Fluent:CommandBar}" BasedOn="{StaticResource {x:Type Fluent:CommandBar}}">
+            <Setter Property="Height" Value="40" />
+        </Style>
+
+        <Style TargetType="{x:Type Fluent:Button}" BasedOn="{StaticResource {x:Type Fluent:Button}}">
+            <Setter Property="Margin" Value="{StaticResource Fluent.CommandBar.Button.Margin}" />
+            <Setter Property="Padding" Value="{StaticResource Fluent.CommandBar.Button.Padding}" />
+        </Style>
+
+        <Style TargetType="{x:Type Fluent:DropDownButton}" BasedOn="{StaticResource {x:Type Fluent:DropDownButton}}">
+            <Setter Property="Margin" Value="{StaticResource Fluent.CommandBar.Button.Margin}" />
+            <Setter Property="Padding" Value="{StaticResource Fluent.CommandBar.Button.Padding}" />
+        </Style>
+
+        <Style TargetType="{x:Type Fluent:SplitButton}" BasedOn="{StaticResource {x:Type Fluent:SplitButton}}">
+            <Setter Property="Margin" Value="{StaticResource Fluent.CommandBar.Button.Margin}" />
+            <Setter Property="Padding" Value="{StaticResource Fluent.CommandBar.Button.Padding}" />
+        </Style>
+
+        <Style TargetType="{x:Type Fluent:ToggleButton}" BasedOn="{StaticResource {x:Type Fluent:ToggleButton}}">
+            <Setter Property="Margin" Value="{StaticResource Fluent.CommandBar.Button.Margin}" />
+            <Setter Property="Padding" Value="{StaticResource Fluent.CommandBar.Button.Padding}" />
+        </Style>
+    </UserControl.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Fluent:CommandBar>
+
+            <Fluent:Button x:Name="TestButton1"
+                           Header="Test Button 1"
+                           Size="Middle"
+                           Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Pink.png"
+                           KeyTip="TB"
+                           Fluent:CommandBar.CommandBarDock="Left" />
+
+            <Fluent:DropDownButton x:Name="TestButton2"
+                                   Header="Test Drop Button 2"
+                                   Size="Middle"
+                                   Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Yellow.png"
+                                   KeyTip="TB"
+                                   Fluent:CommandBar.CommandBarDock="Left">
+
+                <Fluent:MenuItem Header="Test Drop 1" />
+
+                <Fluent:MenuItem Header="Test Drop 2" />
+
+            </Fluent:DropDownButton>
+
+            <Fluent:ToggleButton x:Name="TestButton3" 
+                                 Header="Test Toggle Button 3"
+                                 Size="Middle"
+                                 Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Orange.png"
+                                 KeyTip="B3" />
+
+            <Fluent:SplitButton x:Name="TestButton4"
+                                Header="Test Split Button 4"
+                                Size="Middle"
+                                Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Green.png"
+                                KeyTip="B4"
+                                Fluent:CommandBar.CommandBarDock="Left">
+                <Fluent:MenuItem Header="Test Split 1" />
+
+                <Fluent:MenuItem Header="Test Split 2" />
+
+            </Fluent:SplitButton>
+
+            <Fluent:Button x:Name="TestButton5"
+                           Size="Small"
+                           Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Blue.png"
+                           KeyTip="B5"
+                           Fluent:CommandBar.CommandBarDock="Left">
+                <Fluent:Button.ToolTip>
+                    <Fluent:ScreenTip Title="Test Small Button 5" />
+                </Fluent:Button.ToolTip>
+            </Fluent:Button>
+
+            <Fluent:Button x:Name="LastButton1"
+                           Header="Last Button 1"
+                           Size="Middle"
+                           KeyTip="LB1"
+                           Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Red.png"
+                           Fluent:CommandBar.CommandBarDock="Right" />
+
+            <Fluent:DropDownButton x:Name="LastButton2"
+                                   Header="Last Drop Button 2"
+                                   Size="Middle"
+                                   KeyTip="LB2"
+                                   Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Gray.png"
+                                   Fluent:CommandBar.CommandBarDock="Right">
+                <Fluent:MenuItem Header="Last Drop 1" />
+                
+                <Fluent:MenuItem Header="Last Drop 2" />
+
+            </Fluent:DropDownButton>
+
+            <Fluent:ToggleButton x:Name="LastButton3" 
+                                 Header="Last Toggle Button 3"
+                                 Size="Middle"
+                                 Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Green.png"
+                                 KeyTip="LB3"
+                                 Fluent:CommandBar.CommandBarDock="Right" />
+
+            <Fluent:SplitButton x:Name="LastButton4"
+                                Header="Last Split Button 4"
+                                Size="Middle"
+                                Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Orange.png"
+                                KeyTip="LB4"
+                                Fluent:CommandBar.CommandBarDock="Right">
+                <Fluent:MenuItem Header="Last Split 1" />
+
+                <Fluent:MenuItem Header="Last Split 2" />
+
+            </Fluent:SplitButton>
+
+            <Fluent:Button x:Name="LastButton5"
+                           Size="Small"
+                           KeyTip="LB5"
+                           Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Brown.png"
+                           Fluent:CommandBar.CommandBarDock="Right">
+                <Fluent:Button.ToolTip>
+                    <Fluent:ScreenTip Title="Last Small Button 5" />
+                </Fluent:Button.ToolTip>
+            </Fluent:Button>
+        </Fluent:CommandBar>
+
+    </Grid>
+
+</UserControl>

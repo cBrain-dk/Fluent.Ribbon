@@ -6,11 +6,13 @@ namespace Fluent
     using System.ComponentModel;
     using System.Windows;
     using System.Windows.Automation.Peers;
+    using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
     using System.Windows.Data;
     using System.Windows.Input;
     using Fluent.Automation.Peers;
     using Fluent.Extensibility;
+    using Fluent.Internal;
     using Fluent.Internal.KnownBoxes;
 
     /// <summary>
@@ -18,12 +20,14 @@ namespace Fluent
     /// you to add menu and handle clicks
     /// </summary>
     [TemplatePart(Name = "PART_Button", Type = typeof(ButtonBase))]
-    public class SplitButton : DropDownButton, IToggleButton, ICommandSource, IKeyTipInformationProvider
+    [TemplatePart(Name = "PART_DownBorder", Type = typeof(Border))]
+    public class SplitButton : DropDownButton, IToggleButton, ICommandSource, IKeyTipInformationProvider, IRibbonSizeChangedSink
     {
         #region Fields
 
         // Inner button
         private ToggleButton button;
+        private Border downBorder;
 
         private SplitButton quickAccessButton;
 
@@ -402,6 +406,7 @@ namespace Fluent
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(SplitButton), new FrameworkPropertyMetadata(typeof(SplitButton)));
             FocusVisualStyleProperty.OverrideMetadata(typeof(SplitButton), new FrameworkPropertyMetadata());
+            PaddingProperty.OverrideMetadata(typeof(SplitButton), new FrameworkPropertyMetadata(OnPaddingChanged));
         }
 
         /// <summary>
@@ -453,6 +458,16 @@ namespace Fluent
             }
         }
 
+        private static void OnPaddingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is SplitButton splitButton
+                && splitButton.IsLoaded
+                && e.NewValue is Thickness padding)
+            {
+                splitButton.ApplyPadding(padding);
+            }
+        }
+
         #endregion
 
         #region Overrides
@@ -469,10 +484,24 @@ namespace Fluent
             this.UnSubscribeEvents();
 
             this.button = this.GetTemplateChild("PART_Button") as ToggleButton;
+            this.downBorder = this.GetTemplateChild("PART_DownBorder") as Border;
+
+            this.ApplyPadding(this.Padding);
 
             base.OnApplyTemplate();
 
             this.SubscribeEvents();
+        }
+
+        private void ApplyPadding(Thickness padding)
+        {
+            if (this.downBorder == null || this.button == null)
+            {
+                return;
+            }
+
+            this.downBorder.Padding = new Thickness(0, padding.Top, padding.Right, padding.Bottom);
+            this.button.Padding = new Thickness(padding.Left, padding.Top, 0, padding.Bottom);
         }
 
         /// <inheritdoc />
@@ -524,6 +553,28 @@ namespace Fluent
         /// <inheritdoc/>
         protected override AutomationPeer OnCreateAutomationPeer()
             => new SplitButtonAutomationPeer(this);
+
+        /// <inheritdoc/>
+        protected override Size MeasureOverride(Size constraint)
+        {
+            if (this.SizeChangedSinceLastMeasure)
+            {
+                // Apparently stackpanels sometimes have trouble measuring when the size is changed, fixed by forcing a measure of the internal stackPanel followed by invalidating the outer
+                if (UIHelper.FindVisualChildByName<UIElement>(this.button, "stackPanel") is StackPanel innerStackPanel
+                    && UIHelper.FindVisualChildByName<UIElement>(this, "stackPanel") is StackPanel stackPanel)
+                {
+                    innerStackPanel.InvalidateMeasure();
+                    this.button.InvalidateMeasure();
+                    this.button.Measure(constraint);
+
+                    stackPanel.InvalidateMeasure();
+                }
+
+                this.SizeChangedSinceLastMeasure = false;
+            }
+
+            return base.MeasureOverride(constraint);
+        }
 
         #endregion
 
@@ -584,6 +635,8 @@ namespace Fluent
         /// </summary>
         public static readonly DependencyProperty CanAddButtonToQuickAccessToolBarProperty = DependencyProperty.Register(nameof(CanAddButtonToQuickAccessToolBar), typeof(bool), typeof(SplitButton), new PropertyMetadata(BooleanBoxes.TrueBox, RibbonControl.OnCanAddToQuickAccessToolBarChanged));
 
+        #endregion
+
         #region Implementation of IKeyTipInformationProvider
 
         /// <inheritdoc />
@@ -618,6 +671,16 @@ namespace Fluent
         }
 
         #endregion
+
+        #region IRibbonSizeChangedSink
+
+        private bool SizeChangedSinceLastMeasure { get; set; }
+
+        /// <inheritdoc />
+        public void OnSizePropertyChanged(RibbonControlSize previous, RibbonControlSize current)
+        {
+            this.SizeChangedSinceLastMeasure = true;
+        }
 
         #endregion
     }
