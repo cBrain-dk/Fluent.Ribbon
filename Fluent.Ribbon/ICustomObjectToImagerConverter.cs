@@ -7,7 +7,7 @@
     /// <summary>
     /// Interface for injecting custom object to image conversion
     /// </summary>
-    public interface ICustomOjbectToImagerConverter
+    public interface ICustomObjectToImagerConverter
     {
         /// <summary>
         /// Convert an object into a FrameworkElement which represents a picture

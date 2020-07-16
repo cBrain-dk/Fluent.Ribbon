@@ -49,7 +49,7 @@
         /// <summary>
         /// Gets the current instance for storing the state of this control.
         /// </summary>
-        public static ICustomOjbectToImagerConverter CustomOjbectToImagerConverter { get; set; }
+        public static ICustomObjectToImagerConverter CustomObjectToImagerConverter { get; set; }
 
         /// <summary>
         /// Creates a new instance.
@@ -145,9 +145,9 @@
                 desiredSize = size;
             }
 
-            if (CustomOjbectToImagerConverter != null)
+            if (CustomObjectToImagerConverter != null)
             {
-                FrameworkElement image = CustomOjbectToImagerConverter.Convert(value, targetType, parameter, culture);
+                FrameworkElement image = CustomObjectToImagerConverter.Convert(value, targetType, parameter, culture);
                 if (image != null)
                 {
                     return image;
