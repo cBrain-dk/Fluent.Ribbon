@@ -145,15 +145,6 @@
                 desiredSize = size;
             }
 
-            if (CustomObjectToImagerConverter != null)
-            {
-                FrameworkElement image = CustomObjectToImagerConverter.Convert(value, targetType, parameter, culture);
-                if (image != null)
-                {
-                    return image;
-                }
-            }
-
             return this.Convert(value, null, desiredSize, targetType);
         }
 
@@ -268,6 +259,11 @@
 
         private object Convert(object value, Visual targetVisual, Size desiredSize, Type targetType)
         {
+            if (CustomObjectToImagerConverter?.TryConvert(value) is FrameworkElement customImage)
+            {
+                return customImage;
+            }
+
             var imageSource = CreateFrozenImageSource(this.GetValueToConvert(value, desiredSize, targetVisual), targetVisual, desiredSize);
 
             if (imageSource == null)

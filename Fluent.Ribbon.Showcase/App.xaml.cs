@@ -2,6 +2,7 @@ namespace FluentTest
 {
     using System.Windows;
     using Fluent;
+    using FluentTest.Icons;
 
     public partial class App
     {
@@ -43,6 +44,7 @@ namespace FluentTest
             ThemeManager.AddTheme(new System.Uri("pack://application:,,,/Fluent.Ribbon.Showcase;component/Themes/Dark.F2.xaml"));
 
             ThemeManager.ChangeTheme(Application.Current, ThemeManager.GetTheme("F2.Standard"));
+            Fluent.Converters.ObjectToImageConverter.CustomObjectToImagerConverter = new CustomImageConverter();
 
             base.OnStartup(e);
         }

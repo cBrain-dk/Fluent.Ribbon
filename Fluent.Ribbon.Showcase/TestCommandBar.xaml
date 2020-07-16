@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:s="clr-namespace:System;assembly=mscorlib"
              xmlns:Fluent="urn:fluent-ribbon"
+             xmlns:Icons="clr-namespace:FluentTest.Icons"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
@@ -90,7 +91,7 @@
 
             <Fluent:Button x:Name="TestButton5"
                            Size="Small"
-                           Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Blue.png"
+                           Icon="{x:Static Icons:CustomImages.Blue}"
                            KeyTip="B5"
                            Fluent:CommandBar.CommandBarDock="Left">
                 <Fluent:Button.ToolTip>
@@ -102,7 +103,7 @@
                            Header="Last Button 1"
                            Size="Middle"
                            KeyTip="LB1"
-                           Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Red.png"
+                           Icon="{x:Static Icons:CustomImages.Red}"
                            Fluent:CommandBar.CommandBarDock="Right" />
 
             <Fluent:DropDownButton x:Name="LastButton2"

@@ -11,6 +11,7 @@
              xmlns:formsInterop="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
              xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              xmlns:converters="clr-namespace:FluentTest.Converters"
+             xmlns:icons="clr-namespace:FluentTest.Icons"
              mc:Ignorable="d"
              d:DesignHeight="600"
              d:DesignWidth="800"
@@ -1579,8 +1580,8 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
 
                     <Fluent:Button Header="Test Button"
                                    IsReadOnly="{Binding DisableButtons}"
-                                   Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Red.png"
-                                   LargeIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/RedLarge.png"
+                                   Icon="{x:Static icons:CustomImages.Red}"
+                                   LargeIcon="{x:Static icons:CustomImages.Red}"
                                    Fluent:RibbonControl.WhiteIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Pink.png">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Button test" 
@@ -1665,8 +1666,8 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                     </Fluent:SplitButton>
 
                     <Fluent:DropDownButton Header="Test DropDown Button"
-                                           Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Blue.png"
-                                           LargeIcon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/BlueLarge.png"
+                                           Icon="{x:Static icons:CustomImages.Blue}"
+                                           LargeIcon="{x:Static icons:CustomImages.Blue}"
                                            IsReadOnly="{Binding DisableButtons}">
                         <Fluent:DropDownButton.ToolTip>
                             <Fluent:ScreenTip Title="DropDown Button test" 
