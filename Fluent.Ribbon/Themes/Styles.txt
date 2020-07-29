@@ -6,7 +6,7 @@ Controls\ApplicationMenu.xaml
 Office2016\Controls\Backstage.xaml
 Controls\RibbonTabItem.xaml
 Office2016\Controls\RibbonTabControl.xaml
-Controls\RibbonGroupBox.xaml
+Office2016\Controls\RibbonGroupBox.xaml
 Office2016\Controls\ScreenTip.xaml
 Controls\TwoLineLabel.xaml
 Office2016\Controls\ToggleButton.xaml

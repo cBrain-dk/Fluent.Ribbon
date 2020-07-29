@@ -33,6 +33,9 @@
     <UpToDateCheckInput Include="**/*.xaml" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Themes\Office2016\Controls\RibbonGroupBox.xaml" />
+  </ItemGroup>
+  <ItemGroup>
     <Page Remove="Themes\Controls\CommandBar.xaml" />
     <Page Remove="Themes\Office2016\Common.xaml" />
     <Page Remove="Themes\Office2016\Controls\BackstageTabControl.xaml" />
@@ -47,6 +50,7 @@
     <UpToDateCheckInput Remove="Themes\Office2016\Controls\BackstageTabControl.xaml" />
     <UpToDateCheckInput Remove="Themes\Office2016\Controls\BackstageTabItem.xaml" />
     <UpToDateCheckInput Remove="Themes\Office2016\Controls\RadioButton.xaml" />
+    <UpToDateCheckInput Remove="Themes\Office2016\Controls\RibbonGroupBox.xaml" />
     <UpToDateCheckInput Remove="Themes\Office2016\Controls\WindowCommands.xaml" />
   </ItemGroup>
   <ItemGroup>

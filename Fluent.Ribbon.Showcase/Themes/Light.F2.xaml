@@ -216,10 +216,11 @@
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonContextualTabGroup.Background.OpacityMask" Color="#14000000" options:Freeze="True" />
 
     <!-- RibbonGroupBox -->
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonGroupBox.Collapsed.BackgroundBrush" Color="#FFFFFFFF" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonGroupBox.Collapsed.BorderBrush" Color="{StaticResource Gray6}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonGroupBox.Collapsed.MouseOver.Background" Color="{StaticResource Gray10}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonGroupBox.DropDownOpen.Background" Color="{StaticResource Gray8}" options:Freeze="True" />
-    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonGroupBox.Header.Foreground" Color="{StaticResource Gray2}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonGroupBox.Header.Foreground" Color="#FF3F3F3F" options:Freeze="True" />
 
     <!-- RibbonTabControl -->
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonTabControl.Background" Color="{StaticResource Fluent.Ribbon.Colors.AccentBaseColor}" options:Freeze="True" />

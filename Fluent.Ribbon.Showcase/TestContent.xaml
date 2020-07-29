@@ -1615,7 +1615,9 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
             
             <Fluent:RibbonTabItem x:Name="disabledTextRibbonTab" 
                                   Header="TestDisabledText"
-                                  KeyTip="D">
+                                  KeyTip="D"
+                                  ReduceOrder="disabledTextRibbonGroupBox,disabledTextRibbonGroupBox,disabledTextRibbonGroupBox,
+                                               screenTipTestGroupBox,screenTipTestGroupBox,screenTipTestGroupBox">
                 <Fluent:RibbonGroupBox x:Name="disabledTextRibbonGroupBox" 
                                        Header="TestButtons"
                                        Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Red.png"
@@ -1782,7 +1784,9 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                     </Fluent:CheckBox>
                 </Fluent:RibbonGroupBox>
 
-                <Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox x:Name="screenTipTestGroupBox"
+                                       Header="ScreenTip tests"
+                                       Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Green.png">
                     <Fluent:Button Header="ScreenTip with only header">
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Only header" />
