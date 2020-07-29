@@ -63,7 +63,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ControlzEx" version="4.2.2" />
+    <PackageReference Include="ControlzEx" version="4.3.2" />
   </ItemGroup>
 
   <ItemGroup>
