@@ -69,6 +69,11 @@
         <Style TargetType="{x:Type Fluent:ScreenTip}" BasedOn="{StaticResource {x:Type Fluent:ScreenTip}}">
             <Setter Property="Width" Value="190" />
         </Style>
+
+        <Style TargetType="{x:Type Fluent:SplitButton}" BasedOn="{StaticResource {x:Type Fluent:SplitButton}}">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        </Style>
     </Fluent:RibbonWindow.Resources>
 
     <Fluent:RibbonWindow.LayoutTransform>
@@ -78,9 +83,9 @@
     </Fluent:RibbonWindow.LayoutTransform>
 
     <Grid>
-        <FluentTest:TestContent x:Name="TestContent"
-                                Visibility="Collapsed" />
+        <FluentTest:TestContent x:Name="TestContent"/>
 
-        <FluentTest:TestCommandBar x:Name="TestBar" />
+        <FluentTest:TestCommandBar x:Name="TestBar"
+                                Visibility="Collapsed"  />
     </Grid>
 </Fluent:RibbonWindow>

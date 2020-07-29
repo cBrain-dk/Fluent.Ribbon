@@ -1565,6 +1565,54 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
 
+            <Fluent:RibbonTabItem x:Name="pixelRibbonTab"
+                                  Header="Pixel Tests"
+                                  KeyTip="P">
+                <Fluent:RibbonGroupBox Header="Size=Middle">
+                    <Fluent:Button SizeDefinition="Middle"
+                                   Header="Button"
+                                   Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Red.png" />
+                    <Fluent:SplitButton SizeDefinition="Middle"
+                                        Header="SplitButton"
+                                        Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Red.png" />
+                    <Fluent:ToggleButton SizeDefinition="Middle"
+                                         Header="ToggleButton"
+                                         Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Red.png" />
+
+                    <Fluent:Button SizeDefinition="Middle"
+                                   Header="Button"
+                                   Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Red.png" />
+                    <Fluent:DropDownButton SizeDefinition="Middle"
+                                           Header="DropButton"
+                                           Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Red.png" />
+                    <Fluent:ToggleButton SizeDefinition="Middle"
+                                         Header="ToggleButton"
+                                         Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Red.png" />
+                </Fluent:RibbonGroupBox>
+
+                <Fluent:RibbonGroupBox Header="Size=Small">
+                    <Fluent:Button SizeDefinition="Small"
+                                   ToolTip="Button"
+                                   Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Red.png" />
+                    <Fluent:SplitButton SizeDefinition="Small"
+                                        ToolTip="SplitButton"
+                                        Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Red.png" />
+                    <Fluent:ToggleButton SizeDefinition="Small"
+                                         ToolTip="ToggleButton"
+                                         Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Red.png" />
+
+                    <Fluent:Button SizeDefinition="Small"
+                                   ToolTip="Button"
+                                   Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Red.png" />
+                    <Fluent:DropDownButton SizeDefinition="Small"
+                                           ToolTip="DropButton"
+                                           Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Red.png" />
+                    <Fluent:ToggleButton SizeDefinition="Small"
+                                         ToolTip="ToggleButton"
+                                         Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Red.png" />
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
+            
             <Fluent:RibbonTabItem x:Name="disabledTextRibbonTab" 
                                   Header="TestDisabledText"
                                   KeyTip="D">
