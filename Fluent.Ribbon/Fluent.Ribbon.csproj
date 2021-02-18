@@ -33,13 +33,11 @@
     <UpToDateCheckInput Include="**/*.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Themes\Office2016\Controls\RibbonGroupBox.xaml" />
-  </ItemGroup>
-  <ItemGroup>
     <Page Remove="Themes\Controls\CommandBar.xaml" />
     <Page Remove="Themes\Office2016\Common.xaml" />
     <Page Remove="Themes\Office2016\Controls\BackstageTabControl.xaml" />
     <Page Remove="Themes\Office2016\Controls\BackstageTabItem.xaml" />
+    <Page Remove="Themes\Office2016\Controls\RibbonGroupBox.xaml" />
     <Page Remove="Themes\Office2016\Controls\WindowCommands.xaml" />
     <Page Remove="Themes\Office2016\RibbonWindow.xaml" />
   </ItemGroup>
@@ -87,6 +85,9 @@
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Themes\Office2016\Controls\BackstageTabItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Themes\Office2016\Controls\RibbonGroupBox.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>

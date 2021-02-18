@@ -625,25 +625,31 @@ namespace Fluent
                 return false;
             }
 
-                var currentFocus = Keyboard.FocusedElement as RibbonTabItem;
+            var parentWindow = UIHelper.GetParent<Window>(this);
+            if (parentWindow is not null && parentWindow.IsActive == false)
+            {
+                return false;
+            }
 
-                // If current focus was another TabItem in the same TabControl - dont set focus on content
-                bool setFocusOnContent = ReferenceEquals(currentFocus, this)
-                                         || currentFocus == null
-                                         || ReferenceEquals(currentFocus.TabControlParent, this.TabControlParent) == false;
-                this.SettingFocus = true;
-                this.SetFocusOnContent = setFocusOnContent;
+            var currentFocus = Keyboard.FocusedElement as RibbonTabItem;
 
-                try
-                {
-                    return this.Focus()
-                    || setFocusOnContent;
-                }
-                finally
-                {
-                    this.SettingFocus = false;
-                    this.SetFocusOnContent = false;
-                }
+            // If current focus was another TabItem in the same TabControl - dont set focus on content
+            bool setFocusOnContent = ReferenceEquals(currentFocus, this)
+                                        || currentFocus == null
+                                        || ReferenceEquals(currentFocus.TabControlParent, this.TabControlParent) == false;
+            this.SettingFocus = true;
+            this.SetFocusOnContent = setFocusOnContent;
+
+            try
+            {
+                return this.Focus()
+                || setFocusOnContent;
+            }
+            finally
+            {
+                this.SettingFocus = false;
+                this.SetFocusOnContent = false;
+            }
         }
 
         private bool SetFocusOnContent { get; set; }

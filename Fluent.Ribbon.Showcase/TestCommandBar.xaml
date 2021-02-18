@@ -52,14 +52,14 @@
         <Fluent:CommandBar>
 
             <Fluent:Button x:Name="TestButton1"
-                           Header="Test Button 1"
+                           Header="Test qButtong 1"
                            Size="Middle"
                            Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Pink.png"
                            KeyTip="TB"
                            Fluent:CommandBar.CommandBarDock="Left" />
 
             <Fluent:DropDownButton x:Name="TestButton2"
-                                   Header="Test Drop Button 2"
+                                   Header="Test Drop qButtong 2"
                                    Size="Middle"
                                    Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Yellow.png"
                                    KeyTip="TB"
@@ -72,13 +72,13 @@
             </Fluent:DropDownButton>
 
             <Fluent:ToggleButton x:Name="TestButton3" 
-                                 Header="Test Toggle Button 3"
+                                 Header="Test Toggle qButtong 3"
                                  Size="Middle"
                                  Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Orange.png"
                                  KeyTip="B3" />
 
             <Fluent:SplitButton x:Name="TestButton4"
-                                Header="Test Split Button 4"
+                                Header="Test Split qButtong 4"
                                 Size="Middle"
                                 Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Green.png"
                                 KeyTip="B4"
@@ -100,14 +100,14 @@
             </Fluent:Button>
 
             <Fluent:Button x:Name="LastButton1"
-                           Header="Last Button 1"
+                           Header="Last qButtong 1"
                            Size="Middle"
                            KeyTip="LB1"
                            Icon="{x:Static Icons:CustomImages.Red}"
                            Fluent:CommandBar.CommandBarDock="Right" />
 
             <Fluent:DropDownButton x:Name="LastButton2"
-                                   Header="Last Drop Button 2"
+                                   Header="Last Drop qButtong 2"
                                    Size="Middle"
                                    KeyTip="LB2"
                                    Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Gray.png"
@@ -119,14 +119,14 @@
             </Fluent:DropDownButton>
 
             <Fluent:ToggleButton x:Name="LastButton3" 
-                                 Header="Last Toggle Button 3"
+                                 Header="Last Toggle qButtong 3"
                                  Size="Middle"
                                  Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Green.png"
                                  KeyTip="LB3"
                                  Fluent:CommandBar.CommandBarDock="Right" />
 
             <Fluent:SplitButton x:Name="LastButton4"
-                                Header="Last Split Button 4"
+                                Header="Last Split qButtong 4"
                                 Size="Middle"
                                 Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Orange.png"
                                 KeyTip="LB4"
@@ -143,7 +143,7 @@
                            Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Brown.png"
                            Fluent:CommandBar.CommandBarDock="Right">
                 <Fluent:Button.ToolTip>
-                    <Fluent:ScreenTip Title="Last Small Button 5" />
+                    <Fluent:ScreenTip Title="Last Small qButtong 5" />
                 </Fluent:Button.ToolTip>
             </Fluent:Button>
         </Fluent:CommandBar>

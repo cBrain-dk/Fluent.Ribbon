@@ -141,6 +141,10 @@
                                                  Background="Red"
                                                  Header="MUST BE HIDDEN"
                                                  Visibility="Visible" />
+
+                <Fluent:RibbonContextualTabGroup x:Name="autoTabGroup"
+                                                 BorderBrush="Orange"
+                                                 Background="BlueViolet" />
             </Fluent:Ribbon.ContextualGroups>
 
             <Fluent:Ribbon.StartScreen>
@@ -2179,6 +2183,18 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
 
+            <Fluent:RibbonTabItem Header="Focus tests"
+                                  KeyTip="fs">
+
+                <Fluent:RibbonGroupBox>
+                    <Fluent:Button x:Name="DelayedSelectTabButton"
+                                   Header="Select first tab after 5 seconds"
+                                   ToolTip="After a 5 second delay, the first tab in this window will be selected. Made to test behavior when using select across multiple ribbon windows."
+                                   Click="DelayedSelectTabButton_Click" />
+                </Fluent:RibbonGroupBox>
+
+            </Fluent:RibbonTabItem>
+
             <!--To define reducing of InRibbonGalleries
               you must use special syntax (see below). 
               Each time when group name in brackets is received 
@@ -3255,6 +3271,12 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                                     <Fluent:CheckBox x:Name="ShowContextualRibbonsCheckBox2"
                                                      IsChecked="False">
                                         ShowContextualRibbon2
+                                    </Fluent:CheckBox>
+                                    <Fluent:CheckBox x:Name="ShowGeneratedContextualRibbonTabCheckBox"
+                                                     IsChecked="False"
+                                                     Checked="ShowGeneratedContextualRibbonTabCheckBox_Checked"
+                                                     Unchecked="ShowGeneratedContextualRibbonTabCheckBox_Unchecked">
+                                        Show Generated Contextual Tab
                                     </Fluent:CheckBox>
                                 </WrapPanel>
                             </GroupBox>
