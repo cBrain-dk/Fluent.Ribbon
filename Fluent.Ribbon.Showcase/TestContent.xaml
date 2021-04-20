@@ -1779,7 +1779,8 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                     </Fluent:DropDownButton>
 
                     <Fluent:CheckBox Header="Test Checkbox"
-                                     IsReadOnly="{Binding DisableButtons}">
+                                     IsReadOnly="{Binding DisableButtons}"
+                                     IsThreeState="True">
                         <Fluent:CheckBox.ToolTip>
                             <Fluent:ScreenTip Title="Checkbox test" 
                                               Text="Testing screentip for checkbox"

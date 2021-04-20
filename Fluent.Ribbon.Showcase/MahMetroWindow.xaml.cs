@@ -39,7 +39,7 @@
         {
             // Sync Fluent and MahApps ThemeManager
             var fluentRibbonTheme = args?.Theme ?? ThemeManager.DetectTheme();
-            MahApps.Metro.ThemeManager.ChangeTheme(this, fluentRibbonTheme.Name);
+            //MahApps.Metro.ThemeManager.ChangeTheme(this, fluentRibbonTheme.Name);
         }
 
         #region TitelBar
