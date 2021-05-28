@@ -74,6 +74,7 @@
     <Color x:Key="Fluent.Ribbon.Colors.QuickAccess.Pressed">#FF164DA7</Color>
     <Color x:Key="Fluent.Ribbon.Colors.QuickAccess.Checked">#FF164DA7</Color>
     <Color x:Key="Fluent.Ribbon.Colors.QuickAccess.Foreground">#FFFFFFFF</Color>
+    <Color x:Key="Fluent.Ribbon.Colors.QuickAccess.Disabled.Foreground">#C3D5E4</Color>
     
 
     <!-- END COLORS -->
@@ -176,7 +177,13 @@
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.Disabled.BorderBrush" Color="{StaticResource Fluent.Ribbon.Colors.Selector.Disabled}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.Disabled.Background" Color="{StaticResource TransparentWhiteColor}" options:Freeze="True" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.Disabled.Foreground" Color="{StaticResource Fluent.Ribbon.Colors.Text.Disabled}" options:Freeze="True" />
-    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.Foreground.QuickAccess" Color="{StaticResource Fluent.Ribbon.Colors.QuickAccess.Foreground}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.QuickAccess.Foreground" Color="{StaticResource Fluent.Ribbon.Colors.QuickAccess.Foreground}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.QuickAccess.BorderBrush" Color="{StaticResource Fluent.Ribbon.Colors.Selector.Glyph}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.QuickAccess.Stroke" Color="{StaticResource Fluent.Ribbon.Colors.Selector.Glyph}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.QuickAccess.Disabled.Foreground" Color="{StaticResource Fluent.Ribbon.Colors.QuickAccess.Disabled.Foreground}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.QuickAccess.Disabled.BorderBrush" Color="{StaticResource Fluent.Ribbon.Colors.Selector.Disabled}" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.QuickAccess.Disabled.Stroke" Color="{StaticResource Fluent.Ribbon.Colors.Selector.Disabled}" options:Freeze="True" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.CheckBox.QuickAccess.Disabled.Background" Color="{StaticResource WhiteColor}" options:Freeze="True" />
 
     <!-- ColorGallery -->
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ColorGallery.Background" Color="{StaticResource WhiteColor}" options:Freeze="True" />

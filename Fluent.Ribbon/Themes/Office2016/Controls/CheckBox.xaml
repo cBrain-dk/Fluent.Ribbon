@@ -204,6 +204,24 @@
                         Property="Fill"
                         Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.Disabled.Stroke}" />
             </Trigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="Fluent:RibbonControl.IsQuickAccessItem" Value="True"/>
+                    <Condition Property="IsReadOnly" Value="true"/>
+                </MultiTrigger.Conditions>
+                <Setter TargetName="border"
+                        Property="BorderBrush"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.QuickAccess.Disabled.BorderBrush}" />
+                <Setter TargetName="border"
+                        Property="Background"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.QuickAccess.Disabled.Background}" />
+                <Setter TargetName="CheckIcon"
+                        Property="Fill"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.QuickAccess.Disabled.Stroke}" />
+                <Setter TargetName="IndeterminateIcon"
+                        Property="Fill"
+                        Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.QuickAccess.Disabled.Stroke}" />            
+            </MultiTrigger>
             <Trigger Property="IsChecked"
                      Value="True">
                 <Setter TargetName="CheckIcon"
@@ -274,12 +292,19 @@
                 Value="6,2,4,2" />
         <Style.Triggers>
             <Trigger Property="Fluent:RibbonControl.IsQuickAccessItem" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.Foreground.QuickAccess}" />
+                <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.QuickAccess.Foreground}" />
                 <Setter Property="Height" Value="18"/>
             </Trigger>
             <Trigger Property="IsReadOnly" Value="True">
                 <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.Disabled.Foreground}" />
             </Trigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="Fluent:RibbonControl.IsQuickAccessItem" Value="True"/>
+                    <Condition Property="IsReadOnly" Value="true"/>
+                </MultiTrigger.Conditions>
+                <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.QuickAccess.Disabled.Foreground}" />
+            </MultiTrigger>
         </Style.Triggers>
     </Style>
 
