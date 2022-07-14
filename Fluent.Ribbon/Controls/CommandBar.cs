@@ -1,5 +1,6 @@
 ﻿namespace Fluent
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
@@ -271,19 +272,27 @@
 
         private Size LastConstraint { get; set; }
 
+        private double LastItemsMinimumWidth { get; set; }
+
         /// <inheritdoc />
         protected override Size MeasureOverride(Size constraint)
         {
-            if (this.IsLoaded == false || constraint.Width == this.LastConstraint.Width)
+            if (this.IsLoaded == false)
             {
                 return base.MeasureOverride(constraint);
+            }
+
+            double AddItemWidthToSize(double currentSize, CommandBarItem item)
+            {
+                item.Control.Measure(new Size(constraint.Width, constraint.Height));
+                return currentSize + item.Control.DesiredSize.Width;
             }
 
             double TryCollapseControls(List<CommandBarItem> items, double wantedWidth)
             {
                 foreach (CommandBarItem item in items)
                 {
-                    if (item.RibbonControl.Size == RibbonControlSize.Small)
+                    if (item.RibbonControl.Size == RibbonControlSize.Small || !item.Control.IsVisible)
                     {
                         continue;
                     }
@@ -342,10 +351,21 @@
                 return availableWidth;
             }
 
-            bool isExpandingWindow = this.LastConstraint.Width < constraint.Width;
-            if (isExpandingWindow)
+            double itemsMinimumWidth = this.ControlsLeft.Union(this.ControlsRight).Aggregate(seed: 0.0, AddItemWidthToSize);
+
+            double widthChange = Math.Abs(constraint.Width - this.LastConstraint.Width);
+            double itemsWidthChange = Math.Abs(itemsMinimumWidth - this.LastItemsMinimumWidth);
+
+            // Ignore small'ish changes
+            if (widthChange <= 20 && itemsWidthChange <= 20)
             {
-                double availableWidth = constraint.Width - this.DesiredSize.Width;
+                return base.MeasureOverride(constraint);
+            }
+
+            bool tryExpand = constraint.Width > this.LastConstraint.Width || itemsMinimumWidth < this.LastItemsMinimumWidth;
+            if (tryExpand)
+            {
+                double availableWidth = constraint.Width - itemsMinimumWidth;
                 if (availableWidth > 0)
                 {
                     availableWidth = TryExpandControls(this.ControlsLeft, availableWidth);
@@ -360,7 +380,7 @@
             }
             else
             {
-                double wantedWidth = this.DesiredSize.Width - constraint.Width;
+                double wantedWidth = itemsMinimumWidth - constraint.Width;
                 if (wantedWidth > 0)
                 {
                     wantedWidth = TryCollapseControls(this.ControlsRight, wantedWidth);
@@ -375,6 +395,7 @@
             }
 
             this.LastConstraint = constraint;
+            this.LastItemsMinimumWidth = itemsMinimumWidth;
 
             return base.MeasureOverride(constraint);
         }
