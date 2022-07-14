@@ -1640,6 +1640,7 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Button test" 
                                               Text="Testing screentip for button"
+                                              HelpTopic="http://google.com?q=Button"
                                               DisableReason="{Binding DisableReason, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
@@ -1651,6 +1652,7 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                         <Fluent:ToggleButton.ToolTip>
                             <Fluent:ScreenTip Title="Toggle Button test" 
                                               Text="Testing screentip for toggle button"
+                                              HelpTopic="http://google.com?q=ToggleButton"
                                               DisableReason="{Binding DisableReason, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
                         </Fluent:ToggleButton.ToolTip>
                     </Fluent:ToggleButton>
@@ -1664,7 +1666,7 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                         <Fluent:SplitButton.ToolTip>
                             <Fluent:ScreenTip Title="Toggle Button test" 
                                               Text="Testing screentip for split button"
-                                              HelpTopic="http://www.google.com"
+                                              HelpTopic="http://www.google.com?q=SplitButton"
                                               DisableReason="{Binding DisableReason, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
                         </Fluent:SplitButton.ToolTip>
                         <Fluent:MenuItem x:Name="TestSplitItem1" 
