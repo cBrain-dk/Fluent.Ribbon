@@ -824,10 +824,34 @@ namespace Fluent
 
             this.collapsedElements.Clear();
 
+            // Don't perform this step if the owning window is not active as it will cause it to be activated.
+            Window window = Window.GetWindow(this);
+            if (window.IsActive)
+            {
+                this.RestoreFocus();
+            }
+            else
+            {
+                WeakEventManager<Window, EventArgs>.AddHandler(window, nameof(Window.Activated), this.Window_Activated);
+            }   
+        }
+
+        private void Window_Activated(object sender, EventArgs e)
+        {
+            this.RestoreFocus();
+
+            if (sender is Window window)
+            {
+                WeakEventManager<Window, EventArgs>.RemoveHandler(window, nameof(Window.Activated), this.Window_Activated);
+            }
+        }
+
+        private void RestoreFocus()
+        {
             if (this.parentFocusElement != null)
             {
                 this.parentFocusElement.Focus();
-                
+
                 this.parentFocusElement = null;
             }
         }
