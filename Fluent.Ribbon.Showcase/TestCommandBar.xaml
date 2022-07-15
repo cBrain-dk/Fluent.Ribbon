@@ -79,6 +79,16 @@
                                  Icon="pack://application:,,,/Fluent.Ribbon.Showcase;component/Images/Orange.png"
                                  KeyTip="B3" />
 
+            <Fluent:TextBox x:Name="TestTextBox1"
+                            Text="Fill me"
+                            Size="Middle"
+                            KeyTip="T1" />
+
+            <TextBox x:Name="TestTextBox2"
+                     Height="16"
+                     Padding="{StaticResource Fluent.CommandBar.Button.Margin}"
+                     Text="I'm basic :(" />
+
             <Fluent:SplitButton x:Name="TestButton4"
                                 Header="Test Split qButtong 4"
                                 Size="Middle"

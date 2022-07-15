@@ -282,7 +282,7 @@
                 return base.MeasureOverride(constraint);
             }
 
-            double itemsMinimumWidth = this.ControlsLeft.Union(this.ControlsRight).Aggregate(seed: 0.0, AddItemWidthToSize);
+            double itemsMinimumWidth = this.Items.OfType<UIElement>().Aggregate(seed: 0.0, AddItemWidthToSize);
 
             double widthChange = Math.Abs(constraint.Width - this.LastConstraint.Width);
             double itemsWidthChange = Math.Abs(itemsMinimumWidth - this.LastItemsMinimumWidth);
@@ -330,10 +330,10 @@
 
             return base.MeasureOverride(constraint);
 
-            double AddItemWidthToSize(double currentSize, CommandBarItem item)
+            double AddItemWidthToSize(double currentSize, UIElement item)
             {
-                item.Control.Measure(new Size(constraint.Width, constraint.Height));
-                return currentSize + item.Control.DesiredSize.Width;
+                item.Measure(new Size(constraint.Width, constraint.Height));
+                return currentSize + item.DesiredSize.Width;
             }
 
             double TryCollapseControls(List<CommandBarItem> items, double wantedWidth)
@@ -374,7 +374,7 @@
             {
                 foreach (CommandBarItem item in items)
                 {
-                    if (item.InitialSize == RibbonControlSize.Small || item.RibbonControl.Size == RibbonControlSize.Middle)
+                    if (item.InitialSize == RibbonControlSize.Small || item.RibbonControl.Size == RibbonControlSize.Middle || !item.Control.IsVisible)
                     {
                         continue;
                     }
