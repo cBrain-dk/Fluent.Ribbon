@@ -72,7 +72,7 @@ namespace FluentTest
                                .OrderBy(x => x.Key);
         }
 
-        private static string GetVersionText(Type type)
+        public static string GetVersionText(Type type)
         {
             var version = type.Assembly.GetName().Version;
 

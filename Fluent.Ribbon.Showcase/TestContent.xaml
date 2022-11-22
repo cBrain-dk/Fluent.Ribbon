@@ -2822,7 +2822,16 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
             </Fluent:RibbonTabItem>
 
             <Fluent:RibbonTabItem Header="Binding"
-                                  KeyTip="B"
+                                  KeyTip="B1"
+                                  Group="{Binding ElementName=tabGroup2, Mode=OneWay}"
+                                  Visibility="{Binding Path=IsChecked, ElementName=ShowContextualRibbonsCheckBox2, Converter={StaticResource boolToVisibilityConverter}}">
+                <Fluent:RibbonGroupBox Header="Bound ItemsSource"
+                                       ItemsSource="{Binding DataItems}"
+                                       ItemTemplate="{DynamicResource GallerySampleDataItemCommandTemplate}" />
+            </Fluent:RibbonTabItem>
+
+            <Fluent:RibbonTabItem Header="SecondBinding"
+                                  KeyTip="B2"
                                   Group="{Binding ElementName=tabGroup2, Mode=OneWay}"
                                   Visibility="{Binding Path=IsChecked, ElementName=ShowContextualRibbonsCheckBox2, Converter={StaticResource boolToVisibilityConverter}}">
                 <Fluent:RibbonGroupBox Header="Bound ItemsSource"
@@ -3221,6 +3230,7 @@ Pellentesque nec dolor sed lacus tristique rutrum sed vitae urna. Sed eu pharetr
                                     <Fluent:CheckBox IsChecked="{Binding Path=IgnoreTaskbarOnMaximize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Fluent:RibbonWindow}}, FallbackValue=False}">
                                         IgnoreTaskbarOnMaximize
                                     </Fluent:CheckBox>
+                                    <TextBox Text="{Binding WindowTitle}" />
                                 </WrapPanel>
                             </GroupBox>
 

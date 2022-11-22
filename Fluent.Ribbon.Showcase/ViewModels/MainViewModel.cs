@@ -22,6 +22,7 @@
         private GallerySampleDataItemViewModel[] dataItems;
 
         private RelayCommand exitCommand;
+        private string windowTitle;
         private double zoom;
         private ICommand testCommand;
 
@@ -34,6 +35,7 @@
 
         public MainViewModel()
         {
+            this.WindowTitle = TestContent.GetVersionText(typeof(MainViewModel));
             this.Zoom = 1.0;
 
             this.BoundSpinnerValue = 1;
@@ -58,6 +60,32 @@
         #region Properties
 
         public long UsedMemory => GC.GetTotalMemory(true) / 1014;
+
+        public string WindowTitle
+        {
+            get { return this.windowTitle; }
+
+            set
+            {
+                if (value.Equals(this.windowTitle))
+                {
+                    return;
+                }
+
+                this.windowTitle = value;
+                this.OnPropertyChanged();
+
+                RibbonTitleBar titleBar = TreeHelper.FindChild<Ribbon>(Application.Current.MainWindow)?.TitleBar;
+                if (titleBar == null)
+                {
+                    return;
+                }
+
+                titleBar.InvalidateMeasure();
+                titleBar.InvalidateArrange();
+                titleBar.UpdateLayout();
+            }
+        }
 
         public double Zoom
         {

@@ -322,8 +322,8 @@ namespace Fluent
         private void Update(Size constraint, Action<Size> measureQuickAccess)
         {
             var visibleGroups = this.Items.OfType<RibbonContextualTabGroup>()
-                            .Where(group => group.InnerVisibility == Visibility.Visible && group.Items.Count > 0)
-                            .ToList();
+                .Where(group => group.InnerVisibility == Visibility.Visible && group.Items.Count > 0)
+                .ToList();
 
             var canRibbonTabControlScroll = false;
             var quickAccessItemsConstraint = new Size(constraint.Width * 0.25, constraint.Height);
@@ -344,11 +344,16 @@ namespace Fluent
                 // Collapse itemRect
                 this.itemsRect = new Rect(0, 0, 0, 0);
 
-                this.headerHolder.Measure(new Size(constraint.Width, constraint.Height));
-                this.headerRect = new Rect(0, 0, this.headerHolder.DesiredSize.Width, constraint.Height);
+                this.headerHolder?.Measure(new Size(constraint.Width, constraint.Height));
+
+                var allTextWidth = constraint.Width;
+                const int left = 0;
+                var headerHolderWidth = this.headerHolder?.DesiredSize.Width ?? default;
+
+                this.headerRect = this.GetHeaderRect(constraint, left, allTextWidth, headerHolderWidth);
             }
             else if (visibleGroups.Count == 0
-                || canRibbonTabControlScroll)
+                     || canRibbonTabControlScroll)
             {
                 // Collapse itemRect
                 this.itemsRect = new Rect(0, 0, 0, 0);
@@ -356,45 +361,25 @@ namespace Fluent
                 // Set quick launch toolbar and header position and size
                 measureQuickAccess(quickAccessItemsConstraint);
 
-                Size quickAccessToolbarSize = this.quickAccessToolbarHolder.DesiredSize;
-                if (constraint.Width > quickAccessToolbarSize.Width + 50)
+                if (this.quickAccessToolbarHolder is not null
+                    && constraint.Width <= this.quickAccessToolbarHolder.DesiredSize.Width + 50)
                 {
-                    this.quickAccessToolbarRect = new Rect(0, 0, quickAccessToolbarSize.Width, quickAccessToolbarSize.Height);
+                    this.quickAccessToolbarRect = new Rect(0, 0, Math.Max(0, constraint.Width - 50), this.quickAccessToolbarHolder.DesiredSize.Height);
+                    this.quickAccessToolbarHolder.Measure(this.quickAccessToolbarRect.Size);
+                }
+
+                if (this.quickAccessToolbarHolder is not null
+                    && this.headerHolder is not null
+                    && constraint.Width > this.quickAccessToolbarHolder.DesiredSize.Width + 50)
+                {
+                    this.quickAccessToolbarRect = new Rect(0, 0, this.quickAccessToolbarHolder.DesiredSize.Width, this.quickAccessToolbarHolder.DesiredSize.Height);
                     this.headerHolder.Measure(SizeConstants.Infinite);
-                    var allTextWidth = constraint.Width - quickAccessToolbarSize.Width;
 
-                    if (this.HeaderAlignment == HorizontalAlignment.Left)
-                    {
-                        this.headerRect = new Rect(quickAccessToolbarSize.Width, 0, Math.Min(allTextWidth, this.headerHolder.DesiredSize.Width), constraint.Height);
-                    }
-                    else if (this.HeaderAlignment == HorizontalAlignment.Center)
-                    {
-                        double headerSpace = 25;
-                        double windowWidth = Window.GetWindow(this)?.ActualWidth ?? 0;
-                        var headerStartPos = (windowWidth / 2) - (this.headerHolder.DesiredSize.Width / 2);
+                    var left = this.quickAccessToolbarHolder.DesiredSize.Width;
+                    var allTextWidth = constraint.Width - this.quickAccessToolbarHolder.DesiredSize.Width;
+                    var headerHolderWidth = this.headerHolder.DesiredSize.Width;
 
-                        if ((quickAccessToolbarSize.Width + this.headerHolder.DesiredSize.Width + this.windowCommandWidth) < windowWidth
-                            && quickAccessToolbarSize.Width + headerSpace < headerStartPos)
-                        {
-                            this.headerRect = new Rect(
-                                x: (windowWidth / 2) - (this.headerHolder.DesiredSize.Width / 2),
-                                y: 0,
-                                width: this.headerHolder.DesiredSize.Width,
-                                height: constraint.Height);
-                        }
-                        else
-                        {
-                            this.headerRect = new Rect(quickAccessToolbarSize.Width + headerSpace + Math.Max(0, (this.headerHolder.DesiredSize.Width / 2) - (this.headerHolder.DesiredSize.Width / 2)), 0, this.headerHolder.DesiredSize.Width, constraint.Height);
-                        }
-                    }
-                    else if (this.HeaderAlignment == HorizontalAlignment.Right)
-                    {
-                        this.headerRect = new Rect(quickAccessToolbarSize.Width + Math.Max(0, allTextWidth - this.headerHolder.DesiredSize.Width), 0, Math.Min(allTextWidth, this.headerHolder.DesiredSize.Width), constraint.Height);
-                    }
-                    else if (this.HeaderAlignment == HorizontalAlignment.Stretch)
-                    {
-                        this.headerRect = new Rect(quickAccessToolbarSize.Width, 0, allTextWidth, constraint.Height);
-                    }
+                    this.headerRect = this.GetHeaderRect(constraint, left, allTextWidth, headerHolderWidth);
                 }
                 else
                 {
@@ -406,13 +391,13 @@ namespace Fluent
                 var pointZero = default(Point);
 
                 // get initial StartX value
-                var startX = visibleGroups.First().FirstVisibleItem.TranslatePoint(pointZero, this).X;
+                var startX = visibleGroups.First().FirstVisibleItem?.TranslatePoint(pointZero, this).X ?? 0;
                 var endX = 0D;
 
                 //Get minimum x point (workaround)
                 foreach (var group in visibleGroups)
                 {
-                    var currentStartX = group.FirstVisibleItem.TranslatePoint(pointZero, this).X;
+                    var currentStartX = group.FirstVisibleItem?.TranslatePoint(pointZero, this).X ?? 0;
 
                     if (currentStartX < startX)
                     {
@@ -420,7 +405,7 @@ namespace Fluent
                     }
 
                     var lastItem = group.LastVisibleItem;
-                    var currentEndX = lastItem.TranslatePoint(new Point(lastItem.DesiredSize.Width, 0), this).X;
+                    var currentEndX = lastItem?.TranslatePoint(new Point(lastItem.DesiredSize.Width, 0), this).X ?? 0;
 
                     if (currentEndX > endX)
                     {
@@ -436,34 +421,35 @@ namespace Fluent
                 startX = Math.Max(startX, this.QuickAccessToolBar?.MinWidth ?? 0);
 
                 // Set contextual groups position and size
-                this.itemsContainer.Measure(SizeConstants.Infinite);
-                var itemsRectWidth = Math.Min(this.itemsContainer.DesiredSize.Width, Math.Max(0, Math.Min(endX, constraint.Width) - startX));
+                this.itemsContainer?.Measure(SizeConstants.Infinite);
+                var itemsRectWidth = Math.Min(this.itemsContainer?.DesiredSize.Width ?? default, Math.Max(0, Math.Min(endX, constraint.Width) - startX));
                 this.itemsRect = new Rect(startX, 0, itemsRectWidth, constraint.Height);
 
                 // Set quick launch toolbar position and size
                 measureQuickAccess(quickAccessItemsConstraint);
 
-                Size quickAccessToolbarSize = this.quickAccessToolbarHolder.DesiredSize;
-                this.quickAccessToolbarRect = new Rect(0, 0, Math.Min(quickAccessToolbarSize.Width, startX), quickAccessToolbarSize.Height);
+                var quickAccessToolbarWidth = this.quickAccessToolbarHolder?.DesiredSize.Width ?? default;
+                this.quickAccessToolbarRect = new Rect(0, 0, Math.Min(quickAccessToolbarWidth, startX), this.quickAccessToolbarHolder?.DesiredSize.Height ?? default);
 
-                if (quickAccessToolbarSize.Width > startX)
+                if (quickAccessToolbarWidth > startX
+                    && this.quickAccessToolbarHolder is not null)
                 {
-                    measureQuickAccess(this.quickAccessToolbarRect.Size);
-                    quickAccessToolbarSize = this.quickAccessToolbarHolder.DesiredSize;
-                    this.quickAccessToolbarRect = new Rect(0, 0, quickAccessToolbarSize.Width, quickAccessToolbarSize.Height);
+                    this.quickAccessToolbarHolder.Measure(this.quickAccessToolbarRect.Size);
+                    this.quickAccessToolbarRect = new Rect(0, 0, this.quickAccessToolbarHolder.DesiredSize.Width, this.quickAccessToolbarHolder.DesiredSize.Height);
+                    quickAccessToolbarWidth = this.quickAccessToolbarHolder.DesiredSize.Width;
                 }
 
                 // Set header
-                this.headerHolder.Measure(SizeConstants.Infinite);
+                this.headerHolder?.Measure(SizeConstants.Infinite);
 
                 switch (this.HeaderAlignment)
                 {
-                    case HorizontalAlignment.Left:
+                    case HorizontalAlignment.Left when this.headerHolder is not null:
                         {
-                            if (startX - quickAccessToolbarSize.Width > 150)
+                            if (startX - quickAccessToolbarWidth > 150)
                             {
-                                var allTextWidth = startX - quickAccessToolbarSize.Width;
-                                this.headerRect = new Rect(quickAccessToolbarSize.Width, 0, Math.Min(allTextWidth, this.headerHolder.DesiredSize.Width), constraint.Height);
+                                var allTextWidth = startX - quickAccessToolbarWidth;
+                                this.headerRect = new Rect(this.quickAccessToolbarRect.Width, 0, Math.Min(allTextWidth, this.headerHolder.DesiredSize.Width), constraint.Height);
                             }
                             else
                             {
@@ -474,75 +460,30 @@ namespace Fluent
 
                         break;
 
-                    case HorizontalAlignment.Center:
+                    case HorizontalAlignment.Center when this.headerHolder is not null && this.quickAccessToolbarHolder is not null:
                         {
                             var allTextWidthRight = Math.Max(0, constraint.Width - endX);
-                            var allTextWidthLeft = Math.Max(0, startX - quickAccessToolbarSize.Width);
+                            var allTextWidthLeft = Math.Max(0, startX - quickAccessToolbarWidth);
                             var fitsRightButNotLeft = allTextWidthRight >= this.headerHolder.DesiredSize.Width && allTextWidthLeft < this.headerHolder.DesiredSize.Width;
 
-                            double headerSpace = 25;
-                            double windowWidth = Window.GetWindow(this)?.ActualWidth ?? 0;
-                            var headerStartPos = (windowWidth / 2) - (this.headerHolder.DesiredSize.Width / 2);
-                            var headerEndPos = (windowWidth / 2) + (this.headerHolder.DesiredSize.Width / 2);
-
-                            if ((quickAccessToolbarSize.Width + itemsRectWidth + this.headerHolder.DesiredSize.Width + this.windowCommandWidth) < windowWidth)
+                            if (((startX - quickAccessToolbarWidth < 150 || fitsRightButNotLeft) && (startX - quickAccessToolbarWidth > 0) && (startX - quickAccessToolbarWidth < constraint.Width - endX)) || (endX < constraint.Width / 2))
                             {
-                                //Place text middle if there is enough space from quickAccess and the contextual tabs are not in the middle space
-                                if (quickAccessToolbarSize.Width + headerSpace < headerStartPos
-                                    && endX < headerStartPos
-                                    && headerEndPos < startX)
-                                {
-                                    this.headerRect = new Rect(
-                                        x: (windowWidth / 2) - (this.headerHolder.DesiredSize.Width / 2),
-                                        y: 0,
-                                        width: this.headerHolder.DesiredSize.Width,
-                                        height: constraint.Height);
-                                }
-                                else if (this.headerHolder.DesiredSize.Width + headerSpace <= allTextWidthRight)
-                                {
-                                    //Place text around contextual tabs, prefer placing it to the right
-                                    this.headerRect = new Rect(
-                                        x: endX + headerSpace,
-                                        y: 0,
-                                        width: this.headerHolder.DesiredSize.Width,
-                                        height: constraint.Height);
-                                }
-                                else if (this.headerHolder.DesiredSize.Width + headerSpace <= allTextWidthLeft)
-                                {
-                                    //Place the text on the left side of the contextual tabs
-                                    this.headerRect = new Rect(
-                                        x: startX - headerSpace - this.headerHolder.DesiredSize.Width,
-                                        y: 0,
-                                        width: this.headerHolder.DesiredSize.Width,
-                                        height: constraint.Height);
-                                }
-                                else
-                                {
-                                    //Revert back to standard fluent Center calculation
-                                    if (((startX - quickAccessToolbarSize.Width < 150 || fitsRightButNotLeft) && (startX - quickAccessToolbarSize.Width > 0) && (startX - quickAccessToolbarSize.Width < constraint.Width - endX)) || (endX < constraint.Width / 2))
-                                    {
-                                        this.headerRect = new Rect(Math.Min(Math.Max(endX, (constraint.Width / 2) - (this.headerHolder.DesiredSize.Width / 2)), constraint.Width), 0, Math.Min(allTextWidthRight, this.headerHolder.DesiredSize.Width), constraint.Height);
-                                    }
-                                    else
-                                    {
-                                        this.headerRect = new Rect(quickAccessToolbarSize.Width + Math.Max(0, (allTextWidthLeft / 2) - (this.headerHolder.DesiredSize.Width / 2)), 0, Math.Min(allTextWidthLeft, this.headerHolder.DesiredSize.Width), constraint.Height);
-                                    }
-                                }
+                                this.headerRect = new Rect(Math.Min(Math.Max(endX, (constraint.Width / 2) - (this.headerHolder.DesiredSize.Width / 2)), constraint.Width), 0, Math.Min(allTextWidthRight, this.headerHolder.DesiredSize.Width), constraint.Height);
                             }
                             else
                             {
-                                this.headerRect = new Rect(quickAccessToolbarSize.Width + headerSpace + Math.Max(0, (this.headerHolder.DesiredSize.Width / 2) - (this.headerHolder.DesiredSize.Width / 2)), 0, this.headerHolder.DesiredSize.Width, constraint.Height);
+                                this.headerRect = new Rect(this.quickAccessToolbarHolder.DesiredSize.Width + Math.Max(0, (allTextWidthLeft / 2) - (this.headerHolder.DesiredSize.Width / 2)), 0, Math.Min(allTextWidthLeft, this.headerHolder.DesiredSize.Width), constraint.Height);
                             }
                         }
 
                         break;
 
-                    case HorizontalAlignment.Right:
+                    case HorizontalAlignment.Right when this.headerHolder is not null && this.quickAccessToolbarHolder is not null:
                         {
-                            if (startX - quickAccessToolbarSize.Width > 150)
+                            if (startX - quickAccessToolbarWidth > 150)
                             {
-                                var allTextWidth = Math.Max(0, startX - quickAccessToolbarSize.Width);
-                                this.headerRect = new Rect(quickAccessToolbarSize.Width + Math.Max(0, allTextWidth - this.headerHolder.DesiredSize.Width), 0, Math.Min(allTextWidth, this.headerHolder.DesiredSize.Width), constraint.Height);
+                                var allTextWidth = Math.Max(0, startX - quickAccessToolbarWidth);
+                                this.headerRect = new Rect(this.quickAccessToolbarHolder.DesiredSize.Width + Math.Max(0, allTextWidth - this.headerHolder.DesiredSize.Width), 0, Math.Min(allTextWidth, this.headerHolder.DesiredSize.Width), constraint.Height);
                             }
                             else
                             {
@@ -555,10 +496,10 @@ namespace Fluent
 
                     case HorizontalAlignment.Stretch:
                         {
-                            if (startX - quickAccessToolbarSize.Width > 150)
+                            if (startX - quickAccessToolbarWidth > 150)
                             {
-                                var allTextWidth = startX - quickAccessToolbarSize.Width;
-                                this.headerRect = new Rect(quickAccessToolbarSize.Width, 0, allTextWidth, constraint.Height);
+                                var allTextWidth = startX - quickAccessToolbarWidth;
+                                this.headerRect = new Rect(this.quickAccessToolbarRect.Width, 0, allTextWidth, constraint.Height);
                             }
                             else
                             {
@@ -571,7 +512,19 @@ namespace Fluent
                 }
             }
 
-            this.headerRect.Width = this.headerRect.Width + 2;
+            this.headerRect.Width += 2;
+        }
+
+        private Rect GetHeaderRect(Size constraint, double left, double allTextWidth, double headerHolderWidth)
+        {
+            return this.HeaderAlignment switch
+            {
+                HorizontalAlignment.Left => new Rect(left, 0, Math.Min(allTextWidth, headerHolderWidth), constraint.Height),
+                HorizontalAlignment.Center => new Rect(left + Math.Max(0, (allTextWidth / 2) - (headerHolderWidth / 2)), 0, Math.Min(allTextWidth, headerHolderWidth), constraint.Height),
+                HorizontalAlignment.Right => new Rect(left + Math.Max(0, allTextWidth - headerHolderWidth), 0, Math.Min(allTextWidth, headerHolderWidth), constraint.Height),
+                HorizontalAlignment.Stretch => new Rect(left, 0, allTextWidth, constraint.Height),
+                _ => Rect.Empty
+            };
         }
 
         #endregion
