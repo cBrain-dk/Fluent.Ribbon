@@ -8,6 +8,7 @@
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
+    using System.Windows.Threading;
     using Fluent.Internal.KnownBoxes;
     using WindowChrome = ControlzEx.Windows.Shell.WindowChrome;
 
@@ -216,11 +217,18 @@
 
             WindowChrome.SetIsHitTestVisibleInChrome(this, true);
 
+            this.InteractionDelayer = new DispatcherTimer(DispatcherPriority.Normal, this.Dispatcher);
+            this.InteractionDelayer.Interval = TimeSpan.FromMilliseconds(300);
+            WeakEventManager<DispatcherTimer, EventArgs>.AddHandler(this.InteractionDelayer, nameof(DispatcherTimer.Tick), this.InteractionTimer_Elapsed);
+
             this.keyTipService = new Fluent.KeyTipService(this);
 
             this.Loaded += this.OnLoaded;
             this.Unloaded += this.OnUnloaded;
         }
+
+        private void InteractionTimer_Elapsed(object sender, EventArgs e)
+            => this.ExpandCollapseControls();
 
         private void SetItemProperties(System.Collections.IList items)
         {
@@ -277,21 +285,17 @@
         /// <inheritdoc />
         protected override Size MeasureOverride(Size constraint)
         {
-            if (this.IsLoaded == false)
-            {
-                return base.MeasureOverride(constraint);
-            }
+            this.InteractionDelayer.Stop();
+            this.LastConstraint = constraint;
+            this.InteractionDelayer.Start();
 
+            return base.MeasureOverride(constraint);
+        }
+
+        private void ExpandCollapseControls()
+        {
+            Size constraint = this.LastConstraint;
             double itemsMinimumWidth = this.Items.OfType<UIElement>().Aggregate(seed: 0.0, AddItemWidthToSize);
-
-            double widthChange = Math.Abs(constraint.Width - this.LastConstraint.Width);
-            double itemsWidthChange = Math.Abs(itemsMinimumWidth - this.LastItemsMinimumWidth);
-
-            // Ignore small'ish changes
-            if (widthChange <= 20 && itemsWidthChange <= 20)
-            {
-                return base.MeasureOverride(constraint);
-            }
 
             bool tryExpand = constraint.Width > this.LastConstraint.Width || itemsMinimumWidth < this.LastItemsMinimumWidth;
             if (tryExpand)
@@ -325,10 +329,9 @@
                 }
             }
 
-            this.LastConstraint = constraint;
             this.LastItemsMinimumWidth = itemsMinimumWidth;
 
-            return base.MeasureOverride(constraint);
+            this.InteractionDelayer.Stop();
 
             double AddItemWidthToSize(double currentSize, UIElement item)
             {
@@ -411,6 +414,8 @@
         bool IKeyTipServiceHost.IsCollapsed => false;
 
         bool IKeyTipServiceHost.IsKeyTipHandlingEnabled => this.IsKeyTipHandlingEnabled;
+
+        private DispatcherTimer InteractionDelayer { get; }
 
         bool IKeyTipServiceHost.CanSetFocusFromKeyTipService(FrameworkElement keyTipsTarget)
             => true;
