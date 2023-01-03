@@ -25,6 +25,8 @@
                 Value="Center" />
         <Setter Property="Fluent:KeyTip.AutoPlacement"
                 Value="False" />
+        <Setter Property="FocusVisualStyle"
+                Value="{StaticResource Fluent.Ribbon.Styles.FocusVisual}" />
         <Style.Triggers>
             <Trigger Property="Size"
                      Value="Large">
@@ -438,6 +440,8 @@
                 Value="Stretch" />
         <Setter Property="Fluent:KeyTip.AutoPlacement"
                 Value="{Binding Path=(Fluent:KeyTip.AutoPlacement), RelativeSource={RelativeSource AncestorType={x:Type Fluent:SplitButton}}}" />
+        <Setter Property="FocusVisualStyle"
+                Value="{StaticResource Fluent.Ribbon.Styles.FocusVisual.Tight}" />
         <Style.Triggers>
             <Trigger Property="Size"
                      Value="Large">

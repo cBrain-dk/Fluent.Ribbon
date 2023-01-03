@@ -1042,6 +1042,8 @@
                 Value="{DynamicResource Fluent.Ribbon.Brushes.LabelTextBrush}" />
         <Setter Property="Template"
                 Value="{DynamicResource MenuItemTemplate}" />
+        <Setter Property="FocusVisualStyle"
+                Value="{StaticResource Fluent.Ribbon.Styles.FocusVisual.Tight}" />
         <Style.Triggers>
             <MultiTrigger>
                 <MultiTrigger.Conditions>

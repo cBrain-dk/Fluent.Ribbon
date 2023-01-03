@@ -290,6 +290,8 @@
                 Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.BorderBrush}" />
         <Setter Property="Margin"
                 Value="6,2,4,2" />
+        <Setter Property="FocusVisualStyle"
+                Value="{StaticResource Fluent.Ribbon.Styles.FocusVisual}" />
         <Style.Triggers>
             <Trigger Property="Fluent:RibbonControl.IsQuickAccessItem" Value="True">
                 <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.QuickAccess.Foreground}" />

@@ -9,4 +9,31 @@
     <s:Double x:Key="Fluent.Ribbon.Values.Button.Small.Width">22</s:Double>
     <s:Double x:Key="Fluent.Ribbon.Values.DropDownButton.Small.Width">32</s:Double>
 
+    <Style x:Key="Fluent.Ribbon.Styles.FocusVisual.Border" TargetType="{x:Type Rectangle}">
+        <Setter Property="StrokeThickness" Value="2" />
+        <Setter Property="Stroke" Value="{DynamicResource BlackBrush}" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+    </Style>
+
+    <Style x:Key="Fluent.Ribbon.Styles.FocusVisual">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle Margin="-2 -2 -2 -2"
+                               Style="{StaticResource Fluent.Ribbon.Styles.FocusVisual.Border}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Fluent.Ribbon.Styles.FocusVisual.Tight">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle Style="{StaticResource Fluent.Ribbon.Styles.FocusVisual.Border}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

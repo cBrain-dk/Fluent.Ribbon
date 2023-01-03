@@ -26,6 +26,8 @@
                 Value="20" />
         <Setter Property="BorderThickness" 
                 Value="1" />
+        <Setter Property="FocusVisualStyle"
+                Value="{StaticResource Fluent.Ribbon.Styles.FocusVisual}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RadioButton">

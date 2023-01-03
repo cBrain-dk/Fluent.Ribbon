@@ -21,6 +21,8 @@
                 Value="2 0 2 0" />
         <Setter Property="VerticalContentAlignment"
                 Value="Center" />
+        <Setter Property="FocusVisualStyle"
+                Value="{StaticResource Fluent.Ribbon.Styles.FocusVisual}" />
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>

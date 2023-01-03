@@ -259,6 +259,8 @@
                 Value="Left" />
         <Setter Property="VerticalContentAlignment"
                 Value="Center" />
+        <Setter Property="FocusVisualStyle"
+                Value="{StaticResource Fluent.Ribbon.Styles.FocusVisual}" />
         <Style.Triggers>
             <Trigger Property="Size"
                      Value="Large">
