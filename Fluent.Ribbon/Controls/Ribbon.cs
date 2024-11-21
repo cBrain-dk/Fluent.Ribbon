@@ -2159,7 +2159,10 @@ namespace Fluent
 
             this.RibbonStateStorage.Load();
 
-            this.TabControl?.SelectFirstTab();
+            if (this.SelectedTabItem is null)
+            {
+                this.TabControl?.SelectFirstTab();
+            }
         }
 
         // Handles items changing in QAT
@@ -2270,7 +2273,7 @@ namespace Fluent
                 ?? this;
         }
 
-        Control IKeyTipServiceHost.AsControl() 
+        Control IKeyTipServiceHost.AsControl()
             => this;
 
         private FrameworkElement GetBackstage()
