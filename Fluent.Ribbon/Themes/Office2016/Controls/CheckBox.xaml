@@ -276,8 +276,6 @@
 
     <Style x:Key="RibbonCheckBoxStyle"
            TargetType="{x:Type Fluent:CheckBox}">
-        <Setter Property="ToolTipService.ShowDuration"
-                Value="30000" />
         <Setter Property="Template"
                 Value="{DynamicResource CheckBoxControlTemplate}" />
         <Setter Property="Background"
