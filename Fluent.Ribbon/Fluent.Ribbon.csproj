@@ -104,8 +104,8 @@
   <PropertyGroup>
     <PackageId>cFluent</PackageId>
     <Authors>Bastian Schmidt</Authors>
-    <Version>7.0.0-0.77</Version>
-    <PackageReleaseNotes>Publishing with .csproj properties, dotnet and rdadm</PackageReleaseNotes>
+    <Version>7.0.0-0.78</Version>
+    <PackageReleaseNotes>Select tab when given keyboard focus.</PackageReleaseNotes>
     <PackageLicenseFile>licenses/License.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/fluentribbon/Fluent.Ribbon</PackageProjectUrl>
     <!--<PackageIcon>../Images/Logo/Logo_32x32.png</PackageIcon>-->

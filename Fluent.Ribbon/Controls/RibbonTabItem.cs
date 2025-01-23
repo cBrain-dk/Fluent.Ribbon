@@ -715,6 +715,35 @@ namespace Fluent
         }
 
         /// <inheritdoc />
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Enter:
+                case Key.Space:
+                    if (this.TabControlParent is not null
+                        && this.TabControlParent.IsMinimized)
+                    {
+                        this.TabControlParent.IsDropDownOpen = true;
+
+                        e.Handled = true;
+                    }
+
+                    break;
+            }
+
+            base.OnKeyDown(e);
+        }
+
+        /// <inheritdoc />
+        protected override void OnGotKeyboardFocus(KeyboardFocusChangedEventArgs e)
+        {
+            base.OnGotKeyboardFocus(e);
+
+            this.SetCurrentValue(IsSelectedProperty, BooleanBoxes.TrueBox);
+        }
+
+        /// <inheritdoc />
         protected override AutomationPeer OnCreateAutomationPeer()
         {
             return new RibbonTabItemAutomationPeer(this);
