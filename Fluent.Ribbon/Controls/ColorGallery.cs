@@ -16,6 +16,7 @@ namespace Fluent
     using Fluent.Extensions;
     using Fluent.Internal;
     using Fluent.Internal.KnownBoxes;
+    using Windows.Win32;
 
     /// <summary>
     /// Represents color gallery modes
@@ -852,14 +853,14 @@ namespace Fluent
             else
             {
 #pragma warning disable 618
-                var chooseColor = new NativeMethods.CHOOSECOLOR();
+                var chooseColor = new PInvoke.CHOOSECOLOR();
                 var wnd = Window.GetWindow(this);
                 if (wnd != null)
                 {
                     chooseColor.hwndOwner = new WindowInteropHelper(wnd).Handle;
                 }
 
-                chooseColor.Flags = Constants.CC_ANYCOLOR;
+                chooseColor.Flags = PInvoke.CC_ANYCOLOR;
                 if (customColors == IntPtr.Zero)
                 {
                     // Set custom colors)
@@ -872,7 +873,7 @@ namespace Fluent
                 }
 
                 chooseColor.lpCustColors = customColors;
-                if (NativeMethods.ChooseColor(chooseColor))
+                if (PInvoke.ChooseColor(chooseColor))
                 {
                     var color = ConvertFromWin32Color(chooseColor.rgbResult);
                     if (RecentColors.Contains(color))
