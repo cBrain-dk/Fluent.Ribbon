@@ -92,6 +92,10 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\Images\Logo\Logo_32x32.png" Pack="true" PackagePath=""/>
+  </ItemGroup>
+
   <!-- Sign assembly -->
   <PropertyGroup>
     <SignAssembly>True</SignAssembly>
@@ -102,11 +106,12 @@
 
   <!-- NuGet -->
   <PropertyGroup>
-    <PackageId>Fluent.Ribbon</PackageId>
+    <Version>7.0.0-0.80</Version>
+    <PackageId>cFluent</PackageId>
     <Authors>Bastian Schmidt</Authors>
     <PackageLicenseFile>licenses/License.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/fluentribbon/Fluent.Ribbon</PackageProjectUrl>
-    <PackageIcon>../Images/Logo/Logo_32x32.png</PackageIcon>
+    <PackageIcon>Logo_32x32.png</PackageIcon>
     <PackageIconUrl>https://raw.githubusercontent.com/fluentribbon/Fluent.Ribbon/master/Images/Logo/Logo_32x32.png</PackageIconUrl>
     <PackageTags>fluent;office;ribbon;ribbonwindow;backstage;UI;XAML;Toolkit;Library;.NET;OSS;OpenSource;fluentribbon</PackageTags>
     <PackageReleaseNotes>https://github.com/fluentribbon/Fluent.Ribbon/blob/develop/Changelog.md</PackageReleaseNotes>

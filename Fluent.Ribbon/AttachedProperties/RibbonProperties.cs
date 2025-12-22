@@ -29,13 +29,17 @@ namespace Fluent
             internal void RegisterCommand()
             {
                 this.SetIsReadOnlyFromCommand(this.Command);
-                this.Command.CanExecuteChanged += this.CanExecuteChanged;
+
+                WeakEventManager<ICommand, EventArgs>
+                    .AddHandler(this.Command, nameof(this.Command.CanExecuteChanged), this.CanExecuteChanged);
             }
 
             internal void UnRegisterCommand()
             {
                 this.RibbonControl.IsReadOnly = true;
-                this.Command.CanExecuteChanged -= this.CanExecuteChanged;
+
+                WeakEventManager<ICommand, EventArgs>
+                    .RemoveHandler(this.Command, nameof(this.Command.CanExecuteChanged), this.CanExecuteChanged);
             }
 
             private void CanExecuteChanged(object sender, EventArgs e)
