@@ -65,7 +65,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ControlzEx" version="4.3.2" />
+    <PackageReference Include="ControlzEx" version="4.4.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -106,9 +106,10 @@
 
   <!-- NuGet -->
   <PropertyGroup>
-    <Version>7.0.0-0.80</Version>
     <PackageId>cFluent</PackageId>
     <Authors>Bastian Schmidt</Authors>
+    <Version>7.0.0-0.80</Version>
+    <PackageReleaseNotes>Select tab when given keyboard focus.</PackageReleaseNotes>
     <PackageLicenseFile>licenses/License.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/fluentribbon/Fluent.Ribbon</PackageProjectUrl>
     <PackageIcon>Logo_32x32.png</PackageIcon>

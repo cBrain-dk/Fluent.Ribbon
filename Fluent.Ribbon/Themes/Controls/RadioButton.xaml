@@ -3,8 +3,6 @@
                     xmlns:Fluent="clr-namespace:Fluent">
     <Style x:Key="{x:Type Fluent:RadioButton}"
            TargetType="{x:Type Fluent:RadioButton}">
-        <Setter Property="ToolTipService.ShowDuration"
-                Value="30000" />
         <Setter Property="Background"
                 Value="{DynamicResource Fluent.Ribbon.Brushes.CheckBox.Background}" />
         <Setter Property="BorderBrush"

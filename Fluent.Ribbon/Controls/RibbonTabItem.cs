@@ -237,8 +237,6 @@ namespace Fluent
                 }
 
                 container.OnSelected(new RoutedEventArgs(Selector.SelectedEvent, container));
-
-                container.SetFocus();
             }
             else
             {
@@ -618,93 +616,6 @@ namespace Fluent
 
         #region Overrides
 
-        internal bool SetFocus()
-        {
-            if (this.SettingFocus)
-            {
-                return false;
-            }
-
-            var parentWindow = UIHelper.GetParent<Window>(this);
-            if (parentWindow is not null && parentWindow.IsActive == false)
-            {
-                return false;
-            }
-
-            var currentFocus = Keyboard.FocusedElement as RibbonTabItem;
-
-            // If current focus was another TabItem in the same TabControl - dont set focus on content
-            bool setFocusOnContent = ReferenceEquals(currentFocus, this)
-                                        || currentFocus == null
-                                        || ReferenceEquals(currentFocus.TabControlParent, this.TabControlParent) == false;
-            this.SettingFocus = true;
-            this.SetFocusOnContent = setFocusOnContent;
-
-            try
-            {
-                return this.Focus()
-                || setFocusOnContent;
-            }
-            finally
-            {
-                this.SettingFocus = false;
-                this.SetFocusOnContent = false;
-            }
-        }
-
-        private bool SetFocusOnContent { get; set; }
-
-        private bool SettingFocus { get; set; }
-
-        /// <inheritdoc />
-        protected override void OnPreviewGotKeyboardFocus(KeyboardFocusChangedEventArgs e)
-        {
-            base.OnPreviewGotKeyboardFocus(e);
-
-            if (e.Handled
-                || ReferenceEquals(e.NewFocus, this) == false)
-            {
-                return;
-            }
-
-            if (this.IsSelected
-                || this.TabControlParent == null)
-            {
-                return;
-            }
-
-            this.IsSelected = true;
-
-            // If focus moved in result of selection - handle the event to prevent setting focus back on the new item
-            if (ReferenceEquals(e.OldFocus, Keyboard.FocusedElement) == false)
-            {
-                e.Handled = true;
-            }
-            else if (this.SetFocusOnContent)
-            {
-                var parentTabControl = this.TabControlParent;
-
-                if (parentTabControl != null)
-                {
-                    // Save the parent and check for null to make sure that SetCurrentValue didn't have a change handler
-                    // that removed the TabItem from the tree.
-                    var selectedContentPresenter = parentTabControl.SelectedContentPresenter;
-
-                    if (selectedContentPresenter != null)
-                    {
-                        parentTabControl.UpdateLayout(); // Wait for layout
-                        var success = selectedContentPresenter.MoveFocus(new TraversalRequest(FocusNavigationDirection.First));
-
-                        // If we successfully move focus inside the content then don't set focus to the header
-                        if (success)
-                        {
-                            e.Handled = true;
-                        }
-                    }
-                }
-            }
-        }
-
         /// <inheritdoc />
         protected override Size MeasureOverride(Size constraint)
         {
@@ -801,6 +712,35 @@ namespace Fluent
             {
                 e.Handled = this.IsSelected = true;
             }
+        }
+
+        /// <inheritdoc />
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Enter:
+                case Key.Space:
+                    if (this.TabControlParent is not null
+                        && this.TabControlParent.IsMinimized)
+                    {
+                        this.TabControlParent.IsDropDownOpen = true;
+
+                        e.Handled = true;
+                    }
+
+                    break;
+            }
+
+            base.OnKeyDown(e);
+        }
+
+        /// <inheritdoc />
+        protected override void OnGotKeyboardFocus(KeyboardFocusChangedEventArgs e)
+        {
+            base.OnGotKeyboardFocus(e);
+
+            this.SetCurrentValue(IsSelectedProperty, BooleanBoxes.TrueBox);
         }
 
         /// <inheritdoc />

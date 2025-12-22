@@ -11,7 +11,7 @@ namespace Fluent
     public static class ToolTipService
     {
         /// <summary>
-        /// Attach ooltip properties to control.
+        /// Attach tooltip properties to control.
         /// </summary>
         /// <param name="type">Control type.</param>
         public static void Attach(Type type)

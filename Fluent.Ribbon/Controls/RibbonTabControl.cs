@@ -491,7 +491,7 @@ namespace Fluent
             {
                 // If keyboard focus is within the control, make sure it is going to the correct place
                 var item = this.GetSelectedTabItem();
-                item?.SetFocus();
+                item?.Focus();
             }
 
             if (e.AddedItems.Count > 0)
@@ -586,7 +586,8 @@ namespace Fluent
             if (nextTabItem != null
                 && ReferenceEquals(nextTabItem, this.SelectedItem) == false)
             {
-                e.Handled = nextTabItem.SetFocus();
+                e.Handled = true;
+                nextTabItem.IsSelected = true;
             }
 
             if (e.Handled == false)
@@ -776,6 +777,8 @@ namespace Fluent
                 {
                     this.SelectedItem = this.GetFirstVisibleItem();
                 }
+
+                this.SelectedTabItem?.Focus();
             }
         }
 
