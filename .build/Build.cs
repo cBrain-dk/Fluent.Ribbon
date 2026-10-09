@@ -97,9 +97,6 @@ class Build : NukeBuild
         DotNetBuild(s => s
             .SetProjectFile(Solution)
             .SetConfiguration(Configuration)
-            .SetAssemblyVersion(AssemblySemVer)
-            .SetFileVersion(AssemblySemVer)
-            .SetInformationalVersion(InformationalVersion)
 
             .SetVerbosity(DotNetVerbosity.minimal));
     });
@@ -116,11 +113,7 @@ class Build : NukeBuild
             .SetProperty("PackageOutputPath", ArtifactsDirectory)
             .When(x => GitVersion is not null, x => x
                 .SetProperty("RepositoryBranch", GitVersion?.BranchName)
-                .SetProperty("RepositoryCommit", GitVersion?.Sha))
-            .SetVersion(FullSemVer)
-            .SetAssemblyVersion(AssemblySemVer)
-            .SetFileVersion(AssemblySemFileVer)
-            .SetInformationalVersion(InformationalVersion));
+                .SetProperty("RepositoryCommit", GitVersion?.Sha)));
         
         (BuildBinDirectory / "Fluent.Ribbon" / Configuration).CompressTo(ArtifactsDirectory / $"Fluent.Ribbon-v{FullSemVer}.zip");
         (BuildBinDirectory / "Fluent.Ribbon.Showcase" / Configuration).CompressTo(ArtifactsDirectory / $"Fluent.Ribbon.Showcase-v{FullSemVer}.zip");

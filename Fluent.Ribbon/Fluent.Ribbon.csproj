@@ -3,6 +3,13 @@
   <PropertyGroup>
     <RootNamespace>Fluent</RootNamespace>
     <AssemblyName>Fluent</AssemblyName>
+    <Version>11.0.2-cbrain.2</Version>
+    <PackageVersion>$(Version)</PackageVersion>
+    <AssemblyVersion>11.0.0.0</AssemblyVersion>
+    <FileVersion>11.0.2.0</FileVersion>
+    <InformationalVersion>$(Version)</InformationalVersion>
+    <UpdateVersionProperties>false</UpdateVersionProperties>
+    <UpdateAssemblyInfo>false</UpdateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);NU5125</NoWarn>
     <Nullable>enable</Nullable>
@@ -44,7 +51,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/fluentribbon/Fluent.Ribbon/master/Images/Logo/Logo_128x128.png</PackageIconUrl>
     <PackageTags>fluent;office;ribbon;ribbonwindow;backstage;UI;XAML;Toolkit;Library;.NET;OSS;OpenSource;fluentribbon</PackageTags>
     <PackageReleaseNotes>https://github.com/fluentribbon/Fluent.Ribbon/blob/develop/Changelog.md</PackageReleaseNotes>
-    <RepositoryUrl>https://github.com/fluentribbon/Fluent.Ribbon.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/cBrain-dk/Fluent.Ribbon.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <GenerateLibraryLayout>true</GenerateLibraryLayout>
   </PropertyGroup>

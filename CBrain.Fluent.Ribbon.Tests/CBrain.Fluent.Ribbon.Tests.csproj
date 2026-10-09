@@ -5,10 +5,12 @@
     <AssemblyName>CBrain.Fluent.Ribbon.Tests</AssemblyName>
     <IsTestProject>true</IsTestProject>
     <IsPackable>false</IsPackable>
+    <UseFluentSource Condition="'$(UseFluentSource)' == ''">true</UseFluentSource>
     <NoWarn>$(NoWarn);SA0001;SA1602</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CBrain.Fluent.Ribbon\CBrain.Fluent.Ribbon.csproj" />
+    <ProjectReference Include="..\Fluent.Ribbon\Fluent.Ribbon.csproj" Condition="'$(UseFluentSource)' == 'true'" />
+    <PackageReference Include="Fluent.Ribbon" VersionOverride="[11.0.2-cbrain.2]" Condition="'$(UseFluentSource)' != 'true'" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
