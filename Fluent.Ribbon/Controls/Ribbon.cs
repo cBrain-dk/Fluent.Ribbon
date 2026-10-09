@@ -19,6 +19,7 @@ using System.Windows.Markup;
 using Fluent.Collections;
 using Fluent.Extensions;
 using Fluent.Helpers;
+using Fluent.Internal;
 using Fluent.Internal.KnownBoxes;
 using Fluent.Localization;
 
@@ -34,7 +35,7 @@ using Fluent.Localization;
 [TemplatePart(Name = "PART_LayoutRoot", Type = typeof(Panel))]
 [TemplatePart(Name = "PART_RibbonTabControl", Type = typeof(RibbonTabControl))]
 [TemplatePart(Name = "PART_QuickAccessToolBar", Type = typeof(QuickAccessToolBar))]
-public class Ribbon : Control, ILogicalChildSupport
+public class Ribbon : Control, ILogicalChildSupport, IKeyTipServiceHost
 {
     private IRibbonStateStorage? ribbonStateStorage;
 
@@ -1283,6 +1284,91 @@ public class Ribbon : Control, ILogicalChildSupport
             return this.keyTipKeys;
         }
     }
+
+    #region IKeyTipServiceHost
+
+    Control IKeyTipServiceHost.AsControl() => this;
+
+    FrameworkElement IKeyTipServiceHost.GetKeyTipServiceTarget()
+    {
+        return this.GetStartScreen()
+               ?? this.GetBackstage()
+               ?? this.GetApplicationMenu()
+               ?? this;
+    }
+
+    bool IKeyTipServiceHost.CanSetFocusFromKeyTipService(FrameworkElement keyTipsTarget)
+    {
+        return ReferenceEquals(keyTipsTarget, this) && this.TabControl is not null;
+    }
+
+    void IKeyTipServiceHost.SetFocusFromKeyTipService()
+    {
+        if (this.TabControl is not null)
+        {
+            int selectedIndex = Math.Max(this.TabControl.SelectedIndex, 0);
+            (this.TabControl.ItemContainerGenerator.ContainerFromIndex(selectedIndex) as UIElement)?.Focus();
+        }
+    }
+
+    private FrameworkElement? GetBackstage()
+    {
+        if (this.Menu is null)
+        {
+            return null;
+        }
+
+        var control = this.Menu as Backstage ?? UIHelper.FindImmediateVisualChild<Backstage>(this.Menu, IsKeyTipTargetVisible);
+
+        if (control is null)
+        {
+            return null;
+        }
+
+        return control.IsOpen
+            ? control
+            : null;
+    }
+
+    private FrameworkElement? GetApplicationMenu()
+    {
+        if (this.Menu is null)
+        {
+            return null;
+        }
+
+        var control = this.Menu as ApplicationMenu ?? UIHelper.FindImmediateVisualChild<ApplicationMenu>(this.Menu, IsKeyTipTargetVisible);
+
+        if (control is null)
+        {
+            return null;
+        }
+
+        return control.IsDropDownOpen
+            ? control
+            : null;
+    }
+
+    private FrameworkElement? GetStartScreen()
+    {
+        var control = this.StartScreen;
+
+        if (control is null)
+        {
+            return null;
+        }
+
+        return control.IsOpen
+            ? control
+            : null;
+    }
+
+    private static bool IsKeyTipTargetVisible(FrameworkElement obj)
+    {
+        return obj.Visibility == Visibility.Visible;
+    }
+
+    #endregion
 
     private void HandleKeyTipKeys_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {

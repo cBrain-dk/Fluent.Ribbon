@@ -23,7 +23,7 @@ public class KeyTipService
     private ScopeGuard? windowPreviewKeyDownScopeGuard;
 
     // Host element, usually this is Ribbon
-    private readonly Ribbon ribbon;
+    private readonly IKeyTipServiceHost host;
 
     // Timer to show KeyTips with delay
     private readonly DispatcherTimer timer;
@@ -91,12 +91,21 @@ public class KeyTipService
     #region Initialization
 
     /// <summary>
-    /// Default constrctor
+    /// Creates a service for a ribbon.
     /// </summary>
-    /// <param name="ribbon">Host element</param>
+    /// <param name="ribbon">Host ribbon.</param>
     public KeyTipService(Ribbon ribbon)
+        : this((IKeyTipServiceHost)(ribbon ?? throw new ArgumentNullException(nameof(ribbon))))
     {
-        this.ribbon = ribbon ?? throw new ArgumentNullException(nameof(ribbon));
+    }
+
+    /// <summary>
+    /// Creates a service for a key-tip host.
+    /// </summary>
+    /// <param name="host">Host element.</param>
+    public KeyTipService(IKeyTipServiceHost host)
+    {
+        this.host = host ?? throw new ArgumentNullException(nameof(host));
 
         // Initialize timer
         this.timer = new DispatcherTimer(TimeSpan.FromSeconds(0.7), DispatcherPriority.SystemIdle, this.OnDelayedShow, Dispatcher.CurrentDispatcher);
@@ -118,12 +127,12 @@ public class KeyTipService
         this.attached = true;
 
         // KeyTip service must not work in design mode
-        if (DesignerProperties.GetIsInDesignMode(this.ribbon))
+        if (DesignerProperties.GetIsInDesignMode(this.host.AsControl()))
         {
             return;
         }
 
-        this.window = Window.GetWindow(this.ribbon);
+        this.window = Window.GetWindow(this.host.AsControl());
         if (this.window is null)
         {
             return;
@@ -185,7 +194,7 @@ public class KeyTipService
         // Yes this looks awkward, calling the PopupService here, but the alternative would be to let the PopupService know about windows.
         if (ShouldDismissAllPopups(message, wParam))
         {
-            PopupService.RaiseDismissPopupEvent(this.ribbon, DismissPopupMode.Always, DismissPopupReason.ApplicationLostFocus);
+            PopupService.RaiseDismissPopupEvent(this.host.AsControl(), DismissPopupMode.Always, DismissPopupReason.ApplicationLostFocus);
             PopupService.RaiseDismissPopupEvent(Mouse.Captured, DismissPopupMode.Always, DismissPopupReason.ApplicationLostFocus);
             PopupService.RaiseDismissPopupEvent(Keyboard.FocusedElement, DismissPopupMode.Always, DismissPopupReason.ApplicationLostFocus);
         }
@@ -207,7 +216,7 @@ public class KeyTipService
 
     private void OnWindowPreviewKeyDown(object? sender, KeyEventArgs e)
     {
-        if (this.ribbon.IsKeyTipHandlingEnabled == false)
+        if (this.host.IsKeyTipHandlingEnabled == false)
         {
             return;
         }
@@ -227,8 +236,8 @@ public class KeyTipService
             return;
         }
 
-        if (this.ribbon.IsCollapsed
-            || this.ribbon.IsEnabled == false
+        if (this.host.IsCollapsed
+            || this.host.IsEnabled == false
             || this.window is null
             || this.window.IsActive == false)
         {
@@ -323,7 +332,7 @@ public class KeyTipService
                 }
 
                 // KeyTipService should dismiss keytips if the first key does not match any keytips #908
-                if (this.activeAdornerChain.AdornedElement is Ribbon)
+                if (ReferenceEquals(this.activeAdornerChain.AdornedElement, this.host.AsControl()))
                 {
                     this.Terminate();
                     return;
@@ -350,13 +359,13 @@ public class KeyTipService
 
     private void OnWindowKeyUp(object sender, KeyEventArgs e)
     {
-        if (this.ribbon.IsKeyTipHandlingEnabled == false)
+        if (this.host.IsKeyTipHandlingEnabled == false)
         {
             return;
         }
 
-        if (this.ribbon.IsCollapsed
-            || this.ribbon.IsEnabled == false
+        if (this.host.IsCollapsed
+            || this.host.IsEnabled == false
             || this.window is null
             || this.window.IsActive == false)
         {
@@ -490,10 +499,7 @@ public class KeyTipService
 
         // Special behavior for backstage, application menu and start screen.
         // If one of those is open we have to forward key tips directly to them.
-        var keyTipsTarget = this.GetStartScreen()
-                            ?? this.GetBackstage()
-                            ?? this.GetApplicationMenu()
-                            ?? this.ribbon;
+        var keyTipsTarget = this.host.GetKeyTipServiceTarget();
 
         if (keyTipsTarget is null)
         {
@@ -504,17 +510,15 @@ public class KeyTipService
 
         this.backUpFocusedControl = null;
 
-        // If focus is inside the Ribbon already we don't want to jump around after finishing with KeyTips
-        if (UIHelper.GetParent<Ribbon>(Keyboard.FocusedElement as DependencyObject) is null)
+        // If focus is inside the host already we don't want to jump around after finishing with KeyTips
+        if (this.host.IsKeyboardFocusWithin == false)
         {
             this.backUpFocusedControl = FocusWrapper.GetWrapperForCurrentFocus();
         }
 
-        if (keyTipsTarget is Ribbon && this.ribbon.TabControl != null)
+        if (this.host.CanSetFocusFromKeyTipService(keyTipsTarget))
         {
-            // Focus ribbon
-            int selectedIndex = Math.Max(this.ribbon.TabControl.SelectedIndex, 0);
-            (this.ribbon.TabControl.ItemContainerGenerator.ContainerFromIndex(selectedIndex) as UIElement)?.Focus();
+            this.host.SetFocusFromKeyTipService();
         }
 
         this.ClearUserInput();
@@ -524,72 +528,16 @@ public class KeyTipService
             this.activeAdornerChain.Terminated -= this.OnAdornerChainTerminated;
         }
 
-        // to mimik the Office behavior we always attach the adorner to the ribbon
-        this.activeAdornerChain = new KeyTipAdorner(this.ribbon, this.ribbon, null);
+        // To mimic Office behavior we always attach the adorner to the host.
+        var hostControl = this.host.AsControl();
+        this.activeAdornerChain = new KeyTipAdorner(hostControl, hostControl, null);
         this.activeAdornerChain.Terminated += this.OnAdornerChainTerminated;
         this.activeAdornerChain.Attach();
 
-        // continuation of Office mimik: if the real target wasn't the ribbon we immediately forward to the target control
-        if (keyTipsTarget is not Ribbon)
+        // If the real target differs from the host, immediately forward to the target control.
+        if (ReferenceEquals(keyTipsTarget, hostControl) == false)
         {
             this.activeAdornerChain.Forward(string.Empty, keyTipsTarget, false);
         }
-    }
-
-    private FrameworkElement? GetBackstage()
-    {
-        if (this.ribbon.Menu is null)
-        {
-            return null;
-        }
-
-        var control = this.ribbon.Menu as Backstage ?? UIHelper.FindImmediateVisualChild<Backstage>(this.ribbon.Menu, IsVisible);
-
-        if (control is null)
-        {
-            return null;
-        }
-
-        return control.IsOpen
-            ? control
-            : null;
-    }
-
-    private FrameworkElement? GetApplicationMenu()
-    {
-        if (this.ribbon.Menu is null)
-        {
-            return null;
-        }
-
-        var control = this.ribbon.Menu as ApplicationMenu ?? UIHelper.FindImmediateVisualChild<ApplicationMenu>(this.ribbon.Menu, IsVisible);
-
-        if (control is null)
-        {
-            return null;
-        }
-
-        return control.IsDropDownOpen
-            ? control
-            : null;
-    }
-
-    private FrameworkElement? GetStartScreen()
-    {
-        var control = this.ribbon.StartScreen;
-
-        if (control is null)
-        {
-            return null;
-        }
-
-        return control.IsOpen
-            ? control
-            : null;
-    }
-
-    private static bool IsVisible(FrameworkElement obj)
-    {
-        return obj.Visibility == Visibility.Visible;
     }
 }
