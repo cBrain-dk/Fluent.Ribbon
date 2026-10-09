@@ -4,7 +4,7 @@ Verified 2026-10-09 under F2DEV-110306. This record accompanies `fluent-wrapper`
 https://github.com/cBrain-dk/Fluent.Ribbon. The published package and source-mode baseline use the
 code commit below; later documentation commits on the branch do not advance that baseline.
 
-## Baseline and package
+## Original Fluent base and package
 
 | Item | Verified value |
 | --- | --- |
@@ -18,8 +18,8 @@ code commit below; later documentation commits on the branch do not advance that
 | Source-mode checkout | `D:/git/fluent-wrapper-11.0.2-cbrain.1`, detached at the patched code commit |
 
 `D:/git/cbrain.Fluent.Ribbon-wrapper` is the working branch checkout, including this record.
-For the later F2 bump, pin the exact package version and set `FluentSourcePath` to the immutable
-source checkout above, verifying HEAD and clean sources. Do not use a floating branch tip for source
+The original base probes pin the exact Fluent package version and use the immutable
+source checkout above. The later F2 bump must instead pin the native cBrain wrapper package and set `FluentSourcePath` to `D:/git/cbrain-fluent-wrapper-11.0.2-cbrain.1` at `9d17c8376e8c47b40c57e735feb9f7ebd44df4ed`, as recorded below. Verify HEAD and clean sources; do not use a floating branch tip for source
 mode. Both `UseFluentSource` settings must resolve the same code commit and dependencies.
 
 The original `D:/git/cbrain.Fluent.Ribbon` remains clean on `cdevelop` at
@@ -31,12 +31,12 @@ receive a new unused package version; never replace this published version.
 
 | Patch | Reason and contract | Upstream contribution | Retirement condition |
 | --- | --- | --- | --- |
-| Keytip service host | The owned CommandBar is an ItemsControl rather than a Ribbon. `Ribbon` implements `IKeyTipServiceHost`; `KeyTipService(IKeyTipServiceHost)` accepts that host, while the existing `KeyTipService(Ribbon)` overload remains. Newer upstream service internals, Ribbon menus/start screen and focus behavior remain. | [PR 1286](https://github.com/fluentribbon/Fluent.Ribbon/pull/1286), open, targeting develop; contribution commit `5594775e6c630645096103870fcf402351f2b010` | A stable release exposes the equivalent host contract and passes the direct-child activation, cancellation, execution, focus and Danish contracts. |
-| Quick-access factories | Derived seam controls need their own instances with all inherited clone setup. Allocation alone calls the protected factories; bindings, private field assignments, handlers, size and split-button quick-access prohibition stay in `CreateQuickAccessItem()`. | [PR 1285](https://github.com/fluentribbon/Fluent.Ribbon/pull/1285), open, targeting develop; contribution commit `fbf66af545b43284bf95a40a47c4231ef58d4b47` | A stable release provides equivalent override hooks and both factory tests prove those hooks are used with inherited setup. |
+| Keytip service host | The owned CommandBar is an ItemsControl rather than a Ribbon. `Ribbon` implements `IKeyTipServiceHost`; `KeyTipService(IKeyTipServiceHost)` accepts that host, while the existing `KeyTipService(Ribbon)` overload remains. Newer upstream service internals, Ribbon menus/start screen and focus behavior remain. | [PR 1286](https://github.com/fluentribbon/Fluent.Ribbon/pull/1286), closed by the owner, unmerged; historical contribution commit `5594775e6c630645096103870fcf402351f2b010` | A stable release exposes the equivalent host contract and passes the direct-child activation, cancellation, execution, focus and Danish contracts. |
+| Quick-access factories | Derived seam controls need their own instances with all inherited clone setup. Allocation alone calls the protected factories; bindings, private field assignments, handlers, size and split-button quick-access prohibition stay in `CreateQuickAccessItem()`. | [PR 1285](https://github.com/fluentribbon/Fluent.Ribbon/pull/1285), closed by the owner, unmerged; historical contribution commit `fbf66af545b43284bf95a40a47c4231ef58d4b47` | A stable release provides equivalent override hooks and both factory tests prove those hooks are used with inherited setup. |
 
-Each contribution includes its own tests and builds independently. Upstream acceptance remains
-pending and does not block the migration. Retire a patch only after the released equivalent passes
-its tests; a merged PR alone is insufficient.
+The owner withdrew both upstream contributions. The cBrain derived-control feature and its tests
+belong to this wrapper fork. No further upstream submission is authorized; any external source
+transfer requires explicit owner approval for the material and destination.
 
 Public host shape:
 
@@ -61,9 +61,10 @@ protected virtual ComboBox CreateQuickAccessComboBox();
 protected virtual SplitButton CreateQuickAccessSplitButton();
 ```
 
-Their base implementations return fresh instances. Derived factories return a fresh non-null
-instance of the declared type. Consumer cutover overrides them for `RibbonComboBox` and
-`RibbonSplitButton`, calls inherited creation setup, then sets `IsElementInQuickAccessToolBar`.
+These hooks remain private-fork extension points. Their base implementations return fresh instances.
+Derived factories return a fresh non-null
+instance of the declared type. The native cBrain wrapper overrides them for `RibbonComboBox` and
+`RibbonSplitButton`, calls inherited creation setup, then sets `IsElementInQuickAccessToolBar`. Further F2 seam subclasses override only the factories and inherit that public creation/marking.
 
 ## Assets, dependencies and identity
 
@@ -151,7 +152,8 @@ The pinned-source run is `Source-07d137efa0844c67be199ad393003d3d`.
 
 ## Consumer continuation
 
-The wrapper prerequisite is complete. WPF tools/seam extraction and the F2 dependency bump have
+The original Fluent base was delivered; the native cBrain extension awaits publication approval.
+WPF tools/seam extraction and the F2 dependency bump have
 not started. Product solution builds and repository-root `BuildSolutions.ps1` remain gates after
 consumer edits; wrapper validation alone does not validate F2's cutover.
 
@@ -161,3 +163,63 @@ explicit child-style sizing (small/middle button heights 40, small button/drop-d
 and retain the public host/interface constructor before changing the seam package reference.
 DarkBlue stays excluded from theme-specific checks, and WebViewEditorApplication stays excluded
 from automated captures. Normal theme-resource compilation continues.
+
+## Native cBrain controls — owner correction, 2026-10-09
+
+`CBrain.Fluent.Ribbon` is a sibling production project inside this fork. Its real public types are
+`CBrain.Fluent.Ribbon.RibbonComboBox` and `RibbonSplitButton`. Their protected factory overrides
+allocate their corresponding cBrain types; public creation delegates all clone setup to Fluent,
+sets `IsElementInQuickAccessToolBar=true` on the returned item, and returns it. They remain
+inheritable; further subclasses override the factory when they need their own exact clone type.
+No templates, dependency properties or upstream production logic were copied.
+
+`CBrain.Fluent.Ribbon.Tests` is the native test project. Its two STA tests instantiate those actual
+production classes, call `CreateQuickAccessItem()`, assert the exact cBrain runtime type and a fresh
+object, and verify the QAT marker plus inherited editable/text/checkable/Small/no-re-add setup.
+The synthetic-marker factory fixture was removed from `Fluent.Ribbon.Tests`. Both new projects
+are in the solution; Nuke Test runs the native project before the upstream project. The CI result
+collector recurses through the per-project TRX directories. No external CI job was run.
+
+Tests-first commit `95efb962` proves runtime RED: both plain derived controls returned Fluent base
+objects. Native implementation commit **`9d17c8376e8c47b40c57e735feb9f7ebd44df4ed`** passes **2/2**
+on net462, net6.0-windows and net8.0-windows, in both source and exact-base-package modes.
+A separate net48 consumer reuses that native fixture and passes **2/2** with the actual local nupkg
+and **2/2** with the pinned source checkout. Core Fluent production files are unchanged from the
+published base commit `818659a55cc95ada45f2644c15dcce8df005deaf`.
+
+The new artifact is **`CBrain.Fluent.Ribbon 11.0.2-cbrain.1`**, containing the cBrain DLL/XML for all
+three target groups and depending on exact **`Fluent.Ribbon [11.0.2-cbrain.1]`**. Inherited central
+pinning additionally records ControlzEx 7.0.3 and System.Memory 4.6.3 or System.Text.Json 8.0.5.
+Its inspected repository SHA is the native implementation commit above; assembly identity is
+`CBrain.Fluent.Ribbon, Version=11.0.0.0, Culture=neutral, PublicKeyToken=3e436e32a8c5546f`.
+Local nupkg SHA256: **`F242AB4A42C443A6773DA44E397FE345D7859C2BB251D85AE7C2721E785E2E66`**.
+This is a new package ID; the original published Fluent artifact is unchanged.
+
+**Publication pending:** automatic approval review rejected publication of this new package to
+`https://git.cbrain.net/api/packages/F2U/nuget/index.json`, requiring explicit owner approval for
+package publication under the transfer rule. No upload occurred. The version was verified unused.
+The package remains at `C:/tmp/fluent/wrapper-owned-controls/package/` for that final approval gate.
+No GitHub push or new upstream PR was made. Both implementation commits and the native source tag
+remain local.
+
+The verified native source checkout is `D:/git/cbrain-fluent-wrapper-11.0.2-cbrain.1`, at the native
+implementation SHA, tagged locally `cbrain-fluent-wrapper-11.0.2-cbrain.1`. The later F2 seam must
+reference this cBrain project/package, with Fluent retained transitively. Its controls may derive
+further and override the protected factories to preserve their own seam types. Package mode uses
+the existing published Fluent base; source mode uses the identical Fluent production source tree
+included at this native wrapper SHA. Publication/source pins must be closed before the bump.
+
+Native build/test/pack entry point: `Build-CBrainWrapper.ps1`. `-FluentMode Source` and
+`-FluentMode Package` run the native tests on all three targets using VS MSBuild/VSTest.
+`-FluentMode Package -Pack` produces the cBrain artifact with the inspected version/commit metadata;
+Nuke Pack still produces the base Fluent artifact. Evidence is in
+`C:/tmp/fluent/wrapper-owned-controls`, including RED/green TRX, package inspection and
+`net48-consumer/Run-Net48.ps1`. Nuke integration compilation succeeded with pre-existing dependency
+security-audit warnings. No F2 consumer code or dependency cutover was performed.
+
+After moving the two cBrain cases out of the upstream fixture, the complete original suites were
+rebuilt and rerun: **239/240 executed cases pass** on each of net462, net6.0-windows and
+net8.0-windows. The same unchanged owner-accepted `TestImmediateDismissIfNoMatchesInRootLayer`
+is the sole failure on every target; runner exits are 1. Existing explicit tests remain unselected
+by the normal runner. Native exact-type tests stay in their own project and pass independently.
+TRX evidence: `C:/tmp/fluent/wrapper-owned-controls/upstream-results/`.
