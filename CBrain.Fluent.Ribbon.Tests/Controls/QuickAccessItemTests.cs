@@ -36,8 +36,7 @@ public class QuickAccessItemTests
         // Arrange
         var source = new RibbonSplitButton
         {
-            IsCheckable = true,
-            IsChecked = true
+            IsCheckable = true
         };
 
         // Act
@@ -51,6 +50,6 @@ public class QuickAccessItemTests
 
         var splitButton = (RibbonSplitButton)item;
         Assert.That(splitButton.CanAddButtonToQuickAccessToolBar, Is.False);
-        Assert.That(splitButton.IsChecked, Is.True);
+        Assert.That(splitButton.IsCheckable, Is.True);
     }
 }

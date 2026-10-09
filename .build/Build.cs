@@ -132,14 +132,17 @@ class Build : NukeBuild
     {
         TestResultsDir.CreateOrCleanDirectory();
 
-        DotNetTest(_ => _
-            .SetConfiguration(Configuration)
-            .SetProjectFile(Solution.Fluent_Ribbon_Tests)
-            .EnableNoBuild()
-            .EnableNoRestore()
-            .AddLoggers("trx")
-            .SetResultsDirectory(TestResultsDir)
-            .SetVerbosity(DotNetVerbosity.normal));
+        foreach (var testProject in new[] { Solution.CBrain_Fluent_Ribbon_Tests, Solution.Fluent_Ribbon_Tests })
+        {
+            DotNetTest(_ => _
+                .SetConfiguration(Configuration)
+                .SetProjectFile(testProject)
+                .EnableNoBuild()
+                .EnableNoRestore()
+                .AddLoggers("trx")
+                .SetResultsDirectory(TestResultsDir / testProject.Name)
+                .SetVerbosity(DotNetVerbosity.normal));
+        }
     });
 
     // ReSharper disable once UnusedMember.Local

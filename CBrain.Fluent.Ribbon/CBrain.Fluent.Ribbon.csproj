@@ -3,6 +3,7 @@
     <RootNamespace>CBrain.Fluent.Ribbon</RootNamespace>
     <AssemblyName>CBrain.Fluent.Ribbon</AssemblyName>
     <Nullable>enable</Nullable>
+    <UseFluentSource Condition="'$(UseFluentSource)' == ''">true</UseFluentSource>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Company>cBrain</Company>
     <Product>CBrain.Fluent.Ribbon</Product>
@@ -14,6 +15,7 @@
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Fluent.Ribbon\Fluent.Ribbon.csproj" />
+    <ProjectReference Include="..\Fluent.Ribbon\Fluent.Ribbon.csproj" Condition="'$(UseFluentSource)' == 'true'" />
+    <PackageReference Include="Fluent.Ribbon" VersionOverride="[11.0.2-cbrain.1]" Condition="'$(UseFluentSource)' != 'true'" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
+Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -62,12 +62,24 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ISSUE_TEMPLATE", "ISSUE_TEM
 		.github\ISSUE_TEMPLATE\issue.md = .github\ISSUE_TEMPLATE\issue.md
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CBrain.Fluent.Ribbon", "CBrain.Fluent.Ribbon\CBrain.Fluent.Ribbon.csproj", "{0E5A7DB0-700F-4FE5-90ED-3021BDCC0F11}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CBrain.Fluent.Ribbon.Tests", "CBrain.Fluent.Ribbon.Tests\CBrain.Fluent.Ribbon.Tests.csproj", "{E0E754DF-432C-430F-B984-40261B04816B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0E5A7DB0-700F-4FE5-90ED-3021BDCC0F11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E5A7DB0-700F-4FE5-90ED-3021BDCC0F11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E5A7DB0-700F-4FE5-90ED-3021BDCC0F11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E5A7DB0-700F-4FE5-90ED-3021BDCC0F11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0E754DF-432C-430F-B984-40261B04816B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0E754DF-432C-430F-B984-40261B04816B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0E754DF-432C-430F-B984-40261B04816B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0E754DF-432C-430F-B984-40261B04816B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CAFED543-B3F2-4C29-8A81-95134816BD84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CAFED543-B3F2-4C29-8A81-95134816BD84}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFFE1910-4918-4710-8F33-86B584D41316}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
