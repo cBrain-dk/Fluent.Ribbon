@@ -22,6 +22,7 @@ public class QuickAccessItemTests
 
         // Assert
         Assert.That(item, Is.TypeOf<RibbonComboBox>());
+        Assert.That(item.GetType().Assembly, Is.SameAs(typeof(global::Fluent.ComboBox).Assembly));
         Assert.That(item, Is.Not.SameAs(source));
         Assert.That(global::Fluent.RibbonProperties.GetIsElementInQuickAccessToolBar(item), Is.True);
 
@@ -44,6 +45,7 @@ public class QuickAccessItemTests
 
         // Assert
         Assert.That(item, Is.TypeOf<RibbonSplitButton>());
+        Assert.That(item.GetType().Assembly, Is.SameAs(typeof(global::Fluent.SplitButton).Assembly));
         Assert.That(item, Is.Not.SameAs(source));
         Assert.That(global::Fluent.RibbonProperties.GetIsElementInQuickAccessToolBar(item), Is.True);
         Assert.That(global::Fluent.RibbonProperties.GetSize(item), Is.EqualTo(global::Fluent.RibbonControlSize.Small));
