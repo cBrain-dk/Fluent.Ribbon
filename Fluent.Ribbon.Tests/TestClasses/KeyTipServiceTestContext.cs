@@ -16,9 +16,17 @@ internal sealed class KeyTipServiceTestContext : IDisposable
         var panel = new StackPanel();
         panel.Children.Add(host);
         panel.Children.Add(this.OutsideFocusTarget);
-        this.Window = new TestRibbonWindow(panel);
+        this.Window = new Window
+        {
+            Title = "Fluent keytip service contract tests",
+            Width = 640,
+            Height = 300,
+            ShowActivated = true,
+            Content = panel
+        };
         try
         {
+            this.Window.Show();
             this.Window.Activate();
             this.Window.UpdateLayout();
             UIHelper.DoEvents();
@@ -34,7 +42,7 @@ internal sealed class KeyTipServiceTestContext : IDisposable
         }
     }
 
-    public TestRibbonWindow Window { get; }
+    public Window Window { get; }
 
     public TextBox OutsideFocusTarget { get; }
 
@@ -56,7 +64,14 @@ internal sealed class KeyTipServiceTestContext : IDisposable
 
     public void Dispose()
     {
-        this.Service.Detach();
-        this.Window.Dispose();
+        try
+        {
+            this.Service.Detach();
+        }
+        finally
+        {
+            this.Window.Close();
+            UIHelper.DoEvents();
+        }
     }
 }
