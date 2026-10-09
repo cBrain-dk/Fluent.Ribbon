@@ -9,7 +9,7 @@ using NUnit.Framework;
 
 internal sealed class KeyTipServiceTestContext : IDisposable
 {
-    public KeyTipServiceTestContext(Control host, KeyTipService service)
+    public KeyTipServiceTestContext(Control host, Fluent.KeyTipService service)
     {
         this.Service = service;
         this.OutsideFocusTarget = new TextBox();
@@ -38,7 +38,7 @@ internal sealed class KeyTipServiceTestContext : IDisposable
 
     public TextBox OutsideFocusTarget { get; }
 
-    public KeyTipService Service { get; }
+    public Fluent.KeyTipService Service { get; }
 
     public void PressKey(Key key)
     {
