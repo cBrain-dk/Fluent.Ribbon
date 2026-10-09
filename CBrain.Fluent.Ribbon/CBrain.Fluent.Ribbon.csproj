@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <RootNamespace>CBrain.Fluent.Ribbon</RootNamespace>
+    <AssemblyName>CBrain.Fluent.Ribbon</AssemblyName>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Company>cBrain</Company>
+    <Product>CBrain.Fluent.Ribbon</Product>
+    <Authors>cBrain</Authors>
+    <Copyright>Copyright cBrain</Copyright>
+    <PackageId>CBrain.Fluent.Ribbon</PackageId>
+    <Description>cBrain-owned controls extending the Fluent Ribbon wrapper.</Description>
+    <RepositoryUrl>https://github.com/cBrain-dk/Fluent.Ribbon.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Fluent.Ribbon\Fluent.Ribbon.csproj" />
+  </ItemGroup>
+</Project>
