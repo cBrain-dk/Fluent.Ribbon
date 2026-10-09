@@ -445,10 +445,8 @@ public class SplitButton : DropDownButton, IToggleButton, ICommandSource, IKeyTi
     /// <inheritdoc />
     public override FrameworkElement CreateQuickAccessItem()
     {
-        var buttonForQAT = new SplitButton
-        {
-            CanAddButtonToQuickAccessToolBar = false
-        };
+        var buttonForQAT = this.CreateQuickAccessSplitButton();
+        buttonForQAT.CanAddButtonToQuickAccessToolBar = false;
 
         buttonForQAT.Click += (sender, e) => this.RaiseEvent(e);
         buttonForQAT.DropDownOpened += this.OnQuickAccessOpened;
@@ -458,6 +456,15 @@ public class SplitButton : DropDownButton, IToggleButton, ICommandSource, IKeyTi
         this.BindQuickAccessItemDropDownEvents(buttonForQAT);
         this.quickAccessButton = buttonForQAT;
         return buttonForQAT;
+    }
+
+    /// <summary>
+    /// Creates the split button used for the quick-access item.
+    /// </summary>
+    /// <returns>A fresh, non-null split button.</returns>
+    protected virtual SplitButton CreateQuickAccessSplitButton()
+    {
+        return new SplitButton();
     }
 
     /// <inheritdoc />

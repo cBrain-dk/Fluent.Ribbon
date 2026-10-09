@@ -415,7 +415,7 @@ public class ComboBox : System.Windows.Controls.ComboBox, IQuickAccessItemProvid
     /// <inheritdoc />
     public virtual FrameworkElement CreateQuickAccessItem()
     {
-        var combo = new ComboBox();
+        var combo = this.CreateQuickAccessComboBox();
         RibbonControl.BindQuickAccessItem(this, combo);
 
         RibbonControl.Bind(this, combo, nameof(this.ActualWidth), MaxWidthProperty, BindingMode.OneWay);
@@ -442,6 +442,15 @@ public class ComboBox : System.Windows.Controls.ComboBox, IQuickAccessItemProvid
         this.quickAccessCombo = combo;
         this.UpdateQuickAccessCombo();
         return combo;
+    }
+
+    /// <summary>
+    /// Creates the combo box used for the quick-access item.
+    /// </summary>
+    /// <returns>A fresh, non-null combo box.</returns>
+    protected virtual ComboBox CreateQuickAccessComboBox()
+    {
+        return new ComboBox();
     }
 
     private void OnQuickAccessTextBoxGetFocus(object? sender, RoutedEventArgs e)
