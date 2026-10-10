@@ -28,7 +28,7 @@ From the repository root, use the serial Visual Studio MSBuild/VSTest entry poin
 ./Build-CBrainWrapper.ps1 -FluentMode Package
 ```
 
-Each mode builds and runs net462, net6.0-windows and net8.0-windows. Source mode is the default
+Each mode builds and runs net48 and net10.0-windows. Source mode is the default
 and references `Fluent.Ribbon/Fluent.Ribbon.csproj`. Package mode restores exactly
 `Fluent.Ribbon [11.0.2-0.2]` from the cBrain F2U feed using the repository's package-source
 mapping. Package mode becomes available after the approved package publication.

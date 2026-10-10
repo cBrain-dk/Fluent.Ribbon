@@ -1,6 +1,6 @@
 namespace Fluent.Tests.Themes;
 
-#if NET462
+#if NETFRAMEWORK
 #else
 using System.Globalization;
 using System.IO;

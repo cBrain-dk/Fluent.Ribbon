@@ -12,11 +12,11 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0-windows;net6.0-windows;net462</TargetFrameworks>
+    <TargetFrameworks>net48;net10.0-windows</TargetFrameworks>
     <LangVersion>latestmajor</LangVersion>
 
     <IsBuildingForLegacyFramework>false</IsBuildingForLegacyFramework>
-    <IsBuildingForLegacyFramework Condition="'$(TargetFramework)' == 'net462'">true</IsBuildingForLegacyFramework>
+    <IsBuildingForLegacyFramework Condition="'$(TargetFramework)' == 'net48'">true</IsBuildingForLegacyFramework>
 
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>

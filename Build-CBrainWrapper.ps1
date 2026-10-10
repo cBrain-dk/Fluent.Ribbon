@@ -18,7 +18,7 @@ $commonArguments = @("/p:Configuration=$Configuration", '/p:Platform=AnyCPU', '/
 & $msbuild $testProject /restore /t:Rebuild "/p:UseFluentSource=$sourceMode" @commonArguments
 if ($LASTEXITCODE -ne 0) { throw 'Native wrapper test build failed.' }
 
-foreach ($framework in @('net462', 'net6.0-windows', 'net8.0-windows')) {
+foreach ($framework in @('net48', 'net10.0-windows')) {
     $testAssembly = Join-Path $PSScriptRoot "bin\CBrain.Fluent.Ribbon.Tests\$Configuration\$framework\CBrain.Fluent.Ribbon.Tests.dll"
     $frameworkResults = Join-Path $ResultsDirectory "$FluentMode\$framework"
     New-Item -ItemType Directory -Path $frameworkResults -Force | Out-Null
