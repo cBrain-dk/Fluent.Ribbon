@@ -1,8 +1,8 @@
 # cBrain Fluent wrapper baseline
 
 Current delivery: a single `Fluent.Ribbon` package and `Fluent.dll`, including the private cBrain
-control additions. Verified 2026-10-09 under F2DEV-110306. Code and native tests remain in the local
-`fluent-wrapper` branch; no new GitHub push or upstream PR is authorized.
+control additions. Verified 2026-10-10 under F2DEV-110306. The owner authorized source push to the cBrain GitHub repository; code and native tests live in the
+`fluent-wrapper` branch at https://github.com/cBrain-dk/Fluent.Ribbon. Packing and package publication are on hold; no upstream PR is authorized.
 
 ## Current baseline
 
@@ -10,13 +10,13 @@ control additions. Verified 2026-10-09 under F2DEV-110306. Code and native tests
 | --- | --- |
 | Upstream stable release | v11.0.2, published 2026-01-19 |
 | Upstream SHA | `ce56b60ca892d1505b7f80826330c676f41fda0a` |
-| Combined implementation SHA | `751837ee0888b191a796c642bdc925b66762f910` |
-| Package | `Fluent.Ribbon 11.0.2-cbrain.2` |
-| Local package SHA256 | `0A7F675BE084008F60B347ADD32AD019E603264E2CE84EF6D9D5CF02FD6108F7` |
+| Current source SHA | `eedff87ed818da9dc3c64da153f5825a7720d752` |
+| Planned package | `Fluent.Ribbon 11.0.2-0.2` |
+| Local package SHA256 | Not packed for this version |
 | Intended private feed | `https://git.cbrain.net/api/packages/F2U/nuget/index.json` |
-| Publication | Pending specific owner approval; not uploaded |
-| Matching source checkout | `D:/git/fluent-wrapper-11.0.2-cbrain.2`, at the implementation SHA |
-| Local source tag | `fluent-wrapper-11.0.2-cbrain.2` |
+| Packing / publication | On hold at the owner's request; this version is neither packed nor uploaded |
+| Matching source checkout | `D:/git/fluent-wrapper-11.0.2-0.2`, at the current source SHA |
+| Release tag | Not created while packing/publication are on hold |
 | Assembly identity | `Fluent, Version=11.0.0.0, Culture=neutral, PublicKeyToken=3e436e32a8c5546f` |
 
 The later F2 bump must pin this exact package and set `FluentSourcePath` to the matching checkout,
@@ -48,20 +48,22 @@ No separate cBrain production assembly/package remains; cBrain namespace is pres
 `CBrain.Fluent.Ribbon.Tests` stays a native, non-packable STA test project. Its two cases use the
 actual production classes and assert exact clone type, fresh objects, QAT marking, inherited setup
 and assembly identity shared with the Fluent base controls. No synthetic derived marker types,
-private reflection or timer sleeps. Source mode references Fluent; package mode pins exact `.2`.
+private reflection or timer sleeps. Source mode references Fluent; package mode pins exact `11.0.2-0.2` and awaits the future package.
 The solution and Nuke test target include it; TRX collection recurses through project directories.
 
 The owner closed the earlier upstream [factory PR1285](https://github.com/fluentribbon/Fluent.Ribbon/pull/1285)
 and [host PR1286](https://github.com/fluentribbon/Fluent.Ribbon/pull/1286), unmerged. These are historical
-contributions, not active delivery gates. No further external transfer is authorized. Rebase future
+contributions, not active delivery gates. Only source push to the owner-authorized https://github.com/cBrain-dk/Fluent.Ribbon repository is permitted; upstream PRs and package publication remain unauthorized. Rebase future
 baselines on stable upstream releases; retire private host/factory patches only if a released
 equivalent passes the native clone and CommandBar/keytip contracts. The cBrain control feature stays
 owned by the fork.
 
 ## Normal package workflow
 
+The format is `<Fluent version>-0.<cBrain revision>`, matching remote `cdevelop`'s `7.0.0-0.80` at `ff5dbc768f12931d4f5b85aafcfefdbacc4cacf5`. The candidate retains cBrain revision 2 as `11.0.2-0.2`. Packing and publication are on hold; the command below documents the route for when the owner resumes that work.
+
 Version properties are maintained in `Fluent.Ribbon/Fluent.Ribbon.csproj`:
-`Version=11.0.2-cbrain.2`, `PackageVersion=$(Version)`, `AssemblyVersion=11.0.0.0`,
+`Version=11.0.2-0.2`, `PackageVersion=$(Version)`, `AssemblyVersion=11.0.0.0`,
 `FileVersion=11.0.2.0`, `InformationalVersion=$(Version)`. Project properties disable GitVersion's
 version/assembly-info overrides; Nuke Compile/Pack also no longer supply overriding version values.
 The SDK records the source revision. No command-line version workaround is needed. Nuke's legacy ZIP filenames still use GitVersion labels; the normal NuGet package workflow does not use those ZIPs.
@@ -77,14 +79,29 @@ use the normal internal `rdadm nuget push` route. Check the chosen version is st
 publication, never replace an existing version, and validate an isolated internal-feed restore
 with no local fallback. Preserve credentials in the established encrypted RDAdm mechanism.
 `Build-CBrainWrapper.ps1` builds/tests only; it no longer packs. Rebuilding can change package
-bytes; the recorded hash identifies this inspected artifact.
+bytes; the hash in the historical validation section identifies only the prior `11.0.2-cbrain.2` artifact.
 
 Targets remain net462, net6.0-windows and net8.0-windows. A net48 consumer selects net462; resolved
 legacy dependencies remain ControlzEx7.0.3, Microsoft.Xaml.Behaviors.Wpf1.1.135, Memory4.6.3,
 Buffers4.6.1, Vectors4.6.1 and Unsafe6.1.2. Modern groups include System.Text.Json8.0.5.
 The original upstream license and signing are preserved. Generated XAML is built normally.
 
-## Current validation
+## Current source validation — 2026-10-10
+
+Version-format commit `eedff87ed818da9dc3c64da153f5825a7720d752` changes only the Fluent project
+version, native package-test pin and control README. Real control/host behavior is unchanged.
+Native source tests pass **2/2** on net462, net6.0-windows and net8.0-windows, with VS18
+MSBuild/VSTest, Release/AnyCPU and normal warnings-as-errors. The pinned source net48 probe passes
+**9/9**, including real derived clones, shared Fluent assembly identity and Danish keytips.
+Evidence: `C:/tmp/fluent/wrapper-version-format/`, `wrapper-version-format-source.log` and
+`wrapper-version-format-net48-source.log` under `C:/tmp/fluent`.
+No packing, package-mode test or package publication was run for `11.0.2-0.2`.
+
+The evidence below belongs to the earlier local-only `11.0.2-cbrain.2` package from source
+`751837ee0888b191a796c642bdc925b66762f910`, SHA256
+`0A7F675BE084008F60B347ADD32AD019E603264E2CE84EF6D9D5CF02FD6108F7`; it does not identify the
+future package using the legacy version format. It was never published.
+## Prior combined-package validation — 2026-10-09
 
 Tests-first commit `f2cf40da` proves runtime RED: both native clone tests failed because their
 assembly was the separate cBrain DLL. The combined implementation passes both cases in the Fluent
@@ -99,13 +116,13 @@ assembly; exact type, cloning setup and QAT behavior are unchanged.
   remains unchanged `TestImmediateDismissIfNoMatchesInRootLayer`, accepted by the owner for the
   shared desktop. It remains included and runner exits are 1. Existing explicit tests remain
   unselected by the normal runner; process-local DPIUNAWARE avoids baseline DPI sizing failures.
-- Normal direct `dotnet pack` succeeds for all three targets, with project-owned version `.2` and
+- Normal direct `dotnet pack` succeeds for all three targets, with project-owned version `11.0.2-cbrain.2` and
   repository SHA `751837ee0888b191a796c642bdc925b66762f910`; no version command-line overrides.
   The package has only Fluent DLL/XML target assets, original license, expected dependencies and
   signing. Source/package tests prove the cBrain classes are inside that Fluent assembly.
 - Nuke integration compilation succeeds, retaining its pre-existing dependency security-audit
   warnings. No external CI job was triggered.
-- Internal publication and internal-feed restore are **pending**, not claimed by local validation.
+- This prior artifact was not published; it is superseded by the unpacked `11.0.2-0.2` candidate.
 
 Tooling: SDK10.0.401, VS18 Enterprise MSBuild/VSTest, Release/AnyCPU, normal warnings-as-errors.
 Builds/tests are serialized. The owner-requested direct `dotnet pack` workflow is exercised for
