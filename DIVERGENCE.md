@@ -10,7 +10,7 @@ control additions. Verified 2026-10-10 under F2DEV-110306. The owner authorized 
 | --- | --- |
 | Upstream stable release | v11.0.2, published 2026-01-19 |
 | Upstream SHA | `ce56b60ca892d1505b7f80826330c676f41fda0a` |
-| Current source SHA | `eedff87ed818da9dc3c64da153f5825a7720d752` |
+| Current source SHA | `840986f34c7e07da0fa5f5e69665c38aa32385d1` |
 | Planned package | `Fluent.Ribbon 11.0.2-0.2` |
 | Local package SHA256 | Not packed for this version |
 | Intended private feed | `https://git.cbrain.net/api/packages/F2U/nuget/index.json` |
@@ -81,12 +81,43 @@ with no local fallback. Preserve credentials in the established encrypted RDAdm 
 `Build-CBrainWrapper.ps1` builds/tests only; it no longer packs. Rebuilding can change package
 bytes; the hash in the historical validation section identifies only the prior `11.0.2-cbrain.2` artifact.
 
-Targets remain net462, net6.0-windows and net8.0-windows. A net48 consumer selects net462; resolved
+Build/package targets are exactly net48 and net10.0-windows. A net48 consumer selects net48; resolved
 legacy dependencies remain ControlzEx7.0.3, Microsoft.Xaml.Behaviors.Wpf1.1.135, Memory4.6.3,
 Buffers4.6.1, Vectors4.6.1 and Unsafe6.1.2. Modern groups include System.Text.Json8.0.5.
 The original upstream license and signing are preserved. Generated XAML is built normally.
 
 ## Current source validation — 2026-10-10
+
+Source `840986f34c7e07da0fa5f5e69665c38aa32385d1` declares exactly `net48;net10.0-windows`
+for the Fluent library, native tests and upstream test projects. The serial test helper uses
+those targets. net48 retains Framework-specific references, binding redirects and dependencies;
+the modern-only explicit palette generator fixture is excluded through `NETFRAMEWORK`.
+The version stays `11.0.2-0.2`; this candidate is not packed or published.
+
+The checked feature and main EsdhBrowser projects both declare only `TargetFrameworkVersion=v4.8`
+(`D:/projects/f2-main-fluent/client/EsdhBrowser/EsdhBrowser.csproj:46` and the equivalent
+`D:/projects/f2-main/` path). Their evaluated/generated assets confirm net48. No net10 EsdhBrowser
+project was found in the checked local workspaces. The owner-requested .NET 10 wrapper target is
+validated directly, independently of that application finding.
+
+- Tests-first build before the target edit fails with NETSDK1005 for missing net48 assets.
+- VS18 MSBuild restore/Rebuild, Release/AnyCPU, `/m:1 /nr:false`, succeeds for native tests,
+  upstream tests and the source consumer probe on both targets, with warnings-as-errors in the fork.
+- Native clone tests pass **2/2 per target** through `Build-CBrainWrapper.ps1 -FluentMode Source`.
+- Source consumer tests pass **9/9 per target**, including exact cBrain clone type, shared Fluent
+  assembly, host/focus behavior and Danish æ/ø/å through the real keyboard-layout path.
+- Full upstream suites pass **246/247 executed tests per target**. The sole unchanged failure is
+  `TestImmediateDismissIfNoMatchesInRootLayer`, accepted by the owner for the shared desktop.
+  It remains included; VSTest exits 1. Existing explicit tests remain unselected.
+- VSTest runs each assembly sequentially with `/Logger:trx` and no test filter. Upstream/consumer
+  runs use process-local `__COMPAT_LAYER=DPIUNAWARE`. No display settings are changed.
+
+Evidence: `C:/tmp/fluent/wrapper-supported-targets/` contains `net48-red.log`, native/upstream/
+consumer build logs and target-specific TRX/logs. Independent review is recorded at
+`C:/tmp/F2DEV-110306/two-target-review.md`. No pack target, package-mode test, NuGet upload or
+external CI job is run. Only the reviewed source branch is pushed to the authorized cBrain fork.
+
+## Prior version-format source validation — 2026-10-10
 
 Version-format commit `eedff87ed818da9dc3c64da153f5825a7720d752` changes only the Fluent project
 version, native package-test pin and control README. Real control/host behavior is unchanged.
