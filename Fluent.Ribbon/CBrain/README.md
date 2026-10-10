@@ -35,20 +35,20 @@ mapping. Package mode becomes available after the approved package publication.
 
 ## Package
 
-The version format is `<Fluent version>-0.<cBrain revision>`, matching `cdevelop`'s `7.0.0-0.80`. Version properties live in `Fluent.Ribbon/Fluent.Ribbon.csproj`: `Version` is
+The version format is `<Fluent version>-0.<cBrain revision>`, matching `cdevelop`'s `7.0.0-0.80`. The suffix is a NuGet prerelease label. Version properties live in `Fluent.Ribbon/Fluent.Ribbon.csproj`: `Version` is
 `11.0.2-0.2`, `PackageVersion` follows `Version`, `AssemblyVersion` is `11.0.0.0`,
 `FileVersion` is `11.0.2.0`, and `InformationalVersion` follows `Version`. The SDK may append
 the actual source revision to informational metadata. GitVersion version and assembly-info
 overrides are disabled for this project. The already published `11.0.2-cbrain.1` must not be
 replaced or republished.
 
-Packing and publication are on hold at the owner's request. When resumed, use the normal project workflow:
+Local packing is authorized. Use the normal project workflow:
 
 ```powershell
 dotnet pack ./Fluent.Ribbon/Fluent.Ribbon.csproj -c Release -o ./artifacts
 ```
 
-Inspect the package and run the native net48 consumer probe before requesting publication.
+Inspect the package and run native and host/clone consumer tests on net48 and net10.0-windows before requesting publication.
 RDAdm is the established internal publication route and requires explicit owner approval for
 publication. No code or package may be transferred outside the cBrain work domain without
 explicit owner approval for the material and destination. The two earlier upstream PRs were

@@ -2,7 +2,7 @@
 
 Current delivery: a single `Fluent.Ribbon` package and `Fluent.dll`, including the private cBrain
 control additions. Verified 2026-10-10 under F2DEV-110306. The owner authorized source push to the cBrain GitHub repository; code and native tests live in the
-`fluent-wrapper` branch at https://github.com/cBrain-dk/Fluent.Ribbon. Packing and package publication are on hold; no upstream PR is authorized.
+`fluent-wrapper` branch at https://github.com/cBrain-dk/Fluent.Ribbon. Local packing and package validation are complete; internal publication awaits owner approval. No upstream PR is authorized.
 
 ## Current baseline
 
@@ -11,12 +11,12 @@ control additions. Verified 2026-10-10 under F2DEV-110306. The owner authorized 
 | Upstream stable release | v11.0.2, published 2026-01-19 |
 | Upstream SHA | `ce56b60ca892d1505b7f80826330c676f41fda0a` |
 | Current source SHA | `840986f34c7e07da0fa5f5e69665c38aa32385d1` |
-| Planned package | `Fluent.Ribbon 11.0.2-0.2` |
-| Local package SHA256 | Not packed for this version |
+| Local prerelease package | `Fluent.Ribbon 11.0.2-0.2` |
+| Local package SHA256 | `A859F4CC505D8904C0FC6B8AD05C764395D87C52593262C2CFB1BBB55AFA736B` |
 | Intended private feed | `https://git.cbrain.net/api/packages/F2U/nuget/index.json` |
-| Packing / publication | On hold at the owner's request; this version is neither packed nor uploaded |
+| Packing / publication | Packed and validated locally; not uploaded. Publication requires specific owner approval |
 | Matching source checkout | `D:/git/fluent-wrapper-11.0.2-0.2`, at the current source SHA |
-| Release tag | Not created while packing/publication are on hold |
+| Release tag | Not created; package source is pinned by SHA in the matching checkout |
 | Assembly identity | `Fluent, Version=11.0.0.0, Culture=neutral, PublicKeyToken=3e436e32a8c5546f` |
 
 The later F2 bump must pin this exact package and set `FluentSourcePath` to the matching checkout,
@@ -60,7 +60,7 @@ owned by the fork.
 
 ## Normal package workflow
 
-The format is `<Fluent version>-0.<cBrain revision>`, matching remote `cdevelop`'s `7.0.0-0.80` at `ff5dbc768f12931d4f5b85aafcfefdbacc4cacf5`. The candidate retains cBrain revision 2 as `11.0.2-0.2`. Packing and publication are on hold; the command below documents the route for when the owner resumes that work.
+The format is `<Fluent version>-0.<cBrain revision>`, matching remote `cdevelop`'s `7.0.0-0.80` at `ff5dbc768f12931d4f5b85aafcfefdbacc4cacf5`. The candidate retains cBrain revision 2 as `11.0.2-0.2`. The `0.2` suffix is a NuGet prerelease label. Local packing is authorized; publication requires specific owner approval.
 
 Version properties are maintained in `Fluent.Ribbon/Fluent.Ribbon.csproj`:
 `Version=11.0.2-0.2`, `PackageVersion=$(Version)`, `AssemblyVersion=11.0.0.0`,
@@ -71,7 +71,7 @@ The SDK records the source revision. No command-line version workaround is neede
 From the clean matching source checkout:
 
 ```powershell
-dotnet pack ./Fluent.Ribbon/Fluent.Ribbon.csproj -c Release -o C:/tmp/fluent/wrapper-single-package/package
+dotnet pack ./Fluent.Ribbon/Fluent.Ribbon.csproj -c Release -o C:/tmp/fluent/wrapper-prerelease/package
 ```
 
 After inspection, consumer validation and explicit owner approval for this specific package/feed,
@@ -83,16 +83,16 @@ bytes; the hash in the historical validation section identifies only the prior `
 
 Build/package targets are exactly net48 and net10.0-windows. A net48 consumer selects net48; resolved
 legacy dependencies remain ControlzEx7.0.3, Microsoft.Xaml.Behaviors.Wpf1.1.135, Memory4.6.3,
-Buffers4.6.1, Vectors4.6.1 and Unsafe6.1.2. Modern groups include System.Text.Json8.0.5.
+Buffers4.6.1, Vectors4.6.1 and Unsafe6.1.2. The net10 group directly depends on ControlzEx7.0.3 and resolves Xaml.Behaviors1.1.135 transitively; it has no System.Text.Json package dependency.
 The original upstream license and signing are preserved. Generated XAML is built normally.
 
-## Current source validation — 2026-10-10
+## Source validation — 2026-10-10
 
 Source `840986f34c7e07da0fa5f5e69665c38aa32385d1` declares exactly `net48;net10.0-windows`
 for the Fluent library, native tests and upstream test projects. The serial test helper uses
 those targets. net48 retains Framework-specific references, binding redirects and dependencies;
 the modern-only explicit palette generator fixture is excluded through `NETFRAMEWORK`.
-The version stays `11.0.2-0.2`; this candidate is not packed or published.
+The version is `11.0.2-0.2`. Package verification is recorded below.
 
 The checked feature and main EsdhBrowser projects both declare only `TargetFrameworkVersion=v4.8`
 (`D:/projects/f2-main-fluent/client/EsdhBrowser/EsdhBrowser.csproj:46` and the equivalent
@@ -114,8 +114,46 @@ validated directly, independently of that application finding.
 
 Evidence: `C:/tmp/fluent/wrapper-supported-targets/` contains `net48-red.log`, native/upstream/
 consumer build logs and target-specific TRX/logs. Independent review is recorded at
-`C:/tmp/F2DEV-110306/two-target-review.md`. No pack target, package-mode test, NuGet upload or
-external CI job is run. Only the reviewed source branch is pushed to the authorized cBrain fork.
+`C:/tmp/F2DEV-110306/two-target-review.md`. These source verification runs used no pack target, package-mode test, NuGet upload or
+external CI job. Only the reviewed source branch is pushed to the authorized cBrain fork.
+
+## Local prerelease package validation — 2026-10-10
+
+`Fluent.Ribbon 11.0.2-0.2` is packed from clean source
+`840986f34c7e07da0fa5f5e69665c38aa32385d1` in `D:/git/fluent-wrapper-11.0.2-0.2`, using the
+normal direct `dotnet pack` command above with project-owned version properties and no version
+overrides. NuGet.Versioning confirms `IsPrerelease=true`. The exact validated artifact is
+`C:/tmp/fluent/wrapper-prerelease/package/Fluent.Ribbon.11.0.2-0.2.nupkg`, SHA256
+`A859F4CC505D8904C0FC6B8AD05C764395D87C52593262C2CFB1BBB55AFA736B`.
+
+Inspection confirms package ID/version, the source repository SHA, original license and signed
+`Fluent, Version=11.0.0.0, Culture=neutral, PublicKeyToken=3e436e32a8c5546f` assembly identity.
+Library assets are only DLL/XML pairs in `lib/net48` and `lib/net10.0-windows7.0`; the latter is
+the normalized package TFM for the project's `net10.0-windows`. No separate cBrain DLL ships.
+Direct dependencies are ControlzEx7.0.3 for both groups and System.Memory4.6.3 additionally for
+net48. The net48 consumer resolves the recorded legacy graph; net10 resolves Xaml.Behaviors1.1.135
+through ControlzEx and has no System.Text.Json NuGet dependency.
+
+The real native wrapper tests pass **2/2 per target** against this package. A separate package
+consumer probe passes **9/9 per target**, including the cBrain clone/same-assembly assertions,
+CommandBar-shaped host behavior and Danish æ/ø/å. VS18 MSBuild restore/Rebuild uses Release/AnyCPU,
+`/m:1 /nr:false`, a fresh isolated package cache and exact Fluent-only local source mapping.
+VSTest executes each target serially with no filter; host probes use process-local DPIUNAWARE.
+The cached nupkg hash equals the inspected artifact, metadata proves the local source, and both
+native/consumer test output Fluent DLL hashes equal their corresponding packaged assets.
+
+Evidence: `C:/tmp/fluent/wrapper-prerelease/` contains `pack.log`, `inspection.json`,
+`restoration.json`, `consumer-targets.json`, build logs, exact local NuGet configuration and TRX.
+Packing reports the pre-existing missing-package-readme advisory; build/test commands succeed.
+The preceding source evidence covers this same source SHA and both target frameworks.
+
+The package has not been uploaded. Specific owner approval for this artifact and the internal
+F2U feed is still required before the normal `rdadm nuget push` route. Then restore the exact
+version from that feed with an isolated cache and no local fallback before completing the wrapper
+publication gate. Do not overwrite an existing version or rebuild and substitute bytes silently.
+The next conversation starts the independent Shared WPF tools plan on the existing product
+cFluent dependency. Tools/seam preparation can proceed while publication is pending; the dependency
+bump requires the wrapper's published, isolated-feed-validated package.
 
 ## Prior version-format source validation — 2026-10-10
 
@@ -153,7 +191,7 @@ assembly; exact type, cloning setup and QAT behavior are unchanged.
   signing. Source/package tests prove the cBrain classes are inside that Fluent assembly.
 - Nuke integration compilation succeeds, retaining its pre-existing dependency security-audit
   warnings. No external CI job was triggered.
-- This prior artifact was not published; it is superseded by the unpacked `11.0.2-0.2` candidate.
+- This prior artifact was not published; it is superseded by the `11.0.2-0.2` candidate.
 
 Tooling: SDK10.0.401, VS18 Enterprise MSBuild/VSTest, Release/AnyCPU, normal warnings-as-errors.
 Builds/tests are serialized. The owner-requested direct `dotnet pack` workflow is exercised for
@@ -178,7 +216,7 @@ The original cdevelop checkout stays untouched at
 `c3acf87e46c65d7c0e3543e15de87c9a1d9dfa31`.
 
 The wrapper remains active pending publication and isolated feed validation. WPF tools, seam
-extraction and F2 dependency changes have not started. Product builds and repository-root
+extraction and F2 dependency changes have not started; the handoff starts the Shared WPF tools plan. Product builds and repository-root
 BuildSolutions.ps1 remain later consumer gates. Preserve the WindowChrome namespace, explicit
 legacy child sizing and keytip-host deltas already handed to the bump plans. DarkBlue remains
 excluded from theme-specific checks and WebViewEditorApplication from automated captures;
