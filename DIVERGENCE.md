@@ -52,8 +52,7 @@ update CLR/XAML references; see the [control README](Fluent.Ribbon/CBrain/README
 
 `CBrain.Fluent.Ribbon.Tests` is the non-packable STA test project. It verifies
 native clone type, freshness, quick-access membership, inherited setup and shared
-assembly identity, plus Fluent name resolution and XAML creation from a
-`CBrain.*` consumer namespace. The solution and Nuke Test target include it.
+assembly identity. The solution and Nuke Test target include it.
 `Build-CBrainWrapper.ps1` builds and tests both targets in source or package mode.
 
 `Publish-CBrainWrapper.ps1` runs source tests, packs Release and publishes through

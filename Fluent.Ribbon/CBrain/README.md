@@ -34,8 +34,7 @@ to a clean checkout of the corresponding source revision containing
 
 `CBrain.Fluent.Ribbon.Tests` is a separate, non-packable STA NUnit project.
 It covers native clone type, freshness, quick-access membership, inherited setup
-and shared Fluent assembly identity. Consumer probes cover ordinary `Fluent.*`
-references inside `CBrain.*` and XAML creation through the native CLR namespace.
+and shared Fluent assembly identity.
 The tests are included in the solution and Nuke Test target.
 
 From the repository root:
