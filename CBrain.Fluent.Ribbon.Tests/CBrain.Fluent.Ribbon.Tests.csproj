@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <RootNamespace>CBrain.Fluent.Ribbon.Tests</RootNamespace>
+    <RootNamespace>Fluent.CBrain.Tests</RootNamespace>
     <AssemblyName>CBrain.Fluent.Ribbon.Tests</AssemblyName>
     <IsTestProject>true</IsTestProject>
     <IsPackable>false</IsPackable>
@@ -10,7 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fluent.Ribbon\Fluent.Ribbon.csproj" Condition="'$(UseFluentSource)' == 'true'" />
-    <PackageReference Include="Fluent.Ribbon" VersionOverride="[11.0.2-0.2]" Condition="'$(UseFluentSource)' != 'true'" />
+    <PackageReference Include="Fluent.Ribbon" VersionOverride="[11.0.2-0.3]" Condition="'$(UseFluentSource)' != 'true'" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />

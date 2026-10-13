@@ -3,7 +3,7 @@
   <PropertyGroup>
     <RootNamespace>Fluent</RootNamespace>
     <AssemblyName>Fluent</AssemblyName>
-    <Version>11.0.2-0.2</Version>
+    <Version>11.0.2-0.3</Version>
     <PackageVersion>$(Version)</PackageVersion>
     <AssemblyVersion>11.0.0.0</AssemblyVersion>
     <FileVersion>11.0.2.0</FileVersion>

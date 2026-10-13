@@ -1,10 +1,11 @@
 # cBrain Fluent wrapper baseline
 
-Current delivery: a single `Fluent.Ribbon` package and `Fluent.dll`, including the private cBrain
+Published delivery remains `Fluent.Ribbon 11.0.2-0.2`. This branch prepares the namespace-rename
+candidate `11.0.2-0.3`; see the candidate record below. A single `Fluent.Ribbon` package and `Fluent.dll` include the private cBrain
 control additions. Verified 2026-10-13 under F2DEV-110306. The owner authorized source push to the cBrain GitHub repository; code and native tests live in the
 `fluent-wrapper` branch at https://github.com/cBrain-dk/Fluent.Ribbon. Publication and isolated internal-feed validation are complete. No upstream PR is authorized.
 
-## Current baseline
+## Published baseline — 11.0.2-0.2
 
 | Item | Value |
 | --- | --- |
@@ -19,8 +20,8 @@ control additions. Verified 2026-10-13 under F2DEV-110306. The owner authorized 
 | Release tag | Not created; package source is pinned by SHA in the matching checkout |
 | Assembly identity | `Fluent, Version=11.0.0.0, Culture=neutral, PublicKeyToken=3e436e32a8c5546f` |
 
-The later F2 bump must pin this exact package and set `FluentSourcePath` to the matching checkout,
-referencing `Fluent.Ribbon/Fluent.Ribbon.csproj`. Verify HEAD and clean source. Documentation-only
+The F2 baseline for the published `.2` delivery pins that exact package and sets `FluentSourcePath` to the matching checkout,
+referencing `Fluent.Ribbon/Fluent.Ribbon.csproj`. Verify HEAD and clean source. The `.3` candidate requires its own matching revision. Documentation-only
 commits on the working branch do not advance the source/package baseline. The published `.1`
 package remains unchanged. The unshipped separate `CBrain.Fluent.Ribbon .1` package is superseded.
 
@@ -38,17 +39,17 @@ The protected parameterless factories `ComboBox.CreateQuickAccessComboBox()` and
 registration, bindings, item transfer, event handlers and small-size/no-re-add setup remain in
 its inherited creation methods.
 
-The real public `CBrain.Fluent.Ribbon.RibbonComboBox` and `RibbonSplitButton` now live in
+The real public `Fluent.CBrain.RibbonComboBox` and `RibbonSplitButton` live in
 `Fluent.Ribbon/CBrain/` and compile into `Fluent.dll`. Their factory overrides return fresh
 instances of the matching cBrain type. Public creation calls inherited Fluent setup, sets
 `IsElementInQuickAccessToolBar=true` and returns the clone. Further F2 seam subclasses inherit
 that setup/marking and override the factory if their exact further-derived type must be retained.
-No separate cBrain production assembly/package remains; cBrain namespace is preserved.
+No separate cBrain production assembly/package remains. The native namespace is `Fluent.CBrain`; it does not introduce `CBrain.Fluent` into consumer namespace lookup.
 
-`CBrain.Fluent.Ribbon.Tests` stays a native, non-packable STA test project. Its two cases use the
+`CBrain.Fluent.Ribbon.Tests` stays a native, non-packable STA test project, with root namespace `Fluent.CBrain.Tests`. Its two clone cases use the
 actual production classes and assert exact clone type, fresh objects, QAT marking, inherited setup
 and assembly identity shared with the Fluent base controls. No synthetic derived marker types,
-private reflection or timer sleeps. Source mode references Fluent; package mode pins exact `11.0.2-0.2` and awaits the future package.
+private reflection or timer sleeps. Source mode references Fluent; package mode pins exact `11.0.2-0.3`. Two consumer probes under `CBrain.Consumer.Probes` verify ordinary Fluent name resolution and the new CLR XAML namespace.
 The solution and Nuke test target include it; TRX collection recurses through project directories.
 
 The owner closed the earlier upstream [factory PR1285](https://github.com/fluentribbon/Fluent.Ribbon/pull/1285)
@@ -60,10 +61,10 @@ owned by the fork.
 
 ## Normal package workflow
 
-The format is `<Fluent version>-0.<cBrain revision>`, matching remote `cdevelop`'s `7.0.0-0.80` at `ff5dbc768f12931d4f5b85aafcfefdbacc4cacf5`. The candidate retains cBrain revision 2 as `11.0.2-0.2`. The `0.2` suffix is a NuGet prerelease label. Local packing is authorized; publication requires specific owner approval.
+The format is `<Fluent version>-0.<cBrain revision>`, matching remote `cdevelop`'s `7.0.0-0.80` at `ff5dbc768f12931d4f5b85aafcfefdbacc4cacf5`. The namespace-rename candidate advances cBrain revision to `11.0.2-0.3`. The `0.3` suffix is a NuGet prerelease label. Local packing is authorized; publication requires specific owner approval.
 
 Version properties are maintained in `Fluent.Ribbon/Fluent.Ribbon.csproj`:
-`Version=11.0.2-0.2`, `PackageVersion=$(Version)`, `AssemblyVersion=11.0.0.0`,
+`Version=11.0.2-0.3`, `PackageVersion=$(Version)`, `AssemblyVersion=11.0.0.0`,
 `FileVersion=11.0.2.0`, `InformationalVersion=$(Version)`. Project properties disable GitVersion's
 version/assembly-info overrides; Nuke Compile/Pack also no longer supply overriding version values.
 The SDK records the source revision. No command-line version workaround is needed. Nuke's legacy ZIP filenames still use GitVersion labels; the normal NuGet package workflow does not use those ZIPs.
@@ -227,3 +228,55 @@ normal theme-resource compilation continues.
 Owner authorization covers `Fluent.Ribbon 11.0.2-0.2` publication on F2U through `Publish-CBrainWrapper.ps1`. The `-PackagePath` option published the validated artifact without rebuilding: SHA256 `A859F4CC505D8904C0FC6B8AD05C764395D87C52593262C2CFB1BBB55AFA736B`, source `840986f34c7e07da0fa5f5e69665c38aa32385d1`. A fresh isolated restore selects Fluent only from the F2U feed; restored package provenance/hash/source and selected DLL hashes match. VS MSBuild Release/AnyCPU Rebuild succeeds; combined native-clone/host/Danish-keytip probes pass 9/9 on each target, VSTest exit 0. This does not rerun or replace the recorded upstream suite failure.
 
 Evidence: `C:/tmp/fluent/wrapper-delivery-check-20261013T104731Z/`. Delivery is complete; product dependency migration and its acceptance gates are separate. The script's default workflow still tests and packs a new Release package before publishing. Its existing-package option preserves previously validated bytes.
+
+## Namespace-rename candidate — 2026-10-13
+
+`11.0.2-0.3` moves the two native public controls from `CBrain.Fluent.Ribbon` to
+`Fluent.CBrain`, keeping them in `Fluent.Ribbon/CBrain/` and `Fluent.dll`. Test namespaces
+and package-mode pins follow the change. The non-packable test assembly/project name stays
+`CBrain.Fluent.Ribbon.Tests`; that name does not declare a CLR namespace. Control behavior,
+factory overrides and inherited quick-access setup are unchanged. No compatibility namespace
+is retained. Only now-redundant `global::Fluent` prefixes are removed; unrelated `global::System`
+qualifications in the generated PInvoke boundary stay intact.
+
+The regression probe first fails net48 compilation with CS0234 because `Fluent.CBrain`
+resolves through `CBrain.Fluent`. After the rename, native clone and CBrain consumer/XAML
+probes pass 4/4 on both net48 and net10.0-windows in source mode and isolated local-package
+mode. The existing host/focus/Danish-keytip probe, linked with those four cases, passes 11/11
+on each target in both modes. Its first source net10 run reports seven keytip visibility
+failures; an unchanged full rerun passes 11/11. Both results are retained as desktop-sensitive
+evidence, without weakening assertions or claiming physical keyboard validation.
+
+Local artifact: `C:/tmp/fluent/wrapper-namespace-0.3/package/Fluent.Ribbon.11.0.2-0.3.nupkg`,
+SHA256 `7B86BEEBDFBE1F9F8F7B2A9BA0748868EB424E7BB121E8E4613D6AC477FB968F`.
+A fresh isolated cache restores Fluent only from that local folder; cache package and both
+native/consumer DLL hashes match the inspected artifact. Assets remain DLL/XML pairs only in
+`lib/net48` and `lib/net10.0-windows7.0`, with unchanged signed assembly identity
+`Fluent, Version=11.0.0.0, Culture=neutral, PublicKeyToken=3e436e32a8c5546f`.
+Direct dependencies remain ControlzEx 7.0.3 for both targets and System.Memory 4.6.3 for net48.
+Packing reports only the pre-existing missing-package-readme advisory.
+
+The upstream logical-tree selection, which discovers both renamed controls through their
+public Fluent assembly types, passes 128/128 on each source target. It runs with
+`/TestCaseFilter:FullyQualifiedName~Fluent.Tests.Misc.LogicalTreeTests`; the full upstream suite
+is not rerun for this namespace-only change.
+
+This local artifact was packed from the reviewed working tree based on `cbea8aa7`, not a
+new clean committed source revision. Commit the approved changes, pack from a matching clean
+checkout and revalidate the release artifact before publication. The published `.2` package
+and its matching source checkout remain untouched. At local validation, this candidate had not
+been committed, pushed or published. A read-only F2U version-index check confirms `.3` is unused at validation time;
+check again before publishing.
+
+Validation uses VS18 MSBuild restore/Rebuild, Release/AnyCPU, `/m:1 /nr:false`, normal
+warnings-as-errors, and VSTest `/Logger:trx` on each target. Source native entry point:
+`Build-CBrainWrapper.ps1 -FluentMode Source`. Package builds additionally pass
+`/p:UseFluentSource=false`, `/p:RestoreConfigFile=C:/tmp/fluent/wrapper-namespace-0.3/NuGet.Local.Config`
+and `/p:RestorePackagesPath=C:/tmp/fluent/wrapper-namespace-0.3/packages`. Consumer runs use
+process-local `__COMPAT_LAYER=DPIUNAWARE`. Evidence includes logs, TRX, package build binlogs,
+`inspection.json`, updated consumer probe sources and the F2 qualification inventory under
+`C:/tmp/fluent/wrapper-namespace-0.3/`.
+
+The [native-control README](Fluent.Ribbon/CBrain/README.md#f2-dependency-and-reference-updates)
+identifies the exact F2 dependency owner, namespace/XAML replacements and follow-up consumer gates.
+F2 files are not modified by this wrapper change.

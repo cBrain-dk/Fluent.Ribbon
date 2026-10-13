@@ -1,22 +1,22 @@
-namespace CBrain.Fluent.Ribbon;
+namespace Fluent.CBrain;
 
 using System.Windows;
 
 /// <summary>
 /// Provides the cBrain ribbon SplitButton control.
 /// </summary>
-public class RibbonSplitButton : global::Fluent.SplitButton
+public class RibbonSplitButton : Fluent.SplitButton
 {
     /// <inheritdoc />
     public override FrameworkElement CreateQuickAccessItem()
     {
         var item = base.CreateQuickAccessItem();
-        global::Fluent.RibbonProperties.SetIsElementInQuickAccessToolBar(item, true);
+        Fluent.RibbonProperties.SetIsElementInQuickAccessToolBar(item, true);
         return item;
     }
 
     /// <inheritdoc />
-    protected override global::Fluent.SplitButton CreateQuickAccessSplitButton()
+    protected override Fluent.SplitButton CreateQuickAccessSplitButton()
     {
         return new RibbonSplitButton();
     }

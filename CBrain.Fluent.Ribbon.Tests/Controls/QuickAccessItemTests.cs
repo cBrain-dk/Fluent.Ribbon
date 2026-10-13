@@ -1,4 +1,4 @@
-namespace CBrain.Fluent.Ribbon.Tests.Controls;
+namespace Fluent.CBrain.Tests.Controls;
 
 using System.Threading;
 using NUnit.Framework;
@@ -22,9 +22,9 @@ public class QuickAccessItemTests
 
         // Assert
         Assert.That(item, Is.TypeOf<RibbonComboBox>());
-        Assert.That(item.GetType().Assembly, Is.SameAs(typeof(global::Fluent.ComboBox).Assembly));
+        Assert.That(item.GetType().Assembly, Is.SameAs(typeof(Fluent.ComboBox).Assembly));
         Assert.That(item, Is.Not.SameAs(source));
-        Assert.That(global::Fluent.RibbonProperties.GetIsElementInQuickAccessToolBar(item), Is.True);
+        Assert.That(Fluent.RibbonProperties.GetIsElementInQuickAccessToolBar(item), Is.True);
 
         var comboBox = (RibbonComboBox)item;
         Assert.That(comboBox.IsEditable, Is.True);
@@ -45,10 +45,10 @@ public class QuickAccessItemTests
 
         // Assert
         Assert.That(item, Is.TypeOf<RibbonSplitButton>());
-        Assert.That(item.GetType().Assembly, Is.SameAs(typeof(global::Fluent.SplitButton).Assembly));
+        Assert.That(item.GetType().Assembly, Is.SameAs(typeof(Fluent.SplitButton).Assembly));
         Assert.That(item, Is.Not.SameAs(source));
-        Assert.That(global::Fluent.RibbonProperties.GetIsElementInQuickAccessToolBar(item), Is.True);
-        Assert.That(global::Fluent.RibbonProperties.GetSize(item), Is.EqualTo(global::Fluent.RibbonControlSize.Small));
+        Assert.That(Fluent.RibbonProperties.GetIsElementInQuickAccessToolBar(item), Is.True);
+        Assert.That(Fluent.RibbonProperties.GetSize(item), Is.EqualTo(Fluent.RibbonControlSize.Small));
 
         var splitButton = (RibbonSplitButton)item;
         Assert.That(splitButton.CanAddButtonToQuickAccessToolBar, Is.False);
