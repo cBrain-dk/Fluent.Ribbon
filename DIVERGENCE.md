@@ -10,12 +10,12 @@ control additions. Verified 2026-10-13 under F2DEV-110306. The owner authorized 
 | --- | --- |
 | Upstream stable release | v11.0.2, published 2026-01-19 |
 | Upstream SHA | `ce56b60ca892d1505b7f80826330c676f41fda0a` |
-| Current source SHA | `840986f34c7e07da0fa5f5e69665c38aa32385d1` |
-| Local prerelease package | `Fluent.Ribbon 11.0.2-0.2` |
-| Local package SHA256 | `A859F4CC505D8904C0FC6B8AD05C764395D87C52593262C2CFB1BBB55AFA736B` |
+| Current source SHA | `2e580be7dfc3fdeb57e50d88c8e0e3ff99efe778` |
+| Local prerelease package | `Fluent.Ribbon 11.0.2-0.3` |
+| Local package SHA256 | `37AABDEC9D9062741B4A99FFA37E3361D9D2C5A1966637116004CE89AF71418C` |
 | Intended private feed | `https://git.cbrain.net/api/packages/F2U/nuget/index.json` |
-| Packing / publication | Published through Publish-CBrainWrapper.ps1; isolated F2U restoration verified |
-| Matching source checkout | `D:/git/fluent-wrapper-11.0.2-0.2`, at the current source SHA |
+| Packing / publication | Published through RDAdm; isolated F2U restoration verified |
+| Matching source checkout | `D:/git/fluent-wrapper-11.0.2-0.3`, at the current source SHA |
 | Release tag | Not created; package source is pinned by SHA in the matching checkout |
 | Assembly identity | `Fluent, Version=11.0.0.0, Culture=neutral, PublicKeyToken=3e436e32a8c5546f` |
 
@@ -48,22 +48,22 @@ No separate cBrain production assembly/package remains; native namespace is `Flu
 `CBrain.Fluent.Ribbon.Tests` stays a native, non-packable STA test project. Its two cases use the
 actual production classes and assert exact clone type, fresh objects, QAT marking, inherited setup
 and assembly identity shared with the Fluent base controls. No synthetic derived marker types,
-private reflection or timer sleeps. Source mode references Fluent; package mode pins exact `11.0.2-0.2` and awaits the future package.
+private reflection or timer sleeps. Source mode references Fluent; package mode pins exact `11.0.2-0.3`.
 The solution and Nuke test target include it; TRX collection recurses through project directories.
 
 The owner closed the earlier upstream [factory PR1285](https://github.com/fluentribbon/Fluent.Ribbon/pull/1285)
 and [host PR1286](https://github.com/fluentribbon/Fluent.Ribbon/pull/1286), unmerged. These are historical
-contributions, not active delivery gates. Only source push to the owner-authorized https://github.com/cBrain-dk/Fluent.Ribbon repository is permitted; upstream PRs and package publication remain unauthorized. Rebase future
+contributions, not active delivery gates. Source push to the owner-authorized https://github.com/cBrain-dk/Fluent.Ribbon repository is permitted; upstream PRs remain unauthorized. Rebase future
 baselines on stable upstream releases; retire private host/factory patches only if a released
 equivalent passes the native clone and CommandBar/keytip contracts. The cBrain control feature stays
 owned by the fork.
 
 ## Normal package workflow
 
-The format is `<Fluent version>-0.<cBrain revision>`, matching remote `cdevelop`'s `7.0.0-0.80` at `ff5dbc768f12931d4f5b85aafcfefdbacc4cacf5`. The candidate retains cBrain revision 2 as `11.0.2-0.2`. The `0.2` suffix is a NuGet prerelease label. Local packing is authorized; publication requires specific owner approval.
+The format is `<Fluent version>-0.<cBrain revision>`, matching remote `cdevelop`'s `7.0.0-0.80` at `ff5dbc768f12931d4f5b85aafcfefdbacc4cacf5`. The current package uses cBrain revision 3 as `11.0.2-0.3`. The `0.3` suffix is a NuGet prerelease label. Local packing is authorized; publication requires specific owner approval.
 
 Version properties are maintained in `Fluent.Ribbon/Fluent.Ribbon.csproj`:
-`Version=11.0.2-0.2`, `PackageVersion=$(Version)`, `AssemblyVersion=11.0.0.0`,
+`Version=11.0.2-0.3`, `PackageVersion=$(Version)`, `AssemblyVersion=11.0.0.0`,
 `FileVersion=11.0.2.0`, `InformationalVersion=$(Version)`. Project properties disable GitVersion's
 version/assembly-info overrides; Nuke Compile/Pack also no longer supply overriding version values.
 The SDK records the source revision. No command-line version workaround is needed. Nuke's legacy ZIP filenames still use GitVersion labels; the normal NuGet package workflow does not use those ZIPs.
