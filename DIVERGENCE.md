@@ -1,8 +1,8 @@
 # cBrain Fluent wrapper baseline
 
 Current delivery: a single `Fluent.Ribbon` package and `Fluent.dll`, including the private cBrain
-control additions. Verified 2026-10-10 under F2DEV-110306. The owner authorized source push to the cBrain GitHub repository; code and native tests live in the
-`fluent-wrapper` branch at https://github.com/cBrain-dk/Fluent.Ribbon. Local packing and package validation are complete; internal publication awaits owner approval. No upstream PR is authorized.
+control additions. Verified 2026-10-13 under F2DEV-110306. The owner authorized source push to the cBrain GitHub repository; code and native tests live in the
+`fluent-wrapper` branch at https://github.com/cBrain-dk/Fluent.Ribbon. Publication and isolated internal-feed validation are complete. No upstream PR is authorized.
 
 ## Current baseline
 
@@ -14,7 +14,7 @@ control additions. Verified 2026-10-10 under F2DEV-110306. The owner authorized 
 | Local prerelease package | `Fluent.Ribbon 11.0.2-0.2` |
 | Local package SHA256 | `A859F4CC505D8904C0FC6B8AD05C764395D87C52593262C2CFB1BBB55AFA736B` |
 | Intended private feed | `https://git.cbrain.net/api/packages/F2U/nuget/index.json` |
-| Packing / publication | Packed and validated locally; not uploaded. Publication requires specific owner approval |
+| Packing / publication | Published through Publish-CBrainWrapper.ps1; isolated F2U restoration verified |
 | Matching source checkout | `D:/git/fluent-wrapper-11.0.2-0.2`, at the current source SHA |
 | Release tag | Not created; package source is pinned by SHA in the matching checkout |
 | Assembly identity | `Fluent, Version=11.0.0.0, Culture=neutral, PublicKeyToken=3e436e32a8c5546f` |
@@ -68,7 +68,7 @@ Version properties are maintained in `Fluent.Ribbon/Fluent.Ribbon.csproj`:
 version/assembly-info overrides; Nuke Compile/Pack also no longer supply overriding version values.
 The SDK records the source revision. No command-line version workaround is needed. Nuke's legacy ZIP filenames still use GitVersion labels; the normal NuGet package workflow does not use those ZIPs.
 
-From the clean matching source checkout:
+From the clean matching source checkout, `Publish-CBrainWrapper.ps1` runs the native source tests, packs Release and publishes the exact package for the project version through `rdadm nuget push`. Update `Version` in the project before each release. For packaging without publication:
 
 ```powershell
 dotnet pack ./Fluent.Ribbon/Fluent.Ribbon.csproj -c Release -o C:/tmp/fluent/wrapper-prerelease/package
@@ -221,3 +221,9 @@ BuildSolutions.ps1 remain later consumer gates. Preserve the WindowChrome namesp
 legacy child sizing and keytip-host deltas already handed to the bump plans. DarkBlue remains
 excluded from theme-specific checks and WebViewEditorApplication from automated captures;
 normal theme-resource compilation continues.
+
+## Published combined delivery — 2026-10-13
+
+Owner authorization covers `Fluent.Ribbon 11.0.2-0.2` publication on F2U through `Publish-CBrainWrapper.ps1`. The `-PackagePath` option published the validated artifact without rebuilding: SHA256 `A859F4CC505D8904C0FC6B8AD05C764395D87C52593262C2CFB1BBB55AFA736B`, source `840986f34c7e07da0fa5f5e69665c38aa32385d1`. A fresh isolated restore selects Fluent only from the F2U feed; restored package provenance/hash/source and selected DLL hashes match. VS MSBuild Release/AnyCPU Rebuild succeeds; combined native-clone/host/Danish-keytip probes pass 9/9 on each target, VSTest exit 0. This does not rerun or replace the recorded upstream suite failure.
+
+Evidence: `C:/tmp/fluent/wrapper-delivery-check-20261013T104731Z/`. Delivery is complete; product dependency migration and its acceptance gates are separate. The script's default workflow still tests and packs a new Release package before publishing. Its existing-package option preserves previously validated bytes.
