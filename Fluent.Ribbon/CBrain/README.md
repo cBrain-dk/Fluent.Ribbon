@@ -30,16 +30,16 @@ From the repository root, use the serial Visual Studio MSBuild/VSTest entry poin
 
 Each mode builds and runs net48 and net10.0-windows. Source mode is the default
 and references `Fluent.Ribbon/Fluent.Ribbon.csproj`. Package mode restores exactly
-`Fluent.Ribbon [11.0.2-0.3]` from the cBrain F2U feed using the repository's package-source
+`Fluent.Ribbon [11.0.2-0.2]` from the cBrain F2U feed using the repository's package-source
 mapping. Package mode becomes available after the approved package publication.
 
 ## Package
 
 The version format is `<Fluent version>-0.<cBrain revision>`, matching `cdevelop`'s `7.0.0-0.80`. The suffix is a NuGet prerelease label. Version properties live in `Fluent.Ribbon/Fluent.Ribbon.csproj`: `Version` is
-`11.0.2-0.3`, `PackageVersion` follows `Version`, `AssemblyVersion` is `11.0.0.0`,
+`11.0.2-0.2`, `PackageVersion` follows `Version`, `AssemblyVersion` is `11.0.0.0`,
 `FileVersion` is `11.0.2.0`, and `InformationalVersion` follows `Version`. The SDK may append
 the actual source revision to informational metadata. GitVersion version and assembly-info
-overrides are disabled for this project. The already published `11.0.2-0.2` and `11.0.2-cbrain.1` must not be
+overrides are disabled for this project. The already published `11.0.2-cbrain.1` must not be
 replaced or republished.
 
 Local packing is authorized. Use the normal project workflow:

@@ -1,11 +1,10 @@
 # cBrain Fluent wrapper baseline
 
-Published delivery is `Fluent.Ribbon 11.0.2-0.2`; this branch prepares `11.0.2-0.3`.
-A single `Fluent.Ribbon` package and `Fluent.dll` include the private cBrain
+Current delivery: a single `Fluent.Ribbon` package and `Fluent.dll`, including the private cBrain
 control additions. Verified 2026-10-13 under F2DEV-110306. The owner authorized source push to the cBrain GitHub repository; code and native tests live in the
 `fluent-wrapper` branch at https://github.com/cBrain-dk/Fluent.Ribbon. Publication and isolated internal-feed validation are complete. No upstream PR is authorized.
 
-## Published baseline — 11.0.2-0.2
+## Current baseline
 
 | Item | Value |
 | --- | --- |
@@ -20,8 +19,7 @@ control additions. Verified 2026-10-13 under F2DEV-110306. The owner authorized 
 | Release tag | Not created; package source is pinned by SHA in the matching checkout |
 | Assembly identity | `Fluent, Version=11.0.0.0, Culture=neutral, PublicKeyToken=3e436e32a8c5546f` |
 
-F2 consumers must pair the selected package with its matching source revision and set
-`FluentSourcePath` to that checkout,
+The later F2 bump must pin this exact package and set `FluentSourcePath` to the matching checkout,
 referencing `Fluent.Ribbon/Fluent.Ribbon.csproj`. Verify HEAD and clean source. Documentation-only
 commits on the working branch do not advance the source/package baseline. The published `.1`
 package remains unchanged. The unshipped separate `CBrain.Fluent.Ribbon .1` package is superseded.
@@ -40,18 +38,17 @@ The protected parameterless factories `ComboBox.CreateQuickAccessComboBox()` and
 registration, bindings, item transfer, event handlers and small-size/no-re-add setup remain in
 its inherited creation methods.
 
-The real public `Fluent.CBrain.RibbonComboBox` and `RibbonSplitButton` live in
+The real public `Fluent.CBrain.RibbonComboBox` and `RibbonSplitButton` now live in
 `Fluent.Ribbon/CBrain/` and compile into `Fluent.dll`. Their factory overrides return fresh
 instances of the matching cBrain type. Public creation calls inherited Fluent setup, sets
 `IsElementInQuickAccessToolBar=true` and returns the clone. Further F2 seam subclasses inherit
 that setup/marking and override the factory if their exact further-derived type must be retained.
-No separate cBrain production assembly/package remains. The `Fluent.CBrain` namespace
-keeps root `Fluent` references usable inside `CBrain.*` consumers.
+No separate cBrain production assembly/package remains; native namespace is `Fluent.CBrain`.
 
 `CBrain.Fluent.Ribbon.Tests` stays a native, non-packable STA test project. Its two cases use the
 actual production classes and assert exact clone type, fresh objects, QAT marking, inherited setup
 and assembly identity shared with the Fluent base controls. No synthetic derived marker types,
-private reflection or timer sleeps. Source mode references Fluent; package mode pins exact `11.0.2-0.3` and awaits publication.
+private reflection or timer sleeps. Source mode references Fluent; package mode pins exact `11.0.2-0.2` and awaits the future package.
 The solution and Nuke test target include it; TRX collection recurses through project directories.
 
 The owner closed the earlier upstream [factory PR1285](https://github.com/fluentribbon/Fluent.Ribbon/pull/1285)
@@ -63,10 +60,10 @@ owned by the fork.
 
 ## Normal package workflow
 
-The format is `<Fluent version>-0.<cBrain revision>`, matching remote `cdevelop`'s `7.0.0-0.80` at `ff5dbc768f12931d4f5b85aafcfefdbacc4cacf5`. The current candidate is `11.0.2-0.3`. The `0.3` suffix is a NuGet prerelease label. Local packing is authorized; publication requires specific owner approval.
+The format is `<Fluent version>-0.<cBrain revision>`, matching remote `cdevelop`'s `7.0.0-0.80` at `ff5dbc768f12931d4f5b85aafcfefdbacc4cacf5`. The candidate retains cBrain revision 2 as `11.0.2-0.2`. The `0.2` suffix is a NuGet prerelease label. Local packing is authorized; publication requires specific owner approval.
 
 Version properties are maintained in `Fluent.Ribbon/Fluent.Ribbon.csproj`:
-`Version=11.0.2-0.3`, `PackageVersion=$(Version)`, `AssemblyVersion=11.0.0.0`,
+`Version=11.0.2-0.2`, `PackageVersion=$(Version)`, `AssemblyVersion=11.0.0.0`,
 `FileVersion=11.0.2.0`, `InformationalVersion=$(Version)`. Project properties disable GitVersion's
 version/assembly-info overrides; Nuke Compile/Pack also no longer supply overriding version values.
 The SDK records the source revision. No command-line version workaround is needed. Nuke's legacy ZIP filenames still use GitVersion labels; the normal NuGet package workflow does not use those ZIPs.
