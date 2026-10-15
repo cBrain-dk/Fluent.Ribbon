@@ -2,12 +2,14 @@
 
 `Fluent.Ribbon/Fluent.Ribbon.csproj` builds one production assembly, `Fluent.dll`, and one
 package, `Fluent.Ribbon`. It includes `Fluent.CBrain.RibbonComboBox` and
-`Fluent.CBrain.RibbonSplitButton` alongside their Fluent base controls. The cBrain
+`Fluent.CBrain.RibbonSplitButton` and `Fluent.CBrain.RibbonGroupBox` alongside their Fluent base controls. The cBrain
 namespace is `Fluent.CBrain`; there is no separate cBrain production assembly or package.
 
 Their quick-access factories return fresh instances of the corresponding cBrain type. Public
 creation calls inherited Fluent setup and marks the returned item as being in the quick-access
-toolbar. Bindings, private clone registration and event handlers remain in Fluent.
+toolbar. Bindings, private clone registration and event handlers remain in Fluent. GroupBox
+creation retains the private popup handlers that transfer inline items to the
+quick-access copy on open and restore them on close.
 
 The classes stay inheritable. A further subclass overrides the protected factory to return its
 own type when its quick-access item must retain that subclass's style or behavior. The future
@@ -30,13 +32,13 @@ From the repository root, use the serial Visual Studio MSBuild/VSTest entry poin
 
 Each mode builds and runs net48 and net10.0-windows. Source mode is the default
 and references `Fluent.Ribbon/Fluent.Ribbon.csproj`. Package mode restores exactly
-`Fluent.Ribbon [11.0.2-0.3]` from the cBrain F2U feed using the repository's package-source
+`Fluent.Ribbon [11.0.2-0.4]` from the cBrain F2U feed using the repository's package-source
 mapping. Package mode becomes available after the approved package publication.
 
 ## Package
 
 The version format is `<Fluent version>-0.<cBrain revision>`, matching `cdevelop`'s `7.0.0-0.80`. The suffix is a NuGet prerelease label. Version properties live in `Fluent.Ribbon/Fluent.Ribbon.csproj`: `Version` is
-`11.0.2-0.3`, `PackageVersion` follows `Version`, `AssemblyVersion` is `11.0.0.0`,
+`11.0.2-0.4`, `PackageVersion` follows `Version`, `AssemblyVersion` is `11.0.0.0`,
 `FileVersion` is `11.0.2.0`, and `InformationalVersion` follows `Version`. The SDK may append
 the actual source revision to informational metadata. GitVersion version and assembly-info
 overrides are disabled for this project. The already published `11.0.2-cbrain.1` must not be

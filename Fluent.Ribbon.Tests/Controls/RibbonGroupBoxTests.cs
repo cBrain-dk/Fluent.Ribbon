@@ -154,6 +154,34 @@ public class RibbonGroupBoxTests
         }
     }
 
+    [Test]
+    public void QuickAccessItem_OpeningAndClosing_TransfersAndRestoresInlineItems()
+    {
+        // Arrange
+        var source = new Fluent.CBrain.RibbonGroupBox();
+        var button = new Fluent.Button { Header = "Action" };
+        source.Items.Add(button);
+        var item = (Fluent.CBrain.RibbonGroupBox)source.CreateQuickAccessItem();
+        using var window = new TestRibbonWindow(item);
+        UIHelper.DoEvents();
+
+        // Act
+        item.IsDropDownOpen = true;
+        UIHelper.DoEvents();
+
+        // Assert
+        Assert.That(source.Items, Is.Empty);
+        Assert.That(item.Items, Is.EqualTo(new[] { button }));
+
+        // Act
+        item.IsDropDownOpen = false;
+        UIHelper.DoEvents();
+
+        // Assert
+        Assert.That(source.Items, Is.EqualTo(new[] { button }));
+        Assert.That(item.Items, Is.Empty);
+    }
+
     private static DataTemplate CreateDataTemplateForItemViewModel()
     {
         var dataTemplate = new DataTemplate(typeof(ItemViewModel));

@@ -54,4 +54,31 @@ public class QuickAccessItemTests
         Assert.That(splitButton.CanAddButtonToQuickAccessToolBar, Is.False);
         Assert.That(splitButton.IsCheckable, Is.True);
     }
+
+    [Test]
+    public void CreateQuickAccessItem_RibbonGroupBox_ReturnsFreshWrapperWithInheritedSetup()
+    {
+        // Arrange
+        var source = new RibbonGroupBox
+        {
+            Header = "Actions",
+            LauncherText = "More actions",
+            IsLauncherVisible = true
+        };
+
+        // Act
+        var item = source.CreateQuickAccessItem();
+
+        // Assert
+        Assert.That(item, Is.TypeOf<RibbonGroupBox>());
+        Assert.That(item.GetType().Assembly, Is.SameAs(typeof(Fluent.RibbonGroupBox).Assembly));
+        Assert.That(item, Is.Not.SameAs(source));
+        Assert.That(Fluent.RibbonProperties.GetIsElementInQuickAccessToolBar(item), Is.True);
+
+        var groupBox = (RibbonGroupBox)item;
+        Assert.That(groupBox.State, Is.EqualTo(Fluent.RibbonGroupBoxState.QuickAccess));
+        Assert.That(groupBox.Header, Is.EqualTo("Actions"));
+        Assert.That(groupBox.LauncherText, Is.EqualTo("More actions"));
+        Assert.That(groupBox.IsLauncherVisible, Is.True);
+    }
 }

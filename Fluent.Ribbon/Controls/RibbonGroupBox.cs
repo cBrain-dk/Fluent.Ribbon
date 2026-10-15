@@ -1164,7 +1164,7 @@ public class RibbonGroupBox : HeaderedItemsControl, IQuickAccessItemProvider, ID
     /// <inheritdoc />
     public virtual FrameworkElement CreateQuickAccessItem()
     {
-        var groupBox = new RibbonGroupBox();
+        var groupBox = this.CreateQuickAccessRibbonGroupBox();
 
         RibbonControl.BindQuickAccessItem(this, groupBox);
 
@@ -1223,6 +1223,15 @@ public class RibbonGroupBox : HeaderedItemsControl, IQuickAccessItemProvider, ID
         }
 
         return groupBox;
+    }
+
+    /// <summary>
+    /// Creates the ribbon group box used for the quick-access item.
+    /// </summary>
+    /// <returns>A fresh, non-null ribbon group box.</returns>
+    protected virtual RibbonGroupBox CreateQuickAccessRibbonGroupBox()
+    {
+        return new RibbonGroupBox();
     }
 
     private void OnQuickAccessOpened(object? sender, EventArgs e)

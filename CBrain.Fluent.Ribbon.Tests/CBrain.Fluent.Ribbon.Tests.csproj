@@ -10,7 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fluent.Ribbon\Fluent.Ribbon.csproj" Condition="'$(UseFluentSource)' == 'true'" />
-    <PackageReference Include="Fluent.Ribbon" VersionOverride="[11.0.2-0.3]" Condition="'$(UseFluentSource)' != 'true'" />
+    <PackageReference Include="Fluent.Ribbon" VersionOverride="[11.0.2-0.4]" Condition="'$(UseFluentSource)' != 'true'" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
