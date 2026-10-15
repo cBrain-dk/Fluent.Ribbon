@@ -1,7 +1,7 @@
 # cBrain Fluent wrapper baseline
 
 Current delivery: a single `Fluent.Ribbon` package and `Fluent.dll`, including the private cBrain
-control additions. Verified 2026-10-13 under F2DEV-110306. The owner authorized source push to the cBrain GitHub repository; code and native tests live in the
+control additions. Verified 2026-10-15 under F2DEV-110306. The owner authorized source push to the cBrain GitHub repository; code and native tests live in the
 `fluent-wrapper` branch at https://github.com/cBrain-dk/Fluent.Ribbon. Publication and isolated internal-feed validation are complete. No upstream PR is authorized.
 
 ## Current baseline
@@ -10,12 +10,12 @@ control additions. Verified 2026-10-13 under F2DEV-110306. The owner authorized 
 | --- | --- |
 | Upstream stable release | v11.0.2, published 2026-01-19 |
 | Upstream SHA | `ce56b60ca892d1505b7f80826330c676f41fda0a` |
-| Current source SHA | `2e580be7dfc3fdeb57e50d88c8e0e3ff99efe778` |
-| Local prerelease package | `Fluent.Ribbon 11.0.2-0.3` |
-| Local package SHA256 | `37AABDEC9D9062741B4A99FFA37E3361D9D2C5A1966637116004CE89AF71418C` |
+| Current source SHA | `53490eeb8291fb342534022db84bed3fd6dd4ffc` |
+| Local prerelease package | `Fluent.Ribbon 11.0.2-0.4` |
+| Local package SHA256 | `293530629EAC8467D4B0AA13A3EAC4BC182B0C0BBD919865D0F74E6DC0CD6A0E` |
 | Intended private feed | `https://git.cbrain.net/api/packages/F2U/nuget/index.json` |
 | Packing / publication | Published through RDAdm; isolated F2U restoration verified |
-| Matching source checkout | `D:/git/fluent-wrapper-11.0.2-0.3`, at the current source SHA |
+| Matching source checkout | `D:/git/fluent-wrapper-11.0.2-0.4`, at the current source SHA |
 | Release tag | Not created; package source is pinned by SHA in the matching checkout |
 | Assembly identity | `Fluent, Version=11.0.0.0, Culture=neutral, PublicKeyToken=3e436e32a8c5546f` |
 
@@ -33,22 +33,23 @@ coexists with the original `KeyTipService(Ribbon)` overload. The newer service a
 focus behavior are retained rather than replacing them with the old service implementation.
 This supports the owned ItemsControl-based CommandBar.
 
-The protected parameterless factories `ComboBox.CreateQuickAccessComboBox()` and
-`SplitButton.CreateQuickAccessSplitButton()` replace only allocation. Fluent's private clone
+The protected parameterless factories `ComboBox.CreateQuickAccessComboBox()`,
+`SplitButton.CreateQuickAccessSplitButton()` and
+`RibbonGroupBox.CreateQuickAccessRibbonGroupBox()` replace only allocation. Fluent's private clone
 registration, bindings, item transfer, event handlers and small-size/no-re-add setup remain in
 its inherited creation methods.
 
-The real public `Fluent.CBrain.RibbonComboBox` and `RibbonSplitButton` now live in
+The public `Fluent.CBrain.RibbonComboBox`, `RibbonSplitButton` and `RibbonGroupBox` live in
 `Fluent.Ribbon/CBrain/` and compile into `Fluent.dll`. Their factory overrides return fresh
 instances of the matching cBrain type. Public creation calls inherited Fluent setup, sets
 `IsElementInQuickAccessToolBar=true` and returns the clone. Further F2 seam subclasses inherit
 that setup/marking and override the factory if their exact further-derived type must be retained.
 No separate cBrain production assembly/package remains; native namespace is `Fluent.CBrain`.
 
-`CBrain.Fluent.Ribbon.Tests` stays a native, non-packable STA test project. Its two cases use the
+`CBrain.Fluent.Ribbon.Tests` stays a native, non-packable STA test project. Its three cases use the
 actual production classes and assert exact clone type, fresh objects, QAT marking, inherited setup
 and assembly identity shared with the Fluent base controls. No synthetic derived marker types,
-private reflection or timer sleeps. Source mode references Fluent; package mode pins exact `11.0.2-0.3`.
+private reflection or timer sleeps. Source mode references Fluent; package mode pins exact `11.0.2-0.4`.
 The solution and Nuke test target include it; TRX collection recurses through project directories.
 
 The owner closed the earlier upstream [factory PR1285](https://github.com/fluentribbon/Fluent.Ribbon/pull/1285)
@@ -227,3 +228,28 @@ normal theme-resource compilation continues.
 Owner authorization covers `Fluent.Ribbon 11.0.2-0.2` publication on F2U through `Publish-CBrainWrapper.ps1`. The `-PackagePath` option published the validated artifact without rebuilding: SHA256 `A859F4CC505D8904C0FC6B8AD05C764395D87C52593262C2CFB1BBB55AFA736B`, source `840986f34c7e07da0fa5f5e69665c38aa32385d1`. A fresh isolated restore selects Fluent only from the F2U feed; restored package provenance/hash/source and selected DLL hashes match. VS MSBuild Release/AnyCPU Rebuild succeeds; combined native-clone/host/Danish-keytip probes pass 9/9 on each target, VSTest exit 0. This does not rerun or replace the recorded upstream suite failure.
 
 Evidence: `C:/tmp/fluent/wrapper-delivery-check-20261013T104731Z/`. Delivery is complete; product dependency migration and its acceptance gates are separate. The script's default workflow still tests and packs a new Release package before publishing. Its existing-package option preserves previously validated bytes.
+
+## GroupBox quick-access delivery - 2026-10-15
+
+`Fluent.Ribbon 11.0.2-0.4` includes `Fluent.CBrain.RibbonGroupBox` and the protected
+`RibbonGroupBox.CreateQuickAccessRibbonGroupBox()` factory. Allocation is the only
+change inside the existing public creation method. Launcher bindings, popup
+handlers and inline-item transfer remain in Fluent. The cBrain control returns
+fresh exact-type copies and marks them as QAT items. Further seam subclasses can
+override the factory while inheriting the public clone setup and marking.
+
+The owner authorized this new release through `Publish-CBrainWrapper.ps1` to F2U.
+The script's source/native tests pass 3/3 on each supported target. The upstream
+GroupBox fixture, including popup open/close item transfer, passes 4/4 on each.
+A fresh feed-only consumer restore builds with warnings-as-errors and passes
+14/14 on each target: native controls, GroupBox lifecycle/sizing and existing
+host/Danish-keytip contracts. Package provenance, repository commit, package hash
+and both selected Fluent.dll hashes match the published artifact. This does not
+rerun or replace the separately recorded full upstream suite result.
+
+Published source: `53490eeb8291fb342534022db84bed3fd6dd4ffc`.
+Package SHA256: `293530629EAC8467D4B0AA13A3EAC4BC182B0C0BBD919865D0F74E6DC0CD6A0E`.
+Matching clean source checkout: `D:/git/fluent-wrapper-11.0.2-0.4`.
+Evidence: `C:/tmp/fluent/wrapper-0.4-publication/`, including internal-verification.json,
+publisher log, source GroupBox results and isolated package-consumer TRX files.
+The existing missing-package-readme advisory remains recorded in the pack log.
